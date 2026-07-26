@@ -50,7 +50,10 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
         ((AtomicBoolean) instantiated.get(null)).set(true);
     }
 
-    protected Mojo executeMojo(MavenSession session, String goal) throws Exception {
+    protected Mojo executeMojo(
+            MavenSession session,
+            String goal
+    ) throws Exception {
         MojoExecution execution = newMojoExecution(goal);
         Plugin plugin = session.getCurrentProject().getPlugin(execution.getMojoDescriptor()
                 .getPluginDescriptor().getPluginLookupKey());
@@ -66,14 +69,20 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
         return mojo;
     }
 
-    protected Map<String, String> getProjectProperties(MavenProject project) {
+    protected Map<String, String> getProjectProperties(
+            MavenProject project
+    ) {
         Plugin plugin = project.getBuildPlugins().get(0);
         return Arrays.stream(((Xpp3Dom) plugin.getConfiguration()).getChild("properties").getChildren())
                 .collect(Collectors.toMap(Xpp3Dom::getName, Xpp3Dom::getValue));
     }
 
-    protected String getProjectConfig(MavenProject project, String property) {
+    protected String getProjectConfig(
+            MavenProject project,
+            String property
+    ) {
         Plugin plugin = project.getBuildPlugins().get(0);
         return ((Xpp3Dom) plugin.getConfiguration()).getChild(property).getValue();
     }
+
 }

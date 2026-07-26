@@ -21,7 +21,12 @@ class WakamitiNodeDescriptor extends AbstractTestDescriptor {
 
     private final Type type;
 
-    WakamitiNodeDescriptor(UniqueId uniqueId, String displayName, TestSource source, Type type) {
+    WakamitiNodeDescriptor(
+            UniqueId uniqueId,
+            String displayName,
+            TestSource source,
+            Type type
+    ) {
         super(uniqueId, displayName, source);
         this.type = type;
     }

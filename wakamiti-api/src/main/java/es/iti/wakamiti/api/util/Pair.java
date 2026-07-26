@@ -30,7 +30,10 @@ public class Pair<T, U> {
     private final T key;
     private final U value;
 
-    public Pair(T key, U value) {
+    public Pair(
+            T key,
+            U value
+    ) {
         this.key = key;
         this.value = value;
     }
@@ -43,7 +46,9 @@ public class Pair<T, U> {
      * @param function The function to compute the value.
      * @return A Function that computes the value for a given key.
      */
-    public static <T, U> Function<T, Pair<T, U>> computeValue(Function<T, U> function) {
+    public static <T, U> Function<T, Pair<T, U>> computeValue(
+            Function<T, U> function
+    ) {
         return key -> new Pair<>(key, function.apply(key));
     }
 
@@ -70,7 +75,9 @@ public class Pair<T, U> {
      * @param function The function to compute the value.
      * @return A Function that computes a Pair for a given key.
      */
-    public static <T, U> Function<T, Pair<T, U>> compute(Function<T, U> function) {
+    public static <T, U> Function<T, Pair<T, U>> compute(
+            Function<T, U> function
+    ) {
         return first -> new Pair<>(first, function.apply(first));
     }
 
@@ -100,7 +107,9 @@ public class Pair<T, U> {
      * @param map The mapping function.
      * @return A new Pair with mapped key and value.
      */
-    public <R, P> Pair<R, P> map(BiFunction<T, U, Pair<R, P>> map) {
+    public <R, P> Pair<R, P> map(
+            BiFunction<T, U, Pair<R, P>> map
+    ) {
         return map.apply(key, value);
     }
 
@@ -115,7 +124,9 @@ public class Pair<T, U> {
      * @param map The mapping function.
      * @return A new Pair with mapped key and value.
      */
-    public <R> Pair<R, R> mapEach(Function<Object, R> map) {
+    public <R> Pair<R, R> mapEach(
+            Function<Object, R> map
+    ) {
         R k = map.apply(this.key);
         R v = map.apply(this.value);
         return new Pair<>(k, v);

@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.internal;
 
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.XRaySynchronizer;
@@ -19,12 +20,16 @@ import java.util.stream.Stream;
 
 public class ScenarioMapper extends Mapper {
 
-    public ScenarioMapper(String suiteBase) {
+    public ScenarioMapper(
+            String suiteBase
+    ) {
         super(suiteBase);
     }
 
     @Override
-    protected Stream<Pair<PlanNodeSnapshot, TestSet>> suiteMap(PlanNodeSnapshot target) {
+    protected Stream<Pair<PlanNodeSnapshot, TestSet>> suiteMap(
+            PlanNodeSnapshot target
+    ) {
         return super.suiteMap(target)
                 .flatMap(p ->
                         p.key().flatten(node -> gherkinType(node).equals(type()))

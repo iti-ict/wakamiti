@@ -39,7 +39,9 @@ public class JsonPlanSerializer implements PlanSerializer {
      * {@inheritDoc}
      */
     @Override
-    public PlanNodeSnapshot deserialize(String json) throws IOException {
+    public PlanNodeSnapshot deserialize(
+            String json
+    ) throws IOException {
         return OBJECT_MAPPER.readValue(json, PlanNodeSnapshot.class);
     }
 
@@ -47,7 +49,9 @@ public class JsonPlanSerializer implements PlanSerializer {
      * {@inheritDoc}
      */
     @Override
-    public String serialize(PlanNodeSnapshot node) throws IOException {
+    public String serialize(
+            PlanNodeSnapshot node
+    ) throws IOException {
         return OBJECT_MAPPER.writeValueAsString(node);
     }
 
@@ -55,7 +59,10 @@ public class JsonPlanSerializer implements PlanSerializer {
      * {@inheritDoc}
      */
     @Override
-    public void write(Writer writer, PlanNodeSnapshot node) throws IOException {
+    public void write(
+            Writer writer,
+            PlanNodeSnapshot node
+    ) throws IOException {
         OBJECT_MAPPER.writeValue(writer, node);
     }
 
@@ -63,7 +70,9 @@ public class JsonPlanSerializer implements PlanSerializer {
      * {@inheritDoc}
      */
     @Override
-    public PlanNodeSnapshot read(Reader reader) throws IOException {
+    public PlanNodeSnapshot read(
+            Reader reader
+    ) throws IOException {
         return OBJECT_MAPPER.readValue(reader, PlanNodeSnapshot.class);
     }
 

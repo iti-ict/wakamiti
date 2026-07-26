@@ -37,7 +37,6 @@ public class ExtensionLoadContext<T> {
         this.extensionPoint = extensionPoint;
         this.extensionPointData = extensionPointData;
         this.condition = condition;
-
     }
 
     /**
@@ -92,7 +91,9 @@ public class ExtensionLoadContext<T> {
         return x -> true;
     }
 
-    private static <T> Predicate<T> conditionFromAnnotation(Predicate<Extension> condition) {
+    private static <T> Predicate<T> conditionFromAnnotation(
+            Predicate<Extension> condition
+    ) {
         return extension -> condition.test(extension.getClass().getAnnotation(Extension.class));
     }
 
@@ -105,7 +106,9 @@ public class ExtensionLoadContext<T> {
      * @throws IllegalArgumentException if the specified extension point class
      *                                  is not annotated with {@link ExtensionPoint}
      */
-    private static <T> ExtensionPoint dataOf(Class<T> extensionPoint) {
+    private static <T> ExtensionPoint dataOf(
+            Class<T> extensionPoint
+    ) {
         ExtensionPoint extensionPointData = extensionPoint.getAnnotation(ExtensionPoint.class);
         if (extensionPointData == null) {
             throw new IllegalArgumentException(

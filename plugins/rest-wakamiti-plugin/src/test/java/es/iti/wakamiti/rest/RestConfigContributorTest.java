@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.rest;
 
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.util.MatcherAssertion;
@@ -29,12 +30,13 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+
 @RunWith(MockitoJUnitRunner.class)
 public class RestConfigContributorTest {
+
     private final RestConfigContributor configContributor = new RestConfigContributor();
     @Spy
     private RestStepContributor contributor;
-
 
     @Test
     @SuppressWarnings("unchecked")
@@ -88,4 +90,5 @@ public class RestConfigContributorTest {
         Configuration configuration = Configuration.factory().fromPairs("rest.config.multipart.subtype", "other");
         configContributor.configurer().configure(contributor, configuration);
     }
+
 }

@@ -17,7 +17,9 @@ public class WorkItemLinksQuery extends Query {
         return ENTITY;
     }
 
-    public WorkItemLinksQuery mode(Mode mode) {
+    public WorkItemLinksQuery mode(
+            Mode mode
+    ) {
         this.mode = mode;
         return this;
     }

@@ -38,7 +38,6 @@ public class RunnableStep {
     private final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
     private final String stepProvider;
 
-
     public RunnableStep(
             String definitionFile,
             String definitionKey,
@@ -60,7 +59,9 @@ public class RunnableStep {
      * @return The translated definition.
      * @throws WakamitiException If the definition file or key is not found for the given locale.
      */
-    public String getTranslatedDefinition(Locale locale) {
+    public String getTranslatedDefinition(
+            Locale locale
+    ) {
         String translatedDefinition = translatedDefinitions.get(locale);
         if (translatedDefinition == null) {
             ResourceBundle resourceBundle = resourceLoader.resourceBundle(definitionFile, locale);
@@ -114,8 +115,9 @@ public class RunnableStep {
      * @return The result of running the step.
      * @throws WakamitiException If there is an error while running the step.
      */
-    public Object run(Map<String, Argument> invokeArguments) {
-
+    public Object run(
+            Map<String, Argument> invokeArguments
+    ) {
         boolean error = invokeArguments.size() != this.arguments.size();
         // re-arrange argument order
         Object[] argumentArray = new Object[this.arguments.size()];

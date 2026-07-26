@@ -32,10 +32,8 @@ public class TestWakamitiAssertTypesEn {
 
     private final Locale locale = Locale.ENGLISH;
 
-
     @Test
     public void testInteger() throws ParseException {
-
         WakamitiDataType<Assertion> intMatcher = WakamitiAssertTypes
                 .binaryNumberAssert("int-assert", false, Number::intValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -61,13 +59,10 @@ public class TestWakamitiAssertTypesEn {
 
         intMatcher.parse(locale, "is null").test(null);
         intMatcher.parse(locale, "is not null").test(7);
-
     }
-
 
     @Test
     public void testLong() throws ParseException {
-
         WakamitiDataType<Assertion> longMatcher = WakamitiAssertTypes
                 .binaryNumberAssert("long-assert", false, Number::longValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -93,9 +88,7 @@ public class TestWakamitiAssertTypesEn {
 
         longMatcher.parse(locale, "is null").test(null);
         longMatcher.parse(locale, "is not null").test(7L);
-
     }
-
 
     @Test
     public void testDouble() throws ParseException {
@@ -118,7 +111,6 @@ public class TestWakamitiAssertTypesEn {
                     .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
     }
-
 
     @Test
     public void testBigDecimal() throws ParseException {

@@ -45,7 +45,9 @@ public class WakamitiRunnerProfileReportingTest {
         assertThat(summary.getTestsFailedCount()).isZero();
     }
 
-    private TestExecutionSummary runPlan(Class<?> planClass) {
+    private TestExecutionSummary runPlan(
+            Class<?> planClass
+    ) {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(planClass))
                 .filters(EngineFilter.includeEngines(WakamitiTestEngine.ENGINE_ID))
@@ -56,4 +58,5 @@ public class WakamitiRunnerProfileReportingTest {
         launcher.execute(request);
         return summaryListener.getSummary();
     }
+
 }

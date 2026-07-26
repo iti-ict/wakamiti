@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.xray;
 
 
@@ -46,7 +45,9 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
     public static final String XRAY_ATTACHMENTS = "xray.attachments";
 
     @Override
-    public boolean accepts(Object contributor) {
+    public boolean accepts(
+            Object contributor
+    ) {
         return contributor instanceof XRaySynchronizer;
     }
 
@@ -67,7 +68,10 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         return this::configure;
     }
 
-    private void configure(XRaySynchronizer synchronizer, Configuration configuration) {
+    private void configure(
+            XRaySynchronizer synchronizer,
+            Configuration configuration
+    ) {
         requiredProperty(configuration, XRAY_ENABLED, Boolean.class, synchronizer::enabled);
         requiredProperty(configuration, XRAY_BASE_URL, URL.class, synchronizer::xRayBaseURL);
         requiredProperty(configuration, JIRA_BASE_URL, URL.class, synchronizer::jiraBaseURL);
@@ -86,7 +90,9 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         configuration.get(XRAY_CREATE_ITEMS_IF_ABSENT, Boolean.class).ifPresent(synchronizer::createItemsIfAbsent);
     }
 
-    private TestPlan plan(Configuration configuration) {
+    private TestPlan plan(
+            Configuration configuration
+    ) {
         if (configuration.inner(XRAY_PLAN).asMap().isEmpty()) {
             throw new WakamitiException("Property '{}' is required", XRAY_PLAN);
         }
@@ -95,9 +101,15 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         return plan;
     }
 
-    private <T> void requiredProperty(Configuration config, String property, Class<T> type, Consumer<T> setter) {
+    private <T> void requiredProperty(
+            Configuration config,
+            String property,
+            Class<T> type,
+            Consumer<T> setter
+    ) {
         T value = config.get(property, type)
                 .orElseThrow(() -> new WakamitiException("Property '{}' is required", property));
         setter.accept(value);
     }
+
 }

@@ -18,7 +18,6 @@ import java.util.Objects;
  * This class allows you to create new {@link PropertyDefinition} objects in a fluent
  * manner, setting only the actual information you required. Invoke {@link #build()}
  * after setting the attributes to obtain the created object.
- *
  */
 public class PropertyDefinitionBuilder {
 
@@ -29,13 +28,16 @@ public class PropertyDefinitionBuilder {
     private String defaultValue;
     private PropertyType propertyType;
 
-
-    public PropertyDefinitionBuilder property(String property) {
+    public PropertyDefinitionBuilder property(
+            String property
+    ) {
         this.property = property;
         return this;
     }
 
-    public PropertyDefinitionBuilder description(String description) {
+    public PropertyDefinitionBuilder description(
+            String description
+    ) {
         this.description = description;
         return this;
     }
@@ -45,32 +47,35 @@ public class PropertyDefinitionBuilder {
         return this;
     }
 
-
-    public PropertyDefinitionBuilder required(Boolean required) {
+    public PropertyDefinitionBuilder required(
+            Boolean required
+    ) {
         this.required = Boolean.TRUE.equals(required);
         return this;
     }
-
 
     public PropertyDefinitionBuilder multivalue() {
         this.multivalue = true;
         return this;
     }
 
-
-    public PropertyDefinitionBuilder multivalue(Boolean multivalue) {
+    public PropertyDefinitionBuilder multivalue(
+            Boolean multivalue
+    ) {
         this.multivalue = Boolean.TRUE.equals(multivalue);
         return this;
     }
 
-
-    public PropertyDefinitionBuilder defaultValue(String defaultValue) {
+    public PropertyDefinitionBuilder defaultValue(
+            String defaultValue
+    ) {
         this.defaultValue = defaultValue;
         return this;
     }
 
-
-    public PropertyDefinitionBuilder textType(String pattern) {
+    public PropertyDefinitionBuilder textType(
+            String pattern
+    ) {
         this.propertyType = new TextPropertyType(pattern);
         return this;
     }
@@ -79,26 +84,33 @@ public class PropertyDefinitionBuilder {
         return textType(null);
     }
 
-
-    public PropertyDefinitionBuilder integerType(Number min, Number max) {
+    public PropertyDefinitionBuilder integerType(
+            Number min,
+            Number max
+    ) {
         this.propertyType = new IntegerPropertyType(min, max);
         return this;
     }
 
     public PropertyDefinitionBuilder integerType() {
-        return integerType(null,null);
+        return integerType(null, null);
     }
 
-    public PropertyDefinitionBuilder decimalType(Number min, Number max) {
+    public PropertyDefinitionBuilder decimalType(
+            Number min,
+            Number max
+    ) {
         this.propertyType = new DecimalPropertyType(min, max);
         return this;
     }
 
     public PropertyDefinitionBuilder decimalType() {
-        return decimalType(null,null);
+        return decimalType(null, null);
     }
 
-    public PropertyDefinitionBuilder enumType(String... values) {
+    public PropertyDefinitionBuilder enumType(
+            String... values
+    ) {
         this.propertyType = new EnumPropertyType(List.of(values));
         return this;
     }
@@ -108,8 +120,9 @@ public class PropertyDefinitionBuilder {
         return this;
     }
 
-
-    public PropertyDefinitionBuilder propertyType(PropertyType propertyType) {
+    public PropertyDefinitionBuilder propertyType(
+            PropertyType propertyType
+    ) {
         this.propertyType = propertyType;
         return this;
     }
@@ -120,8 +133,5 @@ public class PropertyDefinitionBuilder {
         Objects.requireNonNull(propertyType);
         return new PropertyDefinition(property, description, required, multivalue, defaultValue, propertyType);
     }
-
-
-
 
 }

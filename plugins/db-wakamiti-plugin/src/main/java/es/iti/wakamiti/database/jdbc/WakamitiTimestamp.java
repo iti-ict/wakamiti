@@ -31,7 +31,10 @@ public class WakamitiTimestamp extends java.sql.Timestamp {
      * @param trunc Truncation preference: {@code true} for date-only, {@code false} for
      *              date-time
      */
-    public WakamitiTimestamp(long time, boolean trunc) {
+    public WakamitiTimestamp(
+            long time,
+            boolean trunc
+    ) {
         super(time);
         this.trunc = trunc;
     }
@@ -45,7 +48,10 @@ public class WakamitiTimestamp extends java.sql.Timestamp {
      *              date-time
      * @return The Timestamp object
      */
-    public static WakamitiTimestamp valueOf(LocalDateTime time, boolean trunc) {
+    public static WakamitiTimestamp valueOf(
+            LocalDateTime time,
+            boolean trunc
+    ) {
         return new WakamitiTimestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
     }
 
@@ -58,7 +64,10 @@ public class WakamitiTimestamp extends java.sql.Timestamp {
      *              date-time
      * @return The Timestamp object
      */
-    public static WakamitiTimestamp valueOf(String time, boolean trunc) {
+    public static WakamitiTimestamp valueOf(
+            String time,
+            boolean trunc
+    ) {
         return new WakamitiTimestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
     }
 

@@ -142,9 +142,9 @@ public abstract class AbstractConfiguration implements Configuration {
             String key,
             PropertyDefinition definition
     ) {
-        List<String> values = definition.multivalue() ?
-                getList(key, String.class) :
-                get(key, String.class).map(List::of).orElseGet(List::of);
+        List<String> values = definition.multivalue()
+                ? getList(key, String.class)
+                : get(key, String.class).map(List::of).orElseGet(List::of);
         return values
                 .stream()
                 .map(definition::validate)

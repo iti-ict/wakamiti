@@ -22,7 +22,6 @@ public class LongMetricProvider extends AbstractMetricProvider {
     public static final String RECEIVED_BYTES = "metric.long.receivedBytes";
     public static final String SENT_BYTES = "metric.long.sentBytes";
 
-
     private static final Map<String, Metric<Long>> METRICS = map(
             SAMPLES, s -> s.samples().total(),
             ERRORS, s -> s.errors().total(),
@@ -36,7 +35,10 @@ public class LongMetricProvider extends AbstractMetricProvider {
     }
 
     @Override
-    protected Metric<?> createMetric(String key) {
+    protected Metric<?> createMetric(
+            String key
+    ) {
         return METRICS.get(key);
     }
+
 }

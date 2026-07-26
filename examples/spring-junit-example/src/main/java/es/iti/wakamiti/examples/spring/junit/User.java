@@ -5,10 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.examples.spring.junit;
 
 
@@ -31,13 +27,28 @@ public class User {
     @Column
     public String lastName;
 
+    public int getId() {
+        return id;
+    }
 
-    public int getId() { return id; }
-    public String getFirstName() { return firstName; }
-    public String getLastName() { return lastName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public void setId(int id) { this.id = id; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
 }

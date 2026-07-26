@@ -7,12 +7,14 @@
  */
 package es.iti.wakamiti.email;
 
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.awaitility.Awaitility;
 import org.awaitility.Durations;
 import org.slf4j.Logger;
+
 
 import javax.mail.*;
 import javax.mail.event.MessageCountAdapter;
@@ -37,8 +39,13 @@ public class EmailHelper {
     private Store store;
     private final Map<String, Folder> folders = new HashMap<>();
 
-
-    public EmailHelper(String protocol, String host, Integer port, String address, String password) {
+    public EmailHelper(
+            String protocol,
+            String host,
+            Integer port,
+            String address,
+            String password
+    ) {
         try {
             Objects.requireNonNull(protocol, "Email store protocol is not defined");
             Objects.requireNonNull(host, "Email host is not defined");
@@ -56,7 +63,10 @@ public class EmailHelper {
         }
     }
 
-    private static Map<String, byte[]> findAttachments(Multipart multipart, int maxAttachments) {
+    private static Map<String, byte[]> findAttachments(
+            Multipart multipart,
+            int maxAttachments
+    ) {
         try {
             Map<String, byte[]> attachments = new HashMap<>();
             for (int i = 0; i < multipart.getCount() && attachments.size() < maxAttachments; i++) {
@@ -71,7 +81,9 @@ public class EmailHelper {
         }
     }
 
-    private static byte[] readBytes(MimeBodyPart bodyPart) throws MessagingException, IOException {
+    private static byte[] readBytes(
+            MimeBodyPart bodyPart
+    ) throws MessagingException, IOException {
         return bodyPart.getInputStream().readAllBytes();
     }
 
@@ -102,8 +114,9 @@ public class EmailHelper {
         folders.clear();
     }
 
-    private Folder folder(String folderName) {
-
+    private Folder folder(
+            String folderName
+    ) {
         if (folderName == null) {
             throw new WakamitiException("Email folder not defined");
         }
@@ -121,7 +134,9 @@ public class EmailHelper {
         }
     }
 
-    public Integer getUnreadMessages(String folderName) {
+    public Integer getUnreadMessages(
+            String folderName
+    ) {
         try {
             Flags seen = new Flags(Flags.Flag.SEEN);
             SearchTerm unseenFlagTerm = new FlagTerm(seen, false);
@@ -131,7 +146,9 @@ public class EmailHelper {
         }
     }
 
-    public Message getLatestMessage(String folderName) {
+    public Message getLatestMessage(
+            String folderName
+    ) {
         try {
             Folder folder = folder(folderName);
             for (int i = folder.getMessageCount(); i > 0; i--) {
@@ -148,34 +165,37 @@ public class EmailHelper {
         }
     }
 
-    public Message waitForIncomingMessage(String folderName, Duration duration) {
-
+    public Message waitForIncomingMessage(
+            String folderName,
+            Duration duration
+    ) {
         Folder folder = folder(folderName);
         AtomicBoolean received = new AtomicBoolean();
         MessageCountListener listener = new MessageCountAdapter() {
             @Override
-            public void messagesAdded(MessageCountEvent e) {
+            public void messagesAdded(
+                    MessageCountEvent e
+            ) {
                 received.set(true);
             }
         };
         folder.addMessageCountListener(listener);
         try {
-
             Awaitility.await().atMost(duration).pollDelay(Durations.ONE_SECOND).untilTrue(received);
             if (!received.get()) {
                 throw new AssertionError("No new email messages received within " + formatDuration(duration.toMillis(), FORMAT));
             }
             return folder.getMessage(folder.getMessageCount());
-
         } catch (MessagingException e) {
             throw new WakamitiException(e);
         } finally {
             folder.removeMessageCountListener(listener);
         }
-
     }
 
-    public Map<String, byte[]> getAllAttachments(Message message) {
+    public Map<String, byte[]> getAllAttachments(
+            Message message
+    ) {
         try {
             if (message.getContent() instanceof Multipart) {
                 Multipart multipart = (Multipart) message.getContent();
@@ -188,7 +208,9 @@ public class EmailHelper {
         }
     }
 
-    public Map.Entry<String, byte[]> getFirstAttachment(Message message) {
+    public Map.Entry<String, byte[]> getFirstAttachment(
+            Message message
+    ) {
         try {
             if (message.getContent() instanceof Multipart) {
                 Multipart multipart = (Multipart) message.getContent();
@@ -203,7 +225,9 @@ public class EmailHelper {
         }
     }
 
-    public String getBody(Message message) {
+    public String getBody(
+            Message message
+    ) {
         try {
             Object content = message.getContent();
             if (content instanceof String) {
@@ -226,7 +250,10 @@ public class EmailHelper {
         }
     }
 
-    public void deleteMessages(String folderName, ThrowableFunction<Message, Boolean> condition) {
+    public void deleteMessages(
+            String folderName,
+            ThrowableFunction<Message, Boolean> condition
+    ) {
         try {
             Folder folder = folder(folderName);
             for (int i = 1; i <= folder.getMessageCount(); i++) {
@@ -240,7 +267,10 @@ public class EmailHelper {
         }
     }
 
-    public Message[] getAllMessages(String folderName) throws MessagingException {
+    public Message[] getAllMessages(
+            String folderName
+    ) throws MessagingException {
         return folder(folderName).getMessages();
     }
+
 }

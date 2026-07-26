@@ -158,7 +158,9 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends Abst
      * {@inheritDoc}
      */
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions()) {
             translatedExpressions.put(
@@ -183,7 +185,9 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends Abst
      * {@inheritDoc}
      */
     @Override
-    public LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .map(exp -> exp.replace(VALUE_WILDCARD, numberRegexProvider.apply(locale)))

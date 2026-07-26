@@ -56,7 +56,9 @@ public class ApplicationContextProvider implements ApplicationContextAware {
      * @param applicationContext The Spring ApplicationContext to be set.
      */
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
+    public void setApplicationContext(
+            ApplicationContext applicationContext
+    ) {
         LOGGER.debug("Spring ApplicationContext set in jExt Spring");
         ApplicationContextProvider.applicationContext = applicationContext;
     }

@@ -195,15 +195,21 @@ public class AmqpStepContributorTest {
                 contributor.checkReceivedJSONLooseFromString(duration, expectedSubset));
     }
 
-    private static void setClient(AmqpStepContributor steps, AmqpClient client) throws Exception {
+    private static void setClient(
+            AmqpStepContributor steps,
+            AmqpClient client
+    ) throws Exception {
         Field field = AmqpSupport.class.getDeclaredField("client");
         field.setAccessible(true);
         field.set(steps, client);
     }
 
-    private static AmqpClient getClient(AmqpStepContributor steps) throws Exception {
+    private static AmqpClient getClient(
+            AmqpStepContributor steps
+    ) throws Exception {
         Field field = AmqpSupport.class.getDeclaredField("client");
         field.setAccessible(true);
         return (AmqpClient) field.get(steps);
     }
+
 }

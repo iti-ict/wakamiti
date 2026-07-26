@@ -36,6 +36,4 @@ import static es.iti.wakamiti.azure.AzureConfigContributor.*;
 //@RunWith(WakamitiJUnitRunner.class)
 public class TestRunConfig {
 
-
 }
-

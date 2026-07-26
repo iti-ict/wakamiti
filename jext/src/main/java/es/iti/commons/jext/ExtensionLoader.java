@@ -21,5 +21,9 @@ package es.iti.commons.jext;
  */
 public interface ExtensionLoader {
 
-    <T> Iterable<T> load(Class<T> type, ClassLoader loader);
+    <T> Iterable<T> load(
+            Class<T> type,
+            ClassLoader loader
+    );
+
 }

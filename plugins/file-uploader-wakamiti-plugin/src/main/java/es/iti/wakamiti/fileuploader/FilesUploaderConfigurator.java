@@ -15,10 +15,12 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 
 import java.util.Arrays;
 
-import static java.lang.String.format;
-
-@Extension(provider = "es.iti.wakamiti", name = "file-uploader-configurator", version = "2.6",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "file-uploader-configurator",
+        version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 
     private static final String PREFIX = "fileUploader";
@@ -43,7 +45,10 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
         return this::configure;
     }
 
-    private void configure(AbstractFilesUploader filesUploader, Configuration configuration) {
+    private void configure(
+            AbstractFilesUploader filesUploader,
+            Configuration configuration
+    ) {
         Configuration global = configuration.inner(PREFIX);
         Configuration spec = global.inner(filesUploader.category());
         if (spec.isEmpty()) {

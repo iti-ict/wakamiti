@@ -27,7 +27,9 @@ public abstract class MultiDataSet implements Closeable, Iterable<DataSet> {
      *
      * @param dataSet The data set to add.
      */
-    protected void addDataSet(DataSet dataSet) {
+    protected void addDataSet(
+            DataSet dataSet
+    ) {
         dataSets.add(dataSet);
     }
 

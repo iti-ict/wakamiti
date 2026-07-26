@@ -94,7 +94,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param step The plan node representing the step to run.
      */
     @Override
-    public void runStep(PlanNode step) {
+    public void runStep(
+            PlanNode step
+    ) {
         runStep(step, () -> {
             Instant now = clock.instant();
             if (otherStepsHasErrors(step)) {
@@ -113,7 +115,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param step The plan node representing the step to validate.
      */
     @Override
-    public void dryRunStep(PlanNode step) {
+    public void dryRunStep(
+            PlanNode step
+    ) {
         runStep(step, () -> {
             Instant now = clock.instant();
             StepBackendData stepBackend = stepBackendData.get(step);
@@ -126,7 +130,10 @@ public class RunnableBackend extends AbstractBackend {
         });
     }
 
-    private void runStep(PlanNode step, Runnable runnable) {
+    private void runStep(
+            PlanNode step,
+            Runnable runnable
+    ) {
         validateStepFromTestCase(step);
         fetchStepBackendData();
         if (step.nodeType() == NodeType.VIRTUAL_STEP) {
@@ -148,7 +155,9 @@ public class RunnableBackend extends AbstractBackend {
      * @throws WakamitiException If the step is not of the expected type or not a
      *                           descendant of the test case.
      */
-    private void validateStepFromTestCase(PlanNode step) {
+    private void validateStepFromTestCase(
+            PlanNode step
+    ) {
         if (step.nodeType().isNoneOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             throw new WakamitiException(
                     "Plan node of type {} cannot be executed",
@@ -171,7 +180,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param modelStep The plan node representing the step.
      * @return {@code true} if other steps have errors, {@code false} otherwise.
      */
-    private boolean otherStepsHasErrors(PlanNode modelStep) {
+    private boolean otherStepsHasErrors(
+            PlanNode modelStep
+    ) {
         return (!stepsWithErrors.isEmpty() && !stepsWithErrors.contains(modelStep));
     }
 
@@ -181,7 +192,10 @@ public class RunnableBackend extends AbstractBackend {
      * @param modelStep The plan node representing the step to be skipped.
      * @param now       The timestamp when the skipping occurs.
      */
-    private void skipStep(PlanNode modelStep, Instant now) {
+    private void skipStep(
+            PlanNode modelStep,
+            Instant now
+    ) {
         ExecutionState<Result> execution = modelStep.prepareExecution();
         execution.markStarted(now);
         execution.markFinished(now, Result.SKIPPED);
@@ -222,7 +236,10 @@ public class RunnableBackend extends AbstractBackend {
      * @param type      The type of the operation for logging purposes.
      * @throws WakamitiException If an exception or error occurs during the execution of the operation.
      */
-    private void runMethod(ThrowableRunnable operation, String type) {
+    private void runMethod(
+            ThrowableRunnable operation,
+            String type
+    ) {
         try {
             Locale locale = LocaleLoader.forLanguage(testCase.language());
             WakamitiStepRunContext.set(
@@ -237,7 +254,9 @@ public class RunnableBackend extends AbstractBackend {
         } catch (Exception | Error e) {
             Throwable tr = e;
             while (isBlank(tr.getMessage())) {
-                if (tr.getCause() == null) break;
+                if (tr.getCause() == null) {
+                    break;
+                }
                 tr = tr.getCause();
             }
             LOGGER.error("Error running {} operation: {}", type, tr.getMessage());
@@ -274,7 +293,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param step The test step for which backend data is fetched.
      * @return The backend data for the given step.
      */
-    private StepBackendData fetchStepBackendData(PlanNode step) {
+    private StepBackendData fetchStepBackendData(
+            PlanNode step
+    ) {
         Locale stepLocale = LocaleLoader.forLanguage(step.language());
         Locale dataLocale = dataLocale(step, stepLocale);
         Pair<RunnableStep, Matcher> runnableStepData = resolver.locateRunnableStep(step, hinter);
@@ -304,7 +325,10 @@ public class RunnableBackend extends AbstractBackend {
      * @param instant The current instant.
      */
     @SuppressWarnings("unchecked")
-    protected void runStep(PlanNode step, Instant instant) {
+    protected void runStep(
+            PlanNode step,
+            Instant instant
+    ) {
         step.prepareExecution().markStarted(instant);
         StepBackendData stepBackend = stepBackendData.get(step);
         WakamitiStepRunContext.set(
@@ -346,7 +370,12 @@ public class RunnableBackend extends AbstractBackend {
      * @param e               The thrown exception.
      * @param errorClassifier The error classifier.
      */
-    protected void fillErrorState(PlanNode modelStep, Instant instant, Throwable e, String errorClassifier) {
+    protected void fillErrorState(
+            PlanNode modelStep,
+            Instant instant,
+            Throwable e,
+            String errorClassifier
+    ) {
         modelStep.prepareExecution().markFinished(instant, resultFromThrowable(e), e, errorClassifier);
         stepsWithErrors.add(modelStep);
     }
@@ -357,7 +386,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param e The thrown exception.
      * @return The result type.
      */
-    protected Result resultFromThrowable(Throwable e) {
+    protected Result resultFromThrowable(
+            Throwable e
+    ) {
         Result result;
         if (e instanceof AssertionError) {
             result = Result.FAILED;
@@ -422,7 +453,6 @@ public class RunnableBackend extends AbstractBackend {
         return extraProperties;
     }
 
-
     /**
      * The {@code ContextMap} class is a specialized map used to store
      * extra properties associated with the backend.
@@ -440,7 +470,10 @@ public class RunnableBackend extends AbstractBackend {
         }
 
         @Override
-        public Object put(String key, Object value) {
+        public Object put(
+                String key,
+                Object value
+        ) {
             if (Arrays.asList(RESULTS_PROP, ID_PROP).contains(key)) {
                 throw new IllegalArgumentException(key);
             } else {
@@ -449,10 +482,14 @@ public class RunnableBackend extends AbstractBackend {
         }
 
         @Override
-        public void putAll(Map<? extends String, ?> m) {
+        public void putAll(
+                Map<? extends String, ?> m
+        ) {
             m.entrySet().stream()
                     .filter(e -> !List.of(ID_PROP, RESULTS_PROP).contains(e.getKey()))
                     .forEach(e -> put(e.getKey(), e.getValue()));
         }
+
     }
+
 }

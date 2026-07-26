@@ -55,7 +55,9 @@ public interface ConfigurationFactory {
      * @return The ConfigurationFactory instance with the specified multi-value
      * separator.
      */
-    ConfigurationFactory multiValueSeparator(char separator);
+    ConfigurationFactory multiValueSeparator(
+            char separator
+    );
 
     /**
      * Checks if a multi-value separator has been set.
@@ -81,7 +83,10 @@ public interface ConfigurationFactory {
      * @param delta The Configuration to merge with the base.
      * @return The merged Configuration.
      */
-    Configuration merge(Configuration base, Configuration delta);
+    Configuration merge(
+            Configuration base,
+            Configuration delta
+    );
 
     /**
      * Creates an empty Configuration instance.
@@ -90,7 +95,6 @@ public interface ConfigurationFactory {
      */
     Configuration empty();
 
-
     /**
      * Creates a new configuration instance based on a class annotated with
      * {@link AnnotatedConfiguration}
@@ -98,7 +102,9 @@ public interface ConfigurationFactory {
      * @param configuredClass The class containing configuration annotations.
      * @return A Configuration instance based on annotations.
      */
-    Configuration fromAnnotation(Class<?> configuredClass);
+    Configuration fromAnnotation(
+            Class<?> configuredClass
+    );
 
     /**
      * Creates a new configuration instance based on a
@@ -107,7 +113,9 @@ public interface ConfigurationFactory {
      * @param annotation The AnnotatedConfiguration object.
      * @return A Configuration instance based on annotations.
      */
-    Configuration fromAnnotation(AnnotatedConfiguration annotation);
+    Configuration fromAnnotation(
+            AnnotatedConfiguration annotation
+    );
 
     /**
      * Creates a new configuration instance based on environment variables.
@@ -129,7 +137,9 @@ public interface ConfigurationFactory {
      * @param path The file path.
      * @return A Configuration instance from the file path.
      */
-    Configuration fromPath(Path path);
+    Configuration fromPath(
+            Path path
+    );
 
     /**
      * Creates a new configuration instance from the specified URI.
@@ -137,7 +147,9 @@ public interface ConfigurationFactory {
      * @param uri The URI.
      * @return A Configuration instance from the URI.
      */
-    Configuration fromURI(URI uri);
+    Configuration fromURI(
+            URI uri
+    );
 
     /**
      * Creates a new configuration instance from the specified classpath
@@ -147,7 +159,10 @@ public interface ConfigurationFactory {
      * @param classLoader The class loader to use.
      * @return A Configuration instance from the resource.
      */
-    Configuration fromResource(String resource, ClassLoader classLoader);
+    Configuration fromResource(
+            String resource,
+            ClassLoader classLoader
+    );
 
     /**
      * Creates a new configuration instance from the specified
@@ -156,7 +171,9 @@ public interface ConfigurationFactory {
      * @param properties The Properties object.
      * @return A Configuration instance from the Properties object.
      */
-    Configuration fromProperties(Properties properties);
+    Configuration fromProperties(
+            Properties properties
+    );
 
     /**
      * Creates a new configuration instance from the specified {@link Map} object.
@@ -164,7 +181,9 @@ public interface ConfigurationFactory {
      * @param propertyMap The Map of properties.
      * @return A Configuration instance from the Map of properties.
      */
-    Configuration fromMap(Map<String, ?> propertyMap);
+    Configuration fromMap(
+            Map<String, ?> propertyMap
+    );
 
     /**
      * Creates a new configuration instance from key-value pairs.
@@ -173,7 +192,9 @@ public interface ConfigurationFactory {
      * @return A Configuration instance from the key-value pairs.
      * @throws IllegalArgumentException If the number of arguments is not even.
      */
-    default Configuration fromPairs(String... pairs) {
+    default Configuration fromPairs(
+            String... pairs
+    ) {
         if (pairs.length % 2 == 1) {
             throw new IllegalArgumentException("Number of arguments must be even");
         }
@@ -193,7 +214,9 @@ public interface ConfigurationFactory {
      * @return A Configuration instance based on property definitions.
      * @see PropertyDefinition
      */
-    Configuration accordingDefinitions(Collection<PropertyDefinition> definitions);
+    Configuration accordingDefinitions(
+            Collection<PropertyDefinition> definitions
+    );
 
     /**
      * Creates a new empty configuration instance based on property definitions
@@ -204,7 +227,9 @@ public interface ConfigurationFactory {
      * file path.
      * @see PropertyDefinition
      */
-    Configuration accordingDefinitionsFromPath(Path path);
+    Configuration accordingDefinitionsFromPath(
+            Path path
+    );
 
     /**
      * Creates a new empty configuration instance based on property definitions
@@ -218,7 +243,9 @@ public interface ConfigurationFactory {
      * @return A Configuration instance based on property definitions from the URI.
      * @see PropertyDefinition
      */
-    Configuration accordingDefinitionsFromURI(URI uri);
+    Configuration accordingDefinitionsFromURI(
+            URI uri
+    );
 
     /**
      * Creates a new empty configuration instance based on property definitions
@@ -232,6 +259,9 @@ public interface ConfigurationFactory {
      * resource.
      * @see PropertyDefinition
      */
-    Configuration accordingDefinitionsFromResource(String resource, ClassLoader classLoader);
+    Configuration accordingDefinitionsFromResource(
+            String resource,
+            ClassLoader classLoader
+    );
 
 }

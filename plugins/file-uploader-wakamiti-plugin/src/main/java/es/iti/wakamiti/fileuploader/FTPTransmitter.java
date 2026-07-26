@@ -18,7 +18,9 @@ import java.util.function.Supplier;
 
 public interface FTPTransmitter {
 
-    static FTPTransmitter of(String protocol) {
+    static FTPTransmitter of(
+            String protocol
+    ) {
         Map<String, Supplier<FTPTransmitter>> factory = Map.of(
                 "ftp", () -> new FTPClientTransmitter(false),
                 "ftps", () -> new FTPClientTransmitter(true),
@@ -32,10 +34,19 @@ public interface FTPTransmitter {
 
     boolean isConnected();
 
-    void connect(String username, String host, Integer port, String password, String identity) throws IOException;
+    void connect(
+            String username,
+            String host,
+            Integer port,
+            String password,
+            String identity
+    ) throws IOException;
 
     void disconnect() throws IOException;
 
-    void transferFile(Path localFile, Path destinationFolder) throws IOException;
+    void transferFile(
+            Path localFile,
+            Path destinationFolder
+    ) throws IOException;
 
 }

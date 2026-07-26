@@ -62,7 +62,7 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
      * @return The node types that must be represented as leaf tests.
      */
     protected NodeType[] target() {
-        return new NodeType[] {NodeType.TEST_CASE};
+        return new NodeType[]{NodeType.TEST_CASE};
     }
 
     @Override
@@ -82,7 +82,9 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
     }
 
     @Override
-    public Result execute(EngineExecutionListener listener) {
+    public Result execute(
+            EngineExecutionListener listener
+    ) {
         this.listener = listener;
         listener.executionStarted(descriptor());
         Result result;
@@ -125,7 +127,10 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
                 .collect(Collectors.toList());
     }
 
-    protected PlanNodeRunner newContainerRunner(PlanNode node, String nodePath) {
+    protected PlanNodeRunner newContainerRunner(
+            PlanNode node,
+            String nodePath
+    ) {
         return new PlanNodeJUnitRunner(
                 node, configuration(), backendFactory(), getBackend(), getLogger(), nodePath, classUniqueId, resourceRoots
         );

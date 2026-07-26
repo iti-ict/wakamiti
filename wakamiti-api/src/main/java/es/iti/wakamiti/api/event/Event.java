@@ -37,8 +37,11 @@ public class Event {
     private final Object data;
     private final Instant instant;
 
-
-    public Event(String type, Instant instant, Object data) {
+    public Event(
+            String type,
+            Instant instant,
+            Object data
+    ) {
         this.type = type;
         this.data = data;
         this.instant = instant;

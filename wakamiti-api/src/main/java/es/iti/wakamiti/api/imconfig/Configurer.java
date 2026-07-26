@@ -13,18 +13,20 @@ package es.iti.wakamiti.api.imconfig;
  * The main difference with {@link Configurable} is that, while a `Configurer` is a third
  * object that applies a configuration to others, a `Configurable` applies the configuration
  * to itself.
+ *
  * @param <T> The type of the object that can be configured
  */
 public interface Configurer<T> {
 
     /**
      * Apply the given configuration to the specified object
-     * @param configurable The object to configure
+     *
+     * @param configurable  The object to configure
      * @param configuration The configuration that would be applied
      */
-    void configure (T configurable, Configuration configuration);
-
-
-
+    void configure(
+            T configurable,
+            Configuration configuration
+    );
 
 }

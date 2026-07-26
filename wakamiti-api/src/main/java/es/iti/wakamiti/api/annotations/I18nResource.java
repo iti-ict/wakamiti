@@ -15,8 +15,9 @@ import java.lang.annotation.Target;
 
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface I18nResource {
 
     String value();
+
 }

@@ -21,7 +21,9 @@ public class EmptyDataSet extends DataSet {
      *
      * @param table The name of the table.
      */
-    public EmptyDataSet(String table) {
+    public EmptyDataSet(
+            String table
+    ) {
         super(table, "empty", "");
         this.columns = new String[0];
     }
@@ -53,7 +55,9 @@ public class EmptyDataSet extends DataSet {
      * @return Always returns {@code null} since the data set is empty.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return null;
     }
 

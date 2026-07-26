@@ -5,10 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.spring.rest;
 
 
@@ -26,19 +22,17 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.rest.RestStepContributor;
 
 
-
 @Extension(
-    provider =  "es.iti.wakamiti",
-    name = "rest-configurator-springboot",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor",
-    externallyManaged = true,
-    priority = Integer.MAX_VALUE // to ensure it will executed last
+        provider = "es.iti.wakamiti",
+        name = "rest-configurator-springboot",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor",
+        externallyManaged = true,
+        priority = Integer.MAX_VALUE // to ensure it will executed last
 )
 @Component
 @ConditionalOnProperty(SpringLocalPortConfigurer.USE_SPRING_LOCAL_SERVER_PORT)
@@ -48,8 +42,8 @@ public class SpringLocalPortConfigurer implements ConfigContributor<RestStepCont
     public static final String USE_SPRING_LOCAL_SERVER_PORT = "wakamiti.rest.useSpringLocalServerPort";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
-        USE_SPRING_LOCAL_SERVER_PORT, "false",
-        SpringConnectionProvider.USE_SPRING_DATASOURCE, "false"
+            USE_SPRING_LOCAL_SERVER_PORT, "false",
+            SpringConnectionProvider.USE_SPRING_DATASOURCE, "false"
     );
 
     @Autowired
@@ -61,7 +55,9 @@ public class SpringLocalPortConfigurer implements ConfigContributor<RestStepCont
     }
 
     @Override
-    public boolean accepts(Object contributor) {
+    public boolean accepts(
+            Object contributor
+    ) {
         return RestStepContributor.class.isAssignableFrom(contributor.getClass());
     }
 
@@ -70,7 +66,10 @@ public class SpringLocalPortConfigurer implements ConfigContributor<RestStepCont
         return this::configure;
     }
 
-    private void configure(RestStepContributor contributor, Configuration configuration) {
+    private void configure(
+            RestStepContributor contributor,
+            Configuration configuration
+    ) {
         try {
             String localServerPort = environment.getProperty("local.server.port");
             URL baseURL = new URL("http://localhost:" + localServerPort);

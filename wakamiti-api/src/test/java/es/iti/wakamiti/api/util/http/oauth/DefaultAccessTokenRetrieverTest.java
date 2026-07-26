@@ -38,6 +38,7 @@ import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.ParameterBody.params;
 
+
 public class DefaultAccessTokenRetrieverTest {
 
     private static final Integer PORT = 4321;
@@ -79,8 +80,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)).toString())
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -120,8 +120,7 @@ public class DefaultAccessTokenRetrieverTest {
                                         param(username, username),
                                         param(password, password)
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)).toString())
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -159,8 +158,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)).toString())
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -259,8 +257,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response().withStatusCode(404)
         );
 
@@ -298,8 +295,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response("A text message")
                         .withStatusCode(400)
                         .withContentType(MediaType.TEXT_PLAIN)
@@ -331,7 +327,6 @@ public class DefaultAccessTokenRetrieverTest {
         String clientId = "SOMETHING";
         String clientSecret = "s3cr3t";
 
-
         Oauth2Provider provider = new Oauth2Provider();
         provider.configuration()
                 .url(new URL(BASE_URL + "/token"))
@@ -362,7 +357,11 @@ public class DefaultAccessTokenRetrieverTest {
         }
     }
 
-    private void mockServer(HttpRequest expected, HttpResponse response) {
+    private void mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
         client.when(expected, Times.once()).respond(response);
     }
+
 }

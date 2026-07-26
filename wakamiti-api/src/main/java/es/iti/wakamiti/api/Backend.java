@@ -57,7 +57,9 @@ public interface Backend {
      * @throws WakamitiException when the given node is not
      *                           suitable for being executed.
      */
-    void runStep(PlanNode modelStep);
+    void runStep(
+            PlanNode modelStep
+    );
 
     /**
      * Validates a plan node of type {@link NodeType#STEP} without executing the
@@ -68,7 +70,9 @@ public interface Backend {
      *
      * @param modelStep The step to be validated.
      */
-    default void dryRunStep(PlanNode modelStep) {
+    default void dryRunStep(
+            PlanNode modelStep
+    ) {
         runStep(modelStep);
     }
 
@@ -99,7 +103,10 @@ public interface Backend {
      *                          should be included.
      * @return A list with the available steps (empty if none present).
      */
-    List<String> getAvailableSteps(Locale locale, boolean includeVariations);
+    List<String> getAvailableSteps(
+            Locale locale,
+            boolean includeVariations
+    );
 
     /**
      * Given an invalid step, obtain a list of valid suggestions. The
@@ -132,6 +139,9 @@ public interface Backend {
      * @param locale    The language used.
      * @return A message with probable solutions.
      */
-    String getHintFor(String wrongStep, Locale locale);
+    String getHintFor(
+            String wrongStep,
+            Locale locale
+    );
 
 }

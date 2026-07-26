@@ -23,7 +23,6 @@ public class TestWakamitiNumberTypeEs {
 
     private static final Locale LOCALE = Locale.forLanguageTag("es-ES");
 
-
     @Test
     public void testAttempParseWithWrongValue() {
         final WakamitiNumberDataType<Integer> type = WakamitiNumberDataType
@@ -38,7 +37,6 @@ public class TestWakamitiNumberTypeEs {
         }
     }
 
-
     @Test
     public void testInteger() {
         final WakamitiNumberDataType<Integer> type = WakamitiNumberDataType
@@ -50,7 +48,6 @@ public class TestWakamitiNumberTypeEs {
         assertThat(type.matcher(LOCALE, "12.345,54").matches()).isFalse();
         assertThat(type.matcher(LOCALE, "xxxxx").matches()).isFalse();
     }
-
 
     @Test
     public void testBigDecimal() {

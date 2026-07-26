@@ -41,7 +41,10 @@ public class FetchedArtifact {
         this.dependencies = dependencies;
     }
 
-    public FetchedArtifact(String coordinates, FetchedArtifact... dependencies) {
+    public FetchedArtifact(
+            String coordinates,
+            FetchedArtifact... dependencies
+    ) {
         this(coordinates.split(":")[0], coordinates.split(":")[1], coordinates.split(":")[2], null, List.of(dependencies));
     }
 
@@ -80,7 +83,6 @@ public class FetchedArtifact {
         return dependencies.stream();
     }
 
-
     /**
      * The fetched artifacts that are direct or inherited dependencies of this artifact
      */
@@ -90,7 +92,6 @@ public class FetchedArtifact {
                 dependencies().flatMap(FetchedArtifact::allDependencies)
         );
     }
-
 
     /**
      * The path of the physical file in the local repository
@@ -104,7 +105,10 @@ public class FetchedArtifact {
         return toString(0, new StringBuilder()).toString();
     }
 
-    private StringBuilder toString(int level, StringBuilder string) {
+    private StringBuilder toString(
+            int level,
+            StringBuilder string
+    ) {
         string.append("   ".repeat(Math.max(0, level)));
         string.append("|- ").append(coordinates()).append("  [").append(path).append("]").append("\n");
         for (FetchedArtifact child : dependencies) {
@@ -114,9 +118,15 @@ public class FetchedArtifact {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FetchedArtifact)) return false;
+    public boolean equals(
+            Object o
+    ) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FetchedArtifact)) {
+            return false;
+        }
         return this.hashCode() == o.hashCode();
     }
 
@@ -124,4 +134,5 @@ public class FetchedArtifact {
     public int hashCode() {
         return Objects.hash(groupId, artifactId, version, dependencies);
     }
+
 }

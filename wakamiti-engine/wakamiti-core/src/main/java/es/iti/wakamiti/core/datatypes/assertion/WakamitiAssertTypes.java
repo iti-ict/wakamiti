@@ -101,9 +101,9 @@ public class WakamitiAssertTypes implements DataTypeContributor {
     /**
      * Creates a binary duration assertion data type.
      *
-     * @param name            The name of the data type.
-     * @param mapper          The mapper function for the assertion.
-     * @param <T>             The type of the assertion.
+     * @param name   The name of the data type.
+     * @param mapper The mapper function for the assertion.
+     * @param <T>    The type of the assertion.
      * @return The created data type.
      */
     @SuppressWarnings("rawtypes")
@@ -139,7 +139,9 @@ public class WakamitiAssertTypes implements DataTypeContributor {
      * @return The created data type.
      */
     @SuppressWarnings("rawtypes")
-    public static WakamitiDataTypeBase<Assertion> binaryStringAssert(String name) {
+    public static WakamitiDataTypeBase<Assertion> binaryStringAssert(
+            String name
+    ) {
         return new WakamitiAssertDataType(
                 name,
                 "matcher.string",
@@ -177,7 +179,9 @@ public class WakamitiAssertTypes implements DataTypeContributor {
      * @param <T>     The type of the matcher.
      * @return The adapted Assertion.
      */
-    private static <T> Assertion<T> adapt(Matcher<T> matcher) {
+    private static <T> Assertion<T> adapt(
+            Matcher<T> matcher
+    ) {
         return new MatcherAssertion<>(matcher);
     }
 
@@ -213,6 +217,7 @@ public class WakamitiAssertTypes implements DataTypeContributor {
      */
     @SuppressWarnings("rawtypes")
     private static class WakamitiAssertDataType extends WakamitiDataTypeBase<Assertion> {
+
         public WakamitiAssertDataType(
                 String name,
                 String prefix,
@@ -232,6 +237,7 @@ public class WakamitiAssertTypes implements DataTypeContributor {
                     parseProvider(matcherProviders)
             );
         }
+
     }
 
 }

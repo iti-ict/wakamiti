@@ -15,6 +15,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 
 
+
 /**
  * A utility class that adapts an {@link Assertion} to a Hamcrest
  * {@link Matcher}.
@@ -26,7 +27,9 @@ public class MatcherAssertion<T> implements Assertion<T> {
 
     private final Matcher<T> matcher;
 
-    public MatcherAssertion(Matcher<T> matcher) {
+    public MatcherAssertion(
+            Matcher<T> matcher
+    ) {
         this.matcher = matcher;
     }
 
@@ -37,18 +40,24 @@ public class MatcherAssertion<T> implements Assertion<T> {
      * @param assertion The assertion to be converted.
      * @return A Hamcrest Matcher representing the given assertion.
      */
-    public static <T> Matcher<T> asMatcher(Assertion<T> assertion) {
+    public static <T> Matcher<T> asMatcher(
+            Assertion<T> assertion
+    ) {
         if (assertion instanceof MatcherAssertion) {
             return ((MatcherAssertion<T>) assertion).matcher;
         } else {
             return new BaseMatcher<>() {
                 @Override
-                public boolean matches(Object actual) {
+                public boolean matches(
+                        Object actual
+                ) {
                     return assertion.test(actual);
                 }
 
                 @Override
-                public void describeTo(Description description) {
+                public void describeTo(
+                        Description description
+                ) {
                     description.appendText(assertion.description());
                 }
             };
@@ -64,7 +73,9 @@ public class MatcherAssertion<T> implements Assertion<T> {
      * condition, {@code false} otherwise.
      */
     @Override
-    public boolean test(Object actualValue) {
+    public boolean test(
+            Object actualValue
+    ) {
         return matcher.matches(actualValue);
     }
 
@@ -87,7 +98,9 @@ public class MatcherAssertion<T> implements Assertion<T> {
      * @return A string describing the failure.
      */
     @Override
-    public String describeFailure(Object actualValue) {
+    public String describeFailure(
+            Object actualValue
+    ) {
         StringDescription description = new StringDescription();
         matcher.describeMismatch(actualValue, description);
         return description.toString();

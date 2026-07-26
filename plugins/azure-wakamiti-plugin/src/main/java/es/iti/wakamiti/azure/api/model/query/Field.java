@@ -14,7 +14,7 @@ public class Field {
     public static final String TITLE = "System.Title";
     public static final String DESCRIPTION = "System.Description";
     public static final String STEPS = "Microsoft.VSTS.TCM.Steps";
-    public static final String PARAMETERS =  "Microsoft.VSTS.TCM.Parameters";
+    public static final String PARAMETERS = "Microsoft.VSTS.TCM.Parameters";
     public static final String LOCAL_DATASOURCE = "Microsoft.VSTS.TCM.LocalDataSource";
     public static final String TAGS = "System.Tags";
     public static final String AREA_PATH = "System.AreaPath";
@@ -26,11 +26,15 @@ public class Field {
 
     private final String name;
 
-    private Field(String name) {
+    private Field(
+            String name
+    ) {
         this.name = name.replaceAll("^\\[?(.+?)]?$", "[$1]");
     }
 
-    public static Field of(String name) {
+    public static Field of(
+            String name
+    ) {
         return new Field(name);
     }
 

@@ -32,7 +32,11 @@ public class Sentence<T extends Statement> implements AutoCloseable {
      * @param statement The SQL statement object
      * @param sql       The SQL statement string
      */
-    public Sentence(Database db, T statement, String sql) {
+    public Sentence(
+            Database db,
+            T statement,
+            String sql
+    ) {
         this.db = db;
         this.statement = statement;
         this.sql = sql;

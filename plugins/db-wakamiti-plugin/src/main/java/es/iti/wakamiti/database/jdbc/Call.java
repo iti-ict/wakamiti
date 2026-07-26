@@ -42,7 +42,12 @@ public class Call<T> extends Sentence<PreparedStatement> {
      * @param statement The prepared statement
      * @param mapper    The result mapper function
      */
-    private Call(Database db, String sql, PreparedStatement statement, Function<ResultSet, Optional<T>> mapper) {
+    private Call(
+            Database db,
+            String sql,
+            PreparedStatement statement,
+            Function<ResultSet, Optional<T>> mapper
+    ) {
         super(db, statement, sql);
         this.mapper = mapper;
     }
@@ -55,7 +60,11 @@ public class Call<T> extends Sentence<PreparedStatement> {
      * @param statement The prepared statement
      * @return The created {@code Call} object
      */
-    private static Call<Object[]> create(Database db, String sql, PreparedStatement statement) {
+    private static Call<Object[]> create(
+            Database db,
+            String sql,
+            PreparedStatement statement
+    ) {
         return new Call<>(db, sql, statement, Select::defaultMap);
     }
 
@@ -70,7 +79,12 @@ public class Call<T> extends Sentence<PreparedStatement> {
      * @param <T>       The type of the result
      * @return The created {@code Call} object
      */
-    private static <T> Call<T> create(Database db, String sql, PreparedStatement statement, Function<ResultSet, Optional<T>> mapper) {
+    private static <T> Call<T> create(
+            Database db,
+            String sql,
+            PreparedStatement statement,
+            Function<ResultSet, Optional<T>> mapper
+    ) {
         return new Call<>(db, sql, statement, mapper);
     }
 
@@ -81,7 +95,9 @@ public class Call<T> extends Sentence<PreparedStatement> {
      * @param <R>    The type of the mapped result
      * @return A new {@code Call} object with the mapped result
      */
-    public <R> Call<R> map(Function<T, R> mapper) {
+    public <R> Call<R> map(
+            Function<T, R> mapper
+    ) {
         return new Call<>(db, sql, statement, rs -> this.mapper.apply(rs).map(mapper));
     }
 
@@ -142,7 +158,10 @@ public class Call<T> extends Sentence<PreparedStatement> {
         private final Database db;
         private final String sql;
 
-        Builder(Database db, String sql) {
+        Builder(
+                Database db,
+                String sql
+        ) {
             this.db = db;
             this.sql = sql;
         }
@@ -170,7 +189,9 @@ public class Call<T> extends Sentence<PreparedStatement> {
          * @return The constructed {@code Call} object
          * @throws SQLRuntimeException If an SQL error occurs
          */
-        public <R> Call<R> get(Function<ResultSet, R> mapper) {
+        public <R> Call<R> get(
+                Function<ResultSet, R> mapper
+        ) {
             try {
                 return Call.create(db, sql,
                         db.connection().prepareStatement(sql), rs -> Optional.ofNullable(mapper.apply(rs)));

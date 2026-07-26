@@ -20,7 +20,9 @@ public class TestSuiteTree extends TestSuite {
     @JsonProperty
     private List<TestSuiteTree> children;
 
-    public TestSuiteTree children(List<TestSuiteTree> children) {
+    public TestSuiteTree children(
+            List<TestSuiteTree> children
+    ) {
         this.children = children;
         return this;
     }

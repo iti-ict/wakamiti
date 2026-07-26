@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.internal;
 
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.MapUtils;
@@ -41,18 +42,24 @@ public abstract class Mapper {
     private static final String ESCAPED_QUOTATION_MARKS = "\\\"";
     private final String suiteBase;
 
-    protected Mapper(final String suiteBase) {
+    protected Mapper(
+            final String suiteBase
+    ) {
         this.suiteBase = suiteBase;
     }
 
-    public static Instancer ofType(String type) {
+    public static Instancer ofType(
+            String type
+    ) {
         return MapUtils.<String, Instancer>map(
                 GHERKIN_TYPE_FEATURE, FeatureMapper::new,
                 GHERKIN_TYPE_SCENARIO, ScenarioMapper::new
         ).get(type);
     }
 
-    protected Stream<Pair<PlanNodeSnapshot, TestSet>> suiteMap(PlanNodeSnapshot target) {
+    protected Stream<Pair<PlanNodeSnapshot, TestSet>> suiteMap(
+            PlanNodeSnapshot target
+    ) {
         Path suitePath = Path.of(target.getSource()
                 .replaceAll("(/[^./]+?\\.[^./]+?)?\\[.+?]$", ""));
         if (!isBlank(suiteBase)) {
@@ -66,7 +73,10 @@ public abstract class Mapper {
         return Stream.of(new Pair<>(target, suite));
     }
 
-    protected TestCase caseMap(TestSet suite, PlanNodeSnapshot target) {
+    protected TestCase caseMap(
+            TestSet suite,
+            PlanNodeSnapshot target
+    ) {
         return new TestCase()
                 .issue(new JiraIssue()
                         .summary(target.getName())
@@ -80,7 +90,9 @@ public abstract class Mapper {
                 .testSetList("".equals(suite.getJira().getSummary()) ? Collections.emptyList() : Collections.singletonList(suite));
     }
 
-    private String getDisplayName(PlanNodeSnapshot target) {
+    private String getDisplayName(
+            PlanNodeSnapshot target
+    ) {
         return target.getChildren().stream()
                 .map(planNodeSnapshot -> planNodeSnapshot.getChildren().stream()
                         .map(getComposedDisplayName())
@@ -113,8 +125,9 @@ public abstract class Mapper {
         };
     }
 
-
-    public Stream<TestCase> map(PlanNodeSnapshot plan) {
+    public Stream<TestCase> map(
+            PlanNodeSnapshot plan
+    ) {
         return plan
                 .flatten(node -> gherkinType(node).equals(GHERKIN_TYPE_FEATURE))
                 .flatMap(this::suiteMap)
@@ -122,16 +135,22 @@ public abstract class Mapper {
                 .entrySet().stream().flatMap(e ->
                         IntStream.range(0, e.getValue().size()).mapToObj(i -> caseMap(e.getKey(), e.getValue().get(i)))
                 );
-
     }
 
     public abstract String type();
 
-    protected String gherkinType(PlanNodeSnapshot node) {
+    protected String gherkinType(
+            PlanNodeSnapshot node
+    ) {
         return Optional.ofNullable(node.getProperties()).map(p -> p.get("gherkinType")).orElse("");
     }
 
     public interface Instancer {
-        Mapper instance(String suiteBase);
+
+        Mapper instance(
+                String suiteBase
+        );
+
     }
+
 }

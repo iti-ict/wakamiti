@@ -42,7 +42,6 @@ public class TestInvalidStep {
             assertThat(steps[2].result()).contains(Result.UNDEFINED);
             assertThat(steps[3].result()).contains(Result.SKIPPED);
         }
-
     }
 
     @Test

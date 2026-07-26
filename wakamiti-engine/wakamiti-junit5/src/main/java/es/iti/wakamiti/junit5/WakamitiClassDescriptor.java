@@ -67,7 +67,10 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
     private WakamitiNodeDescriptor beforeClassDescriptor;
     private WakamitiNodeDescriptor afterClassDescriptor;
 
-    WakamitiClassDescriptor(UniqueId uniqueId, Class<?> testClass) {
+    WakamitiClassDescriptor(
+            UniqueId uniqueId,
+            Class<?> testClass
+    ) {
         super(uniqueId, testClass.getSimpleName(), ClassSource.from(testClass));
         this.testClass = testClass;
         this.profileEnabled = ProfileSelector.isEnabled(testClass);
@@ -100,18 +103,20 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
             String nodePath = String.format("0/%d", index);
             PlanNodeJUnitRunner runner = treatStepsAsTests
                     ? new PlanNodeStepJUnitRunner(
-                            node, featureConfiguration, backendFactory, Optional.empty(),
-                            planNodeLogger, nodePath, getUniqueId(), resourceRoots)
+                    node, featureConfiguration, backendFactory, Optional.empty(),
+                    planNodeLogger, nodePath, getUniqueId(), resourceRoots)
                     : new PlanNodeJUnitRunner(
-                            node, featureConfiguration, backendFactory, Optional.empty(),
-                            planNodeLogger, nodePath, getUniqueId(), resourceRoots);
+                    node, featureConfiguration, backendFactory, Optional.empty(),
+                    planNodeLogger, nodePath, getUniqueId(), resourceRoots);
             featureRunners.add(runner);
             addChild(runner.descriptor());
         });
         addChild(afterClassDescriptor);
     }
 
-    void execute(EngineExecutionListener listener) {
+    void execute(
+            EngineExecutionListener listener
+    ) {
         if (!profileEnabled) {
             listener.executionSkipped(this, profileSkipReason());
             return;
@@ -135,7 +140,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
         listener.executionFinished(this, result);
     }
 
-    private WakamitiNodeDescriptor lifecycleDescriptor(String name) {
+    private WakamitiNodeDescriptor lifecycleDescriptor(
+            String name
+    ) {
         return new WakamitiNodeDescriptor(
                 getUniqueId().append("lifecycle", name),
                 name,
@@ -177,7 +184,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
         wakamiti.generateReports(configuration, snapshot);
     }
 
-    private void invokeLifecycleHooks(Class<? extends Annotation> annotation) {
+    private void invokeLifecycleHooks(
+            Class<? extends Annotation> annotation
+    ) {
         for (Method method : testClass.getMethods()) {
             if (method.isAnnotationPresent(annotation) && Modifier.isStatic(method.getModifiers())) {
                 try {
@@ -196,7 +205,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
         }
     }
 
-    private Configuration retrieveConfiguration(Class<?> testedClass) throws ConfigurationException {
+    private Configuration retrieveConfiguration(
+            Class<?> testedClass
+    ) throws ConfigurationException {
         Configuration config = Wakamiti.defaultConfiguration();
         Optional<String> altDir = Optional.ofNullable(testedClass.getClassLoader().getResource("."))
                 .map(u -> {
@@ -232,7 +243,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
 
     @FunctionalInterface
     private interface LifecycleAction {
+
         void run() throws Throwable;
+
     }
 
 }

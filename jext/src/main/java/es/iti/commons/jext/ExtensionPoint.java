@@ -40,7 +40,6 @@ public @interface ExtensionPoint {
      */
     String version() default "1.0";
 
-
     /**
      * The load strategy used when an extension is requested
      */

@@ -34,8 +34,10 @@ public class Oauth2ProviderConfig {
         return Optional.ofNullable(cachedToken.get(getKey())).filter(x -> cacheAuth);
     }
 
-    public String storeTokenAndGet(String token) {
         cachedToken.put(getKey(), token);
+    public String storeTokenAndGet(
+            String token
+    ) {
         return token;
     }
 
@@ -43,7 +45,10 @@ public class Oauth2ProviderConfig {
         return parameters;
     }
 
-    public Oauth2ProviderConfig addParameter(String name, String value) {
+    public Oauth2ProviderConfig addParameter(
+            String name,
+            String value
+    ) {
         if (name.equals(GRANT_TYPE) && type == null) {
             type = GrantType.valueOf(value.toUpperCase());
         }
@@ -51,12 +56,16 @@ public class Oauth2ProviderConfig {
         return this;
     }
 
-    public Oauth2ProviderConfig cacheAuth(boolean cacheAuth) {
+    public Oauth2ProviderConfig cacheAuth(
+            boolean cacheAuth
+    ) {
         this.cacheAuth = cacheAuth;
         return this;
     }
 
-    public Oauth2ProviderConfig type(GrantType type) {
+    public Oauth2ProviderConfig type(
+            GrantType type
+    ) {
         parameters.putIfAbsent(GRANT_TYPE, type.name().toLowerCase());
         this.type = type;
         return this;
@@ -66,7 +75,9 @@ public class Oauth2ProviderConfig {
         return url;
     }
 
-    public Oauth2ProviderConfig url(URL url) {
+    public Oauth2ProviderConfig url(
+            URL url
+    ) {
         this.url = url;
         return this;
     }
@@ -75,7 +86,9 @@ public class Oauth2ProviderConfig {
         return clientId;
     }
 
-    public Oauth2ProviderConfig clientId(String clientId) {
+    public Oauth2ProviderConfig clientId(
+            String clientId
+    ) {
         this.clientId = clientId;
         return this;
     }
@@ -84,7 +97,9 @@ public class Oauth2ProviderConfig {
         return clientSecret;
     }
 
-    public Oauth2ProviderConfig clientSecret(String clientSecret) {
+    public Oauth2ProviderConfig clientSecret(
+            String clientSecret
+    ) {
         this.clientSecret = clientSecret;
         return this;
     }

@@ -89,7 +89,9 @@ public class DatabaseSupport {
      *
      * @param ignoreSheetRegex The regular expression to ignore sheets in XLS files.
      */
-    public void setXlsIgnoreSheetRegex(String ignoreSheetRegex) {
+    public void setXlsIgnoreSheetRegex(
+            String ignoreSheetRegex
+    ) {
         this.xlsIgnoreSheetRegex = ignoreSheetRegex;
     }
 
@@ -98,7 +100,9 @@ public class DatabaseSupport {
      *
      * @param nullSymbol The symbol representing {@code null} values.
      */
-    public void setNullSymbol(String nullSymbol) {
+    public void setNullSymbol(
+            String nullSymbol
+    ) {
         this.nullSymbol = nullSymbol;
     }
 
@@ -107,7 +111,9 @@ public class DatabaseSupport {
      *
      * @param csvFormat The format for CSV files.
      */
-    public void setCsvFormat(String csvFormat) {
+    public void setCsvFormat(
+            String csvFormat
+    ) {
         this.csvFormat = csvFormat;
     }
 
@@ -116,7 +122,9 @@ public class DatabaseSupport {
      *
      * @param enableCleanupUponCompletion {@code true} to enable cleanup upon completion, {@code false} otherwise.
      */
-    public void setEnableCleanupUponCompletion(boolean enableCleanupUponCompletion) {
+    public void setEnableCleanupUponCompletion(
+            boolean enableCleanupUponCompletion
+    ) {
         this.enableCleanupUponCompletion = enableCleanupUponCompletion;
         LOGGER.trace("Cleanup {}", (enableCleanupUponCompletion ? "enabled" : "disabled"));
     }
@@ -126,7 +134,9 @@ public class DatabaseSupport {
      *
      * @param healthcheck {@code true} to perform a health check on connections, {@code false} otherwise.
      */
-    public void setHealthcheck(boolean healthcheck) {
+    public void setHealthcheck(
+            boolean healthcheck
+    ) {
         this.healthcheck = healthcheck;
     }
 
@@ -138,7 +148,9 @@ public class DatabaseSupport {
      *
      * @param timeout timeout in milliseconds; values {@code <= 0} disable timeout
      */
-    public void setSimilarSearchTimeoutMs(long timeout) {
+    public void setSimilarSearchTimeoutMs(
+            long timeout
+    ) {
         this.similarSearchTimeoutMs = timeout;
     }
 
@@ -148,7 +160,10 @@ public class DatabaseSupport {
      * @param alias      The alias for the connection.
      * @param parameters The connection parameters.
      */
-    public void addConnection(String alias, ConnectionParameters parameters) {
+    public void addConnection(
+            String alias,
+            ConnectionParameters parameters
+    ) {
         LOGGER.debug("Setting '{}' connection parameters {}", alias, parameters);
         ConnectionProvider previous = connections.remove(alias);
         if (previous != null) {
@@ -166,7 +181,9 @@ public class DatabaseSupport {
      *
      * @param parameters The connection parameters.
      */
-    public void addConnection(ConnectionParameters parameters) {
+    public void addConnection(
+            ConnectionParameters parameters
+    ) {
         addConnection(DEFAULT, parameters);
     }
 
@@ -207,7 +224,9 @@ public class DatabaseSupport {
      *
      * @param file The file to check.
      */
-    protected void assertFileExists(File file) {
+    protected void assertFileExists(
+            File file
+    ) {
         if (!file.exists()) {
             throw new WakamitiException("File '{}' not found", file.getAbsolutePath());
         }
@@ -220,7 +239,10 @@ public class DatabaseSupport {
      * @param cleanupUponCompletion {@code true} to perform cleanup upon completion, {@code false} otherwise.
      * @return Inserted and/or updated rows
      */
-    protected List<Map<String, String>> executeScript(String script, boolean cleanupUponCompletion) {
+    protected List<Map<String, String>> executeScript(
+            String script,
+            boolean cleanupUponCompletion
+    ) {
         List<Map<String, String>> results = new LinkedList<>();
         try {
             SQLParser.parseStatements(script).forEach(statement -> {
@@ -265,7 +287,9 @@ public class DatabaseSupport {
      * @return A list of maps representing the result set, where each map
      * corresponds to a row, and keys are column names.
      */
-    protected List<Map<String, String>> executeSelect(String sql) {
+    protected List<Map<String, String>> executeSelect(
+            String sql
+    ) {
         try (Select<Map<String, String>> select = Database.from(connection()).select(sql)
                 .get(DatabaseHelper::formatToMap)) {
             return select.map(map -> map.entrySet().stream()
@@ -285,7 +309,10 @@ public class DatabaseSupport {
      * to a row, and keys are column names.
      * @throws WakamitiException If an error occurs during SQL execution.
      */
-    protected List<List<Map<String, String>>> executeCall(String sql, boolean cleanupUponCompletion) {
+    protected List<List<Map<String, String>>> executeCall(
+            String sql,
+            boolean cleanupUponCompletion
+    ) {
         if (cleanupUponCompletion) {
             LOGGER.warn("Unable to obtain the clean-up statements of a procedure");
         }
@@ -305,7 +332,9 @@ public class DatabaseSupport {
      * @throws WakamitiException If more than one primary key column is found or if
      *                           no primary key is found.
      */
-    protected String primaryKey(String table) {
+    protected String primaryKey(
+            String table
+    ) {
         String[] keyColumn = primaryKeys(table);
         if (keyColumn.length > 1) {
             throw new WakamitiException(message("A single primary key in table {} is required", table));
@@ -320,7 +349,9 @@ public class DatabaseSupport {
      * @return The array of primary key columns.
      * @throws WakamitiException If no primary key is found in the table.
      */
-    protected String[] primaryKeys(String table) {
+    protected String[] primaryKeys(
+            String table
+    ) {
         Database db = Database.from(connection());
         String[] keyColumn = db.primaryKey(table).toArray(String[]::new);
         if (keyColumn.length < 1) {
@@ -337,7 +368,11 @@ public class DatabaseSupport {
      * @param values  The array of corresponding values to match.
      * @return The count of rows that satisfy the conditions.
      */
-    protected long countBy(String table, String[] columns, Object[] values) {
+    protected long countBy(
+            String table,
+            String[] columns,
+            Object[] values
+    ) {
         Database db = Database.from(connection());
         String normalizedTable = db.table(table);
         String[] normalizedColumns = Stream.of(columns)
@@ -353,7 +388,10 @@ public class DatabaseSupport {
      * @param where The SQL WHERE clause.
      * @return The count of rows that satisfy the conditions.
      */
-    protected long countBy(String table, String where) {
+    protected long countBy(
+            String table,
+            String where
+    ) {
         Database db = Database.from(connection());
         return countBy(db, message("SELECT count(*) FROM {} WHERE {}",
                 db.parser().format(db.table(table)), where));
@@ -366,7 +404,10 @@ public class DatabaseSupport {
      * @param sql The SQL query.
      * @return The count of rows returned by the query.
      */
-    private long countBy(Database db, String sql) {
+    private long countBy(
+            Database db,
+            String sql
+    ) {
         try (Select<String[]> select = db.select(sql).get(DatabaseHelper::format)) {
             return select.stream().findFirst().map(v -> v[0]).map(Long::parseLong).orElse(0L);
         }
@@ -389,12 +430,16 @@ public class DatabaseSupport {
      * this method returns {@link Optional#empty()} and the assertion continues
      * without "closest record" enrichment.
      *
-     * @param table table name from the step or dataset
+     * @param table   table name from the step or dataset
      * @param columns columns used to compare expected and actual values
-     * @param values expected values aligned by index with {@code columns}
+     * @param values  expected values aligned by index with {@code columns}
      * @return closest record as a map (column -&gt; value), or empty if no safe candidate was found
      */
-    protected Optional<Map<String, String>> similarBy(String table, String[] columns, Object[] values) {
+    protected Optional<Map<String, String>> similarBy(
+            String table,
+            String[] columns,
+            Object[] values
+    ) {
         Database db = Database.from(connection());
         String normalizedTable = db.table(table);
         String[] formattedColumns = Stream.of(columns)
@@ -441,10 +486,13 @@ public class DatabaseSupport {
      * Calculates average similarity score for one candidate row.
      *
      * @param rowValues actual values read from DB candidate
-     * @param values expected values from assertion context
+     * @param values    expected values from assertion context
      * @return {@link Record} carrying original data and computed score
      */
-    private Record scoreRecord(String[] rowValues, Object[] values) {
+    private Record scoreRecord(
+            String[] rowValues,
+            Object[] values
+    ) {
         double score = 0;
         for (int i = 0; i < values.length; i++) {
             score += similarityScore(values[i], rowValues[i]);
@@ -460,30 +508,40 @@ public class DatabaseSupport {
      * from case and edge spaces.
      *
      * @param expectedValue expected value from step/dataset
-     * @param rowValue actual value from DB candidate
+     * @param rowValue      actual value from DB candidate
      * @return similarity where {@code 1.0} means exact match after normalization
      */
-    private double similarityScore(Object expectedValue, String rowValue) {
+    private double similarityScore(
+            Object expectedValue,
+            String rowValue
+    ) {
         String expected = normalizeSimilarityValue(expectedValue == null ? null : DatabaseHelper.toString(expectedValue));
         String actual = normalizeSimilarityValue(rowValue);
         int maxLength = Math.max(expected.length(), actual.length());
         double distance = LEVENSHTEIN_DISTANCE.apply(expected, actual);
-        if (maxLength == 0) return 1.0;
+        if (maxLength == 0) {
+            return 1.0;
+        }
         return (maxLength - distance) / maxLength;
     }
 
-    private String normalizeSimilarityValue(String value) {
+    private String normalizeSimilarityValue(
+            String value
+    ) {
         return value == null ? "" : value.trim().toUpperCase();
     }
 
     /**
      * Builds a SELECT builder configured for similar-search timeout policy.
      *
-     * @param db active database wrapper
+     * @param db  active database wrapper
      * @param sql SQL select statement
      * @return builder with query timeout when timeout is enabled
      */
-    private Select.Builder selectForSimilarSearch(Database db, String sql) {
+    private Select.Builder selectForSimilarSearch(
+            Database db,
+            String sql
+    ) {
         Select.Builder builder = db.select(sql);
         int timeoutSeconds = similarSearchTimeoutSeconds();
         if (timeoutSeconds > 0) {
@@ -536,7 +594,9 @@ public class DatabaseSupport {
      *
      * @param deadlineNanos absolute timeout deadline in nanoseconds
      */
-    private void throwIfSimilarSearchTimedOut(long deadlineNanos) {
+    private void throwIfSimilarSearchTimedOut(
+            long deadlineNanos
+    ) {
         if (deadlineNanos != Long.MAX_VALUE && System.nanoTime() > deadlineNanos) {
             throw new SimilarSearchTimeoutException();
         }
@@ -547,7 +607,9 @@ public class DatabaseSupport {
      *
      * @param table table where timeout occurred
      */
-    private void logSimilarSearchTimeout(String table) {
+    private void logSimilarSearchTimeout(
+            String table
+    ) {
         LOGGER.warn("Similar search timed out for table {} after {} ms", table, similarSearchTimeoutMs);
     }
 
@@ -555,10 +617,13 @@ public class DatabaseSupport {
      * Utility method to detect a specific cause type in exception chain.
      *
      * @param throwable root throwable
-     * @param type target cause type
+     * @param type      target cause type
      * @return {@code true} if any cause matches target type
      */
-    private boolean hasCause(Throwable throwable, Class<? extends Throwable> type) {
+    private boolean hasCause(
+            Throwable throwable,
+            Class<? extends Throwable> type
+    ) {
         Throwable current = throwable;
         while (current != null) {
             if (type.isInstance(current)) {
@@ -574,9 +639,8 @@ public class DatabaseSupport {
      * in-memory deadline is exceeded.
      */
     private static final class SimilarSearchTimeoutException extends RuntimeException {
+
     }
-
-
 
     /**
      * Processes a single row of data for a specified table.
@@ -586,7 +650,11 @@ public class DatabaseSupport {
      * @param values  The values of the row.
      * @return A pair containing the processed columns and values.
      */
-    protected Pair<String[], Object[]> processRow(String table, String[] columns, String[] values) {
+    protected Pair<String[], Object[]> processRow(
+            String table,
+            String[] columns,
+            String[] values
+    ) {
         Database db = Database.from(connection());
         return toPair(db.processData(table, toMap(columns, values)))
                 .map((k, v) -> new Pair<>(k.toArray(new String[0]), v.toArray()));
@@ -599,7 +667,9 @@ public class DatabaseSupport {
      * @param dataSet The DataSet containing the rows to process.
      * @return A list of pairs containing the processed columns and values for each row.
      */
-    protected List<Pair<String[], Object[]>> processRows(DataSet dataSet) {
+    protected List<Pair<String[], Object[]>> processRows(
+            DataSet dataSet
+    ) {
         List<Pair<String[], Object[]>> rows = new LinkedList<>();
         while (dataSet.nextRow()) {
             rows.add(processRow(dataSet.table(), dataSet.columns(),
@@ -613,7 +683,9 @@ public class DatabaseSupport {
      *
      * @param dataSet The DataSet to be checked.
      */
-    protected void assertNonEmpty(DataSet dataSet) {
+    protected void assertNonEmpty(
+            DataSet dataSet
+    ) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         for (Pair<String[], Object[]> row : rows) {
             if (!matcherNonEmpty().test(countBy(dataSet.table(), row.key(), row.value()))) {
@@ -636,7 +708,9 @@ public class DatabaseSupport {
      *
      * @param dataSet The DataSet to be checked.
      */
-    protected void assertEmpty(DataSet dataSet) {
+    protected void assertEmpty(
+            DataSet dataSet
+    ) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         for (Pair<String[], Object[]> row : rows) {
             if (!matcherEmpty().test(countBy(dataSet.table(), row.key(), row.value()))) {
@@ -655,7 +729,10 @@ public class DatabaseSupport {
      * @param dataSet The DataSet to be checked.
      * @param matcher The assertion to be applied to the count of records.
      */
-    protected void assertCount(DataSet dataSet, Assertion<Long> matcher) {
+    protected void assertCount(
+            DataSet dataSet,
+            Assertion<Long> matcher
+    ) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         long count = rows
                 .stream()
@@ -678,7 +755,11 @@ public class DatabaseSupport {
      * @param matcher  The assertion to be applied to the count of records.
      * @param duration The maximum time to wait for the assertion to succeed.
      */
-    protected void assertCountAsync(DataSet dataSet, Assertion<Long> matcher, Duration duration) {
+    protected void assertCountAsync(
+            DataSet dataSet,
+            Assertion<Long> matcher,
+            Duration duration
+    ) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         AtomicLong count = new AtomicLong(0);
         assertAsync(() -> {
@@ -701,7 +782,11 @@ public class DatabaseSupport {
      * @param duration    The maximum time to wait for the condition to be satisfied.
      * @param catchAction The action to be executed if the condition is not satisfied within the specified time.
      */
-    protected void assertAsync(BooleanSupplier action, Duration duration, Runnable catchAction) {
+    protected void assertAsync(
+            BooleanSupplier action,
+            Duration duration,
+            Runnable catchAction
+    ) {
         try {
             await()
                     .atMost(duration)
@@ -720,7 +805,10 @@ public class DatabaseSupport {
      * @param duration The maximum time to wait for each row to be non-empty.
      * @return The duration taken to perform the assertion asynchronously.
      */
-    protected Duration assertNonEmptyAsync(DataSet dataSet, Duration duration) {
+    protected Duration assertNonEmptyAsync(
+            DataSet dataSet,
+            Duration duration
+    ) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         AtomicReference<Pair<String[], Object[]>> currentRow = new AtomicReference<>();
 
@@ -754,7 +842,10 @@ public class DatabaseSupport {
      * @param duration The maximum time to wait for each row to be empty, in seconds.
      * @return The duration taken to perform the assertion asynchronously.
      */
-    protected Duration assertEmptyAsync(DataSet dataSet, Duration duration) {
+    protected Duration assertEmptyAsync(
+            DataSet dataSet,
+            Duration duration
+    ) {
         List<Pair<String[], Object[]>> rows = processRows(dataSet);
         AtomicReference<Pair<String[], Object[]>> currentRow = new AtomicReference<>();
 
@@ -778,7 +869,10 @@ public class DatabaseSupport {
      * @param row   The atomic reference to the row that was expected but not found.
      * @return A runnable action to fail the assertion.
      */
-    protected Runnable failSomeRecordExpected(String table, AtomicReference<Pair<String[], Object[]>> row) {
+    protected Runnable failSomeRecordExpected(
+            String table,
+            AtomicReference<Pair<String[], Object[]>> row
+    ) {
         return () -> fail(message(
                 ERROR_ASSERT_SOME_RECORD_EXPECTED,
                 toMap(row.get().key(), row.get().value()), Database.from(connection()).table(table), "it doesn't"
@@ -792,7 +886,10 @@ public class DatabaseSupport {
      * @param row   The atomic reference to the row that was found unexpectedly.
      * @return A runnable action to fail the assertion.
      */
-    protected Runnable failNoRecordExpected(String table, AtomicReference<Pair<String[], Object[]>> row) {
+    protected Runnable failNoRecordExpected(
+            String table,
+            AtomicReference<Pair<String[], Object[]>> row
+    ) {
         return () -> fail(message(
                 ERROR_ASSERT_NO_RECORD_EXPECTED,
                 toMap(row.get().key(), row.get().value()), Database.from(connection()).table(table), "it does"
@@ -806,7 +903,10 @@ public class DatabaseSupport {
      * @param addCleanUpOperation Flag indicating whether to add clean-up operations after insertion.
      * @return Inserted rows
      */
-    protected List<Map<String, String>> insertDataSet(DataSet dataSet, boolean addCleanUpOperation) {
+    protected List<Map<String, String>> insertDataSet(
+            DataSet dataSet,
+            boolean addCleanUpOperation
+    ) {
         LOGGER.debug("Inserting rows in table {} from {}...", dataSet.table(), dataSet.origin());
 
         List<Map<String, String>> results = new LinkedList<>();
@@ -846,7 +946,10 @@ public class DatabaseSupport {
      * @param dataSet             The DataSet containing rows to delete.
      * @param addCleanUpOperation Flag indicating whether to add clean-up operations before deletion.
      */
-    protected void deleteDataSet(DataSet dataSet, boolean addCleanUpOperation) {
+    protected void deleteDataSet(
+            DataSet dataSet,
+            boolean addCleanUpOperation
+    ) {
         LOGGER.debug("Deleting rows in table {} from {}...", dataSet.table(), dataSet.origin());
 
         Database db = Database.from(connection());
@@ -869,7 +972,10 @@ public class DatabaseSupport {
      * @param addCleanUpOperation Flag indicating whether to add cleanup operations
      *                            before truncation.
      */
-    protected void truncateTable(String table, boolean addCleanUpOperation) {
+    protected void truncateTable(
+            String table,
+            boolean addCleanUpOperation
+    ) {
         LOGGER.debug("Deleting all rows in table {}...", table);
 
         Database db = Database.from(connection());
@@ -887,7 +993,11 @@ public class DatabaseSupport {
      * @param where               The WHERE clause to specify which rows to delete.
      * @param addCleanUpOperation Flag indicating whether to add cleanup operations before deletion.
      */
-    protected void deleteTable(String table, String where, boolean addCleanUpOperation) {
+    protected void deleteTable(
+            String table,
+            String where,
+            boolean addCleanUpOperation
+    ) {
         LOGGER.debug("Deleting rows in table {} from {}...", table, "clause");
 
         Database db = Database.from(connection());
@@ -911,7 +1021,10 @@ public class DatabaseSupport {
      *
      * @param dataSet The data set containing the rows to be updated.
      */
-    protected void updateDataSet(DataSet dataSet, UpdateSet updateSet) {
+    protected void updateDataSet(
+            DataSet dataSet,
+            UpdateSet updateSet
+    ) {
         LOGGER.debug("Updating rows in table {} from {}...", dataSet.table(), dataSet.origin());
 
         Database db = Database.from(connection());
@@ -932,7 +1045,9 @@ public class DatabaseSupport {
                     .collect(collectToMap());
             List<Expression> whereList = new LinkedList<>();
             whereList.add(db.parser().toWhere(updateSet));
-            if (!where.isEmpty()) whereList.add(db.parser().createWhere(where));
+            if (!where.isEmpty()) {
+                whereList.add(db.parser().createWhere(where));
+            }
 
             net.sf.jsqlparser.statement.update.Update update = db.parser().toUpdate(table, sets,
                     new MultiAndExpression(whereList));
@@ -947,7 +1062,10 @@ public class DatabaseSupport {
      * @param select The SELECT statement to execute.
      * @return The result of the SELECT operation as a MapDataSet.
      */
-    private MapDataSet doSelect(net.sf.jsqlparser.statement.select.Select select) {
+    private MapDataSet doSelect(
+            net.sf.jsqlparser.statement.select
+                    .Select select
+    ) {
         String table = ((net.sf.jsqlparser.statement.select.PlainSelect) select).getFromItem().toString();
         Database db = Database.from(connection());
         try (Select<Object[]> s = db.select(select.toString()).get(DatabaseHelper::format)) {
@@ -957,7 +1075,10 @@ public class DatabaseSupport {
         }
     }
 
-    private String format(String table, String column) {
+    private String format(
+            String table,
+            String column
+    ) {
         Database db = Database.from(connection());
         return db.parser().format(db.column(table, column));
     }
@@ -965,11 +1086,15 @@ public class DatabaseSupport {
     /**
      * An adapter class for pre-cleanup operations in SQL statements.
      */
-    private class PreCleanUpStatementVisitorAdapter extends net.sf.jsqlparser.statement.StatementVisitorAdapter {
+    private final class PreCleanUpStatementVisitorAdapter
+            extends net.sf.jsqlparser.statement.StatementVisitorAdapter {
 
         // TODO: Does not work with cascade deletion
         @Override
-        public void visit(net.sf.jsqlparser.statement.truncate.Truncate truncate) {
+        public void visit(
+                net.sf.jsqlparser.statement.truncate
+                        .Truncate truncate
+        ) {
             Database db = Database.from(connection());
             String table = db.table(truncate.getTable().getName());
             Delete delete = new net.sf.jsqlparser.statement.delete.Delete();
@@ -978,7 +1103,10 @@ public class DatabaseSupport {
         }
 
         @Override
-        public void visit(net.sf.jsqlparser.statement.delete.Delete delete) {
+        public void visit(
+                net.sf.jsqlparser.statement.delete
+                        .Delete delete
+        ) {
             Database db = Database.from(connection());
             String table = db.table(delete.getTable().getName());
             delete.setTable(new Table(db.parser().format(table)));
@@ -1000,7 +1128,10 @@ public class DatabaseSupport {
         }
 
         @Override
-        public void visit(net.sf.jsqlparser.statement.update.Update update) {
+        public void visit(
+                net.sf.jsqlparser.statement.update
+                        .Update update
+        ) {
             Database db = Database.from(connection());
             String table = db.table(update.getTable().getName());
             update.setTable(new Table(db.parser().format(table)));
@@ -1048,7 +1179,10 @@ public class DatabaseSupport {
         }
 
         @Override
-        public void visit(net.sf.jsqlparser.statement.insert.Insert insert) {
+        public void visit(
+                net.sf.jsqlparser.statement.insert
+                        .Insert insert
+        ) {
             Database db = Database.from(connection());
             String table = db.table(insert.getTable().getName());
             insert.setTable(new Table(db.parser().format(table)));
@@ -1093,7 +1227,10 @@ public class DatabaseSupport {
         }
 
         @Override
-        public void visit(net.sf.jsqlparser.statement.update.Update update) {
+        public void visit(
+                net.sf.jsqlparser.statement.update
+                        .Update update
+        ) {
             Database db = Database.from(connection());
             String table = db.table(update.getTable().getName());
             result = db.parser()
@@ -1102,6 +1239,7 @@ public class DatabaseSupport {
                     .map(ds -> (DataSet) ds)
                     .orElse(new EmptyDataSet(table));
         }
+
     }
 
 }

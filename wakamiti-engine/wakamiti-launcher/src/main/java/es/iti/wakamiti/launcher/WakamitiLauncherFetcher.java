@@ -38,7 +38,9 @@ public class WakamitiLauncherFetcher extends WakamitiFetcher {
      * @param arguments The command-line arguments provided to the application.
      * @throws URISyntaxException If there is an issue with URI syntax.
      */
-    public WakamitiLauncherFetcher(CliArguments arguments) throws URISyntaxException {
+    public WakamitiLauncherFetcher(
+            CliArguments arguments
+    ) throws URISyntaxException {
         super(WakamitiLauncher.logger(), mavenFetcherConfiguration(arguments));
         this.arguments = arguments;
     }
@@ -50,7 +52,9 @@ public class WakamitiLauncherFetcher extends WakamitiFetcher {
      * @return The configuration for the MavenFetcher.
      * @throws URISyntaxException If there is an issue with URI syntax.
      */
-    private static Configuration mavenFetcherConfiguration(CliArguments arguments)
+    private static Configuration mavenFetcherConfiguration(
+            CliArguments arguments
+    )
             throws URISyntaxException {
         Path mavenRepo = Paths.get(AppDirsFactory.getInstance()
                 .getUserDataDir("wakamiti", "repository", "iti"));

@@ -33,7 +33,9 @@ public class TestResult extends BaseModel {
     @JsonProperty
     private String errorMessage;
 
-    public TestResult id(String id) {
+    public TestResult id(
+            String id
+    ) {
         this.id = id;
         return this;
     }
@@ -42,7 +44,9 @@ public class TestResult extends BaseModel {
         return id;
     }
 
-    public TestResult startedDate(String startedDate) {
+    public TestResult startedDate(
+            String startedDate
+    ) {
         this.startedDate = startedDate;
         return this;
     }
@@ -51,7 +55,9 @@ public class TestResult extends BaseModel {
         return startedDate;
     }
 
-    public TestResult completedDate(String completedDate) {
+    public TestResult completedDate(
+            String completedDate
+    ) {
         this.completedDate = completedDate;
         return this;
     }
@@ -60,7 +66,9 @@ public class TestResult extends BaseModel {
         return completedDate;
     }
 
-    public TestResult outcome(Type outcome) {
+    public TestResult outcome(
+            Type outcome
+    ) {
         this.outcome = outcome;
         this.comment = outcome.comment();
         return this;
@@ -70,7 +78,9 @@ public class TestResult extends BaseModel {
         return outcome;
     }
 
-    public TestResult comment(String comment) {
+    public TestResult comment(
+            String comment
+    ) {
         this.comment = comment;
         return this;
     }
@@ -79,7 +89,9 @@ public class TestResult extends BaseModel {
         return comment;
     }
 
-    public TestResult testCase(TestCase testCase) {
+    public TestResult testCase(
+            TestCase testCase
+    ) {
         this.testCase = testCase;
         return this;
     }
@@ -88,7 +100,10 @@ public class TestResult extends BaseModel {
         return testCase;
     }
 
-    public TestResult state(TestRun.Status state) {
+    public TestResult state(
+            TestRun
+                    .Status state
+    ) {
         this.state = state;
         return this;
     }
@@ -97,7 +112,9 @@ public class TestResult extends BaseModel {
         return state;
     }
 
-    public TestResult errorMessage(String errorMessage) {
+    public TestResult errorMessage(
+            String errorMessage
+    ) {
         this.errorMessage = errorMessage;
         return this;
     }
@@ -106,7 +123,9 @@ public class TestResult extends BaseModel {
         return errorMessage;
     }
 
-    public TestResult merge(TestResult other) {
+    public TestResult merge(
+            TestResult other
+    ) {
         return this.startedDate(other.startedDate())
                 .completedDate(other.completedDate())
                 .outcome(other.outcome())
@@ -120,6 +139,7 @@ public class TestResult extends BaseModel {
     }
 
     public enum Type {
+
         @JsonProperty("Unspecified")
         UNSPECIFIED(Result.UNDEFINED, "Execution undefined"),
         @JsonProperty("Passed")
@@ -136,7 +156,10 @@ public class TestResult extends BaseModel {
         private final Result result;
         private final String comment;
 
-        Type(Result result, String comment) {
+        Type(
+                Result result,
+                String comment
+        ) {
             this.result = result;
             this.comment = comment;
         }
@@ -145,8 +168,12 @@ public class TestResult extends BaseModel {
             return comment;
         }
 
-        public static Type valueOf(Result result) {
-            if (result == null) return null;
+        public static Type valueOf(
+                Result result
+        ) {
+            if (result == null) {
+                return null;
+            }
             for (Type type : Type.values()) {
                 if (type.result == result) {
                     return type;
@@ -154,5 +181,7 @@ public class TestResult extends BaseModel {
             }
             return null;
         }
+
     }
+
 }

@@ -40,7 +40,10 @@ public class SpringExtensionLoader implements ExtensionLoader {
      * @return An Iterable containing the loaded extensions.
      */
     @Override
-    public <T> Iterable<T> load(Class<T> type, ClassLoader loader) {
+    public <T> Iterable<T> load(
+            Class<T> type,
+            ClassLoader loader
+    ) {
         if (ApplicationContextProvider.hasContext()) {
             LOGGER.trace("Getting beans of type {}...", type);
             Collection<T> beans = ApplicationContextProvider.applicationContext()

@@ -43,11 +43,14 @@ class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
 
     @Override
     protected NodeType[] target() {
-        return new NodeType[] {NodeType.STEP, NodeType.VIRTUAL_STEP};
+        return new NodeType[]{NodeType.STEP, NodeType.VIRTUAL_STEP};
     }
 
     @Override
-    protected PlanNodeRunner newContainerRunner(PlanNode node, String nodePath) {
+    protected PlanNodeRunner newContainerRunner(
+            PlanNode node,
+            String nodePath
+    ) {
         return new PlanNodeStepJUnitRunner(
                 node, configuration(), backendFactory(), getBackend(), getLogger(), nodePath,
                 classUniqueId, resourceRoots

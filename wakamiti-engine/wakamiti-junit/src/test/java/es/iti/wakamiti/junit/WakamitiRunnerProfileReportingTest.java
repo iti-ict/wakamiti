@@ -51,27 +51,41 @@ public class WakamitiRunnerProfileReportingTest {
     @Profile("B")
     @RunWith(WakamitiJUnitRunner.class)
     public static class ProfileBRunner {
+
         // no-op test runner class for profile mismatch checks
+
     }
 
     private static class RecordingListener extends RunListener {
+
         int startedCount;
         int finishedCount;
         List<org.junit.runner.Description> ignoredDescriptions = new ArrayList<>();
 
         @Override
-        public void testStarted(org.junit.runner.Description description) {
+        public void testStarted(
+                org.junit.runner
+                        .Description description
+        ) {
             startedCount++;
         }
 
         @Override
-        public void testFinished(org.junit.runner.Description description) {
+        public void testFinished(
+                org.junit.runner
+                        .Description description
+        ) {
             finishedCount++;
         }
 
         @Override
-        public void testIgnored(org.junit.runner.Description description) {
+        public void testIgnored(
+                org.junit.runner
+                        .Description description
+        ) {
             ignoredDescriptions.add(description);
         }
+
     }
+
 }

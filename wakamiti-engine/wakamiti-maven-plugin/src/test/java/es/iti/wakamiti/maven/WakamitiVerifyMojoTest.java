@@ -54,7 +54,6 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
         when(wakamiti.executePlan(any(), any())).thenReturn(plan);
     }
 
-
     //Test
     public void testWhenDefaultWithSuccess() throws Exception {
         // Given

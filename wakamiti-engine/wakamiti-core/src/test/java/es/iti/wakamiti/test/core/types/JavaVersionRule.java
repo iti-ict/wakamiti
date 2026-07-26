@@ -21,7 +21,9 @@ public class JavaVersionRule implements TestRule {
     private final IntPredicate versionPredicate;
     private final int actualVersion;
 
-    public JavaVersionRule(IntPredicate versionPredicate) {
+    public JavaVersionRule(
+            IntPredicate versionPredicate
+    ) {
         this.versionPredicate = versionPredicate;
         this.actualVersion = getJavaVersion();
     }
@@ -47,7 +49,10 @@ public class JavaVersionRule implements TestRule {
     }
 
     @Override
-    public Statement apply(Statement base, Description description) {
+    public Statement apply(
+            Statement base,
+            Description description
+    ) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -61,6 +66,5 @@ public class JavaVersionRule implements TestRule {
             }
         };
     }
-
 
 }

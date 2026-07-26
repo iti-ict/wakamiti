@@ -30,7 +30,9 @@ public abstract class RuleBasedPlanTransformer implements PlanTransformer {
      * @param configuration The configuration used to create rules.
      * @return A list of {@link PlanNodeBuilderRule} instances.
      */
-    protected abstract List<PlanNodeBuilderRule> createRules(Configuration configuration);
+    protected abstract List<PlanNodeBuilderRule> createRules(
+            Configuration configuration
+    );
 
     /**
      * Transforms a {@link PlanNodeBuilder} using a set of rules defined by the implementation.
@@ -40,10 +42,14 @@ public abstract class RuleBasedPlanTransformer implements PlanTransformer {
      * @return The transformed {@link PlanNodeBuilder}.
      */
     @Override
-    public PlanNodeBuilder transform(PlanNodeBuilder plan, Configuration configuration) {
+    public PlanNodeBuilder transform(
+            PlanNodeBuilder plan,
+            Configuration configuration
+    ) {
         for (PlanNodeBuilderRule rule : createRules(configuration)) {
             rule.apply(plan);
         }
         return plan;
     }
+
 }

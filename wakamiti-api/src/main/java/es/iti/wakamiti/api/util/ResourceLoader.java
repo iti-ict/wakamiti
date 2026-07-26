@@ -54,7 +54,9 @@ public class ResourceLoader {
     private final Charset charset;
     private File workingDir = new File(".");
 
-    public ResourceLoader(Charset charset) {
+    public ResourceLoader(
+            Charset charset
+    ) {
         this.charset = charset;
         Locale.setDefault(Locale.ENGLISH); // avoid different behaviors regarding the OS language
     }
@@ -63,7 +65,9 @@ public class ResourceLoader {
         this(StandardCharsets.UTF_8);
     }
 
-    public static ContentType getContentType(File file) {
+    public static ContentType getContentType(
+            File file
+    ) {
         return Optional.of(file.getName())
                 .map(FilenameUtils::getExtension)
                 .map(ResourceLoader.contentTypeFromExtension::get)
@@ -75,7 +79,9 @@ public class ResourceLoader {
      *
      * @param workingDir The working directory.
      */
-    public void setWorkingDir(File workingDir) {
+    public void setWorkingDir(
+            File workingDir
+    ) {
         this.workingDir = workingDir.getAbsoluteFile();
     }
 
@@ -84,7 +90,9 @@ public class ResourceLoader {
      *
      * @param workingDir The working directory.
      */
-    public void setWorkingDir(Path workingDir) {
+    public void setWorkingDir(
+            Path workingDir
+    ) {
         this.workingDir = workingDir.toAbsolutePath().toFile();
     }
 
@@ -97,7 +105,10 @@ public class ResourceLoader {
      * @return A resource instance.
      * @throws WakamitiException If an error occurs while reading the input stream.
      */
-    public <T> Resource<T> fromInputStream(ResourceType<T> resourceType, InputStream inputStream) {
+    public <T> Resource<T> fromInputStream(
+            ResourceType<T> resourceType,
+            InputStream inputStream
+    ) {
         try {
             return new Resource<>("", "", resourceType.parse(inputStream, charset));
         } catch (IOException e) {
@@ -122,7 +133,9 @@ public class ResourceLoader {
      * @see StandardCharsets
      * @see #charset
      */
-    public Reader reader(URL url) throws IOException {
+    public Reader reader(
+            URL url
+    ) throws IOException {
         try (InputStream inputStream = url.openStream()) {
             byte[] bytes = toByteArray(inputStream);
             CharsetDecoder decoder = charset.newDecoder();
@@ -145,7 +158,9 @@ public class ResourceLoader {
      * @param file The file to read
      * @return The file content
      */
-    public String readFileAsString(File file) {
+    public String readFileAsString(
+            File file
+    ) {
         return readFileAsString(file, StandardCharsets.UTF_8);
     }
 
@@ -157,7 +172,10 @@ public class ResourceLoader {
      * @param charset The file charset.
      * @return The file content.
      */
-    public String readFileAsString(File file, Charset charset) {
+    public String readFileAsString(
+            File file,
+            Charset charset
+    ) {
         try (FileInputStream inputStream = new FileInputStream(absolutePath(file))) {
             return PropertyEvaluator.makeEvalIfCan(toString(inputStream, charset)).value();
         } catch (IOException e) {
@@ -196,7 +214,9 @@ public class ResourceLoader {
      * @see #reader(URL)
      * @see #charset
      */
-    public Reader reader(String path) throws IOException {
+    public Reader reader(
+            String path
+    ) throws IOException {
         if (path.startsWith(CLASSPATH_PROTOCOL)) {
             URL url = Thread.currentThread().getContextClassLoader()
                     .getResource(path.replace(CLASSPATH_PROTOCOL, ""));
@@ -229,7 +249,10 @@ public class ResourceLoader {
      * @see ResourceBundle#getBundle(String, Locale, ClassLoader)
      * @see #charset
      */
-    public ResourceBundle resourceBundle(String resourceBundle, Locale locale) {
+    public ResourceBundle resourceBundle(
+            String resourceBundle,
+            Locale locale
+    ) {
         return ResourceBundle.getBundle(resourceBundle, locale,
                 Thread.currentThread().getContextClassLoader());
     }
@@ -250,7 +273,9 @@ public class ResourceLoader {
      * @see #discoverResources(List, Predicate, Parser)
      * @see #toString(InputStream, Charset)
      */
-    public String readResourceAsString(String path) {
+    public String readResourceAsString(
+            String path
+    ) {
         return discoverResources(Collections.singletonList(path), x -> true, this::toString).get(0)
                 .content().toString();
     }
@@ -307,7 +332,10 @@ public class ResourceLoader {
      * @see ResourceType#acceptsFilename(String)
      * @see ResourceType#parse(InputStream, Charset)
      */
-    public <T> List<Resource<?>> discoverResources(String path, ResourceType<T> resourceType) {
+    public <T> List<Resource<?>> discoverResources(
+            String path,
+            ResourceType<T> resourceType
+    ) {
         return discoverResources(path, resourceType::acceptsFilename, resourceType::parse);
     }
 
@@ -522,7 +550,6 @@ public class ResourceLoader {
                 throw new WakamitiException("Error discovering resource '{}': {}", file, e.getMessage(), e);
             }
         }
-
     }
 
     /**
@@ -540,7 +567,10 @@ public class ResourceLoader {
      *                     calculated.
      * @return The relative path from the starting path to the absolute path.
      */
-    private String relative(String startPath, String absolutePath) {
+    private String relative(
+            String startPath,
+            String absolutePath
+    ) {
         if (absolutePath.endsWith(startPath)) {
             return startPath;
         } else if (absolutePath.contains(startPath)) {
@@ -560,7 +590,9 @@ public class ResourceLoader {
      * @param file The file for which to obtain the absolute path.
      * @return The absolute path of the file.
      */
-    public File absolutePath(File file) {
+    public File absolutePath(
+            File file
+    ) {
         if (file.isAbsolute()) {
             return file;
         }
@@ -575,7 +607,9 @@ public class ResourceLoader {
      * @param path The path for which to obtain the absolute path.
      * @return The absolute path of the given path.
      */
-    public Path absolutePath(Path path) {
+    public Path absolutePath(
+            Path path
+    ) {
         if (path.isAbsolute()) {
             return path;
         }
@@ -591,7 +625,10 @@ public class ResourceLoader {
      * @param classLoader The ClassLoader to use for resource loading.
      * @return A Set of URIs representing the located resources in the classpath.
      */
-    protected Set<URI> loadFromClasspath(String classPath, ClassLoader classLoader) {
+    protected Set<URI> loadFromClasspath(
+            String classPath,
+            ClassLoader classLoader
+    ) {
         try {
             return Collections.list(classLoader.getResources(classPath)).stream()
                     .map(URL::toString)
@@ -603,7 +640,9 @@ public class ResourceLoader {
         }
     }
 
-    private String classLoaderFolder(ClassLoader classLoader) throws IOException {
+    private String classLoaderFolder(
+            ClassLoader classLoader
+    ) throws IOException {
         try {
             return Objects.requireNonNull(classLoader.getResource(".")).toURI().getPath();
         } catch (URISyntaxException e) {
@@ -611,18 +650,27 @@ public class ResourceLoader {
         }
     }
 
-    private byte[] toByteArray(InputStream inputStream) throws IOException {
+    private byte[] toByteArray(
+            InputStream inputStream
+    ) throws IOException {
         try (var outputStream = new ByteArrayOutputStream()) {
             transfer(inputStream, outputStream, new byte[BUFFER_SIZE]);
             return outputStream.toByteArray();
         }
     }
 
-    private String toString(InputStream inputStream, Charset stringCharset) throws IOException {
+    private String toString(
+            InputStream inputStream,
+            Charset stringCharset
+    ) throws IOException {
         return new String(toByteArray(inputStream), stringCharset);
     }
 
-    private void transfer(InputStream input, OutputStream output, byte[] buffer) throws IOException {
+    private void transfer(
+            InputStream input,
+            OutputStream output,
+            byte[] buffer
+    ) throws IOException {
         int n;
         while ((n = input.read(buffer)) > 0) {
             output.write(buffer, 0, n);
@@ -635,7 +683,11 @@ public class ResourceLoader {
      * @param <T> The type of the parsed content.
      */
     public interface Parser<T> {
-        T parse(InputStream stream, Charset charset) throws IOException;
+        T parse(
+                InputStream stream,
+                Charset charset
+        ) throws IOException;
+
     }
 
 }

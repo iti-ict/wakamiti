@@ -33,7 +33,6 @@ public class TestFailureStep {
 
     @Test
     public void testInvalidStep() throws IOException {
-
         Map<String, String> properties = new HashMap<>();
         properties.put(RESOURCE_TYPES, GherkinResourceType.NAME);
         properties.put(
@@ -74,8 +73,6 @@ public class TestFailureStep {
             }
             assertThat(testCaseSerial).contains("\"errorClassifier\" : \"test\"");
         }
-
-
     }
 
 }

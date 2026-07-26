@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
 
@@ -64,7 +63,6 @@ public class AmqpSupport {
     private boolean autoDelete;
     private boolean messagePersistent = true;
 
-
     /**
      * Configures queue declaration durable flag.
      */
@@ -120,7 +118,6 @@ public class AmqpSupport {
         declareQueue(queue);
         client().sendText(queue, text, CONTENT_TYPE, messagePersistent);
     }
-
 
     /**
      * Lazily creates protocol-specific client.
@@ -183,7 +180,6 @@ public class AmqpSupport {
         }
     }
 
-
     /**
      * Starts asynchronous consumption on a queue if not already subscribed.
      */
@@ -191,15 +187,15 @@ public class AmqpSupport {
             String queueName
     ) {
         declareQueue(queueName);
-            client().subscribe(
-                    queueName,
-                    message -> {
-                        receivedMessages.computeIfAbsent(queueName, x -> new CopyOnWriteArrayList<>()).add(message);
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Received AMQP message in queue '{}': {}", queueName, message);
-                        }
+        client().subscribe(
+                queueName,
+                message -> {
+                    receivedMessages.computeIfAbsent(queueName, x -> new CopyOnWriteArrayList<>()).add(message);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Received AMQP message in queue '{}': {}", queueName, message);
                     }
-            );
+                }
+        );
     }
 
     /**
@@ -212,7 +208,6 @@ public class AmqpSupport {
         client().purgeQueue(queueName);
         receivedMessages.remove(queueName);
     }
-
 
     /**
      * Checks if an exact message exists in current destination queue buffer.
@@ -244,7 +239,6 @@ public class AmqpSupport {
         Objects.requireNonNull(destination, DESTINATION_QUEUE_NOT_DEFINED);
         return !receivedMessages.computeIfAbsent(destination, x -> new CopyOnWriteArrayList<>()).isEmpty();
     }
-
 
     /**
      * Waits until expected message appears or throws assertion timeout error.
@@ -316,4 +310,5 @@ public class AmqpSupport {
             // Expected path: no message was received during timeout.
         }
     }
+
 }

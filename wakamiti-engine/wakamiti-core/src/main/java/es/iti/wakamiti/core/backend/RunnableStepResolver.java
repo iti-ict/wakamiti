@@ -33,7 +33,6 @@ public class RunnableStepResolver {
     private final WakamitiDataTypeRegistry typeRegistry;
     private final List<RunnableStep> runnableSteps;
 
-
     RunnableStepResolver(
             WakamitiDataTypeRegistry typeRegistry,
             List<RunnableStep> runnableSteps
@@ -52,7 +51,10 @@ public class RunnableStepResolver {
      * @throws UndefinedStepException If the step cannot be matched with
      *                                any defined step or matches more than one defined step.
      */
-    Pair<RunnableStep, Matcher> locateRunnableStep(PlanNode step, StepHinter hinter) {
+    Pair<RunnableStep, Matcher> locateRunnableStep(
+            PlanNode step,
+            StepHinter hinter
+    ) {
         Locale stepLocale = Locale.forLanguageTag(step.language());
         Locale dataLocale = Locale.forLanguageTag(
                 step.properties().getOrDefault(WakamitiConfiguration.DATA_FORMAT_LANGUAGE, step.language())
@@ -101,7 +103,6 @@ public class RunnableStepResolver {
             Locale dataLocale,
             StepHinter hinter
     ) {
-
         Function<RunnableStep, Matcher> matcher = runnableStep -> runnableStep
                 .matcher(step, stepLocale, dataLocale, typeRegistry);
 
@@ -142,11 +143,13 @@ public class RunnableStepResolver {
      * @return An Optional containing the located RunnableStep, or an empty
      * Optional if not found.
      */
-    Optional<RunnableStep> obtainRunnableStepByDefinition(String stepDefinition, Locale stepLocale) {
+    Optional<RunnableStep> obtainRunnableStepByDefinition(
+            String stepDefinition,
+            Locale stepLocale
+    ) {
         return runnableSteps.stream()
                 .filter(runnableStep -> stepDefinition.equals(runnableStep.getTranslatedDefinition(stepLocale)))
                 .findAny();
     }
-
 
 }

@@ -29,7 +29,6 @@ public class ResourceLoaderTest {
 
     @Test
     public void testDiscoverFromClasspath() throws URISyntaxException {
-
         Predicate<String> txtFilter = filename -> filename.endsWith(".txt");
 
 //        URI uri = Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResource("discovery")).toURI();
@@ -50,11 +49,12 @@ public class ResourceLoaderTest {
             assertEquals("Content of File 2", discoveredResources.get(1).content().toString());
             assertEquals("Content of File 4", discoveredResources.get(2).content().toString());
         });
-
-
     }
 
-    private void assertFile(Resource<?> resource, String relativePath) {
+    private void assertFile(
+            Resource<?> resource,
+            String relativePath
+    ) {
         assertEquals(resource.relativePath(), new File(relativePath).getPath());
         assertTrue(resource.absolutePath().endsWith(new File(relativePath).getPath()));
     }

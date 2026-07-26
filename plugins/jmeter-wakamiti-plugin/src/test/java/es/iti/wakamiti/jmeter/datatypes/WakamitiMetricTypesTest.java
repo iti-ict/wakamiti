@@ -189,4 +189,5 @@ public class WakamitiMetricTypesTest {
 
         return summary;
     }
+
 }

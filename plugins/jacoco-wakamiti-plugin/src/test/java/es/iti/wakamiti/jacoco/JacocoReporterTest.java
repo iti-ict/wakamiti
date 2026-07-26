@@ -171,15 +171,23 @@ public class JacocoReporterTest {
         assertThat(Files.exists(producedXml)).isTrue();
     }
 
-    private static void setPrivate(Object target, String field, Object value) throws Exception {
+    private static void setPrivate(
+            Object target,
+            String field,
+            Object value
+    ) throws Exception {
         java.lang.reflect.Field f = target.getClass().getDeclaredField(field);
         f.setAccessible(true);
         f.set(target, value);
     }
 
-    private static Object getPrivate(Object target, String field) throws Exception {
+    private static Object getPrivate(
+            Object target,
+            String field
+    ) throws Exception {
         java.lang.reflect.Field f = target.getClass().getDeclaredField(field);
         f.setAccessible(true);
         return f.get(target);
     }
+
 }

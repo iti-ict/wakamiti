@@ -21,13 +21,14 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 @ExtensionPoint
 public interface Reporter extends Contributor {
 
-
     /**
      * Perform the report operation on the given plan node descriptor.
      *
      * @param rootNode The root node descriptor. It may be a standalone
      *                 plan or a root node grouping several plans.
      */
-    void report(PlanNodeSnapshot rootNode);
+    void report(
+            PlanNodeSnapshot rootNode
+    );
 
 }

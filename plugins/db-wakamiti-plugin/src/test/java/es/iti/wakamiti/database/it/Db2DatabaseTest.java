@@ -53,7 +53,6 @@ public class Db2DatabaseTest {
                             new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
             );
 
-
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");

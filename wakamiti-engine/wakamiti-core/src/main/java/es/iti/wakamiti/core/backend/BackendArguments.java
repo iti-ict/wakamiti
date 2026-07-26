@@ -40,9 +40,9 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
     private final WakamitiDataTypeRegistry typeRegistry;
     private final List<Pair<String, String>> argumentMap = new ArrayList<>();
 
-
     public BackendArguments(
-            Class<?> stepProviderClass, Method stepMethod,
+            Class<?> stepProviderClass,
+            Method stepMethod,
             WakamitiDataTypeRegistry typeRegistry
     ) {
         this.stepProviderClass = stepProviderClass;
@@ -70,7 +70,9 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
      * @param index The index of the argument pair.
      * @return The argument pair at the specified index.
      */
-    public Pair<String, String> get(int index) {
+    public Pair<String, String> get(
+            int index
+    ) {
         return argumentMap.get(index);
     }
 
@@ -157,7 +159,9 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
      * @param index The index of the argument to validate.
      * @return An error message if validation fails, or null if the argument is valid.
      */
-    protected String validateArgument(int index) {
+    protected String validateArgument(
+            int index
+    ) {
         String error = null;
         if (argumentMap.get(index).value().equals(Backend.DOCUMENT_ARG)) {
             if (!methodArgTypes[index].equals(Document.class)) {

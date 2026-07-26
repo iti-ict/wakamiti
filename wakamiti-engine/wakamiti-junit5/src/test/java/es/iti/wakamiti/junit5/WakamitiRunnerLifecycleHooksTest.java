@@ -53,7 +53,10 @@ public class WakamitiRunnerLifecycleHooksTest {
         );
     }
 
-    private void runPlan(Class<?> planClass, TestExecutionListener listener) {
+    private void runPlan(
+            Class<?> planClass,
+            TestExecutionListener listener
+    ) {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(planClass))
                 .filters(EngineFilter.includeEngines(WakamitiTestEngine.ENGINE_ID))
@@ -88,22 +91,30 @@ public class WakamitiRunnerLifecycleHooksTest {
         private static void clearHooks() {
             hookContexts.clear();
         }
+
     }
 
     private static class RecordingListener implements TestExecutionListener {
 
         @Override
-        public void executionStarted(TestIdentifier testIdentifier) {
+        public void executionStarted(
+                TestIdentifier testIdentifier
+        ) {
             if (testIdentifier.isTest()) {
                 currentTestName = testIdentifier.getDisplayName();
             }
         }
 
         @Override
-        public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
+        public void executionFinished(
+                TestIdentifier testIdentifier,
+                TestExecutionResult testExecutionResult
+        ) {
             if (testIdentifier.isTest()) {
                 currentTestName = null;
             }
         }
+
     }
+
 }

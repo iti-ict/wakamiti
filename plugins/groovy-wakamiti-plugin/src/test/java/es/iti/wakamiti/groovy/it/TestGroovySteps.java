@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.groovy.it;
 
+
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
 import es.iti.wakamiti.api.WakamitiConfiguration;
@@ -14,10 +15,12 @@ import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.junit.runner.RunWith;
 
+
 @AnnotatedConfiguration({
         @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
         @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/test.feature")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class TestGroovySteps {
+
 }

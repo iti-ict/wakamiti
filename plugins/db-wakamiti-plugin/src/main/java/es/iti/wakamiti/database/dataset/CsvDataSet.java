@@ -39,11 +39,21 @@ public class CsvDataSet extends DataSet {
      * @param nullSymbol The {@code null} symbol.
      * @throws IOException If an I/O error occurs.
      */
-    public CsvDataSet(String table, File file, String csvFormat, String nullSymbol) throws IOException {
+    public CsvDataSet(
+            String table,
+            File file,
+            String csvFormat,
+            String nullSymbol
+    ) throws IOException {
         this(table, file, Delimiter.valueOf(csvFormat.toUpperCase()).getFormat(), nullSymbol);
     }
 
-    private CsvDataSet(String table, File file, CSVFormat format, String nullSymbol) throws IOException {
+    private CsvDataSet(
+            String table,
+            File file,
+            CSVFormat format,
+            String nullSymbol
+    ) throws IOException {
         super(table, "file '" + file + "'", nullSymbol);
         this.file = file;
         this.format = format;
@@ -103,7 +113,9 @@ public class CsvDataSet extends DataSet {
      * @return The value of the column.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return nullIfMatchNullSymbol(currentRecord.get(columnIndex));
     }
 
@@ -122,6 +134,7 @@ public class CsvDataSet extends DataSet {
      * Enum representing CSV delimiters.
      */
     private enum Delimiter {
+
         DEFAULT(CSVFormat.DEFAULT),
         EXCEL(CSVFormat.EXCEL),
         INFORMIX_UNLOAD(CSVFormat.INFORMIX_UNLOAD),
@@ -137,12 +150,16 @@ public class CsvDataSet extends DataSet {
 
         private final CSVFormat format;
 
-        Delimiter(CSVFormat format) {
+        Delimiter(
+                CSVFormat format
+        ) {
             this.format = format;
         }
 
         public CSVFormat getFormat() {
             return this.format;
         }
+
     }
+
 }

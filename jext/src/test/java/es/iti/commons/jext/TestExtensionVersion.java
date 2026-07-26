@@ -20,12 +20,10 @@ public class TestExtensionVersion {
         new ExtensionVersion("1.2.4");
     }
 
-
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidVersion2() {
         new ExtensionVersion("1.dog");
     }
-
 
     @Test
     public void testIsCompatible() {

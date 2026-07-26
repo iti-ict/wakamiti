@@ -30,4 +30,5 @@ public enum LoadStrategy {
      * The behavior is decided by the underline implementation
      */
     UNDEFINED
+
 }

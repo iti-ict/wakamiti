@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.test;
 
+
 import es.iti.wakamiti.xray.internal.Util;
 import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.TestCase;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class TestUtil {
 
@@ -38,6 +40,5 @@ public class TestUtil {
 
         assertThat(result).hasSize(2);
     }
-
 
 }

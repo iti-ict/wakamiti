@@ -22,12 +22,15 @@ public class StringUtils {
     /**
      * Replaces the text values, formatted {@code {parameter}}, from the parameter map values.
      *
-     * @param message The string message
+     * @param message    The string message
      * @param parameters The parameters
      * @return The formatted text
      * @throws NoSuchFieldException If a parameter is not in the parameters map
      */
-    public static String format(String message, Map<String, ?> parameters) throws NoSuchFieldException {
+    public static String format(
+            String message,
+            Map<String, ?> parameters
+    ) throws NoSuchFieldException {
         Pattern pattern = Pattern.compile("\\{(\\w+?)}");
         List<String> missing = pattern.matcher(message).results().map(r -> r.group(1)).distinct()
                 .filter(r -> !parameters.containsKey(r)).collect(Collectors.toList());
@@ -41,10 +44,13 @@ public class StringUtils {
      * Replaces the text values, formatted {@code {}}, from the object array.
      *
      * @param message The string message
-     * @param args The object array
+     * @param args    The object array
      * @return The formatted text
      */
-    public static String format(String message, Object... args) {
+    public static String format(
+            String message,
+            Object... args
+    ) {
         StringBuilder s = new StringBuilder(message);
         for (Object arg : args) {
             int pos = s.indexOf("{}");
@@ -55,4 +61,5 @@ public class StringUtils {
         }
         return s.toString();
     }
+
 }

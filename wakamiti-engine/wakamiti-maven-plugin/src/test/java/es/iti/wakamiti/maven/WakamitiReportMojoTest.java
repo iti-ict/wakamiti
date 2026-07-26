@@ -156,4 +156,5 @@ public class WakamitiReportMojoTest extends WakamitiAbstractMojoTest {
         assertThat(session.getResult().getExceptions()).isEmpty();
         verify(wakamiti, times(1)).generateReports(any());
     }
+
 }

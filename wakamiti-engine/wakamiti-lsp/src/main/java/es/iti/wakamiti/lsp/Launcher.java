@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.lsp;
+
 
 import java.io.IOException;
 import java.net.*;
@@ -19,8 +19,9 @@ import org.eclipse.lsp4j.launch.LSPLauncher;
 
 public class Launcher {
 
-    public static void main(String[] args) throws ParseException, IOException {
-
+    public static void main(
+            String[] args
+    ) throws ParseException, IOException {
         CliArguments arguments = new CliArguments().parse(args);
         if (arguments.isHelpActive()) {
             arguments.printUsage();
@@ -28,43 +29,40 @@ public class Launcher {
         }
 
         if (arguments.isTcpServer()) {
-        	if (arguments.debugEnabled()) {
-        		enableDebugLogs();
-        	}
-        	InetSocketAddress address = new InetSocketAddress(arguments.port());
-			var server = new TcpSocketLanguageServer(address , arguments.positionBase());
-			server.start();
+            if (arguments.debugEnabled()) {
+                enableDebugLogs();
+            }
+            InetSocketAddress address = new InetSocketAddress(arguments.port());
+            var server = new TcpSocketLanguageServer(address, arguments.positionBase());
+            server.start();
         } else {
-        	disableConsoleLogs();
-          	if (arguments.debugEnabled()) {
-        		enableDebugLogs();
-        	}
-        	var server = new WakamitiLanguageServer(arguments.positionBase());
+            disableConsoleLogs();
+            if (arguments.debugEnabled()) {
+                enableDebugLogs();
+            }
+            var server = new WakamitiLanguageServer(arguments.positionBase());
             var launcher = LSPLauncher.createServerLauncher(
-                server,
-                System.in,
-                System.out
+                    server,
+                    System.in,
+                    System.out
             );
             server.connect(launcher.getRemoteProxy());
             launcher.startListening();
         }
     }
 
+    private static void disableConsoleLogs() throws IOException {
+        try {
+            Configurator.reconfigure(
+                    Thread.currentThread().getContextClassLoader().getResource("log4j2-noconsole.xml").toURI()
+            );
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
+    }
 
-	private static void disableConsoleLogs() throws IOException {
-		try {
-			Configurator.reconfigure(
-				Thread.currentThread().getContextClassLoader().getResource("log4j2-noconsole.xml").toURI()
-			);
-		} catch (URISyntaxException e) {
-			throw new IOException(e);
-		}
-	}
-
-
-	private static void enableDebugLogs() {
-		Configurator.setRootLevel(Level.DEBUG);
-
-	}
+    private static void enableDebugLogs() {
+        Configurator.setRootLevel(Level.DEBUG);
+    }
 
 }

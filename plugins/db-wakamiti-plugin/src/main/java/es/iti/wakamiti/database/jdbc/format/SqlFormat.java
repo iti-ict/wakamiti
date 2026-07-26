@@ -13,6 +13,9 @@ import java.sql.JDBCType;
 
 public interface SqlFormat {
 
-    Object formatValue(String value, JDBCType type);
+    Object formatValue(
+            String value,
+            JDBCType type
+    );
 
 }

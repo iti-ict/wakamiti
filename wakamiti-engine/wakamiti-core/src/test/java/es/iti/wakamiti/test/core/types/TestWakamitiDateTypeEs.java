@@ -52,14 +52,12 @@ public class TestWakamitiDateTypeEs {
                 .isEqualTo(LocalDate.of(2018, 5, 30));
     }
 
-
     @Test
     public void testLocalizedDate2() {
         Assertions.assertThat(DATE_TYPE.matcher(LOCALE, "30 de mayo de 2018").matches()).isTrue();
         Assertions.assertThat(DATE_TYPE.parse(LOCALE, "30 de mayo de 2018"))
                 .isEqualTo(LocalDate.of(2018, 5, 30));
     }
-
 
     @Test
     public void testLocalizedDate3() {
@@ -72,12 +70,10 @@ public class TestWakamitiDateTypeEs {
                 .isEqualTo(LocalDate.of(2018, 5, 30));
     }
 
-
     @Test
     public void testLocalizedDate4() {
         Assertions.assertThat(DATE_TYPE.matcher(LOCALE, "5630/18").matches()).isFalse();
     }
-
 
     @Test
     public void testLocalizedTime1() {
@@ -85,19 +81,16 @@ public class TestWakamitiDateTypeEs {
         Assertions.assertThat(TIME_TYPE.parse(LOCALE, "17:35")).isEqualTo(LocalTime.of(17, 35));
     }
 
-
     @Test
     public void testLocalizedTime2() {
         Assertions.assertThat(TIME_TYPE.matcher(LOCALE, "5:35").matches()).isTrue();
         Assertions.assertThat(TIME_TYPE.parse(LOCALE, "5:35")).isEqualTo(LocalTime.of(5, 35));
     }
 
-
     @Test
     public void testLocalizedTime3() {
         Assertions.assertThat(TIME_TYPE.matcher(LOCALE, "555:66").matches()).isFalse();
     }
-
 
     @Test
     public void testLocalizedDateTime1() {
@@ -105,7 +98,6 @@ public class TestWakamitiDateTypeEs {
         Assertions.assertThat(DATETIME_TYPE.parse(LOCALE, "30/05/18 17:35"))
                 .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35));
     }
-
 
     @Test
     public void testLocalizedDateTime2() {

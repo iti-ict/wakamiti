@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.rest;
 
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
@@ -53,7 +54,9 @@ public class TestUtil {
             .configure(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE, true)
             .build();
 
-    public static String json(Map<?, ?> map) {
+    public static String json(
+            Map<?, ?> map
+    ) {
         try {
             return new ObjectMapper().writeValueAsString(map);
         } catch (JsonProcessingException e) {
@@ -61,7 +64,9 @@ public class TestUtil {
         }
     }
 
-    public static String json(List<?> list) {
+    public static String json(
+            List<?> list
+    ) {
         try {
             return new ObjectMapper().writeValueAsString(list);
         } catch (JsonProcessingException e) {
@@ -69,7 +74,10 @@ public class TestUtil {
         }
     }
 
-    public static <T> T json(String string, TypeReference<T> type) {
+    public static <T> T json(
+            String string,
+            TypeReference<T> type
+    ) {
         try {
             return new ObjectMapper().readValue(string, type);
         } catch (JsonProcessingException e) {
@@ -77,7 +85,9 @@ public class TestUtil {
         }
     }
 
-    public static String xml(Map<?, ?> map) {
+    public static String xml(
+            Map<?, ?> map
+    ) {
         try {
             return xmlMapper.writeValueAsString(map);
         } catch (JsonProcessingException e) {
@@ -85,7 +95,9 @@ public class TestUtil {
         }
     }
 
-    public static String xml(List<?> list) {
+    public static String xml(
+            List<?> list
+    ) {
         try {
             return xmlMapper.writeValueAsString(list);
         } catch (JsonProcessingException e) {
@@ -93,7 +105,10 @@ public class TestUtil {
         }
     }
 
-    public static <T> T xml(String string, TypeReference<T> type) {
+    public static <T> T xml(
+            String string,
+            TypeReference<T> type
+    ) {
         try {
             SimpleModule m = new SimpleModule("module", new Version(1, 0, 0, null, null, null));
             m.addDeserializer(Map.class, new CustomDeserializer());
@@ -104,7 +119,16 @@ public class TestUtil {
         }
     }
 
-    public static <K, V> Map<K, V> map(K key1, V value1, K key2, V value2, K key3, V value3, K key4, V value4) {
+    public static <K, V> Map<K, V> map(
+            K key1,
+            V value1,
+            K key2,
+            V value2,
+            K key3,
+            V value3,
+            K key4,
+            V value4
+    ) {
         var map = new LinkedHashMap<K, V>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -113,7 +137,14 @@ public class TestUtil {
         return map;
     }
 
-    public static <K, V> Map<K, V> map(K key1, V value1, K key2, V value2, K key3, V value3) {
+    public static <K, V> Map<K, V> map(
+            K key1,
+            V value1,
+            K key2,
+            V value2,
+            K key3,
+            V value3
+    ) {
         var map = new LinkedHashMap<K, V>();
         map.put(key1, value1);
         map.put(key2, value2);
@@ -121,20 +152,30 @@ public class TestUtil {
         return map;
     }
 
-    public static <K, V> Map<K, V> map(K key1, V value1, K key2, V value2) {
+    public static <K, V> Map<K, V> map(
+            K key1,
+            V value1,
+            K key2,
+            V value2
+    ) {
         var map = new LinkedHashMap<K, V>();
         map.put(key1, value1);
         map.put(key2, value2);
         return map;
     }
 
-    public static <K, V> Map<K, V> map(K key1, V value1) {
+    public static <K, V> Map<K, V> map(
+            K key1,
+            V value1
+    ) {
         var map = new LinkedHashMap<K, V>();
         map.put(key1, value1);
         return map;
     }
 
-    public static File file(String path) {
+    public static File file(
+            String path
+    ) {
         try {
             return new File(TestUtil.class.getClassLoader().getResource(path).toURI());
         } catch (URISyntaxException e) {
@@ -142,18 +183,27 @@ public class TestUtil {
         }
     }
 
-    public static String file(String subtype, String contentType, String name, String content) {
-        return "Content-Disposition: " + subtype + "; name=\"" + name + "\".+" +
-                "Content-Type: " + contentType + ".+" +
-                content.replaceAll("([{}\\[\\]()])", "\\\\$1");
+    public static String file(
+            String subtype,
+            String contentType,
+            String name,
+            String content
+    ) {
+        return "Content-Disposition: " + subtype + "; name=\"" + name + "\".+"
+                + "Content-Type: " + contentType + ".+"
+                + content.replaceAll("([{}\\[\\]()])", "\\\\$1");
     }
 
-    public static RegexBody attached(String... files) {
+    public static RegexBody attached(
+            String... files
+    ) {
         String boundary = "--" + RestAssured.config().getMultiPartConfig().defaultBoundary();
         return regex(".*" + boundary + ".*" + String.join(".*" + boundary + ".*", files) + ".*" + boundary + ".*");
     }
 
-    public static String read(File file) {
+    public static String read(
+            File file
+    ) {
         try {
             return IOUtils.toString(file.toURI(), Charset.defaultCharset());
         } catch (IOException e) {
@@ -161,7 +211,11 @@ public class TestUtil {
         }
     }
 
-    public static void prepare(MockServerClient client, String rootPath, Predicate<MediaType> filter) throws IOException {
+    public static void prepare(
+            MockServerClient client,
+            String rootPath,
+            Predicate<MediaType> filter
+    ) throws IOException {
         ConfigurationProperties.attemptToProxyIfNoMatchingExpectation(false);
         Expectation[] expectations = prepare(rootPath, filter);
         for (Expectation expectation : expectations) {
@@ -170,7 +224,10 @@ public class TestUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static Expectation[] prepare(String rootPath, Predicate<MediaType> filter) throws IOException {
+    public static Expectation[] prepare(
+            String rootPath,
+            Predicate<MediaType> filter
+    ) throws IOException {
         List<Expectation> expectations = new LinkedList<>();
         Map<MediaType, Function<List<Map<String, Object>>, String>> list_to_string = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
@@ -232,7 +289,9 @@ public class TestUtil {
                             .map(MediaType::parse)
                             .get();
 
-                    if (!filter.test(mimeType)) return;
+                    if (!filter.test(mimeType)) {
+                        return;
+                    }
 
                     String body = read(file);
                     String path = "/" + FileUtils.removeExtension(p.toString()).replace("\\", "/");
@@ -285,8 +344,9 @@ public class TestUtil {
         return expectations.toArray(new Expectation[0]);
     }
 
-
-    private static List<File> listFiles(final File folder) throws IOException {
+    private static List<File> listFiles(
+            final File folder
+    ) throws IOException {
         List<File> files = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(folder.getPath()))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(files::add);
@@ -299,11 +359,13 @@ public class TestUtil {
     static class CustomDeserializer extends JsonDeserializer<Map<String, ?>> {
 
         @Override
-        public Map<String, ?> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+        public Map<String, ?> deserialize(
+                JsonParser parser,
+                DeserializationContext context
+        ) throws IOException {
             Map<String, Object> map = new LinkedHashMap<>();
             JsonToken token;
             while ((token = parser.nextToken()) != null && token != JsonToken.END_OBJECT) {
-
                 if (token == JsonToken.FIELD_NAME) {
                     String name = parser.getCurrentName();
                     token = parser.nextToken();
@@ -334,6 +396,7 @@ public class TestUtil {
             }
             return map;
         }
+
     }
 
 }

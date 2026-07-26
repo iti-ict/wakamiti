@@ -25,7 +25,9 @@ public class FTPClientTransmitter implements FTPTransmitter {
     private final FTPClient ftpClient;
     private String home;
 
-    public FTPClientTransmitter(boolean secure) {
+    public FTPClientTransmitter(
+            boolean secure
+    ) {
         this.ftpClient = (secure ? new FTPSClient() : new FTPClient());
     }
 
@@ -35,7 +37,13 @@ public class FTPClientTransmitter implements FTPTransmitter {
     }
 
     @Override
-    public void connect(String username, String host, Integer port, String password, String identity) throws IOException {
+    public void connect(
+            String username,
+            String host,
+            Integer port,
+            String password,
+            String identity
+    ) throws IOException {
         if (port != null) {
             ftpClient.connect(host, port);
         } else {
@@ -54,7 +62,10 @@ public class FTPClientTransmitter implements FTPTransmitter {
     }
 
     @Override
-    public void transferFile(Path localFile, Path destinationFolder) throws IOException {
+    public void transferFile(
+            Path localFile,
+            Path destinationFolder
+    ) throws IOException {
         createDestinationDirectory(destinationFolder);
         ftpClient.changeWorkingDirectory(home);
         ftpClient.changeWorkingDirectory(destinationFolder.toString());
@@ -67,7 +78,9 @@ public class FTPClientTransmitter implements FTPTransmitter {
         ftpClient.changeWorkingDirectory(home);
     }
 
-    private void createDestinationDirectory(Path dirPath) throws IOException {
+    private void createDestinationDirectory(
+            Path dirPath
+    ) throws IOException {
         if (dirPath.getParent() != null) {
             createDestinationDirectory(dirPath.getParent());
         }

@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,24 +30,26 @@ public class GherkinDialect {
     private static final String ALL = "all";
     private static final String FEATURE_CONTENT = "feature-content";
 
-    
     private final Map<String, List<String>> keywords;
     private String language;
 
-    public GherkinDialect(String language, Map<String, List<String>> keywords) {
+    public GherkinDialect(
+            String language,
+            Map<String, List<String>> keywords
+    ) {
         this.language = language;
         this.keywords = new HashMap<>(keywords);
         this.keywords.put(
-            STEP,
-            merge(keywords, GIVEN,WHEN, THEN, AND, BUT)
+                STEP,
+                merge(keywords, GIVEN, WHEN, THEN, AND, BUT)
         );
         this.keywords.put(
-            FEATURE_CONTENT,
-            merge(keywords, BACKGROUND, SCENARIO, SCENARIO_OUTLINE)
+                FEATURE_CONTENT,
+                merge(keywords, BACKGROUND, SCENARIO, SCENARIO_OUTLINE)
         );
         this.keywords.put(
-            ALL,
-            merge(keywords, GIVEN,WHEN, THEN, AND, BUT, BACKGROUND, EXAMPLES, FEATURE, SCENARIO, SCENARIO_OUTLINE)
+                ALL,
+                merge(keywords, GIVEN, WHEN, THEN, AND, BUT, BACKGROUND, EXAMPLES, FEATURE, SCENARIO, SCENARIO_OUTLINE)
         );
     }
 
@@ -110,9 +112,10 @@ public class GherkinDialect {
         return language;
     }
 
-
-
-    private static List<String> merge(Map<String, List<String>> keywords, String... keys) {
+    private static List<String> merge(
+            Map<String, List<String>> keywords,
+            String... keys
+    ) {
         List<String> merged = new ArrayList<>();
         for (String key : keys) {
             for (String value : keywords.get(key)) {
@@ -123,4 +126,5 @@ public class GherkinDialect {
         }
         return new ArrayList<>(merged);
     }
+
 }

@@ -32,7 +32,9 @@ public class WrongStepDefinitionException extends WakamitiException {
      *                          message.
      */
     public WrongStepDefinitionException(
-            Class<?> stepProviderClass, String stepDefinitionKey, String message,
+            Class<?> stepProviderClass,
+            String stepDefinitionKey,
+            String message,
             Object... args
     ) {
         super(

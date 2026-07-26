@@ -36,7 +36,10 @@ public class DoubleMetricProvider extends AbstractMetricProvider {
     }
 
     @Override
-    protected Metric<?> createMetric(String key) {
+    protected Metric<?> createMetric(
+            String key
+    ) {
         return METRICS.get(key);
     }
+
 }

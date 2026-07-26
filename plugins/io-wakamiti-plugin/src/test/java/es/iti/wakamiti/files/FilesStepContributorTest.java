@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.files;
 
+
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import org.apache.commons.io.FileExistsException;
@@ -15,6 +16,7 @@ import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,6 +29,7 @@ import static com.sun.jna.Platform.isWindows;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+
 
 public class FilesStepContributorTest {
 
@@ -601,4 +604,5 @@ public class FilesStepContributorTest {
             throw e;
         }
     }
+
 }

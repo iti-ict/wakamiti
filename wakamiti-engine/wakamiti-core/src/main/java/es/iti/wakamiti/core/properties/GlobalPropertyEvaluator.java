@@ -35,8 +35,10 @@ import java.util.regex.Pattern;
  * @see PropertyEvaluator
  */
 @Extension(
-        provider =  "es.iti.wakamiti", name = "global-property-resolver",
-        extensionPoint =  "es.iti.wakamiti.api.extensions.PropertyEvaluator", priority = 1
+        provider = "es.iti.wakamiti",
+        name = "global-property-resolver",
+        extensionPoint = "es.iti.wakamiti.api.extensions.PropertyEvaluator",
+        priority = 1
 )
 public class GlobalPropertyEvaluator extends PropertyEvaluator implements Configurable {
 
@@ -48,7 +50,9 @@ public class GlobalPropertyEvaluator extends PropertyEvaluator implements Config
      * @param configuration The configuration to use for property resolution.
      */
     @Override
-    public void configure(Configuration configuration) {
+    public void configure(
+            Configuration configuration
+    ) {
         this.configuration = configuration;
     }
 
@@ -71,8 +75,12 @@ public class GlobalPropertyEvaluator extends PropertyEvaluator implements Config
      * @throws WakamitiException If the property cannot be resolved.
      */
     @Override
-    public String evalProperty(String property, Matcher matcher) {
+    public String evalProperty(
+            String property,
+            Matcher matcher
+    ) {
         return configuration.get(matcher.group("name"), String.class)
                 .orElseThrow(() -> new WakamitiException("Not resolvable property: " + property));
     }
+
 }

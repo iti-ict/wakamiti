@@ -71,7 +71,6 @@ class DataProvider implements vscode.TreeDataProvider<PlanNodeSnapshot> {
 }
 
 
-
 function checkPendingStatus(execution: Execution, callback: ()=>void): Execution {
     const pending = execution.data ? hasPendingStatus(execution.data) : true;
     if (pending) {
@@ -102,7 +101,6 @@ class ExecutablePlanNodeTreeItem extends PlanNodeTreeItem {
     }
 
 }
-
 
 
 function collapsibleState(node: PlanNodeSnapshot): vscode.TreeItemCollapsibleState {

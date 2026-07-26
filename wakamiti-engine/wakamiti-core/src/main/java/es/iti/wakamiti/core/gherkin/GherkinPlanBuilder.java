@@ -42,8 +42,12 @@ import static java.util.Objects.isNull;
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "wakamiti-gherkin",
-        extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "wakamiti-gherkin",
+        extensionPoint = "es.iti.wakamiti.api.extensions.PlanBuilder",
+        version = "2.6"
+)
 public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(GherkinPlanBuilder.class);
@@ -58,14 +62,16 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
-    private Pattern idTagPattern = null;
-    private boolean includeFiltered = false;
+    private Pattern idTagPattern;
+    private boolean includeFiltered;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean acceptResourceType(ResourceType<?> resourceType) {
+    public boolean acceptResourceType(
+            ResourceType<?> resourceType
+    ) {
         return resourceType.contentType().equals(GherkinDocument.class);
     }
 
@@ -73,7 +79,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * {@inheritDoc}
      */
     @Override
-    public void configure(Configuration configuration) {
+    public void configure(
+            Configuration configuration
+    ) {
         configureFilterFromTagExpression(configuration);
         configureIdTagPattern(configuration);
     }
@@ -83,7 +91,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      *
      * @param configuration The configuration object.
      */
-    protected void configureFilterFromTagExpression(Configuration configuration) {
+    protected void configureFilterFromTagExpression(
+            Configuration configuration
+    ) {
         String tagFilterExpression = configuration.get(WakamitiConfiguration.TAG_FILTER, String.class)
                 .orElse("");
         if (!tagFilterExpression.isEmpty()) {
@@ -99,15 +109,18 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      *
      * @param configuration The configuration object.
      */
-    protected void configureIdTagPattern(Configuration configuration) {
+    protected void configureIdTagPattern(
+            Configuration configuration
+    ) {
         this.idTagPattern = configuration.get(WakamitiConfiguration.ID_TAG_PATTERN, String.class)
                 .map(this::nullIfEmpty)
                 .map(Pattern::compile)
                 .orElse(null);
     }
 
-
-    private String nullIfEmpty(String string) {
+    private String nullIfEmpty(
+            String string
+    ) {
         return string.isEmpty() ? null : string;
     }
 
@@ -119,7 +132,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public PlanNodeBuilder createPlan(List<Resource<?>> resources) {
+    public PlanNodeBuilder createPlan(
+            List<Resource<?>> resources
+    ) {
         PlanNodeBuilder plan = new PlanNodeBuilder(NodeType.AGGREGATOR)
                 .setDisplayNamePattern("Test Plan");
         List<Resource<GherkinDocument>> gherkinResources = resources.stream()
@@ -140,7 +155,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param gherkinResource The Gherkin document resource.
      * @return A feature node representing the feature and its scenarios in the test plan.
      */
-    protected PlanNodeBuilder createFeature(Resource<GherkinDocument> gherkinResource) {
+    protected PlanNodeBuilder createFeature(
+            Resource<GherkinDocument> gherkinResource
+    ) {
         Feature feature = gherkinResource.content().getFeature();
         String location = gherkinResource.relativePath().replace(File.separator, "/");
         String language = feature.getLanguage();
@@ -291,7 +308,6 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
             exampleScenario.filtered(!scenarioFilter.test(exampleScenario));
             if (!exampleScenario.filtered()) {
-
                 backgroundSteps.ifPresent(background -> exampleScenario.addChild(background.copy()));
                 List<PlanNodeBuilder> exampleSteps = replaceOutlineVariables(
                         outlineSteps,
@@ -299,11 +315,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                         values.get(row)
                 );
                 exampleSteps.forEach(exampleScenario::addChild);
-
             }
 
             output.add(exampleScenario);
-
         }
         return output;
     }
@@ -359,8 +373,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .setSource(source(location, scenario.getLocation()))
                 .setUnderlyingModel(scenario)
                 .addProperties(propertiesFromComments(scenario, parentNode.properties()))
-                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO)
-                ;
+                .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO);
     }
 
     /**
@@ -424,7 +437,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param feature The Gherkin feature.
      * @return An optional containing the background if present, otherwise empty.
      */
-    protected Optional<Background> getBackground(Feature feature) {
+    protected Optional<Background> getBackground(
+            Feature feature
+    ) {
         Background background = null;
         if (!feature.getChildren().isEmpty()
                 && feature.getChildren().get(0) instanceof Background) {
@@ -534,7 +549,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param values    The list of values to use for replacement.
      * @return The string with replaced variables.
      */
-    private String replaceOutlineVariables(String string, List<String> variables, List<String> values) {
+    private String replaceOutlineVariables(
+            String string,
+            List<String> variables,
+            List<String> values
+    ) {
         String result = string;
         for (int i = 0; i < variables.size(); i++) {
             String variableValue = values.get(i);
@@ -550,7 +569,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param examplesList The list of Examples to convert.
      * @return A DataTable representing the Examples, or null if the list is empty or null.
      */
-    private DataTable examplesAsDataTable(List<Examples> examplesList) {
+    private DataTable examplesAsDataTable(
+            List<Examples> examplesList
+    ) {
         if (examplesList == null || examplesList.isEmpty()) {
             return null;
         }
@@ -576,7 +597,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param table The Gherkin DataTable to convert.
      * @return A two-dimensional array representing the Gherkin DataTable.
      */
-    private String[][] toArray(es.iti.wakamiti.core.gherkin.parser.DataTable table) {
+    private String[][] toArray(
+            es.iti.wakamiti.core.gherkin.parser.DataTable table
+    ) {
         TableRow header = table.getRows().get(0);
         String[][] array = new String[table.getRows().size()][header.getCells().size()];
         for (int row = 0; row < table.getRows().size(); row++) {
@@ -595,7 +618,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param string The string to split and trim.
      * @return A list of lines obtained by splitting and trimming the input string.
      */
-    private List<String> splitAndTrim(String string) {
+    private List<String> splitAndTrim(
+            String string
+    ) {
         if (string == null) {
             return Collections.emptyList();
         }
@@ -612,7 +637,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param string The string to trim.
      * @return The trimmed string, or null if the input string is null.
      */
-    private String trim(String string) {
+    private String trim(
+            String string
+    ) {
         return string == null ? null : string.trim();
     }
 
@@ -622,7 +649,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param tags The list of tags.
      * @return A list of tag names.
      */
-    private List<String> tags(List<Tag> tags) {
+    private List<String> tags(
+            List<Tag> tags
+    ) {
         return tags.stream().map(Tag::getName).map(s -> s.substring(1)).distinct()
                 .collect(Collectors.toCollection(LinkedList::new));
     }
@@ -635,7 +664,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param ignoredTags The tags to be excluded.
      * @return A set of unique tags.
      */
-    private Set<String> tags(Set<String> parentTags, Collection<Tag> tags, String... ignoredTags) {
+    private Set<String> tags(
+            Set<String> parentTags,
+            Collection<Tag> tags,
+            String... ignoredTags
+    ) {
         List<String> ignoredTagList = Arrays.asList(ignoredTags);
         Set<String> tagList = tags.stream()
                 .map(Tag::getName)
@@ -653,7 +686,10 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param location The location information.
      * @return A formatted source string.
      */
-    protected String source(String file, Location location) {
+    protected String source(
+            String file,
+            Location location
+    ) {
         return file.endsWith("]") ? file
                 : file + "[" + location.getLine() + "," + location.getColumn() + "]";
     }
@@ -667,7 +703,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @return The generated ID.
      * @throws WakamitiException If more than one ID tag is found in the element.
      */
-    protected String id(List<Tag> tags, String nodeName, String suffix) {
+    protected String id(
+            List<Tag> tags,
+            String nodeName,
+            String suffix
+    ) {
         String idTag = null;
         if (idTagPattern != null) {
             List<String> idTags = tags.stream().map(Tag::getName).map(s -> s.substring(1))
@@ -692,7 +732,9 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
      * @param tableRow The table row.
      * @return A list of cell values.
      */
-    private List<String> tableCells(TableRow tableRow) {
+    private List<String> tableCells(
+            TableRow tableRow
+    ) {
         return tableRow.getCells().stream().map(TableCell::getValue).collect(Collectors.toList());
     }
 
@@ -722,4 +764,5 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         }
         return properties;
     }
+
 }

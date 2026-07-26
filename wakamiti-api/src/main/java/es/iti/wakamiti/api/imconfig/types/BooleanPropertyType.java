@@ -19,7 +19,9 @@ public class BooleanPropertyType implements PropertyType {
     }
 
     @Override
-    public boolean accepts(String value) {
+    public boolean accepts(
+            String value
+    ) {
         return "true".equals(value) || "false".equals(value);
     }
 

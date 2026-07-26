@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser;
+
 
 import es.iti.wakamiti.core.gherkin.parser.*;
 import es.iti.wakamiti.core.gherkin.parser.Comment;
@@ -15,18 +15,19 @@ import es.iti.wakamiti.core.gherkin.parser.Location;
 import java.util.Collections;
 import java.util.List;
 
+
 public class Scenario extends ScenarioDefinition implements TaggedNode {
 
     private final List<Tag> tags;
 
     public Scenario(
-        List<Tag> tags,
-        Location location,
-        String keyword,
-        String name,
-        String description,
-        List<Step> steps,
-        List<Comment> comments
+            List<Tag> tags,
+            Location location,
+            String keyword,
+            String name,
+            String description,
+            List<Step> steps,
+            List<Comment> comments
     ) {
         super(location, keyword, name, description, steps, comments);
         this.tags = Collections.unmodifiableList(tags);
@@ -35,4 +36,5 @@ public class Scenario extends ScenarioDefinition implements TaggedNode {
     public List<Tag> getTags() {
         return tags;
     }
+
 }

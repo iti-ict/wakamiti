@@ -47,7 +47,9 @@ public final class DatabaseHelper {
      * @param str The string to check
      * @return {@code true} if the string is a date or date time, {@code false} otherwise
      */
-    public static boolean isDateOrDateTime(String str) {
+    public static boolean isDateOrDateTime(
+            String str
+    ) {
         return Stream.of(DATE_TIME_FORMATTER, DATE_TIME_FORMATTER_2, DATE_FORMATTER).anyMatch(formatter -> {
             try {
                 formatter.parse(str);
@@ -64,7 +66,9 @@ public final class DatabaseHelper {
      * @param str The string to check
      * @return {@code true} if the string is a date, {@code false} otherwise
      */
-    public static boolean isDate(String str) {
+    public static boolean isDate(
+            String str
+    ) {
         try {
             DATE_FORMATTER.parse(str);
             return true;
@@ -80,7 +84,9 @@ public final class DatabaseHelper {
      * @return The formatted row as an array of strings
      * @throws SQLRuntimeException If an SQL exception occurs
      */
-    public static String[] format(ResultSet rs) {
+    public static String[] format(
+            ResultSet rs
+    ) {
         try {
             ResultSetMetaData metadata = rs.getMetaData();
             String[] row = new String[metadata.getColumnCount()];
@@ -133,7 +139,9 @@ public final class DatabaseHelper {
      * @return The formatted row as a map of column names to values
      * @throws SQLRuntimeException If an SQL exception occurs
      */
-    public static Map<String, String> formatToMap(ResultSet rs) {
+    public static Map<String, String> formatToMap(
+            ResultSet rs
+    ) {
         try {
             ResultSetMetaData metadata = rs.getMetaData();
             Map<String, String> row = new LinkedHashMap<>();
@@ -180,7 +188,10 @@ public final class DatabaseHelper {
         }
     }
 
-    private static String processColumn(Object value, boolean wasNull) {
+    private static String processColumn(
+            Object value,
+            boolean wasNull
+    ) {
         return wasNull ? null : Objects.toString(value);
     }
 
@@ -192,7 +203,9 @@ public final class DatabaseHelper {
      * @param <V> The type of values
      * @return A pair of lists containing keys and values from the map
      */
-    public static <K, V> Pair<List<K>, List<V>> toPair(Map<K, V> map) {
+    public static <K, V> Pair<List<K>, List<V>> toPair(
+            Map<K, V> map
+    ) {
         return new Pair<>(new LinkedList<>(map.keySet()), new LinkedList<>(map.values()));
     }
 
@@ -206,7 +219,10 @@ public final class DatabaseHelper {
      * @return A map containing the keys and values from the arrays
      * @throws WakamitiException If the arrays have different lengths
      */
-    public static <K, V> Map<K, V> toMap(K[] columns, V[] values) {
+    public static <K, V> Map<K, V> toMap(
+            K[] columns,
+            V[] values
+    ) {
         if (columns.length != values.length) {
             throw new WakamitiException("Keys and values must have the same length");
         }
@@ -224,8 +240,12 @@ public final class DatabaseHelper {
      * @param <T>   The type of objects in the array
      * @return An array of strings representing the objects
      */
-    public static <T> String[] toString(T[] array) {
-        return Stream.of(array).map(DatabaseHelper::toString).toArray(String[]::new);
+    public static <T> String[] toString(
+            T[] array
+    ) {
+        return Stream.of(array)
+                .map(DatabaseHelper::toString)
+                .toArray(String[]::new);
     }
 
     /**
@@ -234,7 +254,9 @@ public final class DatabaseHelper {
      * @param o The object to convert
      * @return The string representation of the object, or {@code null} if the object is {@code null}
      */
-    public static String toString(Object o) {
+    public static String toString(
+            Object o
+    ) {
         return o == null ? null : Objects.toString(o);
     }
 
@@ -244,7 +266,9 @@ public final class DatabaseHelper {
      * @param unquoted The unquoted string
      * @return The regular expression for matching the unquoted string
      */
-    public static String unquotedRegex(String unquoted) {
+    public static String unquotedRegex(
+            String unquoted
+    ) {
         return unquoted + "(?=([^']*'[^']*')*[^']*$)";
     }
 
@@ -263,7 +287,9 @@ public final class DatabaseHelper {
         );
     }
 
-    public static List<Map<String, Object>> read(DataSet dataSet) {
+    public static List<Map<String, Object>> read(
+            DataSet dataSet
+    ) {
         List<Map<String, Object>> results = new LinkedList<>();
         while (dataSet.nextRow()) {
             results.add(dataSet.rowAsMap());

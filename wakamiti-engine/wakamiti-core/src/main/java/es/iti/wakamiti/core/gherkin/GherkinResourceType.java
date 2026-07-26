@@ -27,8 +27,12 @@ import java.nio.charset.Charset;
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = GherkinResourceType.NAME,
-        extensionPoint = "es.iti.wakamiti.api.extensions.ResourceType", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = GherkinResourceType.NAME,
+        extensionPoint = "es.iti.wakamiti.api.extensions.ResourceType",
+        version = "2.6"
+)
 public class GherkinResourceType implements ResourceType<GherkinDocument> {
 
     public static final String NAME = "gherkin";
@@ -55,7 +59,10 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
      * {@inheritDoc}
      */
     @Override
-    public GherkinDocument parse(InputStream stream, Charset charset) throws IOException {
+    public GherkinDocument parse(
+            InputStream stream,
+            Charset charset
+    ) throws IOException {
         try (Reader reader = new InputStreamReader(stream, charset)) {
             return parse(reader);
         }
@@ -65,7 +72,9 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
      * {@inheritDoc}
      */
     @Override
-    public GherkinDocument parse(Reader reader) throws IOException {
+    public GherkinDocument parse(
+            Reader reader
+    ) throws IOException {
         return new GherkinParser().parse(reader);
     }
 
@@ -73,7 +82,9 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
      * {@inheritDoc}
      */
     @Override
-    public boolean acceptsFilename(String filename) {
+    public boolean acceptsFilename(
+            String filename
+    ) {
         return filename.endsWith(".feature") || filename.endsWith(".FEATURE");
     }
 
@@ -84,4 +95,5 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
     public String toString() {
         return description();
     }
+
 }

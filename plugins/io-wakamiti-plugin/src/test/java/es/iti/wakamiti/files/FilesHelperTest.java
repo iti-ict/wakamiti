@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.files;
+
 
 import org.junit.Assert;
 import org.junit.Rule;
@@ -21,6 +21,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.StandardWatchEventKinds;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 
 public class FilesHelperTest {
 
@@ -40,7 +41,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis+10);
+                Thread.sleep(expectedMillis + 10);
                 file.createNewFile();
             } catch (InterruptedException | IOException e) {
                 throw new RuntimeException(e);
@@ -66,7 +67,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis+10);
+                Thread.sleep(expectedMillis + 10);
                 file.mkdir();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -93,7 +94,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis+10);
+                Thread.sleep(expectedMillis + 10);
                 file.delete();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -120,7 +121,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis+10);
+                Thread.sleep(expectedMillis + 10);
                 file.delete();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -147,7 +148,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis+10);
+                Thread.sleep(expectedMillis + 10);
                 file.setLastModified(System.currentTimeMillis());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -174,7 +175,7 @@ public class FilesHelperTest {
 
         Runnable backgroundAction = () -> {
             try {
-                Thread.sleep(expectedMillis+10);
+                Thread.sleep(expectedMillis + 10);
                 file.setLastModified(System.currentTimeMillis());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -200,4 +201,5 @@ public class FilesHelperTest {
         // act
         helper.waitForFile(file, StandardWatchEventKinds.ENTRY_MODIFY, TIMEOUT);
     }
+
 }

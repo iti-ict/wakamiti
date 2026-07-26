@@ -6,9 +6,6 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 package es.iti.wakamiti.examples.spring.junit;
 
 
@@ -37,18 +34,15 @@ public class UserController {
     @Autowired
     private UserDAO userDAO;
 
-
     @GetMapping
     public List<User> getAllUsers() {
         return userDAO.getAllUsers();
     }
 
-
     @GetMapping("{id}")
     public User getUser(@PathVariable int id) {
         return userDAO.getUserById(id);
     }
-
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -56,18 +50,18 @@ public class UserController {
         return userDAO.createUser(user);
     }
 
-
     @PutMapping
-    public User modifyUser(@PathVariable int id, @RequestBody User user) {
+    public User modifyUser(
+            @PathVariable int id,
+            @RequestBody User user
+    ) {
         return userDAO.modifyUser(id, user);
     }
-
 
     @DeleteMapping
     public void deleteUser(@PathVariable int id) {
         userDAO.deleteUser(id);
     }
-
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

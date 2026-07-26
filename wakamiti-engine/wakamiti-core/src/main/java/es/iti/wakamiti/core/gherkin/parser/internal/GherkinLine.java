@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser.internal;
+
 
 import static es.iti.wakamiti.core.gherkin.parser.internal.StringUtils.ltrim;
 
@@ -18,12 +18,15 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
 import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan;
 import es.iti.wakamiti.core.gherkin.parser.internal.SymbolCounter;
 
+
 public class GherkinLine {
 
     private final String lineText;
     private final String trimmedLineText;
 
-    public GherkinLine(String lineText) {
+    public GherkinLine(
+            String lineText
+    ) {
         this.lineText = lineText;
         this.trimmedLineText = ltrim(lineText);
     }
@@ -33,10 +36,11 @@ public class GherkinLine {
     }
 
     public void detach() {
-
     }
 
-    public String getLineText(int indentToRemove) {
+    public String getLineText(
+            int indentToRemove
+    ) {
         if (indentToRemove < 0 || indentToRemove > indent())
             return trimmedLineText;
         return lineText.substring(indentToRemove);
@@ -46,11 +50,15 @@ public class GherkinLine {
         return trimmedLineText.length() == 0;
     }
 
-    public boolean startsWith(String prefix) {
+    public boolean startsWith(
+            String prefix
+    ) {
         return trimmedLineText.startsWith(prefix);
     }
 
-    public String getRestTrimmed(int length) {
+    public String getRestTrimmed(
+            int length
+    ) {
         return trimmedLineText.substring(length).trim();
     }
 
@@ -58,14 +66,15 @@ public class GherkinLine {
         return getSpans("\\s+");
     }
 
-    public boolean startsWithTitleKeyword(String text) {
+    public boolean startsWithTitleKeyword(
+            String text
+    ) {
         int textLength = text.length();
         return trimmedLineText.length() > textLength &&
                 trimmedLineText.startsWith(text) &&
                 trimmedLineText.substring(textLength, textLength + GherkinLanguageConstants.TITLE_KEYWORD_SEPARATOR.length())
                         .equals(GherkinLanguageConstants.TITLE_KEYWORD_SEPARATOR);
     }
-
 
     public List<GherkinLineSpan> getTableCells() {
         List<GherkinLineSpan> lineSpans = new ArrayList<>();
@@ -109,9 +118,11 @@ public class GherkinLine {
         return lineSpans;
     }
 
-    private List<GherkinLineSpan> getSpans(String delimiter) {
+    private List<GherkinLineSpan> getSpans(
+            String delimiter
+    ) {
         List<GherkinLineSpan> lineSpans = new ArrayList<>();
-        try(Scanner scanner = new Scanner(trimmedLineText)) {
+        try (Scanner scanner = new Scanner(trimmedLineText)) {
             scanner.useDelimiter(delimiter);
             while (scanner.hasNext()) {
                 String cell = scanner.next();
@@ -119,6 +130,7 @@ public class GherkinLine {
                 lineSpans.add(new GherkinLineSpan(column, cell));
             }
             return lineSpans;
-            }
         }
+    }
+
 }

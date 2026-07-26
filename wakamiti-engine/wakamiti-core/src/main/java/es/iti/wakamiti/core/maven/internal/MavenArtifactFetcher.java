@@ -82,7 +82,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         this.listener = listener;
     }
 
-    private Exclusion exclusionFromCoordinates(String coordinates) {
+    private Exclusion exclusionFromCoordinates(
+            String coordinates
+    ) {
         var parts = coordinates.split(":");
         if (parts.length >= 2) {
             var groupId = parts[0];
@@ -113,7 +115,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         return new MavenFetchResultImpl(results, session);
     }
 
-    private CollectResult collectResult(Artifact artifact)
+    private CollectResult collectResult(
+            Artifact artifact
+    )
             throws ArtifactDescriptorException,
             DependencyCollectionException {
         ArtifactDescriptorRequest descriptorRequest = new ArtifactDescriptorRequest();
@@ -135,7 +139,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         return result;
     }
 
-    private DefaultArtifact artifactFromCoordinates(String coordinates) {
+    private DefaultArtifact artifactFromCoordinates(
+            String coordinates
+    ) {
         try {
             return new DefaultArtifact(coordinates);
         } catch (IllegalArgumentException e) {
@@ -158,7 +164,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         }
     }
 
-    private void retrieveDependency(DependencyNode node) {
+    private void retrieveDependency(
+            DependencyNode node
+    ) {
         if (node.getArtifact() != null) {
             try {
                 ArtifactRequest request = new ArtifactRequest(
@@ -177,10 +185,12 @@ public class MavenArtifactFetcher implements DependencySelector {
     }
 
     @Override
-    public boolean selectDependency(Dependency dependency) {
+    public boolean selectDependency(
+            Dependency dependency
+    ) {
         requireNonNull(dependency, "dependency cannot be null");
-        if ((dependency.isOptional() && !retrieveOptionals) ||
-                (!dependency.getScope().isEmpty() && !scopes.contains(dependency.getScope()))
+        if ((dependency.isOptional() && !retrieveOptionals)
+                || (!dependency.getScope().isEmpty() && !scopes.contains(dependency.getScope()))
         ) {
             return false;
         }
@@ -192,7 +202,10 @@ public class MavenArtifactFetcher implements DependencySelector {
         return true;
     }
 
-    private boolean matches(Exclusion exclusion, Artifact artifact) {
+    private boolean matches(
+            Exclusion exclusion,
+            Artifact artifact
+    ) {
         if (!matches(exclusion.getArtifactId(), artifact.getArtifactId())) {
             return false;
         }
@@ -205,12 +218,17 @@ public class MavenArtifactFetcher implements DependencySelector {
         return matches(exclusion.getClassifier(), artifact.getClassifier());
     }
 
-    private boolean matches(String pattern, String value) {
+    private boolean matches(
+            String pattern,
+            String value
+    ) {
         return "*".equals(pattern) || pattern.equals(value);
     }
 
     @Override
-    public DependencySelector deriveChildSelector(DependencyCollectionContext context) {
+    public DependencySelector deriveChildSelector(
+            DependencyCollectionContext context
+    ) {
         Objects.requireNonNull(context, "context cannot be null");
         Dependency dependency = context.getDependency();
         Collection<Exclusion> newExclusions = dependency != null ? dependency.getExclusions() : null;
@@ -236,7 +254,10 @@ public class MavenArtifactFetcher implements DependencySelector {
 
     private static class ExclusionComparator implements Comparator<Exclusion> {
 
-        public int compare(Exclusion e1, Exclusion e2) {
+        public int compare(
+                Exclusion e1,
+                Exclusion e2
+        ) {
             if (e1 == null) {
                 return (e2 == null) ? 0 : 1;
             } else if (e2 == null) {
@@ -254,5 +275,7 @@ public class MavenArtifactFetcher implements DependencySelector {
             }
             return rel;
         }
+
     }
+
 }

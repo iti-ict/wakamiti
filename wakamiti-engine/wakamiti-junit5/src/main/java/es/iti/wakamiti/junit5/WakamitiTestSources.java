@@ -43,7 +43,10 @@ final class WakamitiTestSources {
         // static utility
     }
 
-    static Optional<TestSource> from(PlanNode node, List<String> resourceRoots) {
+    static Optional<TestSource> from(
+            PlanNode node,
+            List<String> resourceRoots
+    ) {
         String rawSource = node.source();
         if (rawSource == null || rawSource.isBlank()) {
             return Optional.empty();
@@ -72,7 +75,10 @@ final class WakamitiTestSources {
                 : FileSource.from(file, position));
     }
 
-    private static File resolveFile(String location, List<String> resourceRoots) {
+    private static File resolveFile(
+            String location,
+            List<String> resourceRoots
+    ) {
         Path candidate = Path.of(location);
         if (candidate.isAbsolute() && Files.exists(candidate)) {
             return candidate.toFile();
@@ -94,7 +100,9 @@ final class WakamitiTestSources {
         return candidate.toFile();
     }
 
-    private static FilePosition parsePosition(String source) {
+    private static FilePosition parsePosition(
+            String source
+    ) {
         Matcher matcher = POSITION.matcher(source);
         if (matcher.find()) {
             return FilePosition.from(

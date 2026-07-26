@@ -62,7 +62,9 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
      *
      * @param notifier The EachTestNotifier to notify the test result.
      */
-    protected void notifyResult(EachTestNotifier notifier) {
+    protected void notifyResult(
+            EachTestNotifier notifier
+    ) {
         Exception notExecuted = new WakamitiException("Test case not executed due to unknown reasons");
         Optional<Result> result = getNode().result();
         if (result.isPresent()) {
@@ -79,7 +81,6 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         } else {
             notifier.addFailure(notExecuted);
         }
-
     }
 
     /**
@@ -88,7 +89,9 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
      * @param notifier The RunNotifier to notify the test execution.
      * @return The result of the test execution.
      */
-    public Result run(RunNotifier notifier) {
+    public Result run(
+            RunNotifier notifier
+    ) {
         EachTestNotifier testNotifier = new EachTestNotifier(notifier, this.getDescription());
         Result result;
         try {
@@ -136,7 +139,9 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         return String.format("%s [%s]", displayName, discriminator);
     }
 
-    private boolean isSkippedExecution(Result result) {
+    private boolean isSkippedExecution(
+            Result result
+    ) {
         return result == Result.SKIPPED || getNode().errors().anyMatch(WakamitiSkippedException.class::isInstance);
     }
 

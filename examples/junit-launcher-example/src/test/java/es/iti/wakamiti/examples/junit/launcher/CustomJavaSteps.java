@@ -30,7 +30,9 @@ public class CustomJavaSteps implements StepContributor {
     private int result;
 
     @Step(value = "custom.java.set.number", args = "number:int")
-    public void setNumber(Integer number) {
+    public void setNumber(
+            Integer number
+    ) {
         this.number = number;
     }
 
@@ -42,12 +44,16 @@ public class CustomJavaSteps implements StepContributor {
     }
 
     @Step(value = "custom.java.assert.result", args = "expected:int")
-    public void assertResult(Integer expected) {
+    public void assertResult(
+            Integer expected
+    ) {
         Assert.assertEquals(expected.intValue(), result);
     }
 
     @Step(value = "custom.java.schedule.post.execution", args = "action:text")
-    public void schedulePostExecutionAction(String action) {
+    public void schedulePostExecutionAction(
+            String action
+    ) {
         postExecutionRunners.add(() -> LOGGER.debug("[custom-java-step][post] {}", action));
     }
 
@@ -56,4 +62,5 @@ public class CustomJavaSteps implements StepContributor {
         postExecutionRunners.forEach(Runnable::run);
         postExecutionRunners.clear();
     }
+
 }

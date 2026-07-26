@@ -49,8 +49,9 @@ public class WakamitiLauncher {
      *
      * @param args The command-line arguments.
      */
-    public static void main(final String[] args) {
-
+    public static void main(
+            final String[] args
+    ) {
         CliArguments arguments = new CliArguments();
         try {
             arguments.parse(args);
@@ -86,8 +87,9 @@ public class WakamitiLauncher {
             }
 
             boolean passed = runner.run();
-            if (!passed)
+            if (!passed) {
                 System.exit(3);
+            }
         } catch (Exception e) {
             logger.error("Error: {}", e.toString());
             if (logger.isDebugEnabled()) {
@@ -97,7 +99,10 @@ public class WakamitiLauncher {
         }
     }
 
-    private static Logger createLogger(Configuration conf, boolean debug) {
+    private static Logger createLogger(
+            Configuration conf,
+            boolean debug
+    ) {
         String loggerName = "es.iti.wakamiti";
         Optional<Level> level = conf.get("level", String.class).map(String::toUpperCase).map(Level::toLevel);
         Optional<String> path = conf.get("path", String.class);

@@ -50,7 +50,9 @@ public class DefaultBackendFactory implements BackendFactory {
 
     private final WakamitiContributors contributors;
 
-    public DefaultBackendFactory(WakamitiContributors contributors) {
+    public DefaultBackendFactory(
+            WakamitiContributors contributors
+    ) {
         this.contributors = contributors;
     }
 
@@ -65,7 +67,10 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see NonRunnableBackend
      */
     @Override
-    public Backend createBackend(PlanNode testCase, Configuration configuration) {
+    public Backend createBackend(
+            PlanNode testCase,
+            Configuration configuration
+    ) {
         if (testCase.nodeType() != NodeType.TEST_CASE) {
             throw new IllegalArgumentException("Plan node must be of type TEST_CASE");
         }
@@ -87,7 +92,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see NonRunnableBackend
      */
     @Override
-    public Backend createNonRunnableBackend(Configuration configuration) {
+    public Backend createNonRunnableBackend(
+            Configuration configuration
+    ) {
         return doCreateBackend(null, configuration);
     }
 
@@ -100,7 +107,10 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see RunnableBackend
      * @see NonRunnableBackend
      */
-    private Backend doCreateBackend(PlanNode testCase, Configuration configuration) {
+    private Backend doCreateBackend(
+            PlanNode testCase,
+            Configuration configuration
+    ) {
         boolean runnableBackend = (testCase != null);
 
         List<String> restrictedModules = new ArrayList<>(
@@ -150,7 +160,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see SetUp
      * @see ThrowableRunnable
      */
-    private List<ThrowableRunnable> getSetUpOperations(List<StepContributor> stepContributors) {
+    private List<ThrowableRunnable> getSetUpOperations(
+            List<StepContributor> stepContributors
+    ) {
         return loadMethods(stepContributors, SetUp.class, SetUp::order);
     }
 
@@ -162,7 +174,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see TearDown
      * @see ThrowableRunnable
      */
-    private List<ThrowableRunnable> getTearDownOperations(List<StepContributor> stepContributors) {
+    private List<ThrowableRunnable> getTearDownOperations(
+            List<StepContributor> stepContributors
+    ) {
         return loadMethods(stepContributors, TearDown.class, TearDown::order);
     }
 
@@ -182,7 +196,6 @@ public class DefaultBackendFactory implements BackendFactory {
             Configuration configuration,
             boolean allowEmptySteps
     ) {
-
         List<StepContributor> stepContributors = new ArrayList<>();
         if (restrictedModules.isEmpty()) {
             stepContributors.addAll(contributors.createAllStepContributors(configuration));
@@ -245,7 +258,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see WakamitiConfiguration#NON_REGISTERED_STEP_PROVIDERS
      * @see Extension
      */
-    protected void logTipForNoStepContributors(List<String> restrictedModules) {
+    protected void logTipForNoStepContributors(
+            List<String> restrictedModules
+    ) {
         if (restrictedModules.isEmpty()) {
             LOGGER.error(
                     "No step contributors found. You must either declare step modules with "
@@ -323,8 +338,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see DataTypeContributor
      * @see WakamitiDataTypeRegistry
      */
-    protected WakamitiDataTypeRegistry loadTypes(Stream<DataTypeContributor> contributors) {
-
+    protected WakamitiDataTypeRegistry loadTypes(
+            Stream<DataTypeContributor> contributors
+    ) {
         Map<String, WakamitiDataType<?>> types = new HashMap<>();
         contributors.forEach(contributor -> {
             for (WakamitiDataType<?> type : contributor.contributeTypes()) {
@@ -538,7 +554,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @return A Hinter instance for auto-completion suggestions.
      */
     @Override
-    public Hinter createHinter(Configuration configuration) {
+    public Hinter createHinter(
+            Configuration configuration
+    ) {
         List<String> restrictedModules = new ArrayList<>(
                 configuration.getList(WakamitiConfiguration.MODULES, String.class)
         );

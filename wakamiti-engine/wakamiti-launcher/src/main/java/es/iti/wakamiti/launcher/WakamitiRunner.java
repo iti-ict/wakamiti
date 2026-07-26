@@ -35,7 +35,9 @@ public class WakamitiRunner {
      *
      * @param arguments The command-line arguments provided to the application.
      */
-    public WakamitiRunner(CliArguments arguments) {
+    public WakamitiRunner(
+            CliArguments arguments
+    ) {
         this.arguments = arguments;
     }
 
@@ -86,7 +88,9 @@ public class WakamitiRunner {
      * @return The configuration for Wakamiti.
      * @throws URISyntaxException If there is an issue with URI syntax.
      */
-    private Configuration readConfiguration(CliArguments arguments) throws URISyntaxException {
+    private Configuration readConfiguration(
+            CliArguments arguments
+    ) throws URISyntaxException {
         Configuration argumentConfiguration = arguments.wakamitiConfiguration();
         Configuration configuration = Wakamiti.defaultConfiguration()
                 .append(argumentConfiguration);

@@ -37,11 +37,16 @@ public interface WakamitiAPI {
 
     ResourceLoader resourceLoader();
 
-    void publishEvent(String eventType, Object data);
+    void publishEvent(
+            String eventType,
+            Object data
+    );
 
     String version();
 
-    Path workingDir(Configuration configuration);
+    Path workingDir(
+            Configuration configuration
+    );
 
     Configuration defaultConfiguration();
 

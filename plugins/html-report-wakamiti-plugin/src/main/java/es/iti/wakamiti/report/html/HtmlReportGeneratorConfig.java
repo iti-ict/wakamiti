@@ -14,20 +14,27 @@ import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "html-report-config", version = "2.6",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
+/**
+ * Stores the configuration used by the Html Report Generator Config component.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "html-report-config",
+        version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGenerator> {
 
     public static final String PREFIX = "htmlReport";
-    public static final String EXTRA_INFO = PREFIX+".extra_info";
-    public static final String OUTPUT_FILE = PREFIX+".output";
-    public static final String CSS_FILE = PREFIX+".css";
-    public static final String TITLE = PREFIX+".title";
+    public static final String EXTRA_INFO = PREFIX + ".extra_info";
+    public static final String OUTPUT_FILE = PREFIX + ".output";
+    public static final String CSS_FILE = PREFIX + ".css";
+    public static final String TITLE = PREFIX + ".title";
 
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
-        CSS_FILE, "",
-        OUTPUT_FILE, "wakamiti.html"
+            CSS_FILE, "",
+            OUTPUT_FILE, "wakamiti.html"
     );
 
     @Override
@@ -40,7 +47,10 @@ public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGe
         return this::configure;
     }
 
-    private void configure(HtmlReportGenerator contributor, Configuration configuration) {
+    private void configure(
+            HtmlReportGenerator contributor,
+            Configuration configuration
+    ) {
         contributor.setConfiguration(configuration);
     }
 

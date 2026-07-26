@@ -44,7 +44,9 @@ public interface WakamitiDataType<T> {
      * @return The regular expression for the data type in
      * the specified locale.
      */
-    String getRegex(Locale locale);
+    String getRegex(
+            Locale locale
+    );
 
     /**
      * Gets a list of hints associated with the data type
@@ -54,7 +56,9 @@ public interface WakamitiDataType<T> {
      * @return A list of hints for the data type in the specified
      * locale.
      */
-    List<String> getHints(Locale locale);
+    List<String> getHints(
+            Locale locale
+    );
 
     /**
      * Parse a string value into an object of the data type for
@@ -65,7 +69,10 @@ public interface WakamitiDataType<T> {
      * @return An object of the data type parsed from the input
      * string.
      */
-    T parse(Locale locale, String value);
+    T parse(
+            Locale locale,
+            String value
+    );
 
     /**
      * Create and return a matcher for performing matches with the
@@ -77,7 +84,9 @@ public interface WakamitiDataType<T> {
      * @return A matcher for the data type in the specified character
      * sequence.
      */
-    Matcher matcher(Locale locale, CharSequence value);
-
+    Matcher matcher(
+            Locale locale,
+            CharSequence value
+    );
 
 }

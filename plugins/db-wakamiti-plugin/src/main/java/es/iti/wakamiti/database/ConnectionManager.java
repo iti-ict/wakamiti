@@ -30,8 +30,9 @@ public interface ConnectionManager extends Contributor {
      * @return a valid connection
      * @throws SQLException when the connection was not successfully retrieved
      */
-    Connection obtainConnection(ConnectionParameters parameters) throws SQLException;
-
+    Connection obtainConnection(
+            ConnectionParameters parameters
+    ) throws SQLException;
 
     /**
      * Release the connection because it is not required anymore.
@@ -39,8 +40,9 @@ public interface ConnectionManager extends Contributor {
      * @param connection The connection to release
      * @throws SQLException when the connection was not successfully retrieved
      */
-    void releaseConnection(Connection connection) throws SQLException;
-
+    void releaseConnection(
+            Connection connection
+    ) throws SQLException;
 
     /**
      * Obtains a valid connection according to an existing connection. If the
@@ -49,7 +51,7 @@ public interface ConnectionManager extends Contributor {
      *
      * @param connection The current connection
      * @return a valid connection
-     * @throws SQLException when the connection was not successfully retrieved 
+     * @throws SQLException when the connection was not successfully retrieved
      */
     default Connection refreshConnection(
             Connection connection,

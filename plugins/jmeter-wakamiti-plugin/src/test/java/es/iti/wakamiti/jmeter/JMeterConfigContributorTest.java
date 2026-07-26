@@ -252,7 +252,11 @@ public class JMeterConfigContributorTest {
         }
     }
 
-    private <T> T field(Object o, String f, Class<T> t) {
+    private <T> T field(
+            Object o,
+            String f,
+            Class<T> t
+    ) {
         try {
             Field field = o.getClass().getDeclaredField(f);
             field.setAccessible(true);
@@ -262,7 +266,10 @@ public class JMeterConfigContributorTest {
         }
     }
 
-    private <T> Optional<T> get(List<?> list, Class<T> t) {
+    private <T> Optional<T> get(
+            List<?> list,
+            Class<T> t
+    ) {
         return list.stream().filter(o -> t.isAssignableFrom(o.getClass())).map(t::cast).findFirst();
     }
 

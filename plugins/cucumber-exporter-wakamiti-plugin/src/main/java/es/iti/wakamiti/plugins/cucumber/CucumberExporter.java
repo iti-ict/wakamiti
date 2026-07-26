@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.plugins.cucumber;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -26,8 +27,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
-@Extension(name = "cucumber-exporter", version = "2.6")
+@Extension(
+        name = "cucumber-exporter",
+        version = "2.6"
+)
 public class CucumberExporter implements Reporter {
 
     public static final Logger LOGGER = WakamitiLogger.forClass(CucumberExporter.class);
@@ -59,7 +62,9 @@ public class CucumberExporter implements Reporter {
     private String outputFile = "cucumber-report.json";
     private Strategy strategy = Strategy.INNERSTEPS;
 
-    private static String description(PlanNodeSnapshot node) {
+    private static String description(
+            PlanNodeSnapshot node
+    ) {
         if (node.getDescription() != null && !node.getDescription().isEmpty()) {
             return String.join("\n", node.getDescription());
         } else {
@@ -67,21 +72,28 @@ public class CucumberExporter implements Reporter {
         }
     }
 
-    private static String keyword(PlanNodeSnapshot node) {
+    private static String keyword(
+            PlanNodeSnapshot node
+    ) {
         return (node.getKeyword() == null || node.getKeyword().isEmpty() ? " " : node.getKeyword());
     }
 
-    public void setOutputFile(String outputFile) {
+    public void setOutputFile(
+            String outputFile
+    ) {
         this.outputFile = outputFile;
     }
 
-    public void setStrategy(Strategy strategy) {
+    public void setStrategy(
+            Strategy strategy
+    ) {
         this.strategy = strategy;
     }
 
     @Override
-    public void report(PlanNodeSnapshot rootNode) {
-
+    public void report(
+            PlanNodeSnapshot rootNode
+    ) {
         ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
         try (Writer writer = new BufferedWriter(new FileWriter(resourceLoader.absolutePath(new File(outputFile)), charset))) {
             List<Map<String, Object>> features = stream(rootNode)
@@ -92,11 +104,11 @@ public class CucumberExporter implements Reporter {
         } catch (IOException e) {
             LOGGER.error("Error exporting to Cucumber format: {}", e.getMessage(), e);
         }
-
-
     }
 
-    private Map<String, Object> mapFeature(PlanNodeSnapshot feature) {
+    private Map<String, Object> mapFeature(
+            PlanNodeSnapshot feature
+    ) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(URI, feature.getSource());
         map.put(KEYWORD, keyword(feature));
@@ -112,7 +124,9 @@ public class CucumberExporter implements Reporter {
         return map;
     }
 
-    private Map<String, Object> mapScenario(PlanNodeSnapshot scenario) {
+    private Map<String, Object> mapScenario(
+            PlanNodeSnapshot scenario
+    ) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(KEYWORD, keyword(scenario));
         map.put(ID, scenario.getId());
@@ -134,7 +148,10 @@ public class CucumberExporter implements Reporter {
         return map;
     }
 
-    private Map<String, Object> mapStep(PlanNodeSnapshot definitionStep, PlanNodeSnapshot resultStep) {
+    private Map<String, Object> mapStep(
+            PlanNodeSnapshot definitionStep,
+            PlanNodeSnapshot resultStep
+    ) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(KEYWORD, keyword(definitionStep));
         map.put(NAME, definitionStep.getName());
@@ -169,7 +186,9 @@ public class CucumberExporter implements Reporter {
         return map;
     }
 
-    private List<Map<String, Object>> mapStepAggregator(PlanNodeSnapshot step) {
+    private List<Map<String, Object>> mapStepAggregator(
+            PlanNodeSnapshot step
+    ) {
         if (strategy == Strategy.INNERSTEPS) {
             return stream(step)
                     .filter(it -> it.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP))
@@ -185,7 +204,9 @@ public class CucumberExporter implements Reporter {
         }
     }
 
-    private List<?> mapTags(PlanNodeSnapshot node) {
+    private List<?> mapTags(
+            PlanNodeSnapshot node
+    ) {
         if (node.getTags() == null || node.getTags().isEmpty()) {
             return null;
         }
@@ -195,19 +216,26 @@ public class CucumberExporter implements Reporter {
                 .collect(Collectors.toList());
     }
 
-    private Stream<PlanNodeSnapshot> stream(PlanNodeSnapshot node) {
+    private Stream<PlanNodeSnapshot> stream(
+            PlanNodeSnapshot node
+    ) {
         return Stream.concat(
                 Stream.of(node),
                 node.getChildren() == null ? Stream.empty() : node.getChildren().stream().flatMap(this::stream)
         );
     }
 
-    private boolean gherkinFeature(PlanNodeSnapshot node) {
+    private boolean gherkinFeature(
+            PlanNodeSnapshot node
+    ) {
         return node.getProperties() != null && "feature".equals(node.getProperties().get("gherkinType"));
     }
 
+    public enum Strategy {
 
-    public enum Strategy {INNERSTEPS, OUTERSTEPS}
+        INNERSTEPS,
+        OUTERSTEPS
 
+    }
 
 }

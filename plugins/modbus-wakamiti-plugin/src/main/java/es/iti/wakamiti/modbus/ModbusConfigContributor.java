@@ -33,7 +33,9 @@ public class ModbusConfigContributor implements ConfigContributor<ModbusStepCont
     );
 
     @Override
-    public boolean accepts(Object contributor) {
+    public boolean accepts(
+            Object contributor
+    ) {
         return contributor instanceof ModbusStepContributor;
     }
 
@@ -47,11 +49,13 @@ public class ModbusConfigContributor implements ConfigContributor<ModbusStepCont
         return this::configure;
     }
 
-    private void configure(ModbusStepContributor contributor, Configuration configuration) {
+    private void configure(
+            ModbusStepContributor contributor,
+            Configuration configuration
+    ) {
         configuration.get(HOST, String.class).ifPresent(contributor::setHost);
         configuration.get(PORT, Integer.class).ifPresent(contributor::setPort);
         configuration.get(SLAVE_ID, String.class).ifPresent(contributor::setSlaveId);
-
     }
 
 }

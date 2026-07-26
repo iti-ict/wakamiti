@@ -5,22 +5,29 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser.internal;
+
 
 import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan;
 import es.iti.wakamiti.core.gherkin.parser.internal.StringUtils;
 import es.iti.wakamiti.core.gherkin.parser.internal.Token;
 
+
 public class TokenFormatter {
-    private static final es.iti.wakamiti.core.gherkin.parser.internal.StringUtils.ToString<es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan> SPAN_TO_STRING = new es.iti.wakamiti.core.gherkin.parser.internal.StringUtils.ToString<es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan>() {
+
+    private static final StringUtils.ToString<GherkinLineSpan> SPAN_TO_STRING =
+            new StringUtils.ToString<>() {
         @Override
-        public String toString(GherkinLineSpan o) {
+        public String toString(
+                GherkinLineSpan o
+        ) {
             return o.column + ":" + o.text;
         }
     };
 
-    public String formatToken(Token token) {
+    public String formatToken(
+            Token token
+    ) {
         if (token.isEOF())
             return "EOF";
 
@@ -34,7 +41,10 @@ public class TokenFormatter {
         );
     }
 
-    private String toString(Object o) {
+    private String toString(
+            Object o
+    ) {
         return o == null ? "" : o.toString();
     }
+
 }

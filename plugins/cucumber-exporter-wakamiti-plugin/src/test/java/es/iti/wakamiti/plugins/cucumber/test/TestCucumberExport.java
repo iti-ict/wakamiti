@@ -26,10 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestCucumberExport {
 
-
     @Test
     public void testCucumberExport() throws IOException {
-
         JsonPlanSerializer serializer = new JsonPlanSerializer();
         PlanNodeSnapshot planOk = serializer.read(Path.of("src/test/resources/wakamiti-ok.json"));
         PlanNodeSnapshot planFailed = serializer.read(Path.of("src/test/resources/wakamiti-failed.json"));

@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
 
@@ -25,7 +24,6 @@ import java.util.List;
 class AmqpJsonDiff {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
 
     void assertValidExpected(
             String expected
@@ -180,4 +178,5 @@ class AmqpJsonDiff {
         i.forEachRemaining(list::add);
         return list;
     }
+
 }

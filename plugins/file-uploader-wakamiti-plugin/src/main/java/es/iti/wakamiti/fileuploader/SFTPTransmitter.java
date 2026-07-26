@@ -34,7 +34,13 @@ public class SFTPTransmitter implements FTPTransmitter {
     }
 
     @Override
-    public void connect(String username, String host, Integer port, String password, String identity) throws IOException {
+    public void connect(
+            String username,
+            String host,
+            Integer port,
+            String password,
+            String identity
+    ) throws IOException {
         try {
             JSch.setConfig("StrictHostKeyChecking", "no");
             JSch ssh = new JSch();
@@ -69,7 +75,10 @@ public class SFTPTransmitter implements FTPTransmitter {
     }
 
     @Override
-    public void transferFile(Path localFile, Path destinationFolder) throws IOException {
+    public void transferFile(
+            Path localFile,
+            Path destinationFolder
+    ) throws IOException {
         try {
             createDestinationDirectory(destinationFolder);
             channel.put(
@@ -81,7 +90,9 @@ public class SFTPTransmitter implements FTPTransmitter {
         }
     }
 
-    private void createDestinationDirectory(Path dirPath) throws SftpException {
+    private void createDestinationDirectory(
+            Path dirPath
+    ) throws SftpException {
         if (dirPath.getParent() != null) {
             createDestinationDirectory(dirPath.getParent());
         }
@@ -90,7 +101,9 @@ public class SFTPTransmitter implements FTPTransmitter {
         }
     }
 
-    private boolean checkExists(String path) throws SftpException {
+    private boolean checkExists(
+            String path
+    ) throws SftpException {
         try {
             return !channel.ls(path).isEmpty();
         } catch (SftpException e) {
@@ -100,4 +113,5 @@ public class SFTPTransmitter implements FTPTransmitter {
             throw e;
         }
     }
+
 }

@@ -7,7 +7,9 @@
  */
 package es.iti.wakamiti.xray.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestRun {
@@ -24,7 +26,9 @@ public class TestRun {
         return id;
     }
 
-    public TestRun setId(String id) {
+    public TestRun setId(
+            String id
+    ) {
         this.id = id;
         return this;
     }
@@ -33,7 +37,9 @@ public class TestRun {
         return status;
     }
 
-    public TestRun setStatus(TestStatus status) {
+    public TestRun setStatus(
+            TestStatus status
+    ) {
         this.status = status;
         return this;
     }
@@ -42,8 +48,11 @@ public class TestRun {
         return test;
     }
 
-    public TestRun setTest(TestCase test) {
+    public TestRun setTest(
+            TestCase test
+    ) {
         this.test = test;
         return this;
     }
+
 }

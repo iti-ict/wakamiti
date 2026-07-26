@@ -32,7 +32,9 @@ public interface PlanSerializer {
      * @return The deserialized {@link PlanNodeSnapshot} object.
      * @throws IOException If an I/O error occurs during deserialization.
      */
-    PlanNodeSnapshot deserialize(String json) throws IOException;
+    PlanNodeSnapshot deserialize(
+            String json
+    ) throws IOException;
 
     /**
      * Serializes the given {@link PlanNodeSnapshot} object into a JSON string.
@@ -41,7 +43,9 @@ public interface PlanSerializer {
      * @return The serialized JSON string.
      * @throws IOException If an I/O error occurs during serialization.
      */
-    String serialize(PlanNodeSnapshot node) throws IOException;
+    String serialize(
+            PlanNodeSnapshot node
+    ) throws IOException;
 
     /**
      * Writes the serialized representation of a {@link PlanNodeSnapshot} object
@@ -51,7 +55,10 @@ public interface PlanSerializer {
      * @param node   The {@link PlanNodeSnapshot} to write.
      * @throws IOException If an I/O error occurs during writing.
      */
-    void write(Writer writer, PlanNodeSnapshot node) throws IOException;
+    void write(
+            Writer writer,
+            PlanNodeSnapshot node
+    ) throws IOException;
 
     /**
      * Reads the serialized representation of a {@link PlanNodeSnapshot} object
@@ -61,7 +68,9 @@ public interface PlanSerializer {
      * @return The deserialized {@link PlanNodeSnapshot} object.
      * @throws IOException If an I/O error occurs during reading.
      */
-    PlanNodeSnapshot read(Reader reader) throws IOException;
+    PlanNodeSnapshot read(
+            Reader reader
+    ) throws IOException;
 
     /**
      * Serializes the given {@link PlanNode} object into a JSON string.
@@ -70,7 +79,9 @@ public interface PlanSerializer {
      * @return The serialized JSON string.
      * @throws IOException If an I/O error occurs during serialization.
      */
-    default String serialize(PlanNode node) throws IOException {
+    default String serialize(
+            PlanNode node
+    ) throws IOException {
         return serialize(new PlanNodeSnapshot(node));
     }
 
@@ -82,7 +93,10 @@ public interface PlanSerializer {
      * @param node   The {@link PlanNode} to write.
      * @throws IOException If an I/O error occurs during writing.
      */
-    default void write(Writer writer, PlanNode node) throws IOException {
+    default void write(
+            Writer writer,
+            PlanNode node
+    ) throws IOException {
         write(writer, new PlanNodeSnapshot(node));
     }
 
@@ -94,7 +108,9 @@ public interface PlanSerializer {
      * @return The deserialized {@link PlanNodeSnapshot} object.
      * @throws IOException If an I/O error occurs during reading.
      */
-    default PlanNodeSnapshot read(InputStream inputStream) throws IOException {
+    default PlanNodeSnapshot read(
+            InputStream inputStream
+    ) throws IOException {
         try (InputStreamReader reader = new InputStreamReader(
                 inputStream, StandardCharsets.UTF_8
         )) {
@@ -110,7 +126,9 @@ public interface PlanSerializer {
      * @return The deserialized {@link PlanNodeSnapshot} object.
      * @throws IOException If an I/O error occurs during reading.
      */
-    default PlanNodeSnapshot read(File file) throws IOException {
+    default PlanNodeSnapshot read(
+            File file
+    ) throws IOException {
         try (InputStream stream = new FileInputStream(file)) {
             return read(stream);
         }
@@ -124,7 +142,9 @@ public interface PlanSerializer {
      * @return The deserialized {@link PlanNodeSnapshot} object.
      * @throws IOException If an I/O error occurs during reading.
      */
-    default PlanNodeSnapshot read(Path path) throws IOException {
+    default PlanNodeSnapshot read(
+            Path path
+    ) throws IOException {
         try (InputStream stream = new FileInputStream(path.toFile())) {
             return read(stream);
         }
@@ -138,7 +158,9 @@ public interface PlanSerializer {
      * @return The deserialized {@link PlanNodeSnapshot} objects.
      * @throws IOException If an I/O error occurs during reading.
      */
-    default Collection<PlanNodeSnapshot> read(Collection<Path> paths) throws IOException {
+    default Collection<PlanNodeSnapshot> read(
+            Collection<Path> paths
+    ) throws IOException {
         return paths.stream().map(ThrowableFunction.unchecked(this::read))
                 .collect(Collectors.toList());
     }

@@ -225,4 +225,5 @@ public class StepPropertyEvaluatorTest {
     public void testResolveWhenNotValidOperationWithError() {
         resolver.eval("'${2#//user}'");
     }
+
 }

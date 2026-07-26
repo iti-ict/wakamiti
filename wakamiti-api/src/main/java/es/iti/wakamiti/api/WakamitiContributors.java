@@ -44,7 +44,9 @@ public class WakamitiContributors {
     private final List<StepContributor> stepContributors = new LinkedList<>();
     private ExtensionManager extensionManager = new ExtensionManager();
 
-    public void setClassLoaders(ClassLoader... loaders) {
+    public void setClassLoaders(
+            ClassLoader... loaders
+    ) {
         this.extensionManager = new ExtensionManager(loaders);
     }
 
@@ -84,7 +86,9 @@ public class WakamitiContributors {
      * @return The contributor of the specified type.
      * @throws WakamitiException If the contributor is not found.
      */
-    public <T extends Contributor> T getContributor(Class<T> contributorClass) {
+    public <T extends Contributor> T getContributor(
+            Class<T> contributorClass
+    ) {
         return stepContributors.stream()
                 .filter(c -> contributorClass.isAssignableFrom(c.getClass()))
                 .map(contributorClass::cast)
@@ -97,7 +101,9 @@ public class WakamitiContributors {
      *
      * @param contributors List of StepContributors to add.
      */
-    public void addStepContributors(List<StepContributor> contributors) {
+    public void addStepContributors(
+            List<StepContributor> contributors
+    ) {
         stepContributors.addAll(contributors);
     }
 
@@ -142,7 +148,9 @@ public class WakamitiContributors {
      * @return Optional containing the ResourceType with the specified
      * name, or empty if not found.
      */
-    public Optional<ResourceType<?>> resourceTypeByName(String name) {
+    public Optional<ResourceType<?>> resourceTypeByName(
+            String name
+    ) {
         return availableResourceTypes().filter(
                 resourceType -> resourceType.extensionMetadata().name().equals(name)
         ).findAny();
@@ -156,7 +164,9 @@ public class WakamitiContributors {
      * @return Stream of DataTypeContributor instances satisfying the
      * specified modules.
      */
-    public Stream<DataTypeContributor> dataTypeContributors(List<String> modules) {
+    public Stream<DataTypeContributor> dataTypeContributors(
+            List<String> modules
+    ) {
         Predicate<Extension> condition = extension -> modules.contains(extension.name());
         return extensionManager
                 .getExtensionsThatSatisfyMetadata(DataTypeContributor.class, condition)
@@ -200,7 +210,9 @@ public class WakamitiContributors {
      * @param configuration Configuration to be applied.
      * @return List of StepContributor instances.
      */
-    public List<StepContributor> createAllStepContributors(Configuration configuration) {
+    public List<StepContributor> createAllStepContributors(
+            Configuration configuration
+    ) {
         return extensionManager
                 .getExtensions(StepContributor.class)
                 .peek(this::checkVersion)
@@ -222,7 +234,9 @@ public class WakamitiContributors {
      * contributor type.
      */
     @SuppressWarnings("unchecked")
-    public <T> Stream<ConfigContributor<T>> configuratorsFor(T contributor) {
+    public <T> Stream<ConfigContributor<T>> configuratorsFor(
+            T contributor
+    ) {
         return extensionManager
                 .getExtensionsThatSatisfy(ConfigContributor.class, c -> c.accepts(contributor))
                 .peek(this::checkVersion)
@@ -237,7 +251,10 @@ public class WakamitiContributors {
      * @param <T>           The type of the contributor.
      * @return The configured contributor.
      */
-    public <T> T configure(T contributor, Configuration configuration) {
+    public <T> T configure(
+            T contributor,
+            Configuration configuration
+    ) {
         if (contributor instanceof Configurable) {
             ((Configurable) contributor).configure(configuration);
         }
@@ -256,7 +273,9 @@ public class WakamitiContributors {
      *
      * @param configuration The configuration to use for property resolvers.
      */
-    public void propertyResolvers(Configuration configuration) {
+    public void propertyResolvers(
+            Configuration configuration
+    ) {
         extensionManager.getExtensions(PropertyEvaluator.class)
                 .peek(this::checkVersion)
                 .forEach(c -> configure(c, configuration));
@@ -283,7 +302,9 @@ public class WakamitiContributors {
      *
      * @param contributor The contributor to check.
      */
-    private void checkVersion(Contributor contributor) {
+    private void checkVersion(
+            Contributor contributor
+    ) {
         String coreVersion = WakamitiAPI.instance().version();
         Optional<Pair<Integer, Integer>> coreVersionOptional = Optional.ofNullable(coreVersion)
                 .flatMap(this::extractVersion);
@@ -307,7 +328,9 @@ public class WakamitiContributors {
         );
     }
 
-    private Optional<Pair<Integer, Integer>> extractVersion(String version) {
+    private Optional<Pair<Integer, Integer>> extractVersion(
+            String version
+    ) {
         Matcher matcher = VERSION_PATTERN.matcher(version);
         if (matcher.matches()) {
             return Optional.of(new Pair<>(
@@ -318,7 +341,10 @@ public class WakamitiContributors {
         return Optional.empty();
     }
 
-    private int compareVersions(Pair<Integer, Integer> left, Pair<Integer, Integer> right) {
+    private int compareVersions(
+            Pair<Integer, Integer> left,
+            Pair<Integer, Integer> right
+    ) {
         int majorComparison = Integer.compare(left.key(), right.key());
         if (majorComparison != 0) {
             return majorComparison;
@@ -326,7 +352,10 @@ public class WakamitiContributors {
         return Integer.compare(left.value(), right.value());
     }
 
-    private String formatVersion(Pair<Integer, Integer> version) {
+    private String formatVersion(
+            Pair<Integer, Integer> version
+    ) {
         return version.key() + "." + version.value();
     }
+
 }

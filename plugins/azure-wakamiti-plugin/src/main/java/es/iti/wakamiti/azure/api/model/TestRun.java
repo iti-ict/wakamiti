@@ -34,7 +34,9 @@ public class TestRun extends BaseModel {
     @JsonProperty
     private final boolean automated = true;
 
-    public TestRun id(String id) {
+    public TestRun id(
+            String id
+    ) {
         this.id = id;
         return this;
     }
@@ -43,7 +45,9 @@ public class TestRun extends BaseModel {
         return id;
     }
 
-    public TestRun name(String name) {
+    public TestRun name(
+            String name
+    ) {
         this.name = name;
         return this;
     }
@@ -52,7 +56,9 @@ public class TestRun extends BaseModel {
         return name;
     }
 
-    public TestRun plan(TestPlan plan) {
+    public TestRun plan(
+            TestPlan plan
+    ) {
         this.plan = plan;
         return this;
     }
@@ -61,7 +67,9 @@ public class TestRun extends BaseModel {
         return plan;
     }
 
-    public TestRun pointIds(List<String> pointIds) {
+    public TestRun pointIds(
+            List<String> pointIds
+    ) {
         this.pointIds = pointIds;
         return this;
     }
@@ -70,7 +78,9 @@ public class TestRun extends BaseModel {
         return pointIds;
     }
 
-    public TestRun state(Status state) {
+    public TestRun state(
+            Status state
+    ) {
         this.state = state;
         return this;
     }
@@ -79,7 +89,9 @@ public class TestRun extends BaseModel {
         return state;
     }
 
-    public TestRun comment(String comment) {
+    public TestRun comment(
+            String comment
+    ) {
         this.comment = comment;
         return this;
     }
@@ -88,7 +100,9 @@ public class TestRun extends BaseModel {
         return comment;
     }
 
-    public TestRun errorMessage(String errorMessage) {
+    public TestRun errorMessage(
+            String errorMessage
+    ) {
         this.errorMessage = errorMessage;
         return this;
     }
@@ -103,6 +117,7 @@ public class TestRun extends BaseModel {
     }
 
     public enum Status {
+
         @JsonProperty("Unspecified")
         UNSPECIFIED,
         @JsonProperty("NotStarted")
@@ -119,5 +134,7 @@ public class TestRun extends BaseModel {
         ABORTED,
         @JsonProperty("NeedsInvestigation")
         NEEDS_INVESTIGATION;
+
     }
+
 }

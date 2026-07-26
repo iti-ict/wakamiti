@@ -21,12 +21,17 @@ public class Document implements PlanNodeData {
     private final String content;
     private final String contentType;
 
-    public Document(String content) {
+    public Document(
+            String content
+    ) {
         this.content = content;
         this.contentType = null;
     }
 
-    public Document(String content, String contentType) {
+    public Document(
+            String content,
+            String contentType
+    ) {
         this.content = content;
         this.contentType = contentType;
     }
@@ -45,7 +50,9 @@ public class Document implements PlanNodeData {
     }
 
     @Override
-    public PlanNodeData copyReplacingVariables(UnaryOperator<String> replacer) {
+    public PlanNodeData copyReplacingVariables(
+            UnaryOperator<String> replacer
+    ) {
         return new Document(replacer.apply(content), contentType);
     }
 

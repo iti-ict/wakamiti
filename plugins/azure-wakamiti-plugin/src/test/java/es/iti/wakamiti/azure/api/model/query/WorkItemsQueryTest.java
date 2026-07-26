@@ -28,7 +28,6 @@ public class WorkItemsQueryTest {
 
     @Test
     public void tesQueryWhenSingleWhereWithSuccess() {
-
         Map<String, BiFunction<Criteria, String, Expression>> criterias = mapEntries(
                 entry("= '%s'", Criteria::isEqualsTo),
                 entry("<> '%s'", Criteria::isNotEqualsTo),
@@ -71,9 +70,9 @@ public class WorkItemsQueryTest {
         WorkItemsQuery query = new WorkItemsQuery();
         query.select("System.Id", "System.State")
                 .where(field(TYPE).isEqualsTo("A").and(
-                        field("System.State").isEqualsTo("Y")
-                                .or(field(STATE).isEqualsTo("@project"))
-                ).andEver(field(TITLE).isEqualsTo("Y"))
+                                field("System.State").isEqualsTo("Y")
+                                        .or(field(STATE).isEqualsTo("@project"))
+                        ).andEver(field(TITLE).isEqualsTo("Y"))
                         .orEver(field(DESCRIPTION).isEqualsTo("@project")))
                 .asof("2024-05-03");
 
@@ -112,4 +111,5 @@ public class WorkItemsQueryTest {
                         + "MODE (Recursive)"
         );
     }
+
 }

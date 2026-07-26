@@ -7,11 +7,13 @@
  */
 package es.iti.wakamiti.api.model;
 
+
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import org.junit.Before;
 import org.junit.Test;
+
 
 import java.time.Duration;
 import java.time.Instant;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class ExecutableTreeNodeTest {
 

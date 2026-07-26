@@ -26,7 +26,10 @@ public interface Assertion<T> {
      * @param assertion   The assertion condition to apply.
      * @param <T>         The type parameter for the value and assertion.
      */
-    static <T> void assertThat(T actualValue, Assertion<T> assertion) {
+    static <T> void assertThat(
+            T actualValue,
+            Assertion<T> assertion
+    ) {
         if (!assertion.test(actualValue)) {
             throw new AssertionError(assertion.describeFailure(actualValue));
         }
@@ -38,7 +41,9 @@ public interface Assertion<T> {
      * @param actualValue The value to test the assertion against.
      * @return {@code true} if the assertion is satisfied, {@code false} otherwise.
      */
-    boolean test(Object actualValue);
+    boolean test(
+            Object actualValue
+    );
 
     /**
      * Provides a description of the assertion.
@@ -53,5 +58,8 @@ public interface Assertion<T> {
      * @param actualValue The value that failed the assertion.
      * @return A string describing the failure of the assertion.
      */
-    String describeFailure(Object actualValue);
+    String describeFailure(
+            Object actualValue
+    );
+
 }

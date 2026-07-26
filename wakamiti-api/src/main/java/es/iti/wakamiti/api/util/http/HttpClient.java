@@ -92,7 +92,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     private transient Consumer<HttpResponse<Optional<JsonNode>>> postCall = response -> {
     };
 
-    protected HttpClient(URL baseUrl) {
+    protected HttpClient(
+            URL baseUrl
+    ) {
         this.baseUrl = baseUrl;
         finalHeaders.putAll(map("Content-Type", "application/json", "Accept", "application/json"));
     }
@@ -108,47 +110,68 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10);
     }
 
-    public SELF postCall(Consumer<HttpResponse<Optional<JsonNode>>> postCall) {
+    public SELF postCall(
+            Consumer<HttpResponse<Optional<JsonNode>>> postCall
+    ) {
         this.postCall = postCall;
         return self();
     }
 
     @Override
-    public SELF queryParam(String name, Object value) {
+    public SELF queryParam(
+            String name,
+            Object value
+    ) {
         queryParams.put(name, value);
         return self();
     }
 
     @Override
-    public SELF pathParam(String name, Object value) {
+    public SELF pathParam(
+            String name,
+            Object value
+    ) {
         pathParams.put(name, value);
         return self();
     }
 
     @Override
-    public SELF header(String name, Object value) {
+    public SELF header(
+            String name,
+            Object value
+    ) {
         headers.put(name, value);
         return self();
     }
 
-    public SELF basicAuth(String username, String password) {
-        finalHeaders.put(AUTHORIZATION, "Basic " +
-                Base64.getEncoder().encodeToString((username + ":" + password).getBytes()));
+    public SELF basicAuth(
+            String username,
+            String password
+    ) {
+        finalHeaders.put(AUTHORIZATION, "Basic "
+                + Base64.getEncoder().encodeToString((username + ":" + password).getBytes()));
         return self();
     }
 
-    public SELF bearerAuth(String token) {
+    public SELF bearerAuth(
+            String token
+    ) {
         finalHeaders.put(AUTHORIZATION, "Bearer " + token);
         return self();
     }
 
     @Override
-    public SELF body(String body) {
+    public SELF body(
+            String body
+    ) {
         this.body = Optional.ofNullable(body).filter(StringUtils::isNotBlank).map(JsonUtils::json).orElse(null);
         return self();
     }
 
-    private HttpRequest buildRequest(String method, String path) {
+    private HttpRequest buildRequest(
+            String method,
+            String path
+    ) {
         finalPathParams.forEach(pathParams::putIfAbsent);
         finalQueryParams.forEach(queryParams::putIfAbsent);
         finalHeaders.forEach(headers::putIfAbsent);
@@ -167,7 +190,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         return builder.build();
     }
 
-    private URI uri(String path) {
+    private URI uri(
+            String path
+    ) {
         try {
             path = format(path, pathParams);
             String encoded = encodeURI(path.startsWith("/") ? path : "/" + path);
@@ -177,88 +202,126 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         }
     }
 
-    protected HttpRequest buildPost(String uri) {
+    protected HttpRequest buildPost(
+            String uri
+    ) {
         return buildRequest("POST", uri);
     }
 
-    protected HttpRequest buildGet(String uri) {
+    protected HttpRequest buildGet(
+            String uri
+    ) {
         return buildRequest("GET", uri);
     }
 
-    protected HttpRequest buildPut(String uri) {
+    protected HttpRequest buildPut(
+            String uri
+    ) {
         return buildRequest("PUT", uri);
     }
 
-    protected HttpRequest buildPatch(String uri) {
+    protected HttpRequest buildPatch(
+            String uri
+    ) {
         return buildRequest("PATCH", uri);
     }
 
-    protected HttpRequest buildDelete(String uri) {
+    protected HttpRequest buildDelete(
+            String uri
+    ) {
         return buildRequest("DELETE", uri);
     }
 
-    protected HttpRequest buildOptions(String uri) {
+    protected HttpRequest buildOptions(
+            String uri
+    ) {
         return buildRequest("OPTIONS", uri);
     }
 
-    protected HttpRequest buildHead(String uri) {
+    protected HttpRequest buildHead(
+            String uri
+    ) {
         return buildRequest("HEAD", uri);
     }
 
-    protected HttpRequest buildContent(String uri) {
+    protected HttpRequest buildContent(
+            String uri
+    ) {
         return buildRequest("CONTENT", uri);
     }
 
-    protected HttpRequest buildTrace(String uri) {
+    protected HttpRequest buildTrace(
+            String uri
+    ) {
         return buildRequest("TRACE", uri);
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> post(String uri) {
+    public HttpResponse<Optional<JsonNode>> post(
+            String uri
+    ) {
         return send(buildPost(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> get(String uri) {
+    public HttpResponse<Optional<JsonNode>> get(
+            String uri
+    ) {
         return send(buildGet(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> put(String uri) {
+    public HttpResponse<Optional<JsonNode>> put(
+            String uri
+    ) {
         return send(buildPut(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> patch(String uri) {
+    public HttpResponse<Optional<JsonNode>> patch(
+            String uri
+    ) {
         return send(buildPatch(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> delete(String uri) {
+    public HttpResponse<Optional<JsonNode>> delete(
+            String uri
+    ) {
         return send(buildDelete(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> options(String uri) {
+    public HttpResponse<Optional<JsonNode>> options(
+            String uri
+    ) {
         return send(buildOptions(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> head(String uri) {
+    public HttpResponse<Optional<JsonNode>> head(
+            String uri
+    ) {
         return send(buildHead(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> content(String uri) {
+    public HttpResponse<Optional<JsonNode>> content(
+            String uri
+    ) {
         return send(buildContent(uri));
     }
 
     @Override
-    public HttpResponse<Optional<JsonNode>> trace(String uri) {
+    public HttpResponse<Optional<JsonNode>> trace(
+            String uri
+    ) {
         return send(buildTrace(uri));
     }
 
-    protected HttpResponse<Optional<JsonNode>> send(HttpRequest request) {
+    protected HttpResponse<Optional<JsonNode>> send(
+            HttpRequest request
+    ) {
         try {
             if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("HTTP call => {} ", stringify(request));
@@ -279,51 +342,71 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> postAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> postAsync(
+            String uri
+    ) {
         return sendAsync(buildPost(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> getAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> getAsync(
+            String uri
+    ) {
         return sendAsync(buildGet(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> putAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> putAsync(
+            String uri
+    ) {
         return sendAsync(buildPut(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> patchAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> patchAsync(
+            String uri
+    ) {
         return sendAsync(buildPatch(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> deleteAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> deleteAsync(
+            String uri
+    ) {
         return sendAsync(buildDelete(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> optionsAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> optionsAsync(
+            String uri
+    ) {
         return sendAsync(buildOptions(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> headAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> headAsync(
+            String uri
+    ) {
         return sendAsync(buildHead(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> contentAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> contentAsync(
+            String uri
+    ) {
         return sendAsync(buildContent(uri));
     }
 
     @Override
-    public CompletableFuture<HttpResponse<Optional<JsonNode>>> traceAsync(String uri) {
+    public CompletableFuture<HttpResponse<Optional<JsonNode>>> traceAsync(
+            String uri
+    ) {
         return sendAsync(buildTrace(uri));
     }
 
-    private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(HttpRequest request) {
+    private CompletableFuture<HttpResponse<Optional<JsonNode>>> sendAsync(
+            HttpRequest request
+    ) {
         renewExecutor();
         attempts.incrementAndGet();
         return CLIENT.build()
@@ -367,7 +450,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
      * of exceeded attempts.
      */
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> attemptRetry(
-            HttpResponse<Optional<JsonNode>> response, Throwable throwable) {
+            HttpResponse<Optional<JsonNode>> response,
+            Throwable throwable
+    ) {
         if (attempts.get() < DEFAULT_MAX_ATTEMPTS) {
             LOGGER.warn("Retrying: attempt={} path={}", attempts.get() + 1, response.request().uri());
             return CompletableFuture.supplyAsync(() -> sendAsync(response.request()), executor)
@@ -392,8 +477,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
      * depending on {@link #DEFAULT_THROW_WHEN_RETRY_ON_RESPONSE_EXCEEDED }
      */
     private CompletableFuture<HttpResponse<Optional<JsonNode>>> handleRetryExceeded(
-            HttpResponse<Optional<JsonNode>> response, Throwable throwable) {
-
+            HttpResponse<Optional<JsonNode>> response,
+            Throwable throwable
+    ) {
         if (throwable != null || DEFAULT_THROW_WHEN_RETRY_ON_RESPONSE_EXCEEDED) {
             Throwable ex = throwable == null
                     ? new RuntimeException("Retries exceeded: status-code=" + response.statusCode())
@@ -405,20 +491,24 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         }
     }
 
-    private String stringify(HttpRequest request) {
-        return System.lineSeparator() +
-                "Request method:\t" + request.method() + System.lineSeparator() +
-                "Request URI:\t" + request.uri() + System.lineSeparator() +
-                "Query params:\t" + stringify(queryParams) + System.lineSeparator() +
-                "Path params:\t" + stringify(pathParams) + System.lineSeparator() +
-                "Headers:\t\t" + stringify(headers) + System.lineSeparator() +
-                "Body:\t\t\t" +
-                Optional.ofNullable(body).map(JsonNode::toPrettyString)
+    private String stringify(
+            HttpRequest request
+    ) {
+        return System.lineSeparator()
+                + "Request method:\t" + request.method() + System.lineSeparator()
+                + "Request URI:\t" + request.uri() + System.lineSeparator()
+                + "Query params:\t" + stringify(queryParams) + System.lineSeparator()
+                + "Path params:\t" + stringify(pathParams) + System.lineSeparator()
+                + "Headers:\t\t" + stringify(headers) + System.lineSeparator()
+                + "Body:\t\t\t"
+                + Optional.ofNullable(body).map(JsonNode::toPrettyString)
                         .map(j -> System.lineSeparator() + j)
                         .orElse("<none>");
     }
 
-    private String stringify(Map<String, ?> params) {
+    private String stringify(
+            Map<String, ?> params
+    ) {
         if (params.isEmpty()) {
             return "<none>";
         } else {
@@ -426,13 +516,15 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         }
     }
 
-    private String stringify(HttpResponse<Optional<JsonNode>> response) {
-        return System.lineSeparator() +
-                HTTP_VERSION.getValue() + " " + response.statusCode() + System.lineSeparator() +
-                response.headers().map().entrySet().stream()
+    private String stringify(
+            HttpResponse<Optional<JsonNode>> response
+    ) {
+        return System.lineSeparator()
+                + HTTP_VERSION.getValue() + " " + response.statusCode() + System.lineSeparator()
+                + response.headers().map().entrySet().stream()
                         .map(e -> e.getKey() + ": " + join(e.getValue(), "; "))
-                        .collect(Collectors.joining(System.lineSeparator())) +
-                response.body().map(JsonNode::toPrettyString)
+                        .collect(Collectors.joining(System.lineSeparator()))
+                + response.body().map(JsonNode::toPrettyString)
                         .map(str -> System.lineSeparator() + System.lineSeparator() + str).orElse("");
     }
 

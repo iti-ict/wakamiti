@@ -32,7 +32,9 @@ public class TestSuite extends BaseModel {
     private boolean hasChildren;
     private int order;
 
-    public TestSuite id(String id) {
+    public TestSuite id(
+            String id
+    ) {
         this.id = id;
         return this;
     }
@@ -41,7 +43,9 @@ public class TestSuite extends BaseModel {
         return id;
     }
 
-    public TestSuite name(String name) {
+    public TestSuite name(
+            String name
+    ) {
         this.name = name;
         return this;
     }
@@ -50,7 +54,9 @@ public class TestSuite extends BaseModel {
         return name;
     }
 
-    public TestSuite suiteType(Type suiteType) {
+    public TestSuite suiteType(
+            Type suiteType
+    ) {
         this.suiteType = suiteType;
         return this;
     }
@@ -59,7 +65,9 @@ public class TestSuite extends BaseModel {
         return suiteType;
     }
 
-    public TestSuite parent(TestSuite parent) {
+    public TestSuite parent(
+            TestSuite parent
+    ) {
         this.parent = parent;
         return this;
     }
@@ -68,7 +76,9 @@ public class TestSuite extends BaseModel {
         return parent;
     }
 
-    public TestSuite hasChildren(boolean hasChildren) {
+    public TestSuite hasChildren(
+            boolean hasChildren
+    ) {
         this.hasChildren = hasChildren;
         return this;
     }
@@ -77,7 +87,9 @@ public class TestSuite extends BaseModel {
         return hasChildren;
     }
 
-    public TestSuite order(int order) {
+    public TestSuite order(
+            int order
+    ) {
         this.order = order;
         return this;
     }
@@ -90,9 +102,12 @@ public class TestSuite extends BaseModel {
         return Optional.ofNullable(parent).map(TestSuite::root).orElse(this);
     }
 
-    public TestSuite root(TestSuite root) {
-        if (!root().equals(root))
+    public TestSuite root(
+            TestSuite root
+    ) {
+        if (!root().equals(root)) {
             root().parent(root);
+        }
         return this;
     }
 
@@ -100,6 +115,7 @@ public class TestSuite extends BaseModel {
         String aux = name.replace("/", SLASH_CODE);
         return Optional.ofNullable(parent).map(TestSuite::asPath).map(p -> p.resolve(aux)).orElse(Path.of(aux));
     }
+
     @Override
     protected Object[] hashValues() {
         return new Object[]{asPath()};
@@ -107,16 +123,17 @@ public class TestSuite extends BaseModel {
 
     @Override
     public String toString() {
-        return "TestSuite["+asPath()+"]";
+        return "TestSuite[" + asPath() + "]";
     }
 
     public enum Type {
+
         @JsonProperty("staticTestSuite")
         STATIC_TEST_SUITE,
         @JsonProperty("dynamicTestSuite")
         DYNAMIC_TEST_SUITE,
         @JsonProperty("requirementTestSuite")
-        REQUIREMENT_TEST_SUITE,;
+        REQUIREMENT_TEST_SUITE;
 
     }
 

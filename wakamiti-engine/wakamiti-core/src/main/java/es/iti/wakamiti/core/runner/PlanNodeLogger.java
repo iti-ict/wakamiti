@@ -37,7 +37,11 @@ public class PlanNodeLogger {
     private final long totalNumberTestCases;
     private long currentTestCaseNumber;
 
-    public PlanNodeLogger(Logger logger, Configuration configuration, PlanNode plan) {
+    public PlanNodeLogger(
+            Logger logger,
+            Configuration configuration,
+            PlanNode plan
+    ) {
         this.logger = logger;
         this.showStepSource = configuration
                 .get(WakamitiConfiguration.LOGS_SHOW_STEP_SOURCE, Boolean.class)
@@ -48,7 +52,9 @@ public class PlanNodeLogger {
         this.totalNumberTestCases = plan.numDescendants(NodeType.TEST_CASE);
     }
 
-    private static Object emptyIfNull(Object value) {
+    private static Object emptyIfNull(
+            Object value
+    ) {
         return value == null ? "" : value;
     }
 
@@ -57,7 +63,9 @@ public class PlanNodeLogger {
      *
      * @param plan The root node of the test plan.
      */
-    public void logTestPlanHeader(PlanNode plan) {
+    public void logTestPlanHeader(
+            PlanNode plan
+    ) {
         if (logger.isInfoEnabled()) {
             int numTestCases = plan.numDescendants(NodeType.TEST_CASE);
             logger.info("{!important} Running Test Plan with {} Test Cases...", numTestCases);
@@ -69,7 +77,9 @@ public class PlanNodeLogger {
      *
      * @param plan The root node of the test plan.
      */
-    public void logTestPlanResult(PlanNode plan) {
+    public void logTestPlanResult(
+            PlanNode plan
+    ) {
         if (logger.isInfoEnabled()) {
             Result result = plan.result().orElse(Result.ERROR);
             int numTestCases = plan.numDescendants(NodeType.TEST_CASE);
@@ -95,7 +105,9 @@ public class PlanNodeLogger {
      *
      * @param node The test case node.
      */
-    public void logTestCaseHeader(PlanNode node) {
+    public void logTestCaseHeader(
+            PlanNode node
+    ) {
         if (node.nodeType() != NodeType.TEST_CASE) {
             return;
         }
@@ -122,7 +134,9 @@ public class PlanNodeLogger {
      *
      * @param step The step node.
      */
-    public void logStepResult(PlanNode step) {
+    public void logStepResult(
+            PlanNode step
+    ) {
         if (step.nodeType() != NodeType.STEP) {
             return;
         }
@@ -139,7 +153,9 @@ public class PlanNodeLogger {
      * @param step The step node for which the message template is built.
      * @return The log message template.
      */
-    private String buildMessage(PlanNode step) {
+    private String buildMessage(
+            PlanNode step
+    ) {
         String resultStyle = "stepResult." + step.result().orElse(null);
         StringBuilder message = new StringBuilder();
         message.append("{highlight} {" + resultStyle + "} {highlight} ");
@@ -161,7 +177,9 @@ public class PlanNodeLogger {
      * @param step The step node for which the log message arguments are built.
      * @return An array of objects representing the log message arguments.
      */
-    private Object[] buildMessageArgs(PlanNode step) {
+    private Object[] buildMessageArgs(
+            PlanNode step
+    ) {
         ExecutionState<Result> execution = step.executionState().orElse(null);
         if (execution == null) {
             return new Object[0];

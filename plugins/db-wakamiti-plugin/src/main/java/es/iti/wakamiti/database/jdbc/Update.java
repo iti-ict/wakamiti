@@ -25,7 +25,11 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
  */
 public class Update extends Sentence<PreparedStatement> {
 
-    private Update(String sql, Database db, PreparedStatement statement) {
+    private Update(
+            String sql,
+            Database db,
+            PreparedStatement statement
+    ) {
         super(db, statement, sql);
     }
 
@@ -45,12 +49,16 @@ public class Update extends Sentence<PreparedStatement> {
      * @param action The action to perform with the result count
      * @return The Update instance
      */
-    public Update execute(IntConsumer action) {
+    public Update execute(
+            IntConsumer action
+    ) {
         try {
             traceSQL(sql);
             int result = statement.executeUpdate();
             debugRows(result);
-            if (action != null) action.accept(result);
+            if (action != null) {
+                action.accept(result);
+            }
             return this;
         } catch (SQLException e) {
             throw new SQLRuntimeException(e);
@@ -65,7 +73,10 @@ public class Update extends Sentence<PreparedStatement> {
         private final Database db;
         private final String sql;
 
-        Builder(Database db, String sql) {
+        Builder(
+                Database db,
+                String sql
+        ) {
             this.db = db;
             this.sql = sql;
         }
@@ -99,7 +110,9 @@ public class Update extends Sentence<PreparedStatement> {
          * @param action The action to perform with the result count
          * @return The Update instance after execution
          */
-        public Update execute(IntConsumer action) {
+        public Update execute(
+                IntConsumer action
+        ) {
             return prepare().execute(action);
         }
 

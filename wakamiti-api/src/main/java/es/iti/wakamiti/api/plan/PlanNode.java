@@ -36,7 +36,10 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
     List<Argument> arguments;
     boolean filtered;
 
-    public PlanNode(NodeType nodeType, List<PlanNode> children) {
+    public PlanNode(
+            NodeType nodeType,
+            List<PlanNode> children
+    ) {
         super(children);
         description = null;
         tags = new LinkedHashSet<>();
@@ -104,19 +107,26 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
         return filtered;
     }
 
-    public int numDescendants(NodeType nodeType) {
+    public int numDescendants(
+            NodeType nodeType
+    ) {
         return numDescendants(descendant -> descendant.nodeType() == nodeType);
     }
 
-    public int numDescendants(NodeType nodeType, Result result) {
+    public int numDescendants(
+            NodeType nodeType,
+            Result result
+    ) {
         return numDescendants(
-                descendant -> descendant.nodeType() == nodeType &&
-                        descendant.executionState().isPresent() &&
-                        descendant.executionState().get().hasResult(result)
+                descendant -> descendant.nodeType() == nodeType
+                        && descendant.executionState().isPresent()
+                        && descendant.executionState().get().hasResult(result)
         );
     }
 
-    public void resolveProperties(Predicate<Map.Entry<String, String>> filter) {
+    public void resolveProperties(
+            Predicate<Map.Entry<String, String>> filter
+    ) {
         children().forEach(c -> c.resolveProperties(filter));
 
         arguments.stream().map(Argument::evaluations)
@@ -131,4 +141,5 @@ public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
                     name = name.replace(e.getKey(), e.getValue());
                 });
     }
+
 }

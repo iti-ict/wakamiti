@@ -42,23 +42,25 @@ public class FilteredSnapshot {
     private Map<Result, Long> tr;
     private List<FilteredSnapshot> c = new LinkedList<>();
 
-    public static FilteredSnapshot of(PlanNodeSnapshot snapshot) {
+    public static FilteredSnapshot of(
+            PlanNodeSnapshot snapshot
+    ) {
         FilteredSnapshot filteredSnapshot = new FilteredSnapshot();
         filteredSnapshot.t = snapshot.getNodeType();
-        filteredSnapshot.i = Strings.isNotBlank(snapshot.getId()) ?
-                snapshot.getId().replaceAll("^#", "") : null;
+        filteredSnapshot.i = Strings.isNotBlank(snapshot.getId())
+                ? snapshot.getId().replaceAll("^#", "") : null;
         filteredSnapshot.n = snapshot.getName();
         filteredSnapshot.k = snapshot.getKeyword();
         filteredSnapshot.l = !isEmpty(snapshot.getDescription()) ? snapshot.getDescription() : null;
         filteredSnapshot.g = !isEmpty(snapshot.getTags()) ? snapshot.getTags() : null;
-        filteredSnapshot.w = snapshot.getDuration() != null ?
-                DurationTemplateNumberFormatFactory.format(snapshot.getDuration()) : null;
+        filteredSnapshot.w = snapshot.getDuration() != null
+                ? DurationTemplateNumberFormatFactory.format(snapshot.getDuration()) : null;
         filteredSnapshot.p = snapshot.getDocument();
         filteredSnapshot.o = snapshot.getDocumentType();
         filteredSnapshot.d = snapshot.getDataTable();
         filteredSnapshot.response = snapshot.getResponse();
-        filteredSnapshot.m = snapshot.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP) ?
-                snapshot.getErrorMessage() : null;
+        filteredSnapshot.m = snapshot.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)
+                ? snapshot.getErrorMessage() : null;
         filteredSnapshot.e = snapshot.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)
                 && snapshot.getResult() == Result.ERROR ? snapshot.getErrorTrace() : null;
         filteredSnapshot.r = snapshot.getResult();
@@ -69,7 +71,9 @@ public class FilteredSnapshot {
         return filteredSnapshot;
     }
 
-    public static List<FilteredSnapshot> of(List<PlanNodeSnapshot> snapshots) {
+    public static List<FilteredSnapshot> of(
+            List<PlanNodeSnapshot> snapshots
+    ) {
         return snapshots.stream().map(FilteredSnapshot::of).collect(Collectors.toList());
     }
 
@@ -136,4 +140,5 @@ public class FilteredSnapshot {
     public List<FilteredSnapshot> getC() {
         return c;
     }
+
 }

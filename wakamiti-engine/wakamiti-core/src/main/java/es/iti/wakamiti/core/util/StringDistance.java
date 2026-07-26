@@ -72,7 +72,10 @@ public class StringDistance {
      * @return The similarity percentage between the two strings.
      * @see Simil
      */
-    private static double calculateDistance(String string, String candidate) {
+    private static double calculateDistance(
+            String string,
+            String candidate
+    ) {
         return new Simil(string).getSimilarityInPercentFor(candidate);
     }
 

@@ -21,7 +21,6 @@ public class ConfigurationFactoryDefinitionsTest {
     private final ConfigurationFactory factory = ConfigurationFactory.instance();
     private final Path definitionPath = Path.of("src", "test", "resources", "definition.yaml");
 
-
     @Test
     public void testBuildEmptyConfigurationWithDefinitionFromURI() {
         var conf = factory.accordingDefinitionsFromURI(definitionPath.toUri());
@@ -34,13 +33,11 @@ public class ConfigurationFactoryDefinitionsTest {
         assertConfiguration(conf);
     }
 
-
     @Test
     public void testAttachDefinitionFromURI() {
         var conf = factory.empty().accordingDefinitionsFromURI(definitionPath.toUri());
         assertConfiguration(conf);
     }
-
 
     @Test
     public void testAttachDefinitionFromPath() {
@@ -48,18 +45,18 @@ public class ConfigurationFactoryDefinitionsTest {
         assertConfiguration(conf);
     }
 
-
     @Test
     public void testConfigurationValidation() {
         var conf = factory
-            .fromPairs("defined.property.min-max-number", "6")
-            .accordingDefinitionsFromPath(definitionPath);
+                .fromPairs("defined.property.min-max-number", "6")
+                .accordingDefinitionsFromPath(definitionPath);
         assertThat(conf.validations("defined.property.min-max-number"))
-        .contains("Invalid value '6', expected: Integer number between 2 and 3");
+                .contains("Invalid value '6', expected: Integer number between 2 and 3");
     }
 
-
-    private void assertConfiguration(Configuration conf) {
+    private void assertConfiguration(
+            Configuration conf
+    ) {
         assertThat(conf.getDefinitions()).hasSize(6);
         assertThat(conf.getDefinition("defined.property.required")).isNotEmpty();
         assertThat(conf.getDefinition("defined.property.with-default-value")).isNotEmpty();

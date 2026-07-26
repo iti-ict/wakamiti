@@ -37,7 +37,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "allure-report", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "allure-report",
+        version = "2.6"
+)
 public class AllureReporter implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AllureReporter.class);
@@ -378,6 +382,7 @@ public class AllureReporter implements Reporter {
     }
 
     private static final class TestCaseContext {
+
         private final PlanNodeSnapshot feature;
         private final PlanNodeSnapshot testCase;
 
@@ -388,5 +393,7 @@ public class AllureReporter implements Reporter {
             this.feature = feature;
             this.testCase = testCase;
         }
+
     }
+
 }

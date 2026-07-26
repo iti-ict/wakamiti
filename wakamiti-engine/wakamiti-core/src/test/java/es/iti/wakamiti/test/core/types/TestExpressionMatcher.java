@@ -49,7 +49,6 @@ public class TestExpressionMatcher {
         );
     }
 
-
     @Test
     public void testExpressionStep2() {
         assertExpression(
@@ -76,7 +75,6 @@ public class TestExpressionMatcher {
         );
     }
 
-
     @Test
     public void testExpressionStep3() {
         assertExpression(
@@ -89,7 +87,6 @@ public class TestExpressionMatcher {
                 "identificado por '3'"
         );
     }
-
 
     @Test
     public void testExpressionStep4() {
@@ -108,7 +105,6 @@ public class TestExpressionMatcher {
                 "las siguientes cosas se insertan en la tabla de BBDD USER:"
         );
     }
-
 
     @Test
     public void testExpressionStep5() {
@@ -130,8 +126,11 @@ public class TestExpressionMatcher {
         );
     }
 
-
-    private void assertExpression(Locale locale, String expression, String... steps) {
+    private void assertExpression(
+            Locale locale,
+            String expression,
+            String... steps
+    ) {
         for (String step : steps) {
             Matcher matcher = ExpressionMatcher.matcherFor(
                     expression,
@@ -142,7 +141,6 @@ public class TestExpressionMatcher {
             assertTrue("<<" + step + ">> not matching <<" + expression + ">>", matcher.matches());
         }
     }
-
 
     private WakamitiDataTypeRegistry coreTypes() {
         Map<String, WakamitiDataType<?>> types = new HashMap<>();

@@ -20,7 +20,6 @@ import java.util.stream.Collector;
 public class MapUtils {
 
     private MapUtils() {
-
     }
 
     /**
@@ -43,9 +42,15 @@ public class MapUtils {
      * @param <V> the {@code Map}'s value type
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
+      *
+      * @param v the v value
+      * @param k the parameter value
      */
-    public static <K, V> Map<K, V> map(K k, V v) {
+    public static <K, V> Map<K, V> map(
+            K k,
+            V v
+    ) {
         return new MapN<>(k, v);
     }
 
@@ -55,15 +60,20 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2
+    ) {
         return new MapN<>(k1, v1, k2, v2);
     }
 
@@ -73,17 +83,24 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3);
     }
 
@@ -93,19 +110,28 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4);
     }
 
@@ -115,21 +141,32 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
-     * @param k5 the fifth mapping's key
-     * @param v5 the fifth mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
+     * @param k5  the fifth mapping's key
+     * @param v5  the fifth mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4,
+            K k5,
+            V v5
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5);
     }
 
@@ -139,24 +176,36 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
-     * @param k5 the fifth mapping's key
-     * @param v5 the fifth mapping's value
-     * @param k6 the sixth mapping's key
-     * @param v6 the sixth mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
+     * @param k5  the fifth mapping's key
+     * @param v5  the fifth mapping's value
+     * @param k6  the sixth mapping's key
+     * @param v6  the sixth mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                          K k6, V v6) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4,
+            K k5,
+            V v5,
+            K k6,
+            V v6
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6);
     }
 
@@ -166,26 +215,40 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
-     * @param k5 the fifth mapping's key
-     * @param v5 the fifth mapping's value
-     * @param k6 the sixth mapping's key
-     * @param v6 the sixth mapping's value
-     * @param k7 the seventh mapping's key
-     * @param v7 the seventh mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
+     * @param k5  the fifth mapping's key
+     * @param v5  the fifth mapping's value
+     * @param k6  the sixth mapping's key
+     * @param v6  the sixth mapping's value
+     * @param k7  the seventh mapping's key
+     * @param v7  the seventh mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                          K k6, V v6, K k7, V v7) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4,
+            K k5,
+            V v5,
+            K k6,
+            V v6,
+            K k7,
+            V v7
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7);
     }
 
@@ -195,28 +258,44 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
-     * @param k5 the fifth mapping's key
-     * @param v5 the fifth mapping's value
-     * @param k6 the sixth mapping's key
-     * @param v6 the sixth mapping's value
-     * @param k7 the seventh mapping's key
-     * @param v7 the seventh mapping's value
-     * @param k8 the eighth mapping's key
-     * @param v8 the eighth mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
+     * @param k5  the fifth mapping's key
+     * @param v5  the fifth mapping's value
+     * @param k6  the sixth mapping's key
+     * @param v6  the sixth mapping's value
+     * @param k7  the seventh mapping's key
+     * @param v7  the seventh mapping's value
+     * @param k8  the eighth mapping's key
+     * @param v8  the eighth mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                          K k6, V v6, K k7, V v7, K k8, V v8) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4,
+            K k5,
+            V v5,
+            K k6,
+            V v6,
+            K k7,
+            V v7,
+            K k8,
+            V v8
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8);
     }
 
@@ -226,30 +305,48 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
-     * @param k5 the fifth mapping's key
-     * @param v5 the fifth mapping's value
-     * @param k6 the sixth mapping's key
-     * @param v6 the sixth mapping's value
-     * @param k7 the seventh mapping's key
-     * @param v7 the seventh mapping's value
-     * @param k8 the eighth mapping's key
-     * @param v8 the eighth mapping's value
-     * @param k9 the ninth mapping's key
-     * @param v9 the ninth mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
+     * @param k5  the fifth mapping's key
+     * @param v5  the fifth mapping's value
+     * @param k6  the sixth mapping's key
+     * @param v6  the sixth mapping's value
+     * @param k7  the seventh mapping's key
+     * @param v7  the seventh mapping's value
+     * @param k8  the eighth mapping's key
+     * @param v8  the eighth mapping's value
+     * @param k9  the ninth mapping's key
+     * @param v9  the ninth mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                          K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4,
+            K k5,
+            V v5,
+            K k6,
+            V v6,
+            K k7,
+            V v7,
+            K k8,
+            V v8,
+            K k9,
+            V v9
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9);
     }
 
@@ -259,32 +356,52 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
-     * @param k5 the fifth mapping's key
-     * @param v5 the fifth mapping's value
-     * @param k6 the sixth mapping's key
-     * @param v6 the sixth mapping's value
-     * @param k7 the seventh mapping's key
-     * @param v7 the seventh mapping's value
-     * @param k8 the eighth mapping's key
-     * @param v8 the eighth mapping's value
-     * @param k9 the ninth mapping's key
-     * @param v9 the ninth mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
+     * @param k5  the fifth mapping's key
+     * @param v5  the fifth mapping's value
+     * @param k6  the sixth mapping's key
+     * @param v6  the sixth mapping's value
+     * @param k7  the seventh mapping's key
+     * @param v7  the seventh mapping's value
+     * @param k8  the eighth mapping's key
+     * @param v8  the eighth mapping's value
+     * @param k9  the ninth mapping's key
+     * @param v9  the ninth mapping's value
      * @param k10 the tenth mapping's key
      * @param v10 the tenth mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                          K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4,
+            K k5,
+            V v5,
+            K k6,
+            V v6,
+            K k7,
+            V v7,
+            K k8,
+            V v8,
+            K k9,
+            V v9,
+            K k10,
+            V v10
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10);
     }
 
@@ -294,35 +411,56 @@ public class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
-     * @param k1 the first mapping's key
-     * @param v1 the first mapping's value
-     * @param k2 the second mapping's key
-     * @param v2 the second mapping's value
-     * @param k3 the third mapping's key
-     * @param v3 the third mapping's value
-     * @param k4 the fourth mapping's key
-     * @param v4 the fourth mapping's value
-     * @param k5 the fifth mapping's key
-     * @param v5 the fifth mapping's value
-     * @param k6 the sixth mapping's key
-     * @param v6 the sixth mapping's value
-     * @param k7 the seventh mapping's key
-     * @param v7 the seventh mapping's value
-     * @param k8 the eighth mapping's key
-     * @param v8 the eighth mapping's value
-     * @param k9 the ninth mapping's key
-     * @param v9 the ninth mapping's value
+     * @param k1  the first mapping's key
+     * @param v1  the first mapping's value
+     * @param k2  the second mapping's key
+     * @param v2  the second mapping's value
+     * @param k3  the third mapping's key
+     * @param v3  the third mapping's value
+     * @param k4  the fourth mapping's key
+     * @param v4  the fourth mapping's value
+     * @param k5  the fifth mapping's key
+     * @param v5  the fifth mapping's value
+     * @param k6  the sixth mapping's key
+     * @param v6  the sixth mapping's value
+     * @param k7  the seventh mapping's key
+     * @param v7  the seventh mapping's value
+     * @param k8  the eighth mapping's key
+     * @param v8  the eighth mapping's value
+     * @param k9  the ninth mapping's key
+     * @param v9  the ninth mapping's value
      * @param k10 the tenth mapping's key
      * @param v10 the tenth mapping's value
      * @param k11 the eleventh mapping's key
      * @param v11 the eleventh mapping's value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any key or value is {@code null}
+     * @throws NullPointerException     if any key or value is {@code null}
      */
-    public static <K, V> Map<K, V> map(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5,
-                                          K k6, V v6, K k7, V v7, K k8, V v8, K k9, V v9, K k10, V v10,
-                                          K k11, V v11) {
+    public static <K, V> Map<K, V> map(
+            K k1,
+            V v1,
+            K k2,
+            V v2,
+            K k3,
+            V v3,
+            K k4,
+            V v4,
+            K k5,
+            V v5,
+            K k6,
+            V v6,
+            K k7,
+            V v7,
+            K k8,
+            V v8,
+            K k9,
+            V v9,
+            K k10,
+            V v10,
+            K k11,
+            V v11
+    ) {
         return new MapN<>(k1, v1, k2, v2, k3, v3, k4, v4, k5, v5, k6, v6, k7, v7, k8, v8, k9, v9, k10, v10, k11, v11);
     }
 
@@ -331,8 +469,14 @@ public class MapUtils {
      * The entries themselves are not stored in the map.
      * See {@link LinkedHashMap} for details.
      *
-     * @apiNote
-     * It is convenient to create the map entries using the {@link #entry} method.
+     * @param <K>     the {@code Map}'s key type
+     * @param <V>     the {@code Map}'s value type
+     * @param entries {@code Map.Entry}s containing the keys and values from which the map is populated
+     * @return a {@code Map} containing the specified mappings
+     * @throws IllegalArgumentException if there are any duplicate keys
+     * @throws NullPointerException     if any entry, key, or value is {@code null}, or if
+     *                                  the {@code entries} array is {@code null}
+     * @apiNote It is convenient to create the map entries using the {@link #entry} method.
      * For example,
      *
      * <pre>{@code
@@ -345,23 +489,17 @@ public class MapUtils {
      *         ...
      *         entry(26, "z"));
      * }</pre>
-     *
-     * @param <K> the {@code Map}'s key type
-     * @param <V> the {@code Map}'s value type
-     * @param entries {@code Map.Entry}s containing the keys and values from which the map is populated
-     * @return a {@code Map} containing the specified mappings
-     * @throws IllegalArgumentException if there are any duplicate keys
-     * @throws NullPointerException if any entry, key, or value is {@code null}, or if
-     *         the {@code entries} array is {@code null}
-     *
      * @see #entry
      */
     @SafeVarargs
     @SuppressWarnings("varargs")
-    public static <K, V> Map<K, V> mapEntries(Map.Entry<K, V>... entries) {
+    public static <K, V> Map<K, V> mapEntries(
+            Map
+                    .Entry<K, V>... entries
+    ) {
         if (entries.length == 0) { // implicit null check of entries array
             @SuppressWarnings("unchecked")
-            var map = (LinkedHashMap<K,V>) map();
+            var map = (LinkedHashMap<K, V>) map();
             return map;
         } else if (entries.length == 1) {
             // implicit null check of the array slot
@@ -399,19 +537,19 @@ public class MapUtils {
      * create new instances or reuse existing ones.
      * </ul>
      *
-     * @apiNote
-     * For a serializable {@code Entry}, see {@link AbstractMap.SimpleEntry}.
-     *
      * @param <K> the key's type
      * @param <V> the value's type
-     * @param k the key
-     * @param v the value
+     * @param k   the key
+     * @param v   the value
      * @return an {@code Entry} containing the specified key and value
      * @throws NullPointerException if the key or value is {@code null}
-     *
+     * @apiNote For a serializable {@code Entry}, see {@link AbstractMap.SimpleEntry}.
      * @see #mapEntries MapUtils.mapEntries()
      */
-    public static <K, V> Map.Entry<K, V> entry(K k, V v) {
+    public static <K, V> Map.Entry<K, V> entry(
+            K k,
+            V v
+    ) {
         return new AbstractMap.SimpleEntry<>(k, v);
     }
 
@@ -419,12 +557,15 @@ public class MapUtils {
      * An array-based Map implementation.
      * It must also be strictly larger than the size (the number of key-value pairs contained
      * in the map) so that at least one null key is always present.
+     *
      * @param <K> the key type
      * @param <V> the value type
      */
-    static final class MapN<K,V> extends LinkedHashMap<K,V> {
+    static final class MapN<K, V> extends LinkedHashMap<K, V> {
 
-        MapN (Object... input) {
+        MapN(
+                Object... input
+        ) {
             if ((input.length & 1) != 0) { // implicit nullcheck of input
                 throw new InternalError("length is odd");
             }
@@ -441,6 +582,7 @@ public class MapUtils {
                 }
             }
         }
+
     }
 
     /**
@@ -453,7 +595,7 @@ public class MapUtils {
      * @param <U>         The type of values
      * @return A collector that accumulates elements into a map
      */
-    public static <T extends Map.Entry<?,?>, K, U> Collector<T, ?, Map<K, U>> entryCollector(
+    public static <T extends Map.Entry<?, ?>, K, U> Collector<T, ?, Map<K, U>> entryCollector(
             Function<? super T, ? extends K> keyMapper,
             Function<? super T, ? extends U> valueMapper
     ) {
@@ -464,7 +606,22 @@ public class MapUtils {
         );
     }
 
-    public static <K1, U1, K2, U2> Collector<Map.Entry<K1,U1>, ?, Map<K2, U2>> toMap(
+    /**
+     * Creates an insertion-ordered map collector that transforms both parts of
+     * each input entry.
+     * <p>
+     * Later entries replace earlier values when transformed keys collide.
+     * </p>
+     *
+     * @param keyMapper   transforms input keys
+     * @param valueMapper transforms input values
+     * @param <K1>        input key type
+     * @param <U1>        input value type
+     * @param <K2>        output key type
+     * @param <U2>        output value type
+     * @return a collector producing a {@link LinkedHashMap}
+     */
+    public static <K1, U1, K2, U2> Collector<Map.Entry<K1, U1>, ?, Map<K2, U2>> toMap(
             Function<? super K1, ? extends K2> keyMapper,
             Function<? super U1, ? extends U2> valueMapper
     ) {
@@ -475,13 +632,31 @@ public class MapUtils {
         );
     }
 
-    public static <K, U1, U2> Collector<Map.Entry<K,U1>, ?, Map<K, U2>> toMap(
+    /**
+     * Creates an insertion-ordered collector that preserves entry keys and
+     * transforms values.
+     *
+     * @param valueMapper transforms each input value
+     * @param <K>         key type
+     * @param <U1>        input value type
+     * @param <U2>        output value type
+     * @return a collector producing a map with transformed values
+     */
+    public static <K, U1, U2> Collector<Map.Entry<K, U1>, ?, Map<K, U2>> toMap(
             Function<? super U1, ? extends U2> valueMapper
     ) {
         return toMap(Function.identity(), valueMapper);
     }
 
-    public static <K, U> Collector<Map.Entry<K,U>, ?, Map<K,U>> toMap() {
+    /**
+     * Creates an insertion-ordered collector for map entries without
+     * transformation.
+     *
+     * @param <K> key type
+     * @param <U> value type
+     * @return a collector preserving entry order
+     */
+    public static <K, U> Collector<Map.Entry<K, U>, ?, Map<K, U>> toMap() {
         return toMap(Function.identity());
     }
 

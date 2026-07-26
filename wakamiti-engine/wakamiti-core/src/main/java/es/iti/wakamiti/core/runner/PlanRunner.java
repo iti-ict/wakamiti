@@ -44,7 +44,10 @@ public class PlanRunner {
     private final PlanNode plan;
     private List<PlanNodeRunner> children;
 
-    public PlanRunner(PlanNode plan, Configuration configuration) {
+    public PlanRunner(
+            PlanNode plan,
+            Configuration configuration
+    ) {
         this.plan = plan;
         this.configuration = configuration;
         this.planNodeLogger = new PlanNodeLogger(Wakamiti.LOGGER, configuration, plan);
@@ -70,7 +73,9 @@ public class PlanRunner {
         return runPlan(true);
     }
 
-    private PlanNode runPlan(boolean dryRun) {
+    private PlanNode runPlan(
+            boolean dryRun
+    ) {
         wakamiti.configureLogger(configuration);
         wakamiti.configureEventObservers(configuration);
         plan.assignExecutionID(
@@ -85,8 +90,9 @@ public class PlanRunner {
                 child.runNode();
             } catch (Exception e) {
                 LOGGER.error("{error}", e.getMessage(), e);
-                if (child.getNode().result().isEmpty())
+                if (child.getNode().result().isEmpty()) {
                     child.getNode().prepareExecution().markFinished(Instant.now(), Result.ERROR, e, null);
+                }
             }
         }
         planNodeLogger.logTestPlanResult(plan);
@@ -111,7 +117,9 @@ public class PlanRunner {
      *
      * @return The list of PlanNodeRunners.
      */
-    protected List<PlanNodeRunner> buildRunners(boolean dryRun) {
+    protected List<PlanNodeRunner> buildRunners(
+            boolean dryRun
+    ) {
         BackendFactory backendFactory = wakamiti.newBackendFactory();
         return plan.children().map(feature -> {
             Configuration childConfiguration = configuration.append(

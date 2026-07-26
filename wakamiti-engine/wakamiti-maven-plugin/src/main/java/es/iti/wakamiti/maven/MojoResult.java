@@ -38,7 +38,10 @@ public class MojoResult {
      *
      * @param e The error that occurred during plugin execution.
      */
-    public static void setError(AbstractMojoExecutionException e) {
+    public static void setError(
+            AbstractMojoExecutionException e
+    ) {
         MojoResult.error = e;
     }
+
 }

@@ -112,7 +112,9 @@ public class JMeterSupport {
      * @return A new {@link DslHttpSampler} configured with the
      * given path and authentication.
      */
-    protected DslHttpSampler newHttpSampler(String path) {
+    protected DslHttpSampler newHttpSampler(
+            String path
+    ) {
         DslHttpSampler httpSampler = httpSampler(path);
         Optional.ofNullable(authSpecification).ifPresent(spec -> spec.accept(httpSampler));
         httpSamplers.addLast(httpSampler);
@@ -149,7 +151,6 @@ public class JMeterSupport {
         return testPlan;
     }
 
-
     protected void executePlan() throws IOException {
         stats = newTestPlan().run();
     }
@@ -161,7 +162,10 @@ public class JMeterSupport {
      * @param password The password
      * @return the Basic authorization value.
      */
-    protected String basic(String username, String password) {
+    protected String basic(
+            String username,
+            String password
+    ) {
         if (isBlank(username) || isBlank(password)) {
             throw new IllegalArgumentException("Both username and password are required.");
         }
@@ -175,7 +179,9 @@ public class JMeterSupport {
      * @param token The Bearer token
      * @return the Bearer authorization value.
      */
-    protected String bearer(String token) {
+    protected String bearer(
+            String token
+    ) {
         if (isBlank(token)) {
             throw new IllegalArgumentException("The token is required.");
         }
@@ -189,7 +195,9 @@ public class JMeterSupport {
      * @throws WakamitiException If the base URL is missing or if query
      *                           parameters are present.
      */
-    protected void checkURL(URL url) {
+    protected void checkURL(
+            URL url
+    ) {
         if (url == null) {
             throw new WakamitiException("Missing required base URL.");
         }
@@ -198,7 +206,9 @@ public class JMeterSupport {
         }
     }
 
-    protected String uri(String path) {
+    protected String uri(
+            String path
+    ) {
         String base = baseURL.toString();
         if (base.endsWith("/")) {
             base = base.substring(0, base.length() - 1);
@@ -220,7 +230,10 @@ public class JMeterSupport {
      * @throws WakamitiException if no type registry is found for the specified class.
      */
     @SuppressWarnings("unchecked")
-    protected <T> T parse(String expression, Class<T> type) {
+    protected <T> T parse(
+            String expression,
+            Class<T> type
+    ) {
         WakamitiStepRunContext ctx = WakamitiStepRunContext.current();
         return (T) ctx.typeRegistry().findTypesForJavaType(type).findFirst()
                 .orElseThrow(() -> new WakamitiException("No type registry found for Class '{}'", type))
@@ -246,7 +259,9 @@ public class JMeterSupport {
      * @return A map containing the name-value pairs.
      * @throws WakamitiException if the DataTable does not have exactly two columns.
      */
-    protected Map<String, String> tableToMap(DataTable dataTable) {
+    protected Map<String, String> tableToMap(
+            DataTable dataTable
+    ) {
         if (dataTable.columns() != 2) {
             throw new WakamitiException("Table must have 2 columns [name, value]");
         }
@@ -264,7 +279,9 @@ public class JMeterSupport {
      * @return A list of map containing the name-value pairs.
      * @throws WakamitiException if the DataTable does not have two or three columns.
      */
-    protected List<Map<String, String>> tableToStretches(DataTable dataTable) {
+    protected List<Map<String, String>> tableToStretches(
+            DataTable dataTable
+    ) {
         if (dataTable.columns() < 2 || dataTable.columns() > 3) {
             throw new WakamitiException("Table must have 2 or 3 columns [threads, ramp, hold?]");
         }
@@ -279,12 +296,12 @@ public class JMeterSupport {
                     map.put(keys[col], dataTable.value(row, col));
                 }
             }
-            if (row != 0)
+            if (row != 0) {
                 list.add(map);
+            }
         }
         return list;
     }
-
 
     /**
      * Parses the given content type string and returns the corresponding
@@ -294,7 +311,9 @@ public class JMeterSupport {
      * @return The parsed {@link ContentType} object.
      * @throws WakamitiException if the content type is not valid.
      */
-    protected ContentType parseContentType(String contentType) {
+    protected ContentType parseContentType(
+            String contentType
+    ) {
         try {
             return ContentTypeUtil.valueOf(contentType);
         } catch (IllegalArgumentException e) {
@@ -309,7 +328,9 @@ public class JMeterSupport {
      * @param file The file to read.
      * @return The content of the file as a string.
      */
-    protected String readFile(File file) {
+    protected String readFile(
+            File file
+    ) {
         if (!file.exists()) {
             throw new WakamitiException("File '{}' not found", file.getAbsolutePath());
         }
@@ -323,7 +344,9 @@ public class JMeterSupport {
      * @return The canonical path of the specified file.
      * @throws WakamitiException If the file does not exist or if the path cannot be retrieved.
      */
-    protected String absolutePath(File file) {
+    protected String absolutePath(
+            File file
+    ) {
         if (!file.exists()) {
             throw new WakamitiException("File '{}' not found", file.getAbsolutePath());
         }

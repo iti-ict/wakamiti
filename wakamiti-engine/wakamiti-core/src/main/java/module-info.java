@@ -17,6 +17,7 @@ import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
 import es.iti.wakamiti.core.properties.StepPropertyEvaluator;
 
+
 open module es.iti.wakamiti.core {
 
     exports es.iti.wakamiti.core.gherkin;

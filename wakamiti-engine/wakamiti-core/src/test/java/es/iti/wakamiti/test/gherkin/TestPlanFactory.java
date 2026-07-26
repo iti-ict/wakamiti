@@ -50,7 +50,6 @@ public class TestPlanFactory {
         assertFilePlan(featureFilename, resultFilename, null, testCases);
     }
 
-
     private void assertFilePlan(
             String featureFilename,
             String resultFilename,
@@ -60,7 +59,6 @@ public class TestPlanFactory {
         assertPlan(featureFilename, resultFilename, tagExpression, testCases, new Properties());
     }
 
-
     private void assertPathPlan(
             String featurePath,
             String resultFilename,
@@ -69,7 +67,6 @@ public class TestPlanFactory {
     ) throws IOException, JSONException, ConfigurationException {
         assertPlan(featurePath, resultFilename, tagExpression, testCases, new Properties());
     }
-
 
     private void assertPlan(
             String path,
@@ -323,11 +320,13 @@ public class TestPlanFactory {
         }
     }
 
-    private StringBuilder printPlan(PlanNode node, StringBuilder string, int level) {
+    private StringBuilder printPlan(
+            PlanNode node,
+            StringBuilder string,
+            int level
+    ) {
         StringBuilder leading = new StringBuilder();
-        for (int i = 0; i < level; i++) {
-            leading.append("--");
-        }
+        leading.append("--".repeat(Math.max(0, level)));
         leading.append("  ").append(node.nodeType()).append("  >> ").append(node.displayName());
         string.append(
                 String.format(

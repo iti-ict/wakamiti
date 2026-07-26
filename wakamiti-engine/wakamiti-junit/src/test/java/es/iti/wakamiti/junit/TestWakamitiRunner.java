@@ -18,11 +18,11 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 
 
 @AnnotatedConfiguration({
-    @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
-    @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/redefining"),
-    @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti-%execID%.json"),
-    @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.junit.WakamitiSteps"),
-    @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
+        @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = GherkinResourceType.NAME),
+        @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features/redefining"),
+        @Property(key = WakamitiConfiguration.OUTPUT_FILE_PATH, value = "target/wakamiti-%execID%.json"),
+        @Property(key = WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.junit.WakamitiSteps"),
+        @Property(key = TREAT_STEPS_AS_TESTS, value = "true")
 })
 @RunWith(WakamitiJUnitRunner.class)
 public class TestWakamitiRunner {

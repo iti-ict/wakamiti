@@ -18,7 +18,9 @@ public class Settings implements Serializable {
     private String configuration;
     private String testCaseType;
 
-    public Settings zoneId(ZoneId zoneId) {
+    public Settings zoneId(
+            ZoneId zoneId
+    ) {
         this.zoneId = zoneId;
         return this;
     }
@@ -27,7 +29,9 @@ public class Settings implements Serializable {
         return zoneId;
     }
 
-    public Settings configuration(String configuration) {
+    public Settings configuration(
+            String configuration
+    ) {
         this.configuration = configuration;
         return this;
     }
@@ -36,7 +40,9 @@ public class Settings implements Serializable {
         return configuration;
     }
 
-    public Settings testCaseType(String testCaseType) {
+    public Settings testCaseType(
+            String testCaseType
+    ) {
         this.testCaseType = testCaseType;
         return this;
     }

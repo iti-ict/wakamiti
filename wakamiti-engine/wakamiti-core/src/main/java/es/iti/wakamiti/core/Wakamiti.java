@@ -64,7 +64,6 @@ public class Wakamiti {
 
     private static Wakamiti instance;
 
-
     private Wakamiti() {
         WakamitiLogger.configure(WakamitiConfiguration.DEFAULTS);
         if (LOGGER.isInfoEnabled()) {
@@ -146,7 +145,9 @@ public class Wakamiti {
      * @param configuration The configuration for which the working directory is obtained.
      * @return The working directory path.
      */
-    public static Path workingDir(Configuration configuration) {
+    public static Path workingDir(
+            Configuration configuration
+    ) {
         return Path.of(configuration.get(WORKING_DIR, String.class).orElse("")).toAbsolutePath();
     }
 
@@ -155,7 +156,9 @@ public class Wakamiti {
      *
      * @param configuration The configuration to use for logger configuration.
      */
-    public void configureLogger(Configuration configuration) {
+    public void configureLogger(
+            Configuration configuration
+    ) {
         WakamitiLogger.configure(configuration);
     }
 
@@ -166,8 +169,9 @@ public class Wakamiti {
      * @param configuration The configuration for creating the test plan.
      * @return A new test plan ready to be executed.
      */
-    public PlanNode createPlanFromConfiguration(Configuration configuration) {
-
+    public PlanNode createPlanFromConfiguration(
+            Configuration configuration
+    ) {
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
 
         resourceLoader.setWorkingDir(workingDir(configuration));
@@ -199,7 +203,6 @@ public class Wakamiti {
         }
         PlanNode plan = mergePlans(plans);
 
-
         if (configuration.get(STRICT_TEST_CASE_ID, Boolean.class).orElse(Boolean.FALSE)) {
             validateUniqueTestCaseID(plan, configuration);
         }
@@ -214,8 +217,9 @@ public class Wakamiti {
      * @param configuration The configuration for creating the test plan.
      * @return A new test plan ready to be executed.
      */
-    public PlanNode createPlanFromWorkspace(Configuration configuration) {
-
+    public PlanNode createPlanFromWorkspace(
+            Configuration configuration
+    ) {
         resourceLoader.setWorkingDir(workingDir(configuration));
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
@@ -246,7 +250,10 @@ public class Wakamiti {
      * @param configuration The configuration for creating the test plan.
      * @return A new test plan ready to be executed.
      */
-    public PlanNode createPlanFromContent(Configuration configuration, InputStream inputStream) {
+    public PlanNode createPlanFromContent(
+            Configuration configuration,
+            InputStream inputStream
+    ) {
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
         resourceLoader.setWorkingDir(workingDir(configuration));
         String resourceTypeName = configuration.get(RESOURCE_TYPES, String.class)
@@ -283,7 +290,6 @@ public class Wakamiti {
         );
     }
 
-
     private Optional<PlanNode> createPlanForResourceType(
             String resourceTypeName,
             InputStream inputStream,
@@ -295,7 +301,6 @@ public class Wakamiti {
                 configuration
         );
     }
-
 
     private Optional<PlanNode> createPlanForResourceType(
             String resourceTypeName,
@@ -343,8 +348,9 @@ public class Wakamiti {
         return Optional.ofNullable(planNodeBuilder.build());
     }
 
-
-    private PlanNode mergePlans(List<PlanNode> plans) {
+    private PlanNode mergePlans(
+            List<PlanNode> plans
+    ) {
         if (plans.isEmpty()) {
             return null;
         }
@@ -360,7 +366,9 @@ public class Wakamiti {
      * @param tagExpression The tag expression used for filtering.
      * @return A new {@link TagFilter} instance.
      */
-    public TagFilter createTagFilter(String tagExpression) {
+    public TagFilter createTagFilter(
+            String tagExpression
+    ) {
         return new TagFilter(tagExpression);
     }
 
@@ -378,7 +386,9 @@ public class Wakamiti {
      *
      * @param configuration The configuration used for configuring event observers.
      */
-    public void configureEventObservers(Configuration configuration) {
+    public void configureEventObservers(
+            Configuration configuration
+    ) {
         getEventDispatcher().observers()
                 .forEach(observer -> contributors.configure(observer, configuration));
     }
@@ -388,7 +398,9 @@ public class Wakamiti {
      *
      * @param observer The event observer to be added.
      */
-    public void addEventDispatcherObserver(EventObserver observer) {
+    public void addEventDispatcherObserver(
+            EventObserver observer
+    ) {
         getEventDispatcher().addObserver(observer);
     }
 
@@ -397,7 +409,9 @@ public class Wakamiti {
      *
      * @param observer The event observer to be removed.
      */
-    public void removeEventDispatcherObserver(EventObserver observer) {
+    public void removeEventDispatcherObserver(
+            EventObserver observer
+    ) {
         getEventDispatcher().removeObserver(observer);
     }
 
@@ -407,7 +421,10 @@ public class Wakamiti {
      * @param eventType The type of the event.
      * @param data      The data associated with the event.
      */
-    public void publishEvent(String eventType, Object data) {
+    public void publishEvent(
+            String eventType,
+            Object data
+    ) {
         getEventDispatcher().publishEvent(eventType, data);
     }
 
@@ -418,7 +435,10 @@ public class Wakamiti {
      * @param configuration The configuration for plan execution.
      * @return The result of the test plan execution.
      */
-    public PlanNode executePlan(PlanNode plan, Configuration configuration) {
+    public PlanNode executePlan(
+            PlanNode plan,
+            Configuration configuration
+    ) {
         PlanRunner runner = new PlanRunner(plan, configuration);
         PlanNode result = configuration.get(DRY_RUN, Boolean.class).orElse(false)
                 ? runner.noRun() : runner.run();
@@ -445,7 +465,10 @@ public class Wakamiti {
      * @param configuration The configuration used for writing the output file.
      * @return The path of the written output file or {@code null} if generation is disabled.
      */
-    public Path writeOutputFile(PlanNode plan, Configuration configuration) {
+    public Path writeOutputFile(
+            PlanNode plan,
+            Configuration configuration
+    ) {
         List<String> toHide = configuration.getList(WakamitiConfiguration.PROPERTIES_HIDDEN, String.class)
                 .stream().map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
                 .collect(Collectors.toList());
@@ -458,7 +481,6 @@ public class Wakamiti {
         }
 
         try {
-
             publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES, null);
 
             Path standardOutputFile = writeStandardOutputFile(plan, configuration);
@@ -470,7 +492,6 @@ public class Wakamiti {
             publishEvent(Event.AFTER_WRITE_OUTPUT_FILES, null);
 
             return standardOutputFile;
-
         } catch (IOException e) {
             LOGGER.error(
                     "Error writing output file : {}",
@@ -479,10 +500,12 @@ public class Wakamiti {
             );
             return null;
         }
-
     }
 
-    private Path writeStandardOutputFile(PlanNode plan, Configuration configuration) throws IOException {
+    private Path writeStandardOutputFile(
+            PlanNode plan,
+            Configuration configuration
+    ) throws IOException {
         String outputPath = configuration.get(WakamitiConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
         Path path = resourceLoader.absolutePath(
                 PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
@@ -500,7 +523,10 @@ public class Wakamiti {
         return path;
     }
 
-    private void writeOutputFilesPerTestCase(PlanNode plan, Configuration configuration) throws IOException {
+    private void writeOutputFilesPerTestCase(
+            PlanNode plan,
+            Configuration configuration
+    ) throws IOException {
         String outputPath = configuration.get(OUTPUT_FILE_PER_TEST_CASE_PATH, String.class).orElseThrow();
         Path path = resourceLoader.absolutePath(
                 PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
@@ -528,7 +554,9 @@ public class Wakamiti {
      *
      * @param configuration The configuration for report generation.
      */
-    public void generateReports(Configuration configuration) {
+    public void generateReports(
+            Configuration configuration
+    ) {
         String reportSource = configuration.get(REPORT_SOURCE, String.class)
                 .orElse(configuration.get(OUTPUT_FILE_PATH, String.class).orElse(null));
         if (reportSource == null) {
@@ -547,7 +575,10 @@ public class Wakamiti {
      * @param reportSource  The path to the report source file/folder.
      * @throws WakamitiException If the report source file/folder does not exist.
      */
-    public void generateReports(Configuration configuration, Path reportSource) {
+    public void generateReports(
+            Configuration configuration,
+            Path reportSource
+    ) {
         List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
         if (reporters.isEmpty()) {
             return;
@@ -574,7 +605,6 @@ public class Wakamiti {
             throw new WakamitiException("Error searching source file/folder", e1);
         }
         generateReports(configuration, plans);
-
     }
 
     /**
@@ -583,7 +613,10 @@ public class Wakamiti {
      * @param configuration The configuration for generating reports.
      * @param plan          The plan node snapshot for generating reports.
      */
-    public void generateReports(Configuration configuration, PlanNodeSnapshot plan) {
+    public void generateReports(
+            Configuration configuration,
+            PlanNodeSnapshot plan
+    ) {
         generateReports(configuration, new PlanNodeSnapshot[]{plan});
     }
 
@@ -593,7 +626,10 @@ public class Wakamiti {
      * @param configuration The configuration for report generation.
      * @param plans         The plans for which reports are generated.
      */
-    public void generateReports(Configuration configuration, PlanNodeSnapshot[] plans) {
+    public void generateReports(
+            Configuration configuration,
+            PlanNodeSnapshot[] plans
+    ) {
         List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
         if (reporters.isEmpty()) {
             return;
@@ -621,7 +657,6 @@ public class Wakamiti {
             }
         }
         publishEvent(Event.AFTER_WRITE_OUTPUT_FILES, null);
-
     }
 
     /**
@@ -630,13 +665,17 @@ public class Wakamiti {
      * @param configuration The configuration for Hinter creation.
      * @return A Hinter instance.
      */
-    public Hinter createHinterFor(Configuration configuration) {
+    public Hinter createHinterFor(
+            Configuration configuration
+    ) {
         var backendFactory = newBackendFactory();
         return backendFactory.createHinter(configuration);
     }
 
-
-    private void validateUniqueTestCaseID(PlanNode plan, Configuration configuration) {
+    private void validateUniqueTestCaseID(
+            PlanNode plan,
+            Configuration configuration
+    ) {
         if (plan == null) {
             return;
         }

@@ -37,8 +37,11 @@ public class TokenParser {
     private String remainString;
     private String nextToken;
 
-
-    public TokenParser(String string, List<String> literals, List<String> regex) {
+    public TokenParser(
+            String string,
+            List<String> literals,
+            List<String> regex
+    ) {
         this.remainString = string;
         this.tokens = regex.stream().map(TokenParser::regex).collect(Collectors.toList());
         for (String literal : literals) {
@@ -47,11 +50,15 @@ public class TokenParser {
         computeNextToken();
     }
 
-    private static Pattern regex(String regex) {
+    private static Pattern regex(
+            String regex
+    ) {
         return Pattern.compile("(" + regex + ").*");
     }
 
-    private static Pattern literal(String literal) {
+    private static Pattern literal(
+            String literal
+    ) {
         return Pattern.compile("(" + Pattern.quote(literal) + ").*");
     }
 
@@ -84,7 +91,9 @@ public class TokenParser {
         }
     }
 
-    private String computeMaxToken(String string) {
+    private String computeMaxToken(
+            String string
+    ) {
         return tokens.stream()
                 .map(token -> token.matcher(string))
                 .filter(Matcher::matches)

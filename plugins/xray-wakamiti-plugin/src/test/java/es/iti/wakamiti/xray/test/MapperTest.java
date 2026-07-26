@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.test;
 
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.JsonPlanSerializer;
@@ -36,7 +37,9 @@ public class MapperTest {
         plan = new JsonPlanSerializer().read(resource("wakamiti.json"));
     }
 
-    private static InputStream resource(String resource) {
+    private static InputStream resource(
+            String resource
+    ) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
     }
 
@@ -65,7 +68,6 @@ public class MapperTest {
                 .allMatch(tc -> tc.getTestSetList().get(0).getJira().getSummary().equals("suite1"))
                 .allMatch(tc -> tc.getJira().getSummary().equals("XRay integration feature"));
     }
-
 
     @Test
     public void testMapTestsWhenScenario() {

@@ -8,4 +8,10 @@
 package es.iti.wakamiti.rest;
 
 
-public enum MatchMode { STRICT, STRICT_ANY_ORDER, LOOSE }
+public enum MatchMode {
+
+    STRICT,
+    STRICT_ANY_ORDER,
+    LOOSE
+
+}

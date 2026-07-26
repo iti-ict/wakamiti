@@ -38,7 +38,9 @@ public class LocaleLoader {
      * @return A Locale instance based on the provided language string.
      * @throws IllegalArgumentException If the language string is malformed.
      */
-    public static Locale forLanguage(String language) {
+    public static Locale forLanguage(
+            String language
+    ) {
         Locale locale = null;
         if (language == null || language.isEmpty()) {
             return Locale.ENGLISH;
@@ -58,7 +60,6 @@ public class LocaleLoader {
             throw new IllegalArgumentException("Malformed language name :" + language);
         }
         return locale;
-
     }
 
 }

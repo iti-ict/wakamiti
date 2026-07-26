@@ -38,8 +38,6 @@ export class PlanOverviewView {
 }
 
 
-
-
 class DataProvider implements vscode.TreeDataProvider<PlanNodeSnapshot> {
 
     private plan: PlanNodeSnapshot | undefined;

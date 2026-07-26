@@ -52,7 +52,10 @@ public class Argument {
      * @param mapper The function to map the argument's value.
      * @return An Argument instance with the given value and mapper.
      */
-    public static Argument of(String value, Function<String, Object> mapper) {
+    public static Argument of(
+            String value,
+            Function<String, Object> mapper
+    ) {
         Argument arg = new Argument();
         arg.value = value;
         arg.mapper = mapper;
@@ -89,7 +92,9 @@ public class Argument {
      *              resolved.
      * @return The resolved value with evaluations captured.
      */
-    protected final String resolveForEach(String value) {
+    protected final String resolveForEach(
+            String value
+    ) {
         PropertyEvaluator.Result result = PropertyEvaluator.makeEval(value);
         result.evaluations().forEach(evaluations::putIfAbsent);
         return result.value();
@@ -133,4 +138,5 @@ public class Argument {
     public String toString() {
         return Objects.toString(value);
     }
+
 }

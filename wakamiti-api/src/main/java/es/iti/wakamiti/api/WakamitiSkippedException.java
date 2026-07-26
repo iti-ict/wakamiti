@@ -29,7 +29,10 @@ public class WakamitiSkippedException extends WakamitiException {
      *                  {@link #getCause()} method). (A null value is permitted, and
      *                  indicates that the cause is nonexistent or unknown.)
      */
-    public WakamitiSkippedException(String message, Throwable throwable) {
+    public WakamitiSkippedException(
+            String message,
+            Throwable throwable
+    ) {
         super(message, throwable);
     }
 
@@ -39,7 +42,9 @@ public class WakamitiSkippedException extends WakamitiException {
      * @param message The detail message (which is saved for later retrieval by the
      *                {@link #getMessage()} method).
      */
-    public WakamitiSkippedException(String message) {
+    public WakamitiSkippedException(
+            String message
+    ) {
         super(message);
     }
 
@@ -52,7 +57,10 @@ public class WakamitiSkippedException extends WakamitiException {
      *                extra arguments are ignored. The number of arguments is variable
      *                and may be zero.
      */
-    public WakamitiSkippedException(String message, Object... args) {
+    public WakamitiSkippedException(
+            String message,
+            Object... args
+    ) {
         super(message, args);
     }
 
@@ -66,7 +74,9 @@ public class WakamitiSkippedException extends WakamitiException {
      *                  {@link #getCause()} method). (A null value is permitted, and
      *                  indicates that the cause is nonexistent or unknown.)
      */
-    public WakamitiSkippedException(Throwable throwable) {
+    public WakamitiSkippedException(
+            Throwable throwable
+    ) {
         super(throwable);
     }
 

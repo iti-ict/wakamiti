@@ -68,7 +68,9 @@ class PlanNodeTargetRunner extends PlanNodeRunner implements NodeExecution {
     }
 
     @Override
-    public Result execute(EngineExecutionListener listener) {
+    public Result execute(
+            EngineExecutionListener listener
+    ) {
         listener.executionStarted(descriptor());
         Result result;
         try {
@@ -106,7 +108,9 @@ class PlanNodeTargetRunner extends PlanNodeRunner implements NodeExecution {
         return TestExecutionResult.failed(error);
     }
 
-    private boolean isSkippedExecution(Result result) {
+    private boolean isSkippedExecution(
+            Result result
+    ) {
         return result == Result.SKIPPED
                 || getNode().errors().anyMatch(WakamitiSkippedException.class::isInstance);
     }

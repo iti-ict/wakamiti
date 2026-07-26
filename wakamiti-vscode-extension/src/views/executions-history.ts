@@ -62,13 +62,10 @@ class DataProvider implements vscode.TreeDataProvider<Execution | PlanNodeSnapsh
 }
 
 
-
-
 function isExecution(object: Execution | PlanNodeSnapshot): boolean {
     const keys = Object.keys(object);
     return keys.includes('executionID') && keys.includes('executionInstant');
 }
-
 
 
 class ExecutionTreeItem extends vscode.TreeItem {
@@ -91,7 +88,6 @@ class ExecutedPlanNodeTreeItem extends PlanNodeTreeItem {
     }
 
 }
-
 
 
 function collapsibleState(node: PlanNodeSnapshot): vscode.TreeItemCollapsibleState {

@@ -21,7 +21,9 @@ public class Attachment {
     @JsonProperty
     private String stream;
 
-    public Attachment comment(String comment) {
+    public Attachment comment(
+            String comment
+    ) {
         this.comment = comment;
         return this;
     }
@@ -30,7 +32,9 @@ public class Attachment {
         return comment;
     }
 
-    public Attachment fileName(String fileName) {
+    public Attachment fileName(
+            String fileName
+    ) {
         this.fileName = fileName;
         return this;
     }
@@ -39,7 +43,9 @@ public class Attachment {
         return fileName;
     }
 
-    public Attachment stream(String stream) {
+    public Attachment stream(
+            String stream
+    ) {
         this.stream = stream;
         return this;
     }
@@ -47,4 +53,5 @@ public class Attachment {
     public String stream() {
         return stream;
     }
+
 }

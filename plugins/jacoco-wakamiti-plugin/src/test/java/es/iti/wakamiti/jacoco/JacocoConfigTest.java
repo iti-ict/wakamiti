@@ -22,7 +22,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JacocoConfigTest {
 
-    private static Object getField(Object target, String name) {
+    private static Object getField(
+            Object target,
+            String name
+    ) {
         try {
             Field f = target.getClass().getDeclaredField(name);
             f.setAccessible(true);
@@ -101,4 +104,5 @@ public class JacocoConfigTest {
                 .isInstanceOf(WakamitiException.class)
                 .hasMessageContaining("Property '" + JacocoConfig.JACOCO_CLASSES + "' is required");
     }
+
 }

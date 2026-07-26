@@ -40,7 +40,9 @@ public class RestAssuredLogger implements Filter {
             printStream = new PrintStream(new ByteArrayOutputStream(), true) { // true: auto flush must be set!
 
                 @Override
-                public void println(String x) {
+                public void println(
+                        String x
+                ) {
                     logger.info(x);
                 }
             };
@@ -52,7 +54,8 @@ public class RestAssuredLogger implements Filter {
     public Response filter(
             FilterableRequestSpecification filterableReqSpecification,
             FilterableResponseSpecification filterableRespSpecification,
-            FilterContext ctx) {
+            FilterContext ctx
+    ) {
         Response response = ctx.next(filterableReqSpecification, filterableRespSpecification);
 
         final StringBuilder builder = new StringBuilder();
@@ -83,7 +86,9 @@ public class RestAssuredLogger implements Filter {
         return response;
     }
 
-    private String toString(Headers headers) {
+    private String toString(
+            Headers headers
+    ) {
         final StringBuilder builder = new StringBuilder();
         for (Header header : headers) {
             builder.append(header.getName())
@@ -94,4 +99,5 @@ public class RestAssuredLogger implements Filter {
         builder.delete(builder.length() - System.lineSeparator().length(), builder.length());
         return builder.toString();
     }
+
 }

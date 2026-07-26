@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+
 public class FilesHelper {
 
     private static final Logger LOGGER = WakamitiLogger
@@ -33,7 +34,10 @@ public class FilesHelper {
 
     private final Deque<Runnable> cleanUpOperations = new LinkedList<>();
 
-    private static Path createSymbolicLink(Path link, Path path) {
+    private static Path createSymbolicLink(
+            Path link,
+            Path path
+    ) {
         try {
             LOGGER.debug("Creating symbolic link [{}] to [{}]", link, path);
             return Files.createSymbolicLink(absolutePath(link), absolutePath(path));
@@ -42,7 +46,9 @@ public class FilesHelper {
         }
     }
 
-    private static void deleteSymbolicLink(Path path) {
+    private static void deleteSymbolicLink(
+            Path path
+    ) {
         try {
             LOGGER.debug("Deleting symbolic link [{}]", path);
             Files.delete(absolutePath(path));
@@ -51,7 +57,10 @@ public class FilesHelper {
         }
     }
 
-    private static void moveFile(File source, File target) {
+    private static void moveFile(
+            File source,
+            File target
+    ) {
         try {
             LOGGER.debug("Moving file [{}] to [{}]", source, target);
             FileUtils.moveFile(absolutePath(source), absolutePath(target));
@@ -60,7 +69,10 @@ public class FilesHelper {
         }
     }
 
-    private static void moveFileToDirectory(File source, File target) {
+    private static void moveFileToDirectory(
+            File source,
+            File target
+    ) {
         try {
             LOGGER.debug("Moving [{}] to directory [{}]", source, target);
             FileUtils.moveFileToDirectory(absolutePath(source), absolutePath(target), true);
@@ -69,7 +81,9 @@ public class FilesHelper {
         }
     }
 
-    private static void deleteDirectory(File file) {
+    private static void deleteDirectory(
+            File file
+    ) {
         try {
             LOGGER.debug("Deleting directory [{}]", file);
             FileUtils.deleteDirectory(absolutePath(file));
@@ -78,7 +92,10 @@ public class FilesHelper {
         }
     }
 
-    private static void moveDirectory(File source, File target) {
+    private static void moveDirectory(
+            File source,
+            File target
+    ) {
         try {
             LOGGER.debug("Moving [{}] to directory [{}]", source, target);
             FileUtils.moveDirectory(absolutePath(source), absolutePath(target));
@@ -87,7 +104,10 @@ public class FilesHelper {
         }
     }
 
-    private static void copyFile(File source, File target) {
+    private static void copyFile(
+            File source,
+            File target
+    ) {
         try {
             LOGGER.debug("Copying file [{}] to [{}]", source, target);
             FileUtils.copyFile(absolutePath(source), absolutePath(target), true);
@@ -96,7 +116,10 @@ public class FilesHelper {
         }
     }
 
-    private static void copyFileToDirectory(File source, File target) {
+    private static void copyFileToDirectory(
+            File source,
+            File target
+    ) {
         try {
             LOGGER.debug("Creating [{}] to directory [{}]", source, target);
             FileUtils.copyFileToDirectory(absolutePath(source), absolutePath(target), true);
@@ -105,7 +128,10 @@ public class FilesHelper {
         }
     }
 
-    private static void copyDirectory(File source, File target) {
+    private static void copyDirectory(
+            File source,
+            File target
+    ) {
         try {
             LOGGER.debug(" Copy[{}] to directory [{}]", source, target);
             FileUtils.copyDirectory(absolutePath(source), absolutePath(target), true);
@@ -114,7 +140,9 @@ public class FilesHelper {
         }
     }
 
-    private static void cleanDirectory(File dir) {
+    private static void cleanDirectory(
+            File dir
+    ) {
         try {
             LOGGER.debug("Cleaning up directory [{}]", dir);
             FileUtils.cleanDirectory(absolutePath(dir));
@@ -123,11 +151,15 @@ public class FilesHelper {
         }
     }
 
-    private static File absolutePath(File file) {
+    private static File absolutePath(
+            File file
+    ) {
         return resourceLoader().absolutePath(file);
     }
 
-    private static Path absolutePath(Path path) {
+    private static Path absolutePath(
+            Path path
+    ) {
         return resourceLoader().absolutePath(path);
     }
 
@@ -135,7 +167,11 @@ public class FilesHelper {
         return WakamitiAPI.instance().resourceLoader();
     }
 
-    public void waitForFile(File file, WatchEvent.Kind<Path> eventKind, long timeout) throws IOException, InterruptedException, TimeoutException {
+    public void waitForFile(
+            File file,
+            WatchEvent.Kind<Path> eventKind,
+            long timeout
+    ) throws IOException, InterruptedException, TimeoutException {
         WatchService watcher = FileSystems.getDefault().newWatchService();
         Path.of(file.getParent()).register(watcher, eventKind);
 
@@ -160,12 +196,18 @@ public class FilesHelper {
         cleanUpOperations.forEach(Runnable::run);
     }
 
-    public void createSymLink(Path link, Path path) {
+    public void createSymLink(
+            Path link,
+            Path path
+    ) {
         Path symLink = FilesHelper.createSymbolicLink(link, path);
         cleanUpOperations.addLast(() -> FilesHelper.deleteSymbolicLink(symLink));
     }
 
-    public void moveToFile(File source, File target) throws IOException {
+    public void moveToFile(
+            File source,
+            File target
+    ) throws IOException {
         if (!source.exists()) {
             throwSourceNotExistsException(source);
         }
@@ -182,13 +224,16 @@ public class FilesHelper {
         });
     }
 
-    private void throwSourceNotExistsException(File source) throws FileNotFoundException {
+    private void throwSourceNotExistsException(
+            File source
+    ) throws FileNotFoundException {
         throw new FileNotFoundException("Source '" + source + "' does not exist");
     }
 
-    public void moveToDir(File source, File target) throws IOException {
-
-
+    public void moveToDir(
+            File source,
+            File target
+    ) throws IOException {
         if (!source.exists()) {
             throwSourceNotExistsException(source);
         }
@@ -225,7 +270,10 @@ public class FilesHelper {
         }
     }
 
-    public void copyToFile(File source, File target) {
+    public void copyToFile(
+            File source,
+            File target
+    ) {
         File p = getFirstExistingParent(target);
 
         FilesHelper.copyFile(source, target);
@@ -233,7 +281,10 @@ public class FilesHelper {
         cleanUpOperations.addFirst(() -> FilesHelper.cleanDirectory(p));
     }
 
-    public void copyToDir(File source, File target) throws FileNotFoundException {
+    public void copyToDir(
+            File source,
+            File target
+    ) throws FileNotFoundException {
         if (!source.exists()) {
             throwSourceNotExistsException(source);
         }
@@ -255,7 +306,9 @@ public class FilesHelper {
         cleanUpOperations.addFirst(() -> FilesHelper.cleanDirectory(p));
     }
 
-    public void delete(File file) throws IOException {
+    public void delete(
+            File file
+    ) throws IOException {
         if (!file.exists()) {
             throwSourceNotExistsException(file);
         }
@@ -277,7 +330,9 @@ public class FilesHelper {
         }
     }
 
-    private File getFirstExistingParent(File file) {
+    private File getFirstExistingParent(
+            File file
+    ) {
         File parent = file.getParentFile();
         if (parent == null) {
             return file;

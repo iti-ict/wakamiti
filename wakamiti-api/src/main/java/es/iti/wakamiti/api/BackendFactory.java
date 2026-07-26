@@ -34,7 +34,10 @@ public interface BackendFactory {
      * @param configuration The test case configuration.
      * @return A new backend.
      */
-    Backend createBackend(PlanNode node, Configuration configuration);
+    Backend createBackend(
+            PlanNode node,
+            Configuration configuration
+    );
 
     /**
      * Create a new <b>non-runnable</b> backend based on a given
@@ -49,7 +52,9 @@ public interface BackendFactory {
      *                      backend.
      * @return A non-runnable backend.
      */
-    Backend createNonRunnableBackend(Configuration configuration);
+    Backend createNonRunnableBackend(
+            Configuration configuration
+    );
 
     /**
      * Create a hinter for providing suggestions and hints based
@@ -58,6 +63,8 @@ public interface BackendFactory {
      * @param configuration The configuration for the hinter.
      * @return A hinter instance.
      */
-    Hinter createHinter(Configuration configuration);
+    Hinter createHinter(
+            Configuration configuration
+    );
 
 }

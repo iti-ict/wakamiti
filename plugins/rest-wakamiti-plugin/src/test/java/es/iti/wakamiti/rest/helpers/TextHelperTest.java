@@ -7,14 +7,11 @@
  */
 package es.iti.wakamiti.rest.helpers;
 
+
 import io.restassured.builder.ResponseBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.rest.MatchMode;
-import org.hamcrest.Matchers;
-import org.junit.ComparisonFailure;
-import org.junit.Test;
+
 
 public class TextHelperTest {
 
@@ -88,4 +85,5 @@ public class TextHelperTest {
     public void testAssertContentSchema() {
         helper.assertContentSchema(NORMAL, NORMAL);
     }
+
 }

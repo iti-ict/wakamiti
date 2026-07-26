@@ -59,7 +59,6 @@ public class TestWakamitiDurationTypeEn {
                     .as("failed match for: " + e.getKey() + " with " + e.getValue())
                     .isEqualTo(e.getValue());
         }
-
     }
 
 }

@@ -36,11 +36,16 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     private Object underlyingModel;
     private boolean filtered;
 
-    public PlanNodeBuilder(NodeType nodeType) {
+    public PlanNodeBuilder(
+            NodeType nodeType
+    ) {
         this.nodeType = nodeType;
     }
 
-    public PlanNodeBuilder(NodeType nodeType, Collection<PlanNodeBuilder> children) {
+    public PlanNodeBuilder(
+            NodeType nodeType,
+            Collection<PlanNodeBuilder> children
+    ) {
         super(children);
         this.nodeType = nodeType;
     }
@@ -105,72 +110,101 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return underlyingModel;
     }
 
-    public PlanNodeBuilder setUnderlyingModel(Object gherkinModel) {
+    public PlanNodeBuilder setUnderlyingModel(
+            Object gherkinModel
+    ) {
         this.underlyingModel = gherkinModel;
         return this;
     }
 
-    public PlanNodeBuilder setId(String id) {
+    public PlanNodeBuilder setId(
+            String id
+    ) {
         this.id = id;
         return this;
     }
 
-    public PlanNodeBuilder setKeyword(String keyword) {
+    public PlanNodeBuilder setKeyword(
+            String keyword
+    ) {
         this.keyword = keyword;
         return this;
     }
 
-    public PlanNodeBuilder setLanguage(String language) {
+    public PlanNodeBuilder setLanguage(
+            String language
+    ) {
         this.language = language;
         return this;
     }
 
-    public PlanNodeBuilder setName(String name) {
+    public PlanNodeBuilder setName(
+            String name
+    ) {
         this.name = name;
         return this;
     }
 
-    public PlanNodeBuilder setNodeType(NodeType nodeType) {
+    public PlanNodeBuilder setNodeType(
+            NodeType nodeType
+    ) {
         this.nodeType = nodeType;
         return this;
     }
 
-    public PlanNodeBuilder setDisplayNamePattern(String displayNamePattern) {
+    public PlanNodeBuilder setDisplayNamePattern(
+            String displayNamePattern
+    ) {
         this.displayNamePattern = displayNamePattern;
         return this;
     }
 
-    public PlanNodeBuilder setSource(String source) {
+    public PlanNodeBuilder setSource(
+            String source
+    ) {
         this.source = source;
         return this;
     }
 
-    public PlanNodeBuilder addTags(Collection<String> tags) {
+    public PlanNodeBuilder addTags(
+            Collection<String> tags
+    ) {
         this.tags.addAll(tags);
         return this;
     }
 
-    public PlanNodeBuilder addDescription(Collection<String> description) {
+    public PlanNodeBuilder addDescription(
+            Collection<String> description
+    ) {
         this.description.addAll(description);
         return this;
     }
 
-    public PlanNodeBuilder addProperties(Map<String, String> properties) {
+    public PlanNodeBuilder addProperties(
+            Map<String, String> properties
+    ) {
         this.properties.putAll(properties);
         return this;
     }
 
-    public PlanNodeBuilder addProperty(String key, String value) {
+    public PlanNodeBuilder addProperty(
+            String key,
+            String value
+    ) {
         this.properties.put(key, value);
         return this;
     }
 
-    public PlanNodeBuilder setData(PlanNodeData data) {
+    public PlanNodeBuilder setData(
+            PlanNodeData data
+    ) {
         this.data = data;
         return this;
     }
 
-    public void filtered(boolean filtered) {
+    public void filtered(
+            boolean filtered
+    ) {
         this.filtered = filtered;
     }
 
@@ -180,7 +214,9 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     }
 
     @Override
-    protected PlanNodeBuilder copy(PlanNodeBuilder copy) {
+    protected PlanNodeBuilder copy(
+            PlanNodeBuilder copy
+    ) {
         copy.setLanguage(this.language);
         copy.setId(this.id);
         copy.setKeyword(this.keyword);

@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.test;
 
+
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.imconfig.Configuration;
@@ -21,6 +22,7 @@ import java.net.URL;
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class TestXRayReporter {
 
@@ -37,10 +39,12 @@ public class TestXRayReporter {
                 .hasFieldOrPropertyWithValue("testCasePerFeature", true)
                 .hasFieldOrPropertyWithValue("createItemsIfAbsent", false)
                 .hasFieldOrPropertyWithValue("tag", "XRay");
-
     }
 
-    private void configure(XRaySynchronizer reporter, String resource) {
+    private void configure(
+            XRaySynchronizer reporter,
+            String resource
+    ) {
         XrayConfigContributor xrayConfig = new XrayConfigContributor();
         Configuration config = WakamitiConfiguration.DEFAULTS
                 .append(xrayConfig.defaultConfiguration())
@@ -54,11 +58,16 @@ public class TestXRayReporter {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    private InputStream resource(String resource) {
+    private InputStream resource(
+            String resource
+    ) {
         return classLoader().getResourceAsStream(resource);
     }
 
-    private Event event(String type, Object data) {
+    private Event event(
+            String type,
+            Object data
+    ) {
         return new Event(type, Instant.now(), data);
     }
 

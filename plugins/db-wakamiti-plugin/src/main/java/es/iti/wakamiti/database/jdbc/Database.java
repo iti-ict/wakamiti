@@ -43,7 +43,9 @@ public final class Database {
      *
      * @param connection The connection provider
      */
-    private Database(ConnectionProvider connection) {
+    private Database(
+            ConnectionProvider connection
+    ) {
         this.connection = connection;
         this.type = DatabaseType.fromUrl(connection.parameters().url());
         this.parser = new SQLParser(type, connection.parameters().autoTrim());
@@ -56,7 +58,9 @@ public final class Database {
      * @param connection The connection provider
      * @return the new {@code Database}
      */
-    public static Database from(ConnectionProvider connection) {
+    public static Database from(
+            ConnectionProvider connection
+    ) {
         return new Database(connection);
     }
 
@@ -84,14 +88,18 @@ public final class Database {
      * @param table The table name
      * @return the number of records
      */
-    public long count(String table) {
+    public long count(
+            String table
+    ) {
         try (Statement statement = connection()
                 .createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
             String query = parser.sqlSelectCountFrom(table).toString();
             traceSQL(query);
             try (ResultSet rs = statement.executeQuery(query)) {
                 long count = 0;
-                while (rs.next()) count = rs.getLong(1);
+                while (rs.next()) {
+                    count = rs.getLong(1);
+                }
                 return count;
             }
         } catch (SQLException e) {
@@ -105,10 +113,13 @@ public final class Database {
      * @param table The table name
      * @return The stored format
      */
-    public String table(String table) {
+    public String table(
+            String table
+    ) {
         return schema.tables.computeIfAbsent(parser.unquote(table), k -> {
-            if (LOGGER.isDebugEnabled())
+            if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Retrieving the table {}", k);
+            }
             try (ResultSet rs = connection().getMetaData()
                     .getTables(catalog(), schema(), "_".repeat(k.length()), null)) {
                 String name = null;
@@ -136,10 +147,14 @@ public final class Database {
      * @param column The column name
      * @return The stored format
      */
-    public String column(final String table, String column) {
+    public String column(
+            final String table,
+            String column
+    ) {
         UnaryOperator<String> retrieve = col -> {
-            if (LOGGER.isTraceEnabled())
+            if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("Retrieving column {} of table {}", col, table(table));
+            }
             try (ResultSet rs = connection().getMetaData()
                     .getColumns(catalog(), schema(), table(table), "_".repeat(parser.unquote(column).length()))) {
                 String name = null;
@@ -177,7 +192,9 @@ public final class Database {
      * @param table The table name
      * @return the name of columns
      */
-    public Stream<String> primaryKey(String table) {
+    public Stream<String> primaryKey(
+            String table
+    ) {
         return schema.pk.computeIfAbsent(table(parser.unquote(table)), k -> {
             LOGGER.debug("Retrieving primary key of table {}", k);
             ArrayList<String> primaryKeys = new ArrayList<>();
@@ -190,7 +207,6 @@ public final class Database {
                 throw new SQLRuntimeException(message("Error retrieving primary key of table {}", k), e);
             }
         }).stream();
-
     }
 
     /**
@@ -199,7 +215,9 @@ public final class Database {
      * @param table The table name
      * @return the column types
      */
-    public Map<String, JDBCType> columnTypes(String table) {
+    public Map<String, JDBCType> columnTypes(
+            String table
+    ) {
         return schema.types.computeIfAbsent(table(parser.unquote(table)), k -> {
             LOGGER.debug("Retrieving column types of table {}", k);
             LinkedHashMap<String, JDBCType> types = new LinkedHashMap<>();
@@ -223,7 +241,9 @@ public final class Database {
      *
      * @param table The table name
      */
-    public void truncate(String table) {
+    public void truncate(
+            String table
+    ) {
         try (Statement statement = connection().createStatement()) {
             int count = 0;
             try {
@@ -251,14 +271,18 @@ public final class Database {
      * @param data  The input values
      * @return The transformed data
      */
-    public Map<String, Object> processData(String table, Map<String, String> data) {
+    public Map<String, Object> processData(
+            String table,
+            Map<String, String> data
+    ) {
         Map<String, JDBCType> types = columnTypes(table(parser.unquote(table)));
         return data.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(
                         column(table(parser.unquote(table)), parser.unquote(e.getKey())), e.getValue()))
                 .peek(e -> {
-                    if (!types.containsKey(e.getKey()))
+                    if (!types.containsKey(e.getKey())) {
                         throw new SQLRuntimeException("Column {}.{} not found", parser.unquote(table), e.getKey());
+                    }
                 })
                 .collect(entryCollector(Map.Entry::getKey, e ->
                         this.type.formatter().formatValue(e.getValue(), types.get(e.getKey()))));
@@ -270,7 +294,9 @@ public final class Database {
      * @param sql The select string
      * @return The {@code Select} builder
      */
-    public Select.Builder select(String sql) {
+    public Select.Builder select(
+            String sql
+    ) {
         sql = sql.replaceAll(";$", "");
         traceSQL(sql);
         return new Select.Builder(this, sql);
@@ -282,7 +308,9 @@ public final class Database {
      * @param sql The update operation string
      * @return The {@code Update} builder
      */
-    public Update.Builder update(String sql) {
+    public Update.Builder update(
+            String sql
+    ) {
         return new Update.Builder(this, sql);
     }
 
@@ -292,11 +320,12 @@ public final class Database {
      * @param sql The callable operation string
      * @return The {@code Call} builder
      */
-    public Call.Builder call(String sql) {
+    public Call.Builder call(
+            String sql
+    ) {
         traceSQL(sql);
         return new Call.Builder(this, sql);
     }
-
 
     private String catalog() {
         try {
@@ -319,4 +348,5 @@ public final class Database {
     public Connection connection() {
         return connection.get();
     }
+
 }

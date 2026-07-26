@@ -87,10 +87,13 @@ public class AmqpConfigContributorTest {
         assertEquals(AmqpProtocol.AMQP_1_0, steps.protocol);
     }
 
-    private static void setClient(AmqpStepContributor steps, AmqpClient client) throws Exception {
+    private static void setClient(
+            AmqpStepContributor steps,
+            AmqpClient client
+    ) throws Exception {
         Field field = AmqpSupport.class.getDeclaredField("client");
         field.setAccessible(true);
         field.set(steps, client);
     }
-}
 
+}

@@ -14,6 +14,7 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import org.junit.Before;
 import org.junit.Test;
 
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
@@ -23,6 +24,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 
 public class GroovyPropertyEvaluatorTest {
 
@@ -56,4 +58,5 @@ public class GroovyPropertyEvaluatorTest {
     public void testWithError() {
         evaluator.eval("${=assert false}");
     }
+
 }

@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
  * Pair of [key,value] used in {@link AnnotatedConfiguration#value()}
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface Property {
 
     /** The property key */

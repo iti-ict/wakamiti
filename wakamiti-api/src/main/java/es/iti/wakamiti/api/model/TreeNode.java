@@ -24,7 +24,9 @@ public abstract class TreeNode<S extends TreeNode<S>> {
 
     private final List<S> children;
 
-    protected TreeNode(List<S> children) {
+    protected TreeNode(
+            List<S> children
+    ) {
         this.children = Collections.unmodifiableList(children);
     }
 
@@ -71,7 +73,9 @@ public abstract class TreeNode<S extends TreeNode<S>> {
      * @param predicate The predicate to filter descendants
      * @return The number of descendants satisfying the predicate
      */
-    public int numDescendants(Predicate<S> predicate) {
+    public int numDescendants(
+            Predicate<S> predicate
+    ) {
         return (int) descendants().filter(predicate).count();
     }
 
@@ -82,7 +86,9 @@ public abstract class TreeNode<S extends TreeNode<S>> {
      * @return {@code true} if this tree node has the given child,
      * {@code false} otherwise
      */
-    public boolean hasChild(S child) {
+    public boolean hasChild(
+            S child
+    ) {
         return children.contains(child);
     }
 
@@ -93,9 +99,11 @@ public abstract class TreeNode<S extends TreeNode<S>> {
      * @return {@code true} if this tree node has the given descendant,
      * {@code false} otherwise
      */
-    public boolean hasDescendant(S descendant) {
-        return hasChild(descendant) ||
-                children().anyMatch(child -> child.hasDescendant(descendant));
+    public boolean hasDescendant(
+            S descendant
+    ) {
+        return hasChild(descendant)
+                || children().anyMatch(child -> child.hasDescendant(descendant));
     }
 
 }

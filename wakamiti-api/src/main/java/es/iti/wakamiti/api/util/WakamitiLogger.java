@@ -32,17 +32,16 @@ public class WakamitiLogger {
      * @return The Wakamiti logo as a string.
      */
     public static String logo() {
-        return "\n" +
-                "██╗    ██╗ █████╗ ██╗  ██╗ █████╗ ███╗   ███╗██╗████████╗██╗\n" +
-                "██║    ██║██╔══██╗██║ ██╔╝██╔══██╗████╗ ████║██║╚══██╔══╝██║\n" +
-                "██║ █╗ ██║███████║█████╔╝ ███████║██╔████╔██║██║   ██║   ██║\n" +
-                "██║███╗██║██╔══██║██╔═██╗ ██╔══██║██║╚██╔╝██║██║   ██║   ██║\n" +
-                "╚███╔███╔╝██║  ██║██║  ██╗██║  ██║██║ ╚═╝ ██║██║   ██║   ██║\n" +
-                " ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝   ╚═╝  " + WakamitiAPI.instance().version() + "\n";
+        return "\n"
+                + "██╗    ██╗ █████╗ ██╗  ██╗ █████╗ ███╗   ███╗██╗████████╗██╗\n"
+                + "██║    ██║██╔══██╗██║ ██╔╝██╔══██╗████╗ ████║██║╚══██╔══╝██║\n"
+                + "██║ █╗ ██║███████║█████╔╝ ███████║██╔████╔██║██║   ██║   ██║\n"
+                + "██║███╗██║██╔══██║██╔═██╗ ██╔══██║██║╚██╔╝██║██║   ██║   ██║\n"
+                + "╚███╔███╔╝██║  ██║██║  ██╗██║  ██║██║ ╚═╝ ██║██║   ██║   ██║\n"
+                + " ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝   ╚═╝   ╚═╝  " + WakamitiAPI.instance().version() + "\n";
     }
 
     private WakamitiLogger() {
-        
     }
 
     /**
@@ -51,7 +50,9 @@ public class WakamitiLogger {
      * @param name The name of the logger.
      * @return The logger instance.
      */
-    public static Logger forName(String name) {
+    public static Logger forName(
+            String name
+    ) {
         return of(LoggerFactory.getLogger(name));
     }
 
@@ -61,7 +62,9 @@ public class WakamitiLogger {
      * @param logger The class for which the logger is obtained.
      * @return The logger instance.
      */
-    public static Logger forClass(Class<?> logger) {
+    public static Logger forClass(
+            Class<?> logger
+    ) {
         return of(LoggerFactory.getLogger(logger));
     }
 
@@ -71,7 +74,9 @@ public class WakamitiLogger {
      * @param logger The logger instance to wrap.
      * @return The wrapped logger with AnsiLogger support.
      */
-    public static Logger of(Logger logger) {
+    public static Logger of(
+            Logger logger
+    ) {
         return AnsiLogger.of(logger);
     }
 
@@ -80,7 +85,9 @@ public class WakamitiLogger {
      *
      * @param configuration The configuration containing AnsiLogger settings.
      */
-    public static void configure(Configuration configuration) {
+    public static void configure(
+            Configuration configuration
+    ) {
         AnsiLogger.setAnsiEnabled(
                 configuration.get(LOGS_ANSI_ENABLED, Boolean.class).orElse(true)
         );

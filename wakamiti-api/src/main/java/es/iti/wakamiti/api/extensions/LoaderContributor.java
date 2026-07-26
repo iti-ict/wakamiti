@@ -30,5 +30,8 @@ public interface LoaderContributor extends Contributor {
      * @param discoveryPaths The paths where search the sources to load
      * @return The loaded classes
      */
-    Stream<? extends Class<?>> load(List<String> discoveryPaths);
+    Stream<? extends Class<?>> load(
+            List<String> discoveryPaths
+    );
+
 }

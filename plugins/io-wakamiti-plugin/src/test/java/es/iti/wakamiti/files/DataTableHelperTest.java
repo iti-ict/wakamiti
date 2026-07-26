@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.files;
 
 
@@ -16,9 +15,10 @@ import org.slf4j.LoggerFactory;
 
 import java.time.temporal.ValueRange;
 
+
 public class DataTableHelperTest {
 
-    private static Logger log = LoggerFactory.getLogger( "es.iti.wakamiti.test");
+    private static Logger log = LoggerFactory.getLogger("es.iti.wakamiti.test");
 
     @Test
     public void newInstanceWithSuccess() {
@@ -28,7 +28,6 @@ public class DataTableHelperTest {
         // act
         DataTableHelper helper = new DataTableHelper(dataTable);
         log.debug("Result: {}", helper);
-
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -98,4 +97,5 @@ public class DataTableHelperTest {
             throw e;
         }
     }
+
 }

@@ -14,29 +14,39 @@ public class Predicate implements Expression {
     private Operator operator;
     private Expression right;
 
-    public Predicate(Expression criteria) {
+    public Predicate(
+            Expression criteria
+    ) {
         this.left = criteria;
     }
 
-    public Predicate and(Expression criteria) {
+    public Predicate and(
+            Expression criteria
+    ) {
         this.operator = Operator.AND;
         this.right = criteria;
         return new PredicateGroup(this);
     }
 
-    public Predicate or(Expression criteria) {
+    public Predicate or(
+            Expression criteria
+    ) {
         this.operator = Operator.OR;
         this.right = criteria;
         return new PredicateGroup(this);
     }
 
-    public Predicate andEver(Expression criteria) {
+    public Predicate andEver(
+            Expression criteria
+    ) {
         this.operator = Operator.AND_EVER;
         this.right = criteria;
         return new PredicateGroup(this);
     }
 
-    public Predicate orEver(Expression criteria) {
+    public Predicate orEver(
+            Expression criteria
+    ) {
         this.operator = Operator.OR_EVER;
         this.right = criteria;
         return new PredicateGroup(this);
@@ -56,12 +66,13 @@ public class Predicate implements Expression {
         AND("%s AND %s"),
         OR("%s OR %s"),
         AND_EVER("%s AND EVER %s"),
-        OR_EVER("%s OR EVER %s")
-        ;
+        OR_EVER("%s OR EVER %s");
 
         private final String string;
 
-        Operator(String string) {
+        Operator(
+                String string
+        ) {
             this.string = string;
         }
 
@@ -69,6 +80,7 @@ public class Predicate implements Expression {
         public String toString() {
             return string;
         }
+
     }
 
 }

@@ -29,7 +29,6 @@ public final class LogUtils {
      * Private constructor to prevent instantiation.
      */
     private LogUtils() {
-
     }
 
     /**
@@ -37,7 +36,9 @@ public final class LogUtils {
      *
      * @param sql The SQL query to log
      */
-    public static void traceSQL(Object sql) {
+    public static void traceSQL(
+            Object sql
+    ) {
         if (sql != null && LOGGER.isTraceEnabled()) {
             LOGGER.trace("[SQL] {sql} ", normalize(sql.toString()));
         }
@@ -49,7 +50,10 @@ public final class LogUtils {
      * @param sql    The SQL query string
      * @param values The parameter values
      */
-    public static void traceSQL(Object sql, String... values) {
+    public static void traceSQL(
+            Object sql,
+            String... values
+    ) {
         if (sql != null && LOGGER.isTraceEnabled()) {
             traceSQL(Stream.of(values).reduce(sql.toString(), (v1, v2) ->
                     v1.replaceFirst("\\?", v2 == null ? "null" : String.format("'%s'", v2))));
@@ -61,7 +65,9 @@ public final class LogUtils {
      *
      * @param row The result row object
      */
-    public static void traceResultRow(Object row) {
+    public static void traceResultRow(
+            Object row
+    ) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("[SQL] Returning row: {}",
                     row.getClass().isArray() ? Arrays.deepToString((Object[]) row) : row);
@@ -73,7 +79,9 @@ public final class LogUtils {
      *
      * @param count The number of rows affected
      */
-    public static void debugRows(int count) {
+    public static void debugRows(
+            int count
+    ) {
         LOGGER.debug("[SQL] Executed SQL script; {} rows affected", count);
     }
 
@@ -83,7 +91,9 @@ public final class LogUtils {
      * @param sql The SQL query string to normalize
      * @return The normalized SQL query string
      */
-    public static String normalize(String sql) {
+    public static String normalize(
+            String sql
+    ) {
         String unquoted = unquotedRegex("%s+");
         return sql.replaceAll(String.format(unquoted, System.lineSeparator()), " ")
                 .replaceAll(String.format(unquoted, "\\s+"), " "); // replace unquoted spaces
@@ -95,7 +105,10 @@ public final class LogUtils {
      * @param message The warning message
      * @param args    The arguments to format the message
      */
-    public static void warn(String message, Object... args) {
+    public static void warn(
+            String message,
+            Object... args
+    ) {
         LOGGER.warn(message, args);
     }
 
@@ -106,7 +119,10 @@ public final class LogUtils {
      * @param args    The arguments to format the message
      * @return The formatted message
      */
-    public static String message(String message, Object... args) {
+    public static String message(
+            String message,
+            Object... args
+    ) {
         return MessageFormatter.arrayFormat(message, args).getMessage();
     }
 

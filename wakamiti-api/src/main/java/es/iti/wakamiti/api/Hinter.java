@@ -46,7 +46,9 @@ public interface Hinter {
      * @param stepLiteral The literal representation of the step.
      * @return {@code true} if the step is valid, {@code false} otherwise.
      */
-    boolean isValidStep(String stepLiteral);
+    boolean isValidStep(
+            String stepLiteral
+    );
 
     /**
      * Get hints for an invalid step.
@@ -70,6 +72,8 @@ public interface Hinter {
      * @param stepDefinition The definition of the step.
      * @return The step provider associated with the step definition.
      */
-    String getStepProviderByDefinition(String stepDefinition);
+    String getStepProviderByDefinition(
+            String stepDefinition
+    );
 
 }

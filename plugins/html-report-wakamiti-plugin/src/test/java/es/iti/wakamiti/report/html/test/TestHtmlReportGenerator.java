@@ -31,6 +31,7 @@ import java.nio.file.Paths;
 
 import static org.xmlunit.assertj.XmlAssert.assertThat;
 
+
 public class TestHtmlReportGenerator {
 
     private static Document xml;
@@ -56,7 +57,10 @@ public class TestHtmlReportGenerator {
         scriptSource = Files.readString(Path.of("src/main/resources/lib/global.js"));
     }
 
-    private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
+    private static Document load(
+            String name,
+            String... properties
+    ) throws IOException, ParserConfigurationException, SAXException {
         try (Reader reader = Files
                 .newBufferedReader(Paths.get("src/test/resources/" + name + ".json"), StandardCharsets.UTF_8)
         ) {
@@ -180,7 +184,9 @@ public class TestHtmlReportGenerator {
                 .contains("class=\"step--response\"");
     }
 
-    private String uri(String resource) {
+    private String uri(
+            String resource
+    ) {
         return Path.of("target/" + resource + ".html").toUri().toString();
     }
 

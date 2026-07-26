@@ -15,7 +15,6 @@ import java.nio.file.Paths;
 
 /**
  * Utility class for handling JAR files in the context of WakamitiLauncher.
- *
  */
 public class JarUtil {
 
@@ -31,8 +30,9 @@ public class JarUtil {
      */
     public static Path jarFolder() throws URISyntaxException {
         return Paths.get(
-            WakamitiLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
-                    .replaceAll("^/\\w:", "")
+                WakamitiLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
+                        .replaceAll("^/\\w:", "")
         ).getParent();
     }
+
 }

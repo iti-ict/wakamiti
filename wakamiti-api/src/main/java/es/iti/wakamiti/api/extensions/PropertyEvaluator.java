@@ -38,7 +38,10 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param action The evaluation action.
      * @return The result with the evaluations and the given string evaluated.
      */
-    private static Result makeEval(String value, BiFunction<PropertyEvaluator, String, Result> action) {
+    private static Result makeEval(
+            String value,
+            BiFunction<PropertyEvaluator, String, Result> action
+    ) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         AtomicReference<String> result = new AtomicReference<>(value);
         WakamitiAPI.instance().extensionManager().getExtensions(PropertyEvaluator.class)
@@ -57,7 +60,9 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param value The string to evaluate.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public static Result makeEval(String value) {
+    public static Result makeEval(
+            String value
+    ) {
         return makeEval(value, PropertyEvaluator::eval);
     }
 
@@ -69,7 +74,9 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param value The string to evaluate.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public static Result makeEvalIfCan(String value) {
+    public static Result makeEvalIfCan(
+            String value
+    ) {
         return makeEval(value, (evaluator, currentValue) -> evaluator.evalOr(currentValue, p -> p));
     }
 
@@ -86,7 +93,9 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param value The string to evaluate.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public final Result eval(String value) {
+    public final Result eval(
+            String value
+    ) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         Matcher matcher = pattern().matcher(value);
         while (matcher.find()) {
@@ -106,7 +115,10 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param propertyAlternative The alternative for handling unresolved properties.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public final Result evalOr(String value, UnaryOperator<String> propertyAlternative) {
+    public final Result evalOr(
+            String value,
+            UnaryOperator<String> propertyAlternative
+    ) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         Matcher matcher = pattern().matcher(value);
         while (matcher.find()) {
@@ -130,17 +142,24 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param matcher  The {@link Matcher} of the global string.
      * @return The evaluated property result.
      */
-    protected abstract String evalProperty(String property, Matcher matcher);
+    protected abstract String evalProperty(
+            String property,
+            Matcher matcher
+    );
 
     /**
      * This container provides the evaluation value and a record of all
      * evaluations carried out in the process.
      */
     public static class Result {
+
         Map<String, String> evaluations;
         String value;
 
-        public static Result of(Map<String, String> evaluations, String value) {
+        public static Result of(
+                Map<String, String> evaluations,
+                String value
+        ) {
             Result result = new Result();
             result.evaluations = evaluations;
             result.value = value;
@@ -154,7 +173,7 @@ public abstract class PropertyEvaluator implements Contributor {
         public String value() {
             return value;
         }
+
     }
 
 }
-

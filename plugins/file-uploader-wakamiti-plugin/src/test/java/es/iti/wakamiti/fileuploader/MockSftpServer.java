@@ -32,7 +32,9 @@ public class MockSftpServer {
     private FileSystem fileSystem;
     private Path tmpDir;
 
-    public MockSftpServer(int port) {
+    public MockSftpServer(
+            int port
+    ) {
         this.port = port;
     }
 
@@ -58,7 +60,14 @@ public class MockSftpServer {
         return true;
     }
 
-    private boolean authenticator(ServerSession var1, String var2, PublicKey var3, String var4, String var5, List<X509Certificate> var6) {
+    private boolean authenticator(
+            ServerSession var1,
+            String var2,
+            PublicKey var3,
+            String var4,
+            String var5,
+            List<X509Certificate> var6
+    ) {
         return true;
     }
 
@@ -73,6 +82,5 @@ public class MockSftpServer {
     public Path getTmpDir() {
         return tmpDir;
     }
-
 
 }

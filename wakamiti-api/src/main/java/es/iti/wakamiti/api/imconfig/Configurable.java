@@ -20,5 +20,8 @@ public interface Configurable {
     /**
      * Apply the given configuration
      */
-    void configure(Configuration configuration);
+    void configure(
+            Configuration configuration
+    );
+
 }

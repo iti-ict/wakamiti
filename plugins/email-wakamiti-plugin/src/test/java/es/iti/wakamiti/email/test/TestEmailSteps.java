@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
 @RunWith(WakamitiJUnitRunner.class)
 @AnnotatedConfiguration({
         @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
@@ -44,11 +45,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @I18nResource("test-steps")
 public class TestEmailSteps implements StepContributor {
 
-
     static GreenMail mailServer;
     static GreenMailUser mailUser;
     static EmailHelper emailHelper;
-
 
     @BeforeClass
     public static void setUp() {
@@ -94,7 +93,9 @@ public class TestEmailSteps implements StepContributor {
         wait(Durations.ONE_SECOND);
     }
 
-    private void wait(Duration duration) {
+    private void wait(
+            Duration duration
+    ) {
         Awaitility.await().pollDelay(duration).untilFalse(new AtomicBoolean());
     }
 

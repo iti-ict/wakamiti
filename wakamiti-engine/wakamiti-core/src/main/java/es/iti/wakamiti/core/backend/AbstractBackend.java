@@ -69,7 +69,10 @@ public abstract class AbstractBackend implements Backend {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getAvailableSteps(Locale locale, boolean includeVariations) {
+    public List<String> getAvailableSteps(
+            Locale locale,
+            boolean includeVariations
+    ) {
         return getSuggestionsForInvalidStep("", locale, -1, includeVariations);
     }
 
@@ -90,7 +93,10 @@ public abstract class AbstractBackend implements Backend {
      * {@inheritDoc}
      */
     @Override
-    public String getHintFor(String invalidStep, Locale locale) {
+    public String getHintFor(
+            String invalidStep,
+            Locale locale
+    ) {
         int maxSuggestions = 5;
         StringBuilder hint = new StringBuilder(
                 "Perhaps you mean one of the following:\n\t----------\n\t"
@@ -112,15 +118,17 @@ public abstract class AbstractBackend implements Backend {
      * @param fallbackLocale The fallback locale.
      * @return The locale for data associated with the model step.
      */
-    protected Locale dataLocale(PlanNode modelStep, Locale fallbackLocale) {
+    protected Locale dataLocale(
+            PlanNode modelStep,
+            Locale fallbackLocale
+    ) {
         String dataFormatLocale = modelStep.properties().getOrDefault(
                 WakamitiConfiguration.DATA_FORMAT_LANGUAGE,
                 configuration.get(WakamitiConfiguration.DATA_FORMAT_LANGUAGE, String.class).orElse(null)
         );
-        return dataFormatLocale == null ?
-                fallbackLocale :
-                LocaleLoader.forLanguage(dataFormatLocale)
-                ;
+        return dataFormatLocale == null
+                ? fallbackLocale
+                : LocaleLoader.forLanguage(dataFormatLocale);
     }
 
 }

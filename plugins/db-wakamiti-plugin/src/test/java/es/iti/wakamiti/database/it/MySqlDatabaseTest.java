@@ -61,4 +61,5 @@ public class MySqlDatabaseTest {
         container.stop();
         container.close();
     }
+
 }

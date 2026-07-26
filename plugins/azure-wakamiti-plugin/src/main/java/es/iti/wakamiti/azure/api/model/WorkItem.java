@@ -26,7 +26,9 @@ public class WorkItem {
     private String name;
     private Map<String, String> workItemFields;
 
-    public WorkItem id(String id) {
+    public WorkItem id(
+            String id
+    ) {
         this.id = id;
         return this;
     }
@@ -35,7 +37,9 @@ public class WorkItem {
         return id;
     }
 
-    public WorkItem name(String name) {
+    public WorkItem name(
+            String name
+    ) {
         this.name = name;
         return this;
     }
@@ -45,7 +49,9 @@ public class WorkItem {
     }
 
     @JsonProperty
-    public WorkItem workItemFields(List<Map<String, String>> workItemFields) {
+    public WorkItem workItemFields(
+            List<Map<String, String>> workItemFields
+    ) {
         this.workItemFields = workItemFields.stream().flatMap(m -> m.entrySet().stream()).collect(toMap());
         return this;
     }

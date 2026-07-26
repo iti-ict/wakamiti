@@ -62,7 +62,9 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String REDIRECT_REJECT_RELATIVE = "rest.config.redirect.rejectRelative";
     public static final String REDIRECT_MAX = "rest.config.redirect.max";
 
-    private static void config(RestAssuredConfig config) {
+    private static void config(
+            RestAssuredConfig config
+    ) {
         RestAssured.config = config;
     }
 
@@ -82,7 +84,10 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         return this::configure;
     }
 
-    private void configure(RestStepContributor contributor, Configuration configuration) {
+    private void configure(
+            RestStepContributor contributor,
+            Configuration configuration
+    ) {
         restassuredConfigure();
 
         configuration.get(BASE_URL, String.class)
@@ -129,12 +134,17 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         RestAssured.useRelaxedHTTPSValidation();
     }
 
-    private void config(Config config) {
+    private void config(
+            Config config
+    ) {
         config(config.getClass(), config);
     }
 
     @SuppressWarnings(value = "unchecked")
-    private void config(Class<? extends Config> cls, Config config) {
+    private void config(
+            Class<? extends Config> cls,
+            Config config
+    ) {
         try {
             Field field = RestAssuredConfig.class.getDeclaredField("configs");
             field.setAccessible(true);
@@ -157,19 +167,27 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
             this(newHashMapReturningFalseByDefault(CONTENT_TYPE_HEADER_NAME, ACCEPT_HEADER_NAME), false);
         }
 
-        private HeaderConfig(Set<Pattern> headersToOverwrite, boolean isUserDefined) {
+        private HeaderConfig(
+                Set<Pattern> headersToOverwrite,
+                boolean isUserDefined
+        ) {
             this.headersToOverwrite = headersToOverwrite;
             this.isUserDefined = isUserDefined;
         }
 
-        private static Set<Pattern> newHashMapReturningFalseByDefault(final String... headerNamesToOverwrite) {
+        private static Set<Pattern> newHashMapReturningFalseByDefault(
+                final String... headerNamesToOverwrite
+        ) {
             return Stream.of(headerNamesToOverwrite)
                     .map(it -> Pattern.compile(it, Pattern.CASE_INSENSITIVE))
                     .collect(Collectors.toSet());
         }
 
         @Override
-        public HeaderConfig overwriteHeadersWithName(String headerName, String... additionalHeaderNames) {
+        public HeaderConfig overwriteHeadersWithName(
+                String headerName,
+                String... additionalHeaderNames
+        ) {
             notNull(headerName, HEADER_NAME);
             Set<Pattern> map = newHashMapReturningFalseByDefault(headerName);
             if (additionalHeaderNames != null) {
@@ -181,7 +199,9 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         }
 
         @Override
-        public boolean shouldOverwriteHeaderWithName(String headerName) {
+        public boolean shouldOverwriteHeaderWithName(
+                String headerName
+        ) {
             notNull(headerName, HEADER_NAME);
             return headersToOverwrite.stream().anyMatch(it -> it.matcher(headerName).matches());
         }
@@ -190,5 +210,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         public boolean isUserConfigured() {
             return isUserDefined;
         }
+
     }
+
 }

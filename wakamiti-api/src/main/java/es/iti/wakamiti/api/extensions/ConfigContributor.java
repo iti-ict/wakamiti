@@ -34,7 +34,9 @@ public interface ConfigContributor<T> extends Contributor {
      * @return {@code true} if the configurator is capable of configuring the given object,
      * {@code false} otherwise
      */
-    default boolean accepts(Object contributor) {
+    default boolean accepts(
+            Object contributor
+    ) {
         for (Type thisInterface : this.getClass().getGenericInterfaces()) {
             if (thisInterface instanceof ParameterizedType
                     && ((ParameterizedType) thisInterface).getRawType() == ConfigContributor.class) {

@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.groovy;
 
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 
@@ -26,8 +27,12 @@ import java.util.regex.Pattern;
  *
  * @author Maria Galbis Calomarde | mgalbis@iti.es
  */
-@Extension(provider =  "es.iti.wakamiti", name = "groovy-property-resolver", version = "2.6",
-        extensionPoint =  "es.iti.wakamiti.api.extensions.PropertyEvaluator")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "groovy-property-resolver",
+        version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.PropertyEvaluator"
+)
 public class GroovyPropertyEvaluator extends PropertyEvaluator {
 
     @Override
@@ -36,7 +41,10 @@ public class GroovyPropertyEvaluator extends PropertyEvaluator {
     }
 
     @Override
-    public String evalProperty(String property, Matcher matcher) {
+    public String evalProperty(
+            String property,
+            Matcher matcher
+    ) {
         return GroovyHelper.executeScript(matcher.group("name")).toString();
     }
 

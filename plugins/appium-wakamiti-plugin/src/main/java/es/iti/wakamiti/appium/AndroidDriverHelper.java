@@ -16,34 +16,41 @@ public class AndroidDriverHelper extends DriverHelper{
 
     private final AndroidDriver androidDriver;
 
-    public AndroidDriverHelper(AndroidDriver driver, Logger logger) {
+    public AndroidDriverHelper(
+            AndroidDriver driver,
+            Logger logger
+    ) {
         super(driver, logger);
         this.androidDriver = driver;
     }
 
     @Override
-    public void cancelCall(String currentCall) {
+    public void cancelCall(
+            String currentCall
+    ) {
         androidDriver.makeGsmCall(currentCall, GsmCallActions.CANCEL);
     }
 
-
     @Override
-    public void receiveCall(String number) {
+    public void receiveCall(
+            String number
+    ) {
         androidDriver.makeGsmCall(number, GsmCallActions.CALL);
     }
 
-
     @Override
-    public void acceptIncomingCall(String number) {
+    public void acceptIncomingCall(
+            String number
+    ) {
         androidDriver.makeGsmCall(number, GsmCallActions.ACCEPT);
     }
 
-
     @Override
-    public void rejectIncomingCall(String number) {
+    public void rejectIncomingCall(
+            String number
+    ) {
         androidDriver.makeGsmCall(number, GsmCallActions.CANCEL);
     }
-
 
     @Override
     public boolean isIncomingCall() {

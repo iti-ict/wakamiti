@@ -33,7 +33,12 @@ import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
 import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "azure-reporter", version = "2.7", priority = 10)
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "azure-reporter",
+        version = "2.7",
+        priority = Extension.NORMAL_PRIORITY * 2
+)
 public class AzureSynchronizer implements EventObserver {
 
     public static final String GHERKIN_TYPE_FEATURE = "feature";
@@ -61,59 +66,88 @@ public class AzureSynchronizer implements EventObserver {
         throw new WakamitiException("Authentication is needed");
     };
 
-    public void enabled(boolean enabled) {
+    public void enabled(
+            boolean enabled
+    ) {
         this.enabled = enabled;
     }
 
-    public void baseURL(URL baseURL) {
+    public void baseURL(
+            URL baseURL
+    ) {
         this.baseURL = baseURL;
     }
 
-    public void organization(String organization) {
+    public void organization(
+            String organization
+    ) {
         this.organization = organization;
     }
 
-    public void project(String project) {
+    public void project(
+            String project
+    ) {
         this.project = project;
     }
 
-    public void version(String version) {
+    public void version(
+            String version
+    ) {
         this.version = version;
     }
 
-    public void testPlan(TestPlan testPlan) {
+    public void testPlan(
+            TestPlan testPlan
+    ) {
         this.testPlan = testPlan;
     }
 
-    public void suiteBase(String suiteBase) {
+    public void suiteBase(
+            String suiteBase
+    ) {
         this.suiteBase = suiteBase;
     }
 
-    public void setCredentialsAuthenticator(String user, String password) {
+    public void setCredentialsAuthenticator(
+            String user,
+            String password
+    ) {
         this.authenticator = client -> client.basicAuth(user, password);
     }
 
-    public void setTokenAuthenticator(String token) {
+    public void setTokenAuthenticator(
+            String token
+    ) {
         this.authenticator = client -> client.tokenAuth(token);
     }
 
-    public void configuration(String configuration) {
+    public void configuration(
+            String configuration
+    ) {
         this.configuration = configuration;
     }
 
-    public void testCasePerFeature(boolean testCasePerFeature) {
+    public void testCasePerFeature(
+            boolean testCasePerFeature
+    ) {
         this.testCasePerFeature = testCasePerFeature;
     }
 
-    public void createItemsIfAbsent(boolean createItemsIfAbsent) {
+    public void createItemsIfAbsent(
+            boolean createItemsIfAbsent
+    ) {
         this.createItemsIfAbsent = createItemsIfAbsent;
     }
 
-    public void removeOrphans(boolean removeOrphans) {
+    public void removeOrphans(
+            boolean removeOrphans
+    ) {
         this.removeOrphans = removeOrphans;
     }
 
-    public void attachments(Set<String> attachments) {
+    public void attachments(
+            Set<String> attachments
+    ) {
         this.attachments.addAll(attachments);
     }
 
@@ -127,16 +161,20 @@ public class AzureSynchronizer implements EventObserver {
     }
 
     @Override
-    public void eventReceived(Event event) {
-        if (!enabled) return;
+    public void eventReceived(
+            Event event
+    ) {
+        if (!enabled) {
+            return;
+        }
 
         if (Event.PLAN_RUN_STARTED.equals(event.type())) {
             try {
                 LOGGER.info("Synchronising test plan with Azure...");
                 syncAndStart((PlanNodeSnapshot) event.data());
             } catch (Exception e) {
-                throw new WakamitiException("The test plan could not be synchronized. " +
-                        "You can disable the plugin with the '{}' option to continue.", AZURE_ENABLED, e);
+                throw new WakamitiException("The test plan could not be synchronized. "
+                        + "You can disable the plugin with the '{}' option to continue.", AZURE_ENABLED, e);
             }
         }
 
@@ -162,13 +200,16 @@ public class AzureSynchronizer implements EventObserver {
     }
 
     @Override
-    public boolean acceptType(String eventType) {
+    public boolean acceptType(
+            String eventType
+    ) {
         return List.of(Event.PLAN_RUN_STARTED, Event.PLAN_RUN_FINISHED, Event.REPORT_OUTPUT_FILE_WRITTEN)
                 .contains(eventType);
     }
 
-
-    private void syncAndStart(PlanNodeSnapshot plan) {
+    private void syncAndStart(
+            PlanNodeSnapshot plan
+    ) {
         testPlan = api().getTestPlan(testPlan, createItemsIfAbsent);
         LOGGER.debug("Remote plan #{} ready to sync", testPlan.id());
 
@@ -206,7 +247,9 @@ public class AzureSynchronizer implements EventObserver {
         LOGGER.debug("{} remote test results ready to sync", testResults.size());
     }
 
-    private void uploadExecution(PlanNodeSnapshot plan) {
+    private void uploadExecution(
+            PlanNodeSnapshot plan
+    ) {
         if (isEmpty(testResults)) {
             return;
         }
@@ -223,7 +266,9 @@ public class AzureSynchronizer implements EventObserver {
         api().updateRun(run.errorMessage(plan.getErrorMessage()).state(TestRun.Status.COMPLETED));
     }
 
-    private void uploadAttachment(Path file) {
+    private void uploadAttachment(
+            Path file
+    ) {
         api().attachFile(run, file);
         LOGGER.debug("Attachment '{}' uploaded", file.getFileName());
     }

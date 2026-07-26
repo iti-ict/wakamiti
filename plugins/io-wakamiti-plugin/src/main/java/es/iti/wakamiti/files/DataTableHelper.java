@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.files;
+
 
 import es.iti.wakamiti.api.plan.DataTable;
 
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
 public class DataTableHelper {
 
     public static String FROM_POSITION_COLUMN = "from";
@@ -28,7 +29,9 @@ public class DataTableHelper {
     private List<String> columns;
     private String[][] values;
 
-    public DataTableHelper(DataTable dataTable) {
+    public DataTableHelper(
+            DataTable dataTable
+    ) {
         this.dataTable = dataTable;
         this.columns = Arrays.asList(dataTable.getValues()[0]);
         this.values = Arrays.copyOfRange(dataTable.getValues(), 1, dataTable.rows());
@@ -51,11 +54,12 @@ public class DataTableHelper {
                                     value, column, row + 1));
                 }
             }
-
         }
     }
 
-    public ValueRange getRange(int row) {
+    public ValueRange getRange(
+            int row
+    ) {
         try {
             return ValueRange.of(
                     Integer.parseInt(values[row][getColumnIndex(FROM_POSITION_COLUMN)]),
@@ -66,7 +70,9 @@ public class DataTableHelper {
         }
     }
 
-    public String getExpectedValue(int row) {
+    public String getExpectedValue(
+            int row
+    ) {
         return values[row][getColumnIndex(VALUE_COLUMN)];
     }
 
@@ -82,10 +88,11 @@ public class DataTableHelper {
         return values.length;
     }
 
-    public int getColumnIndex(String name) {
+    public int getColumnIndex(
+            String name
+    ) {
         return columns.indexOf(name);
     }
-
 
     public void orderValues() {
         Arrays.sort(values, Comparator.comparing(o ->
@@ -98,4 +105,5 @@ public class DataTableHelper {
                 .append(Stream.of(values).map(row -> "\t" + Arrays.deepToString(row)).collect(Collectors.joining("\n")))
                 .append("\n)").toString();
     }
+
 }

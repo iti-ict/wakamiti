@@ -5,28 +5,33 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
+
 public class GherkinLineSpan {
-    // One-based line position
+
+    /** One-based column at which this span starts in its source line. */
     public final int column;
 
-    // text part of the line
+    /** Text contained in this portion of the Gherkin source line. */
     public final String text;
 
-    public GherkinLineSpan(int column, String text) {
+    public GherkinLineSpan(
+            int column,
+            String text
+    ) {
         this.column = column;
         this.text = text;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(
+            Object o
+    ) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GherkinLineSpan that = (GherkinLineSpan) o;
         return column == that.column && text.equals(that.text);
-
     }
 
     @Override
@@ -35,4 +40,5 @@ public class GherkinLineSpan {
         result = 31 * result + text.hashCode();
         return result;
     }
+
 }

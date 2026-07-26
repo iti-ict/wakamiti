@@ -26,11 +26,14 @@ public enum GrantType {
 
     final List<String> requiredFields = new LinkedList<>();
 
-    GrantType(String... requiredFields) {
+    GrantType(
+            String... requiredFields
+    ) {
         this.requiredFields.addAll(List.of(requiredFields));
     }
 
     public List<String> requiredFields() {
         return requiredFields;
     }
+
 }

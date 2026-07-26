@@ -68,11 +68,16 @@ public class PlanNodeSnapshot {
     public PlanNodeSnapshot() {
     }
 
-    public PlanNodeSnapshot(PlanNode node) {
+    public PlanNodeSnapshot(
+            PlanNode node
+    ) {
         this(node, LocalDateTime.now().toString());
     }
 
-    public PlanNodeSnapshot(PlanNode node, String snapshotInstant) {
+    public PlanNodeSnapshot(
+            PlanNode node,
+            String snapshotInstant
+    ) {
         this.executionID = node.executionID();
         this.snapshotInstant = snapshotInstant;
         this.nodeType = node.nodeType();
@@ -120,7 +125,9 @@ public class PlanNodeSnapshot {
      * @param nodes The nodes to be grouped.
      * @return A new parent node descriptor.
      */
-    public static PlanNodeSnapshot group(PlanNodeSnapshot... nodes) {
+    public static PlanNodeSnapshot group(
+            PlanNodeSnapshot... nodes
+    ) {
         if (nodes.length == 1) {
             return nodes[0];
         }
@@ -151,7 +158,9 @@ public class PlanNodeSnapshot {
         return root;
     }
 
-    private static Map<Result, Long> countTestCases(PlanNode node) {
+    private static Map<Result, Long> countTestCases(
+            PlanNode node
+    ) {
         LinkedHashMap<Result, Long> results = new LinkedHashMap<>();
         if (node.nodeType() == NodeType.TEST_CASE) {
             node.result().ifPresent(testCaseResult -> results.put(testCaseResult, 1L));
@@ -166,8 +175,9 @@ public class PlanNodeSnapshot {
         return results;
     }
 
-
-    private static Map<String, Long> countTestClassifiers(PlanNode node) {
+    private static Map<String, Long> countTestClassifiers(
+            PlanNode node
+    ) {
         LinkedHashMap<String, LongAdder> results = new LinkedHashMap<>();
         if (node.nodeType() == NodeType.TEST_CASE) {
             node.errorClassifiers().findFirst()
@@ -180,13 +190,17 @@ public class PlanNodeSnapshot {
         return results.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().longValue()));
     }
 
-    private static Map<Result, Long> countChildren(PlanNode node) {
+    private static Map<Result, Long> countChildren(
+            PlanNode node
+    ) {
         return node.children()
                 .filter(it -> it.result().isPresent())
                 .collect(groupingBy(it -> it.result().orElseThrow(), counting()));
     }
 
-    private static Map<Result, Long> countChildren(PlanNodeSnapshot node) {
+    private static Map<Result, Long> countChildren(
+            PlanNodeSnapshot node
+    ) {
         return node.getChildren().stream().collect(groupingBy(PlanNodeSnapshot::getResult, counting()));
     }
 
@@ -208,12 +222,14 @@ public class PlanNodeSnapshot {
                 .max(Comparator.naturalOrder()).orElse(null);
     }
 
-    public Stream<PlanNodeSnapshot> flatten(Predicate<PlanNodeSnapshot> filter) {
+    public Stream<PlanNodeSnapshot> flatten(
+            Predicate<PlanNodeSnapshot> filter
+    ) {
         return Stream.concat(
                 Optional.of(this).filter(filter).stream(),
                 Optional.ofNullable(this.children).stream().flatMap(Collection::stream)
                         .flatMap(p -> p.flatten(filter))
-                );
+        );
     }
 
     /**
@@ -252,11 +268,15 @@ public class PlanNodeSnapshot {
         return copy;
     }
 
-    private String instantToString(Instant instant) {
+    private String instantToString(
+            Instant instant
+    ) {
         return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toString();
     }
 
-    private String errorTrace(Throwable error) {
+    private String errorTrace(
+            Throwable error
+    ) {
         StringWriter errorWriter = new StringWriter();
         error.printStackTrace(new PrintWriter(errorWriter));
         return errorWriter.toString();
@@ -393,4 +413,5 @@ public class PlanNodeSnapshot {
     public String getSnapshotInstant() {
         return snapshotInstant;
     }
+
 }

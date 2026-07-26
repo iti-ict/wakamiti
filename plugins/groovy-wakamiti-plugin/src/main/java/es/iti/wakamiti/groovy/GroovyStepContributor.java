@@ -7,11 +7,13 @@
  */
 package es.iti.wakamiti.groovy;
 
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
+
 
 /**
  * The groovy steps' definition.
@@ -19,7 +21,11 @@ import es.iti.wakamiti.api.plan.Document;
  * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @I18nResource("iti_wakamiti_wakamiti-groovy")
-@Extension(provider =  "es.iti.wakamiti", name = "groovy-steps", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "groovy-steps",
+        version = "2.6"
+)
 public class GroovyStepContributor implements StepContributor {
 
     /**
@@ -48,12 +54,13 @@ public class GroovyStepContributor implements StepContributor {
      *     """
      * </pre></blockquote>
      *
-     *
      * @param document The script content
      * @return The script return object
      */
     @Step("groovy.execute")
-    public Object execute(Document document) {
+    public Object execute(
+            Document document
+    ) {
         return GroovyHelper.executeScript(document.getContent());
     }
 

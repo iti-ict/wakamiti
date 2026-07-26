@@ -39,8 +39,12 @@ import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
  *
  * @see ConfigContributor
  */
-@Extension(provider = "es.iti.wakamiti", name = "jmeter-config", version = "2.6",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "jmeter-config",
+        version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class JMeterConfigContributor implements ConfigContributor<JMeterStepContributor> {
 
     public static final String BASE_URL = "jmeter.baseURL";
@@ -129,10 +133,13 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
     /**
      * Applies the configuration settings to the given JMeter step contributor.
      *
-     * @param contributor  The JMeter step contributor.
+     * @param contributor   The JMeter step contributor.
      * @param configuration The configuration settings.
      */
-    private void configure(JMeterStepContributor contributor, Configuration configuration) {
+    private void configure(
+            JMeterStepContributor contributor,
+            Configuration configuration
+    ) {
         Path workingDir = WakamitiAPI.instance().workingDir(configuration);
 
         configuration.get(BASE_URL, URL.class).ifPresent(contributor::setBaseURL);
@@ -203,7 +210,9 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
      * @param configuration The configuration settings.
      * @return An optional InfluxDB backend listener.
      */
-    private Optional<InfluxDbBackendListener> influx(Configuration configuration) {
+    private Optional<InfluxDbBackendListener> influx(
+            Configuration configuration
+    ) {
         Configuration influxConfig = configuration.inner(INFLUX_BASE);
         if (!influxConfig.isEmpty()) {
             InfluxDbBackendListener influx = influxConfig.get(URL, String.class).map(InfluxDbBackendListener::new)
@@ -226,7 +235,9 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
      * @param configuration The configuration settings.
      * @return An optional Graphite backend listener.
      */
-    private Optional<GraphiteBackendListener> graphite(Configuration configuration) {
+    private Optional<GraphiteBackendListener> graphite(
+            Configuration configuration
+    ) {
         Configuration graphiteConfig = configuration.inner(GRAPHITE_BASE);
         if (!graphiteConfig.isEmpty()) {
             GraphiteBackendListener graphite = graphiteConfig.get(URL, String.class).map(GraphiteBackendListener::new)
@@ -240,10 +251,13 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
     /**
      * Configures the proxy settings for the JMeterStepContributor.
      *
-     * @param contributor The JMeterStepContributor to configure.
+     * @param contributor   The JMeterStepContributor to configure.
      * @param configuration The configuration settings to apply.
      */
-    private void proxy(JMeterStepContributor contributor, Configuration configuration) {
+    private void proxy(
+            JMeterStepContributor contributor,
+            Configuration configuration
+    ) {
         Configuration proxyConfig = configuration.inner(PROXY);
         if (!proxyConfig.isEmpty()) {
             URL url = proxyConfig.get(URL, URL.class)
@@ -264,7 +278,9 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
      * @param configuration The configuration containing authentication settings.
      * @return An optional pair of username and password if the configuration is valid.
      */
-    private Optional<Pair<String, String>> auth(Configuration configuration) {
+    private Optional<Pair<String, String>> auth(
+            Configuration configuration
+    ) {
         Configuration authConfig = configuration.inner(AUTH);
         if (!authConfig.isEmpty()) {
             Optional<String> username = authConfig.get(USERNAME, String.class);
@@ -277,4 +293,5 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
         }
         return Optional.empty();
     }
+
 }

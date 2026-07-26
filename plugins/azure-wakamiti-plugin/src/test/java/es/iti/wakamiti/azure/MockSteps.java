@@ -18,7 +18,6 @@ import java.util.Random;
 @I18nResource("mock-steps")
 public class MockSteps implements StepContributor {
 
-
     @Override
     public String info() {
         return "test";
@@ -32,23 +31,24 @@ public class MockSteps implements StepContributor {
     @Step(value = "step.fail")
     public void fail() {
         pause();
-        throw new AssertionError("\"The expected and actual responses have differences:\n" +
-                "\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: 'The Entorno can not be found due to the following error: Entity does not exists.'\n" +
-                " expected:<{\n" +
-                "  \"[\n" +
-                "\t\t\tstatus\" : 404,\n" +
-                "  \"error\" : \"NotFound\",\n" +
-                "  \"message\" : \"Entitywithidentifier-5cannotbefound.\n" +
-                "\t\t]\"\n" +
-                "}> but was:<{\n" +
-                "  \"[\n" +
-                "\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n" +
-                "  \"status\" : 404,\n" +
-                "  \"error\" : \"NotFound\",\n" +
-                "  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n" +
-                "  \"path\" : \"/api/configuracion-service/entornos/-5\n" +
-                "\t\t]\"\n" +
-                "}>\"");
+        throw new AssertionError("\"The expected and actual responses have differences:\n"
+                + "\t-segment 'message' expected: 'Entity with identifier -5 can not be found.', actual: "
+                + "'The Entorno can not be found due to the following error: Entity does not exists.'\n"
+                + " expected:<{\n"
+                + "  \"[\n"
+                + "\t\t\tstatus\" : 404,\n"
+                + "  \"error\" : \"NotFound\",\n"
+                + "  \"message\" : \"Entitywithidentifier-5cannotbefound.\n"
+                + "\t\t]\"\n"
+                + "}> but was:<{\n"
+                + "  \"[\n"
+                + "\t\t\ttimestamp\" : \"2023-09-19T15: 08: 26.637+00: 00\",\n"
+                + "  \"status\" : 404,\n"
+                + "  \"error\" : \"NotFound\",\n"
+                + "  \"message\" : \"TheEntornocannotbefoundduetothefollowingerror: Entitydoesnotexists.\",\n"
+                + "  \"path\" : \"/api/configuracion-service/entornos/-5\n"
+                + "\t\t]\"\n"
+                + "}>\"");
     }
 
     private void pause() {
@@ -58,4 +58,5 @@ public class MockSteps implements StepContributor {
             // ignored
         }
     }
+
 }

@@ -14,6 +14,7 @@ import java.time.Clock;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
+
 /**
  * The {@code EventDispatcher} class manages the distribution of events to registered
  * {@link EventObserver} instances. It allows adding and removing observers and publishing
@@ -31,7 +32,9 @@ public class EventDispatcher {
      *
      * @param observer The observer to add.
      */
-    public void addObserver(EventObserver observer) {
+    public void addObserver(
+            EventObserver observer
+    ) {
         this.observers.add(observer);
     }
 
@@ -40,7 +43,9 @@ public class EventDispatcher {
      *
      * @param observer The observer to remove.
      */
-    public void removeObserver(EventObserver observer) {
+    public void removeObserver(
+            EventObserver observer
+    ) {
         this.observers.remove(observer);
     }
 
@@ -50,7 +55,10 @@ public class EventDispatcher {
      * @param type The type of the event.
      * @param data The data associated with the event.
      */
-    public void publishEvent(String type, Object data) {
+    public void publishEvent(
+            String type,
+            Object data
+    ) {
         Event event = new Event(type, clock.instant(), data);
         for (EventObserver observer : this.observers) {
             if (observer.acceptType(type)) {

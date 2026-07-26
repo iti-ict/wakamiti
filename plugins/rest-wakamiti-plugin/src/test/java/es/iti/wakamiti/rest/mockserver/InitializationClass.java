@@ -23,7 +23,9 @@ public class InitializationClass implements PluginExpectationInitializer {
     private static final Logger LOGGER = WakamitiLogger.forClass(InitializationClass.class);
 
     @Override
-    public void initializeExpectations(MockServerClient mockServerClient) {
+    public void initializeExpectations(
+            MockServerClient mockServerClient
+    ) {
         try {
             prepare(mockServerClient, "wakamiti/server", mime -> true);
             LOGGER.debug("MockServer started in port: {}", mockServerClient.getPort());
@@ -31,4 +33,5 @@ public class InitializationClass implements PluginExpectationInitializer {
             throw new RuntimeException(e);
         }
     }
+
 }

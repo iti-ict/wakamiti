@@ -20,7 +20,6 @@ public class TestExtensionManager {
 
     private final ExtensionManager extensionManager = new ExtensionManager();
 
-
     @Test
     public void testGetExtension() {
         // MyExtensionV2_5 has greater priority than MyExtensionV2_6
@@ -28,7 +27,6 @@ public class TestExtensionManager {
                 extensionManager.getExtension(MyExtensionPointV2_5.class)
         ).containsInstanceOf(MyExtensionV2_5.class);
     }
-
 
     @Test
     public void testGetExtensions() {
@@ -40,7 +38,6 @@ public class TestExtensionManager {
         assertThat(extensions.get(1)).isInstanceOf(MyExtensionV2_6.class);
     }
 
-
     @Test
     public void testGetExtensionsSatisfying() {
         List<MyExtensionPointV2_5> extensions = extensionManager.getExtensionsThatSatisfy(
@@ -51,7 +48,6 @@ public class TestExtensionManager {
         assertThat(extensions.get(0)).isInstanceOf(MyExtensionV2_6.class);
     }
 
-
     @Test
     public void testGetExtensionsSatisfyingMetadata() {
         List<MyExtensionPointV2_5> extensions = extensionManager.getExtensionsThatSatisfyMetadata(
@@ -61,7 +57,6 @@ public class TestExtensionManager {
         assertThat(extensions).hasSize(1);
         assertThat(extensions.get(0)).isInstanceOf(MyExtensionV2_6.class);
     }
-
 
     @Test
     public void testExtensionPointSingleton() {
@@ -76,7 +71,6 @@ public class TestExtensionManager {
         assertThat(extension3).isSameAs(extension1);
     }
 
-
     @Test
     public void testExtensionPointFresh() {
         ExtensionPointFresh extension1 = extensionManager.getExtension(ExtensionPointFresh.class)
@@ -89,4 +83,5 @@ public class TestExtensionManager {
         assertThat(extension2).isNotSameAs(extension3);
         assertThat(extension3).isNotSameAs(extension1);
     }
+
 }

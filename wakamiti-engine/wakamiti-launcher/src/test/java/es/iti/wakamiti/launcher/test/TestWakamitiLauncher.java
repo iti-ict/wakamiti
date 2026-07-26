@@ -36,10 +36,10 @@ public class TestWakamitiLauncher {
     @Test
     public void testArguments() throws Exception {
         String args =
-                "-modules es.iti.wakamiti:wakamiti.core:0.1.0,rest " +
-                        "-f /var/lib/wakamiti.conf " +
-                        "-Krest.host=localhost " +
-                        "-MremoteRepositories=http://maven.com ";
+                "-modules es.iti.wakamiti:wakamiti.core:0.1.0,rest "
+                        + "-f /var/lib/wakamiti.conf "
+                        + "-Krest.host=localhost "
+                        + "-MremoteRepositories=http://maven.com ";
         CliArguments result = new CliArguments().parse(args.split(" "));
         assertThat(result.modules()).containsExactly("es.iti.wakamiti:wakamiti.core:0.1.0", "rest");
         assertThat(result.wakamitiConfiguration().asMap()).contains(entry("rest.host", "localhost"));

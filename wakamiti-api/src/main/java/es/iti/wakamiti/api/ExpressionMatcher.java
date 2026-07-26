@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
+
 /**
  * Utility class for matching expressions in Wakamiti test plans.
  * It provides methods for generating regular expressions based on
@@ -79,7 +80,9 @@ public class ExpressionMatcher {
      * @param translatedExpression The translated expression for which to compute the regular expression.
      * @return The computed regular expression.
      */
-    public static String computeRegularExpression(String translatedExpression) {
+    public static String computeRegularExpression(
+            String translatedExpression
+    ) {
         String regex = regexPriorAdjustments(translatedExpression);
         regex = regexFinalAdjustments(regex);
         LOGGER.trace("Expression Matcher: {} ==> {}", translatedExpression, regex);
@@ -92,7 +95,9 @@ public class ExpressionMatcher {
      * @param sourceExpression The source expression to adjust.
      * @return The adjusted regular expression.
      */
-    protected static String regexPriorAdjustments(String sourceExpression) {
+    protected static String regexPriorAdjustments(
+            String sourceExpression
+    ) {
         String regex = sourceExpression;
         // a|b|c -> (a|b|c)
         regex = regex.replaceAll("[^ |(]*?(\\|[^ |)]+)++", "($0)");
@@ -106,7 +111,9 @@ public class ExpressionMatcher {
         return regex;
     }
 
-    private static String regexBracketedAdjustments(String regex) {
+    private static String regexBracketedAdjustments(
+            String regex
+    ) {
         Pattern bracketed = Pattern.compile("(?<x>\\((?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)\\))");
         Pattern nested = Pattern.compile("(?<!\\\\)\\((?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)"
                 + bracketed.pattern() + "(?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)\\)");
@@ -129,7 +136,10 @@ public class ExpressionMatcher {
         return regex.replace("[", "(").replace("]", ")");
     }
 
-    private static String regexBracketedAdjustments(String regex, List<String> texts) {
+    private static String regexBracketedAdjustments(
+            String regex,
+            List<String> texts
+    ) {
         texts = texts.stream().distinct().collect(Collectors.toList());
         Collections.reverse(texts);
         for (String text : texts) {
@@ -160,7 +170,9 @@ public class ExpressionMatcher {
      * @param computingRegex The intermediate regular expression.
      * @return The final adjusted regular expression.
      */
-    protected static String regexFinalAdjustments(String computingRegex) {
+    protected static String regexFinalAdjustments(
+            String computingRegex
+    ) {
         String regex = computingRegex;
         regex = regex.replace(" $", "$");
         regex = regex.replace("((?!\\).)$", "\1\\s*$");
@@ -186,7 +198,9 @@ public class ExpressionMatcher {
      * @param computingRegex The intermediate regular expression.
      * @return The final regular expression with arguments substituted.
      */
-    protected String regexArgumentSubstitution(String computingRegex) {
+    protected String regexArgumentSubstitution(
+            String computingRegex
+    ) {
         String regex = computingRegex;
         // unnamed arguments
         Matcher unnamedArgs = Pattern.compile(UNNAMED_ARGUMENT_REGEX).matcher(regex);
@@ -225,7 +239,9 @@ public class ExpressionMatcher {
      *
      * @param type The type that is not registered.
      */
-    protected void throwTypeNotRegistered(String type) {
+    protected void throwTypeNotRegistered(
+            String type
+    ) {
         throw new WakamitiException(
                 "Wrong step definition '{}' : unknown argument type '{}'\nAvailable types are: {}",
                 translatedDefinition, type,
@@ -250,7 +266,9 @@ public class ExpressionMatcher {
      * @return {@code true} if equal, {@code false} otherwise.
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(
+            Object obj
+    ) {
         if (obj instanceof ExpressionMatcher) {
             ExpressionMatcher other = (ExpressionMatcher) obj;
             return other.typeRegistry == this.typeRegistry &&
@@ -259,4 +277,5 @@ public class ExpressionMatcher {
         }
         return false;
     }
+
 }

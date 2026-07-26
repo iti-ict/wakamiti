@@ -44,7 +44,6 @@ public class SQLParseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.test");
 
-
     @Test
     public void testParseStatementsWhenSqlIsOkWithSuccess() throws JSQLParserException {
         // prepare
@@ -158,7 +157,6 @@ public class SQLParseTest {
         assertThat(result).isPresent().get()
                 .hasToString("SELECT * FROM T WHERE (A = 1 AND B = NOW())");
     }
-
 
     @Test
     public void testToSelectWhenIsUpdateWithSuccess() throws JSQLParserException {
@@ -288,12 +286,6 @@ public class SQLParseTest {
                 .hasToString("(A = 'abc' AND B = 1)");
     }
 
-
-
-
-
-
-
     @Test
     public void testSqlSelectCountWhenTableFromWithSuccess() {
         Select result = parser(false).sqlSelectCountFrom("T");
@@ -314,22 +306,22 @@ public class SQLParseTest {
         Statement result = SQLParser.parseStatement(sql);
         LOGGER.debug("Result query: {}", result);
         assertThat(result).hasToString(
-                "SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAY, 'YYYYMMDD') " +
-                        "FROM \"table1\" WHERE col2 = 'DAYS'");
+                "SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAY, 'YYYYMMDD') "
+                        + "FROM \"table1\" WHERE col2 = 'DAYS'");
 
-        sql = "SELECT * FROM table1 WHERE " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTES) AND " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)";
+        sql = "SELECT * FROM table1 WHERE "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTES) AND "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)";
         result = SQLParser.parseStatement(sql);
         LOGGER.debug("Result query: {}", result);
         assertThat(result)
-                .hasToString("SELECT * FROM table1 " +
-                        "WHERE TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP " +
-                        "AND TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE) " +
-                        "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP " +
-                        "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)");
+                .hasToString("SELECT * FROM table1 "
+                        + "WHERE TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP "
+                        + "AND TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE) "
+                        + "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP "
+                        + "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)");
     }
 
     @Test
@@ -340,7 +332,9 @@ public class SQLParseTest {
         assertThat(result).hasToString(sql);
     }
 
-    private SQLParser parser(boolean autoTrim) {
+    private SQLParser parser(
+            boolean autoTrim
+    ) {
         return new SQLParser(DatabaseType.OTHER, autoTrim);
     }
 

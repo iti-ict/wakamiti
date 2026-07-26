@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser.internal;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import es.iti.wakamiti.core.gherkin.parser.Location;
 import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLine;
 import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
 import es.iti.wakamiti.core.gherkin.parser.internal.Token;
+
 
 /**
  * <p>
@@ -31,11 +32,15 @@ public class TokenScanner implements Parser.ITokenScanner {
     private final BufferedReader reader;
     private int lineNumber;
 
-    public TokenScanner(String source) {
+    public TokenScanner(
+            String source
+    ) {
         this(new StringReader(source));
     }
 
-    public TokenScanner(Reader source) {
+    public TokenScanner(
+            Reader source
+    ) {
         this.reader = new BufferedReader(source);
     }
 
@@ -49,4 +54,5 @@ public class TokenScanner implements Parser.ITokenScanner {
             throw new RuntimeException(e);
         }
     }
+
 }

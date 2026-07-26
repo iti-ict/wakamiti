@@ -21,7 +21,11 @@ public class Resource<T> {
     private final String relativePath;
     private final T content;
 
-    public Resource(String absolutePath, String relativePath, T content) {
+    public Resource(
+            String absolutePath,
+            String relativePath,
+            T content
+    ) {
         this.absolutePath = absolutePath;
         this.relativePath = relativePath;
         this.content = content;
@@ -57,4 +61,5 @@ public class Resource<T> {
     public String toString() {
         return "Resource[absolutePath=" + absolutePath + ", relativePath=" + relativePath + "]";
     }
+
 }

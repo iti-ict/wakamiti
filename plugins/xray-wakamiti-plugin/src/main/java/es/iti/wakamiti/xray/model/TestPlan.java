@@ -7,9 +7,11 @@
  */
 package es.iti.wakamiti.xray.model;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.List;
+
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestPlan {
@@ -20,9 +22,13 @@ public class TestPlan {
     private String projectId;
     private List<TestCase> testCases;
     private TestExecution testExecution;
-
-
-    public TestPlan(String issueId, JiraIssue jira, String projectId, List<TestCase> testCases) {
+    
+    public TestPlan(
+            String issueId,
+            JiraIssue jira,
+            String projectId,
+            List<TestCase> testCases
+    ) {
         this.issueId = issueId;
         this.jira = jira;
         this.projectId = projectId;
@@ -30,30 +36,39 @@ public class TestPlan {
     }
 
     public TestPlan() {
-
     }
 
-    public TestPlan id(String id) {
+    public TestPlan id(
+            String id
+    ) {
         this.issueId = id;
         return this;
     }
 
-    public TestPlan jira(JiraIssue jira) {
+    public TestPlan jira(
+            JiraIssue jira
+    ) {
         this.jira = jira;
         return this;
     }
 
-    public TestPlan projectId(String projectId) {
+    public TestPlan projectId(
+            String projectId
+    ) {
         this.projectId = projectId;
         return this;
     }
 
-    public TestPlan testCases(List<TestCase> testCases) {
+    public TestPlan testCases(
+            List<TestCase> testCases
+    ) {
         this.testCases = testCases;
         return this;
     }
 
-    public TestPlan testExecution(TestExecution testExecution) {
+    public TestPlan testExecution(
+            TestExecution testExecution
+    ) {
         this.testExecution = testExecution;
         return this;
     }
@@ -77,4 +92,5 @@ public class TestPlan {
     public TestExecution getTestExecution() {
         return testExecution;
     }
+
 }

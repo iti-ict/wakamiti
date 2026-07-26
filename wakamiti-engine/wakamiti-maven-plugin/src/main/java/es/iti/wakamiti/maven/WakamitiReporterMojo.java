@@ -59,6 +59,7 @@ public class WakamitiReporterMojo extends AbstractMojo implements WakamitiConfig
             getLog().error(e);
             if (!testFailureIgnore)
                 throw new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
+            }
         }
     }
 

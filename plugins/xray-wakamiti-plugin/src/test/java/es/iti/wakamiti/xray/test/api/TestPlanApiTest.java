@@ -7,11 +7,13 @@
  */
 package es.iti.wakamiti.xray.test.api;
 
+
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.xray.api.JiraApi;
 import es.iti.wakamiti.xray.api.XRayApi;
 import es.iti.wakamiti.xray.model.*;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -39,6 +41,7 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.StringBody.subString;
 
+
 public class TestPlanApiTest {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(TestPlanApiTest.class);
@@ -58,7 +61,6 @@ public class TestPlanApiTest {
         mock.close();
     }
 
-
     @Test
     public void testAuthenticationWithSuccess() throws IOException {
         List<HttpRequest> requests = new ArrayList<>();
@@ -76,7 +78,6 @@ public class TestPlanApiTest {
         assertThat(xRayApi).isNotNull();
 
         requests.forEach(mock::verify);
-
     }
 
     @Test
@@ -141,7 +142,6 @@ public class TestPlanApiTest {
 
         XRayApi xRayApi = new XRayApi(new URL(BASE_URL), "clientId", "clientSecret", "WAK", LOGGER);
         assertThat(xRayApi).isNotNull();
-
 
         TestPlan testPlan = xRayApi.createTestPlan("Test Summary");
 
@@ -457,7 +457,6 @@ public class TestPlanApiTest {
                 .gherkin("Gherkin")
                 .testSetList(List.of(testSet));
 
-
         xRayApi.addTestsToSets(List.of(testCase), List.of(testSet));
 
         requests.forEach(mock::verify);
@@ -510,7 +509,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/jira/updateIssue.json"))
         ).ifPresent(requests::add);
 
-        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials",  LOGGER);
+        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials", LOGGER);
         assertThat(jiraApi).isNotNull();
 
         TestCase testCase = new TestCase()
@@ -539,7 +538,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/jira/addAttachment.json"))
         ).ifPresent(requests::add);
 
-        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials",  LOGGER);
+        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials", LOGGER);
         assertThat(jiraApi).isNotNull();
 
         jiraApi.addAttachment("10070", Files.createTempFile("temp", ""));
@@ -547,12 +546,18 @@ public class TestPlanApiTest {
         requests.forEach(mock::verify);
     }
 
-    private Optional<HttpRequest> mockServer(HttpRequest expected, HttpResponse response) {
+    private Optional<HttpRequest> mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
         mock.when(expected, Times.once()).respond(response);
         return Optional.of(expected);
     }
 
-    private String resource(String resource) throws IOException {
+    private String resource(
+            String resource
+    ) throws IOException {
         return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource), Charset.defaultCharset());
     }
+
 }

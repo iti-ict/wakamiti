@@ -48,7 +48,11 @@ public class XMLHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
+    public void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    ) {
         diff.assertContent(expected, actual, matchMode);
     }
 
@@ -73,7 +77,10 @@ public class XMLHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContentSchema(String expectedSchema, String content) {
+    public void assertContentSchema(
+            String expectedSchema,
+            String content
+    ) {
         MatcherAssert.assertThat(content, matchesXsd(expectedSchema));
     }
 
@@ -81,8 +88,12 @@ public class XMLHelper implements ContentTypeHelper {
     static class XmlPathXmlObjectDeserializer implements XmlPathObjectDeserializer {
 
         @Override
-        public XmlObject deserialize(ObjectDeserializationContext ctx) {
+        public XmlObject deserialize(
+                ObjectDeserializationContext ctx
+        ) {
             return xml(ctx.getDataToDeserialize().asString());
         }
+
     }
+
 }

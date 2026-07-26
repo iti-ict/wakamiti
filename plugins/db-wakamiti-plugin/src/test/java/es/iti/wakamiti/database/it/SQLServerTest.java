@@ -56,7 +56,6 @@ public class SQLServerTest {
                             new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
             );
 
-
     @BeforeClass
     public static void setUp() throws IOException {
         System.out.println("Creating container. Please, be patient... ");

@@ -44,7 +44,12 @@ import java.util.stream.Stream;
 import static es.iti.wakamiti.api.util.StringUtils.format;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "jacoco-reporter", version = "2.6", priority = 6)
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "jacoco-reporter",
+        version = "2.6",
+        priority = Extension.NORMAL_PRIORITY + 1
+)
 public class JacocoReporter implements EventObserver {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(JacocoReporter.class);
@@ -147,7 +152,6 @@ public class JacocoReporter implements EventObserver {
         if (Event.AFTER_WRITE_OUTPUT_FILES.equals(event.type())) {
             Optional.ofNullable(html).ifPresent(x -> executeFinal());
         }
-
     }
 
     @Override
@@ -294,7 +298,9 @@ public class JacocoReporter implements EventObserver {
         }
     }
 
-    private IReportVisitor createReportVisitor(String id) throws IOException {
+    private IReportVisitor createReportVisitor(
+            String id
+    ) throws IOException {
         final List<IReportVisitor> visitors = new ArrayList<>();
         if (xml != null) {
             final XMLFormatter formatter = new XMLFormatter();

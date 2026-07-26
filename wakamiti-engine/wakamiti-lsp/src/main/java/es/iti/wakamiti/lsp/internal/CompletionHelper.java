@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.lsp.internal;
+
 
 import static java.util.stream.Collectors.toList;
 
@@ -16,58 +16,68 @@ import java.util.regex.*;
 import org.eclipse.lsp4j.*;
 import org.slf4j.Logger;
 
+
 public class CompletionHelper {
 
-	private final GherkinDocumentAssessor assessor;
-	private final Logger logger;
+    private final GherkinDocumentAssessor assessor;
+    private final Logger logger;
 
+    public CompletionHelper(
+            GherkinDocumentAssessor assessor,
+            Logger logger
+    ) {
+        this.assessor = assessor;
+        this.logger = logger;
+    }
 
-	public CompletionHelper(GherkinDocumentAssessor assessor, Logger logger) {
-		this.assessor = assessor;
-		this.logger = logger;
-	}
-
-
-	public List<CompletionItem> collectCompletions(int lineNumber, int rowPosition) {
-		var textDocument = assessor.documentMap.document();
+    public List<CompletionItem> collectCompletions(
+            int lineNumber,
+            int rowPosition
+    ) {
+        var textDocument = assessor.documentMap.document();
         return collectCompletions(
-            lineNumber,
-            textDocument.extractRange(TextRange.of(lineNumber,0,lineNumber,rowPosition))
+                lineNumber,
+                textDocument.extractRange(TextRange.of(lineNumber, 0, lineNumber, rowPosition))
         );
     }
 
-
-	private List<CompletionItem> collectCompletions(int lineNumber, String lineContent) {
-		String strippedLine = lineContent.stripLeading();
-		if (strippedLine.startsWith("#") && !strippedLine.contains(":")) {
-			return completeConfigurationProperties(lineContent);
-		} else if (assessor.documentMap.isStep(lineNumber, strippedLine)) {
-			return completeSteps(strippedLine);
-		} else {
-			return completeKeywords(lineNumber, strippedLine);
-		}
+    private List<CompletionItem> collectCompletions(
+            int lineNumber,
+            String lineContent
+    ) {
+        String strippedLine = lineContent.stripLeading();
+        if (strippedLine.startsWith("#") && !strippedLine.contains(":")) {
+            return completeConfigurationProperties(lineContent);
+        } else if (assessor.documentMap.isStep(lineNumber, strippedLine)) {
+            return completeSteps(strippedLine);
+        } else {
+            return completeKeywords(lineNumber, strippedLine);
+        }
     }
 
-
-	private List<CompletionItem> completeConfigurationProperties(String lineContent) {
-        String line = lineContent.strip().replace("#","").strip();
+    private List<CompletionItem> completeConfigurationProperties(
+            String lineContent
+    ) {
+        String line = lineContent.strip().replace("#", "").strip();
         return assessor.hinter.getAvailableProperties()
-            .stream()
-            .filter(property -> property.startsWith(line))
-            .map(this::completionProperty)
-            .collect(toList());
+                .stream()
+                .filter(property -> property.startsWith(line))
+                .map(this::completionProperty)
+                .collect(toList());
     }
 
-
-    private CompletionItem completionProperty(String property) {
-        String suggestion = property+": <value>";
+    private CompletionItem completionProperty(
+            String property
+    ) {
+        String suggestion = property + ": <value>";
         var item = new CompletionItem(suggestion);
         item.setKind(CompletionItemKind.Property);
         return item;
     }
 
-
-    private List<CompletionItem> completeSteps(String lineContent) {
+    private List<CompletionItem> completeSteps(
+            String lineContent
+    ) {
         for (String keyword : assessor.documentMap.dialect().getStepKeywords()) {
             if (lineContent.startsWith(keyword)) {
                 lineContent = lineContent.substring(keyword.length());
@@ -77,8 +87,8 @@ public class CompletionHelper {
         var suggestions = assessor.hinter.getExpandedAvailableSteps();
         if (suggestions.isEmpty()) {
             logger.debug(
-                "no steps available! used configuration for hinter is:\n{}",
-                assessor.effectiveConfiguration
+                    "no steps available! used configuration for hinter is:\n{}",
+                    assessor.effectiveConfiguration
             );
         }
         if (suggestions.size() > assessor.maxSuggestions) {
@@ -86,14 +96,14 @@ public class CompletionHelper {
         }
         String suggestionPrefix = lineContent;
         return suggestions.stream()
-            .filter(suggestion -> suggestion.startsWith(suggestionPrefix))
-            .map(this::completionStep)
-            .collect(toList());
+                .filter(suggestion -> suggestion.startsWith(suggestionPrefix))
+                .map(this::completionStep)
+                .collect(toList());
     }
 
-
-    private CompletionItem completionStep(String step) {
-
+    private CompletionItem completionStep(
+            String step
+    ) {
         var item = new CompletionItem(step);
         item.setKind(CompletionItemKind.Interface);
         String insertText = step;
@@ -103,10 +113,10 @@ public class CompletionHelper {
         Matcher m = stepSnippetPattern.matcher(step);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            snippetArgumentCount ++;
+            snippetArgumentCount++;
             String capture = insertText.substring(m.start(), m.end());
             capture = capture.replace("}", "\\}");
-            capture = "${"+snippetArgumentCount+":"+capture+"}";
+            capture = "${" + snippetArgumentCount + ":" + capture + "}";
             m.appendReplacement(sb, Matcher.quoteReplacement(capture));
         }
         m.appendTail(sb);
@@ -121,19 +131,23 @@ public class CompletionHelper {
         return item;
     }
 
-
-    private CompletionItem completionItem(String suggestion, CompletionItemKind kind) {
+    private CompletionItem completionItem(
+            String suggestion,
+            CompletionItemKind kind
+    ) {
         var item = new CompletionItem(suggestion);
         item.setKind(kind);
         return item;
     }
 
-
-    private List<CompletionItem> completeKeywords(int lineNumber, String strippedLine) {
-        return assessor.documentMap.followingKeywords(lineNumber-1).stream()
-            .filter(k -> k.startsWith(strippedLine))
-            .map(keyword -> completionItem(keyword,CompletionItemKind.Keyword))
-            .collect(toList());
+    private List<CompletionItem> completeKeywords(
+            int lineNumber,
+            String strippedLine
+    ) {
+        return assessor.documentMap.followingKeywords(lineNumber - 1).stream()
+                .filter(k -> k.startsWith(strippedLine))
+                .map(keyword -> completionItem(keyword, CompletionItemKind.Keyword))
+                .collect(toList());
     }
 
 }

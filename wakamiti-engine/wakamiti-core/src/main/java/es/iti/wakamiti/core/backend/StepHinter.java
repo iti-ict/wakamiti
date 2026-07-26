@@ -51,13 +51,11 @@ public class StepHinter implements Hinter {
         this.defaultTextLocale =
                 configuration.get(WakamitiConfiguration.LANGUAGE, String.class)
                         .map(Locale::forLanguageTag)
-                        .orElse(Locale.ENGLISH)
-        ;
+                        .orElse(Locale.ENGLISH);
         this.defaultDataLocale =
                 configuration.get(WakamitiConfiguration.DATA_FORMAT_LANGUAGE, String.class)
                         .map(Locale::forLanguageTag)
-                        .orElse(this.defaultTextLocale)
-        ;
+                        .orElse(this.defaultTextLocale);
     }
 
     /**
@@ -88,7 +86,9 @@ public class StepHinter implements Hinter {
      * {@inheritDoc}
      */
     @Override
-    public boolean isValidStep(String step) {
+    public boolean isValidStep(
+            String step
+    ) {
         return isValidStep(step, defaultTextLocale, defaultDataLocale);
     }
 
@@ -96,7 +96,9 @@ public class StepHinter implements Hinter {
      * {@inheritDoc}
      */
     @Override
-    public String getStepProviderByDefinition(String step) {
+    public String getStepProviderByDefinition(
+            String step
+    ) {
         return getStepProviderByDefinition(step, defaultTextLocale);
     }
 
@@ -120,7 +122,9 @@ public class StepHinter implements Hinter {
      * @param includeVariations If true, includes variations; otherwise, returns only unique steps.
      * @return List of available steps.
      */
-    public List<String> getAvailableSteps(boolean includeVariations) {
+    public List<String> getAvailableSteps(
+            boolean includeVariations
+    ) {
         return getHintsForInvalidStep("", -1, includeVariations);
     }
 
@@ -132,7 +136,11 @@ public class StepHinter implements Hinter {
      * @param dataLocale  The data locale.
      * @return True if the step is valid, false otherwise.
      */
-    public boolean isValidStep(String stepLiteral, Locale textLocale, Locale dataLocale) {
+    public boolean isValidStep(
+            String stepLiteral,
+            Locale textLocale,
+            Locale dataLocale
+    ) {
         try {
             return stepResolver.locateRunnableStep(stepLiteral, textLocale, dataLocale, this) != null;
         } catch (UndefinedStepException e) {
@@ -147,7 +155,10 @@ public class StepHinter implements Hinter {
      * @param textLocale The text locale.
      * @return The step provider.
      */
-    public String getStepProviderByDefinition(String step, Locale textLocale) {
+    public String getStepProviderByDefinition(
+            String step,
+            Locale textLocale
+    ) {
         return stepResolver
                 .obtainRunnableStepByDefinition(step, textLocale)
                 .map(RunnableStep::getProvider)
@@ -197,8 +208,12 @@ public class StepHinter implements Hinter {
      * @param dataLocale  The data locale.
      * @return The hint for the invalid step.
      */
-    public String getHintFor(String invalidStep, Locale textLocale, Locale dataLocale) {
-        int maxSuggestions = 5;
+    public String getHintFor(
+            String invalidStep,
+            Locale textLocale,
+            Locale dataLocale
+    ) {
+        int maxSuggestions = DEFAULT_MAX_SUGGESTIONS;
         StringBuilder hint = new StringBuilder(
                 "Perhaps you mean one of the following:\n\t----------\n\t"
         );
@@ -215,7 +230,6 @@ public class StepHinter implements Hinter {
         }
         return hint.toString();
     }
-
 
     /**
      * Populates a list of step hints with variations based on WakamitiDataType hints.

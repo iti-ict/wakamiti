@@ -48,7 +48,13 @@ public class Select<T> extends Sentence<Statement> {
      * @param resultset The result set obtained from executing the SQL query
      * @param mapper    The mapper function to convert result set rows to objects of type T
      */
-    private Select(Database db, String sql, Statement statement, ResultSet resultset, Function<ResultSet, Optional<T>> mapper) {
+    private Select(
+            Database db,
+            String sql,
+            Statement statement,
+            ResultSet resultset,
+            Function<ResultSet, Optional<T>> mapper
+    ) {
         super(db, statement, sql);
         this.mapper = mapper;
         this.resultset = resultset;
@@ -63,7 +69,12 @@ public class Select<T> extends Sentence<Statement> {
      * @param resultset The result set obtained from executing the SQL query
      * @return A new Select object
      */
-    private static Select<Object[]> create(String sql, Database db, Statement statement, ResultSet resultset) {
+    private static Select<Object[]> create(
+            String sql,
+            Database db,
+            Statement statement,
+            ResultSet resultset
+    ) {
         return new Select<>(db, sql, statement, resultset, Select::defaultMap);
     }
 
@@ -79,7 +90,12 @@ public class Select<T> extends Sentence<Statement> {
      * @return A new Select object
      */
     private static <T> Select<T> create(
-            String sql, Database db, Statement statement, ResultSet resultset, Function<ResultSet, Optional<T>> mapper) {
+            String sql,
+            Database db,
+            Statement statement,
+            ResultSet resultset,
+            Function<ResultSet, Optional<T>> mapper
+    ) {
         return new Select<>(db, sql, statement, resultset, mapper);
     }
 
@@ -90,7 +106,9 @@ public class Select<T> extends Sentence<Statement> {
      * @return An Optional containing the mapped row as an array of Objects
      * @throws SQLRuntimeException If an SQL error occurs during mapping
      */
-    protected static Optional<Object[]> defaultMap(ResultSet rs) {
+    protected static Optional<Object[]> defaultMap(
+            ResultSet rs
+    ) {
         try {
             ResultSetMetaData metadata = rs.getMetaData();
             Object[] row = IntStream.range(1, metadata.getColumnCount() + 1).mapToObj(i -> {
@@ -102,7 +120,6 @@ public class Select<T> extends Sentence<Statement> {
                     } catch (SQLException ignored) {
                         throw new SQLRuntimeException("Cannot read value of column index: " + i, e);
                     }
-
                 }
             }).toArray();
             return Optional.of(row);
@@ -118,7 +135,9 @@ public class Select<T> extends Sentence<Statement> {
      * @param <R>    The mapper function result type
      * @return A new {@link Select} with the given mapper
      */
-    public <R> Select<R> map(Function<T, R> mapper) {
+    public <R> Select<R> map(
+            Function<T, R> mapper
+    ) {
         return new Select<>(db, sql, statement, resultset, rs -> this.mapper.apply(rs).map(mapper));
     }
 
@@ -128,7 +147,9 @@ public class Select<T> extends Sentence<Statement> {
      * @param filter The predicate to apply for filtering
      * @return A new Select object with the specified filter applied
      */
-    public Select<T> filter(Predicate<T> filter) {
+    public Select<T> filter(
+            Predicate<T> filter
+    ) {
         return new Select<>(db, sql, statement, resultset, rs -> this.mapper.apply(rs).filter(filter));
     }
 
@@ -138,7 +159,9 @@ public class Select<T> extends Sentence<Statement> {
      * @param reducer The reducer function
      * @return An Optional containing the result of applying the reducer, or empty if the result set is empty
      */
-    public Optional<T> reduce(BinaryOperator<T> reducer) {
+    public Optional<T> reduce(
+            BinaryOperator<T> reducer
+    ) {
         this.reducer = reducer;
         return stream().findFirst();
     }
@@ -150,7 +173,9 @@ public class Select<T> extends Sentence<Statement> {
      * @param consumer The action
      * @return The current {@code Select}
      */
-    public Select<T> peek(Consumer<ResultSet> consumer) {
+    public Select<T> peek(
+            Consumer<ResultSet> consumer
+    ) {
         consumer.accept(resultset);
         return this;
     }
@@ -212,7 +237,10 @@ public class Select<T> extends Sentence<Statement> {
          * @param db  The Database instance to use
          * @param sql The SQL query string
          */
-        Builder(Database db, String sql) {
+        Builder(
+                Database db,
+                String sql
+        ) {
             this.db = db;
             this.sql = sql;
         }
@@ -223,7 +251,9 @@ public class Select<T> extends Sentence<Statement> {
          * @param seconds timeout in seconds; values lower than 1 are clamped to 1
          * @return this builder
          */
-        public Builder queryTimeoutSeconds(int seconds) {
+        public Builder queryTimeoutSeconds(
+                int seconds
+        ) {
             this.queryTimeoutSeconds = Math.max(1, seconds);
             return this;
         }
@@ -248,7 +278,9 @@ public class Select<T> extends Sentence<Statement> {
          * @return A Select instance with the mapped ResultSet
          * @throws SQLRuntimeException If an SQL error occurs during execution
          */
-        public <R> Select<R> get(Function<ResultSet, R> mapper) {
+        public <R> Select<R> get(
+                Function<ResultSet, R> mapper
+        ) {
             return execute(rs -> Optional.ofNullable(mapper.apply(rs)));
         }
 
@@ -262,10 +294,12 @@ public class Select<T> extends Sentence<Statement> {
          * </ul>
          *
          * @param mapper row-mapping function
-         * @param <R> mapped row type
+         * @param <R>    mapped row type
          * @return open {@link Select} instance containing statement and result set
          */
-        private <R> Select<R> execute(Function<ResultSet, Optional<R>> mapper) {
+        private <R> Select<R> execute(
+                Function<ResultSet, Optional<R>> mapper
+        ) {
             Statement statement = null;
             try {
                 statement = db.connection().createStatement();
@@ -283,7 +317,9 @@ public class Select<T> extends Sentence<Statement> {
          * @param statement JDBC statement to configure
          * @throws SQLException if JDBC driver rejects timeout configuration
          */
-        private void configureStatement(Statement statement) throws SQLException {
+        private void configureStatement(
+                Statement statement
+        ) throws SQLException {
             if (queryTimeoutSeconds > 0) {
                 statement.setQueryTimeout(queryTimeoutSeconds);
             }
@@ -294,7 +330,9 @@ public class Select<T> extends Sentence<Statement> {
          *
          * @param statement statement to close
          */
-        private void closeQuietly(Statement statement) {
+        private void closeQuietly(
+                Statement statement
+        ) {
             if (statement == null) {
                 return;
             }
@@ -304,6 +342,7 @@ public class Select<T> extends Sentence<Statement> {
                 // best effort
             }
         }
+
     }
 
 }

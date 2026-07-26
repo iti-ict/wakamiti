@@ -5,8 +5,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.lsp;
+
 
 import es.iti.wakamiti.lsp.internal.DocumentDiagnostics;
 import es.iti.wakamiti.lsp.internal.GherkinWorkspace;
@@ -35,13 +35,13 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
 
     LanguageClient client;
 
-
-    public WakamitiLanguageServer(int baseIndex) {
-    	this.workspace = new GherkinWorkspace(baseIndex);
+    public WakamitiLanguageServer(
+            int baseIndex
+    ) {
+        this.workspace = new GherkinWorkspace(baseIndex);
         this.textDocumentService = new WakamitiTextDocumentService(this, workspace, baseIndex);
         this.workspaceService = new WakamitiWorkspaceService(this, workspace);
     }
-
 
     public static ServerCapabilities capabilities() {
         var capabilities = new ServerCapabilities();
@@ -55,9 +55,10 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
         return capabilities;
     }
 
-
     @Override
-    public CompletableFuture<InitializeResult> initialize(InitializeParams params) {
+    public CompletableFuture<InitializeResult> initialize(
+            InitializeParams params
+    ) {
         return FutureUtil.processEvent("languageServer.initialize", params, x -> {
             InitializeResult result = new InitializeResult();
             result.setCapabilities(capabilities());
@@ -65,17 +66,17 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
         });
     }
 
-
     @Override
-    public void initialized(InitializedParams params) {
-        LOGGER.info("EVENT initialized:\n{}",params);
+    public void initialized(
+            InitializedParams params
+    ) {
+        LOGGER.info("EVENT initialized:\n{}", params);
         LanguageServer.super.initialized(params);
         client
-        	.workspaceFolders()
-        	.thenAccept(this::analyzeWorkspaceFolders)
-        	.thenAccept(x->sendWorkspaceDiagnostics());
+                .workspaceFolders()
+                .thenAccept(this::analyzeWorkspaceFolders)
+                .thenAccept(x -> sendWorkspaceDiagnostics());
     }
-
 
     @Override
     public CompletableFuture<Object> shutdown() {
@@ -83,12 +84,10 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
         return CompletableFuture.completedFuture(Boolean.TRUE);
     }
 
-
     @Override
     public void exit() {
         LOGGER.info("EVENT exit");
     }
-
 
     @Override
     public TextDocumentService getTextDocumentService() {
@@ -96,84 +95,87 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
         return textDocumentService;
     }
 
-
     @Override
     public WorkspaceService getWorkspaceService() {
         LOGGER.info("EVENT getWorkspaceService");
         return workspaceService;
     }
 
-
-
     @Override
-    public void connect(LanguageClient client) {
-        LOGGER.info("EVENT connect\n{}",client);
+    public void connect(
+            LanguageClient client
+    ) {
+        LOGGER.info("EVENT connect\n{}", client);
         this.client = client;
     }
 
-
-    private void analyzeWorkspaceFolders(List<WorkspaceFolder> folders) {
-    	folders.forEach(this::analyzeWorkspaceFolder);
+    private void analyzeWorkspaceFolders(
+            List<WorkspaceFolder> folders
+    ) {
+        folders.forEach(this::analyzeWorkspaceFolder);
     }
 
-
-    private void analyzeWorkspaceFolder(WorkspaceFolder folder) {
-    	var folderPath = Path.of(URI.create(folder.getUri()));
-		if (Files.exists(folderPath)) {
-			try(var walker = Files.walk(folderPath)) {
-				walker.forEach(this::manageFile);
-			} catch (IOException | RuntimeException e) {
-				LOGGER.error("Cannot open workspace folder {} : {}", folderPath, e.getMessage());
-	    		LOGGER.debug("{}",e,e);
-			};
-		}
+    private void analyzeWorkspaceFolder(
+            WorkspaceFolder folder
+    ) {
+        var folderPath = Path.of(URI.create(folder.getUri()));
+        if (Files.exists(folderPath)) {
+            try (var walker = Files.walk(folderPath)) {
+                walker.forEach(this::manageFile);
+            } catch (IOException | RuntimeException e) {
+                LOGGER.error("Cannot open workspace folder {} : {}", folderPath, e.getMessage());
+                LOGGER.debug("{}", e, e);
+            }
+        }
     }
 
-
-    private void manageFile(Path file) {
-    	try {
-	    	var filename = file.getFileName().toString();
-	    	if (filename.equals("wakamiti.yaml")) {
-	    		workspace.addConfigurationWithoutDiagnostics(file.toUri().toString(), Files.readString(file));
-	    	} else if (filename.endsWith(".feature")) {
-	    		workspace.addGherkinWithoutDiagnostics(file.toUri().toString(), Files.readString(file));
-	    	}
-    	} catch (IOException | RuntimeException e) {
-    		LOGGER.error("Cannot open workspace file {} : {}", file, e.getMessage());
-    		LOGGER.debug("{}",e,e);
-    	}
+    private void manageFile(
+            Path file
+    ) {
+        try {
+            var filename = file.getFileName().toString();
+            if (filename.equals("wakamiti.yaml")) {
+                workspace.addConfigurationWithoutDiagnostics(file.toUri().toString(), Files.readString(file));
+            } else if (filename.endsWith(".feature")) {
+                workspace.addGherkinWithoutDiagnostics(file.toUri().toString(), Files.readString(file));
+            }
+        } catch (IOException | RuntimeException e) {
+            LOGGER.error("Cannot open workspace file {} : {}", file, e.getMessage());
+            LOGGER.debug("{}", e, e);
+        }
     }
-
-
 
     void sendWorkspaceDiagnostics() {
-    	sendDiagnostics(workspace.computeWorkspaceDiagnostics());
+        sendDiagnostics(workspace.computeWorkspaceDiagnostics());
     }
 
-
-    void sendDiagnostics(Stream<DocumentDiagnostics> allDiagnostics) {
-    	allDiagnostics.forEach(document->{
-    		var uri = document.uri();
-			var publishDiagnostics = new PublishDiagnosticsParams(uri, document.diagnostics());
-			LoggerUtil.logEntry("textDocument.publishDiagnostics", publishDiagnostics);
-			client.publishDiagnostics(publishDiagnostics);
-    	});
+    void sendDiagnostics(
+            Stream<DocumentDiagnostics> allDiagnostics
+    ) {
+        allDiagnostics.forEach(document -> {
+            var uri = document.uri();
+            var publishDiagnostics = new PublishDiagnosticsParams(uri, document.diagnostics());
+            LoggerUtil.logEntry("textDocument.publishDiagnostics", publishDiagnostics);
+            client.publishDiagnostics(publishDiagnostics);
+        });
     }
 
-
-
-    private MessageParams error(String message) {
-        return new MessageParams(MessageType.Error,message);
+    private MessageParams error(
+            String message
+    ) {
+        return new MessageParams(MessageType.Error, message);
     }
 
-    private MessageParams warn(String message) {
-        return new MessageParams(MessageType.Warning,message);
+    private MessageParams warn(
+            String message
+    ) {
+        return new MessageParams(MessageType.Warning, message);
     }
 
-    private MessageParams info(String message) {
-        return new MessageParams(MessageType.Info,message);
+    private MessageParams info(
+            String message
+    ) {
+        return new MessageParams(MessageType.Info, message);
     }
-
-
 
 }

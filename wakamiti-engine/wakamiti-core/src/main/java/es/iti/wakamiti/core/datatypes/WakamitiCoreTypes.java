@@ -33,7 +33,11 @@ import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromNu
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "core-types", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "core-types",
+        version = "2.6"
+)
 public class WakamitiCoreTypes implements DataTypeContributor {
 
     public static final String PROPERTY_REGEX = "(\\$\\{.+\\})";
@@ -41,8 +45,8 @@ public class WakamitiCoreTypes implements DataTypeContributor {
     public static final String WORD_REGEX = "[\\w-]+|[\\w-]*" + PROPERTY_REGEX + "[\\w-]*";
     public static final String IDENTIFIER_REGEX = "[\\w|\\d_]+|[\\w|\\d_]*" + PROPERTY_REGEX + "[\\w|\\d_]*";
     public static final String FILE_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
-    public static final String URL_REGEX = "(http|ftp|https):\\/\\/(([\\w+?\\.\\w+])+|" + PROPERTY_REGEX + ")" +
-            "(([\\w\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]|" + PROPERTY_REGEX + ")*)?|"
+    public static final String URL_REGEX = "(http|ftp|https):\\/\\/(([\\w+?\\.\\w+])+|" + PROPERTY_REGEX + ")"
+            + "(([\\w\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]|" + PROPERTY_REGEX + ")*)?|"
             + PROPERTY_REGEX;
 
     private static final WakamitiDataTypeBase.LocaleHintProvider PATH_HINT = locale -> List.of("<path/file>");
@@ -59,7 +63,9 @@ public class WakamitiCoreTypes implements DataTypeContributor {
      * @param input The input string.
      * @return The prepared string.
      */
-    private static String prepareString(String input) {
+    private static String prepareString(
+            String input
+    ) {
         return input.substring(1, input.length() - 1).replace("\\\"", "\"")
                 .replace("\\'", "'");
     }

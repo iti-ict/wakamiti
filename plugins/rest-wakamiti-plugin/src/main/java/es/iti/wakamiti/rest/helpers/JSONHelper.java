@@ -34,7 +34,6 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 )
 public class JSONHelper implements ContentTypeHelper {
 
-
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.JSON);
 
     @Override
@@ -43,7 +42,11 @@ public class JSONHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
+    public void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    ) {
         diff.assertContent(expected, actual, matchMode);
     }
 
@@ -68,7 +71,10 @@ public class JSONHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContentSchema(String expectedSchema, String content) {
+    public void assertContentSchema(
+            String expectedSchema,
+            String content
+    ) {
         MatcherAssert.assertThat(content, matchesJsonSchema(expectedSchema));
     }
 

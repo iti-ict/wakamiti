@@ -35,7 +35,10 @@ class InternalExtensionLoader implements ExtensionLoader {
      * @return An Iterable of loaded extensions or an empty list in case of an error
      */
     @Override
-    public <T> Iterable<T> load(Class<T> type, ClassLoader loader) {
+    public <T> Iterable<T> load(
+            Class<T> type,
+            ClassLoader loader
+    ) {
         try {
             // dynamically declaration of 'use' directive, otherwise it will cause an error
             InternalExtensionLoader.class.getModule().addUses(type);

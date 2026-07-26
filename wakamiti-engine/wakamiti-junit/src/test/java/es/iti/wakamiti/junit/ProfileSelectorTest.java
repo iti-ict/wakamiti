@@ -77,14 +77,23 @@ public class ProfileSelectorTest {
         assertThat(ProfileSelector.isEnabled(ProfileB.class)).isTrue();
     }
 
-    static class WithoutProfile {}
+    static class WithoutProfile {
+
+    }
 
     @Profile("A")
-    static class ProfileA {}
+    static class ProfileA {
+
+    }
 
     @Profile("B")
-    static class ProfileB {}
+    static class ProfileB {
+
+    }
 
     @Profile("C")
-    static class ProfileC {}
+    static class ProfileC {
+
+    }
+
 }

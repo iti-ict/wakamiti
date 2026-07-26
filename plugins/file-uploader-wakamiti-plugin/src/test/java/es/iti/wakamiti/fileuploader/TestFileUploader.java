@@ -24,6 +24,7 @@ import java.time.Instant;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+
 public class TestFileUploader {
 
     MockFtpServer ftpServer;
@@ -42,7 +43,6 @@ public class TestFileUploader {
         ftpServer.stop();
     }
 
-
     @Test
     public void testStandardOutputFileUploader() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
@@ -59,7 +59,6 @@ public class TestFileUploader {
         produceEvents(c, filesUploader, configurator, Event.STANDARD_OUTPUT_FILE_WRITTEN);
         assertTrue(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
-
 
     @Test
     public void testTestCasedOutputFileUploader() throws URISyntaxException {
@@ -78,7 +77,6 @@ public class TestFileUploader {
         assertTrue(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
 
-
     @Test
     public void testReportOutputFileUploader() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
@@ -96,7 +94,6 @@ public class TestFileUploader {
         assertTrue(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
 
-
     @Test
     public void testStandardOutputFileUploaderDisabledByDefault() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
@@ -113,7 +110,6 @@ public class TestFileUploader {
         assertFalse(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
 
-
     private void produceEvents(
             Configuration c,
             AbstractFilesUploader filesUploader,
@@ -127,6 +123,5 @@ public class TestFileUploader {
         filesUploader.eventReceived(new Event(eventType, Instant.now(), path));
         filesUploader.eventReceived(new Event(Event.AFTER_WRITE_OUTPUT_FILES, Instant.now(), null));
     }
-
 
 }

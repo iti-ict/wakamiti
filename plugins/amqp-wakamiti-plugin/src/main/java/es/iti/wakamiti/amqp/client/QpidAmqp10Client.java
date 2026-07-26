@@ -220,4 +220,5 @@ public class QpidAmqp10Client implements AmqpClient {
             LOGGER.debug(e.toString(), e);
         }
     }
+
 }

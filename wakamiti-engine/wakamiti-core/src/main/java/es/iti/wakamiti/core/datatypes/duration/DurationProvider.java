@@ -59,8 +59,6 @@ public class DurationProvider extends AbstractProvider {
         super(DURATIONS_RESOURCE);
         this.numberRegexProvider = locale -> WakamitiNumberDataType.numericRegexPattern(locale, false);
         this.formatter = locale -> WakamitiNumberDataType.decimalFormat(locale, false);
-
-
     }
 
     /**
@@ -69,13 +67,14 @@ public class DurationProvider extends AbstractProvider {
      * @param locale The locale for which expressions are retrieved.
      * @return A list of expressions with the specified prefix.
      */
-    public static List<String> getAllExpressions(Locale locale) {
+    public static List<String> getAllExpressions(
+            Locale locale
+    ) {
         ResourceBundle bundle = resourceLoader.resourceBundle(DURATIONS_RESOURCE, locale);
         return bundle.keySet().stream()
                 .map(bundle::getString)
                 .collect(Collectors.toList());
     }
-
 
     @Override
     protected String[] expressions() {
@@ -86,7 +85,9 @@ public class DurationProvider extends AbstractProvider {
      * {@inheritDoc}
      */
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions()) {
             translatedExpressions.put(
@@ -103,7 +104,9 @@ public class DurationProvider extends AbstractProvider {
      * {@inheritDoc}
      */
     @Override
-    public LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .map(exp -> exp.replace(VALUE_WILDCARD, numberRegexProvider.apply(locale)))
@@ -117,10 +120,14 @@ public class DurationProvider extends AbstractProvider {
      * @param expression The expression used to create the matcher.
      * @return An optional containing the duration if one is created, or empty otherwise.
      */
-    public Optional<Duration> durationFromExpression(Locale locale, String expression) {
+    public Optional<Duration> durationFromExpression(
+            Locale locale,
+            String expression
+    ) {
         return fromExpression(locale, expression).map((ThrowableFunction<Pair<String, String>, Duration>) p -> {
             Long numericValue = Math.abs(formatter.apply(locale).parse(p.value()).longValue());
             return durations.get(p.key()).apply(numericValue);
         });
     }
+
 }

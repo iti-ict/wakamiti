@@ -69,7 +69,10 @@ public class StepBackendData {
      * @param step      The plan node representing the step.
      * @param exception The exception thrown during step execution.
      */
-    public StepBackendData(PlanNode step, Exception exception) {
+    public StepBackendData(
+            PlanNode step,
+            Exception exception
+    ) {
         this.step = step;
         this.stepLocale = null;
         this.dataLocale = null;

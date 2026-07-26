@@ -24,7 +24,12 @@ public class MapDataSet extends DataSet {
      * @param values     The two-dimensional array of values.
      * @param nullSymbol The symbol representing {@code null} values.
      */
-    public MapDataSet(String table, String[] columns, Object[][] values, String nullSymbol) {
+    public MapDataSet(
+            String table,
+            String[] columns,
+            Object[][] values,
+            String nullSymbol
+    ) {
         super(table, "map", nullSymbol);
         this.columns = columns;
         this.values = values;
@@ -62,7 +67,9 @@ public class MapDataSet extends DataSet {
      * @return The value of the specified column in the current row.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return nullIfMatchNullSymbol(values[rowNumber][columnIndex]);
     }
 

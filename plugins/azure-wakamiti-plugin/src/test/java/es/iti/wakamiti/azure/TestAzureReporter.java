@@ -35,7 +35,10 @@ public class TestAzureReporter {
                 .hasFieldOrPropertyWithValue("createItemsIfAbsent", true);
     }
 
-    private void configure(AzureSynchronizer reporter, String resource) {
+    private void configure(
+            AzureSynchronizer reporter,
+            String resource
+    ) {
         AzureConfigContributor azureConfig = new AzureConfigContributor();
         Configuration config = WakamitiConfiguration.DEFAULTS
                 .append(azureConfig.defaultConfiguration())

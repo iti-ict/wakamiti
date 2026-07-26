@@ -36,7 +36,10 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param converter       Converter function for converting from Number to the specified type.
      */
     protected WakamitiNumberDataType(
-            String name, Class<T> javaType, boolean includeDecimals, boolean useBigDecimal,
+            String name,
+            Class<T> javaType,
+            boolean includeDecimals,
+            boolean useBigDecimal,
             ThrowableFunction<Number, T> converter
     ) {
         super(
@@ -129,7 +132,10 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param useBigDecimal Indicates whether to use BigDecimal for conversion.
      * @return DecimalFormat instance for formatting numeric values.
      */
-    public static DecimalFormat decimalFormat(Locale locale, boolean useBigDecimal) {
+    public static DecimalFormat decimalFormat(
+            Locale locale,
+            boolean useBigDecimal
+    ) {
         DecimalFormat format;
         if (useBigDecimal) {
             format = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -147,7 +153,10 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param includeDecimals Indicates whether the data type should include decimal values.
      * @return Numeric regex pattern.
      */
-    public static String numericRegexPattern(Locale locale, boolean includeDecimals) {
+    public static String numericRegexPattern(
+            Locale locale,
+            boolean includeDecimals
+    ) {
         final DecimalFormat format = decimalFormat(locale, includeDecimals);
         final DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
         final StringBuilder pattern = new StringBuilder("-?");
@@ -157,7 +166,7 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
         if (includeDecimals) {
             pattern.append("\\").append(symbols.getDecimalSeparator()).append("\\d+?");
         }
-        return "("+pattern + "|" + WakamitiCoreTypes.PROPERTY_REGEX+")";
+        return "(" + pattern + "|" + WakamitiCoreTypes.PROPERTY_REGEX + ")";
     }
 
 }

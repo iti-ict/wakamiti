@@ -29,6 +29,8 @@ public interface WakamitiPlanNodeRunner extends Describable {
      * @param notifier The RunNotifier to notify during the test execution.
      * @return The Result of the test plan execution.
      */
-    Result run(RunNotifier notifier);
+    Result run(
+            RunNotifier notifier
+    );
 
 }

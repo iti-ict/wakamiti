@@ -18,7 +18,6 @@ export namespace images {
     export const plan = (filename: string) => image(filename,'plan');
 
 
-
     export const iconByNodeType = (node: PlanNodeSnapshot, filename: string) => {
         switch (node.nodeType) {
             case 'AGGREGATOR': return image(filename,'aggregator');

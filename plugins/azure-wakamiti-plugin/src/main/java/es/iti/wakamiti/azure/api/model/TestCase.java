@@ -31,7 +31,9 @@ public class TestCase extends BaseModel {
     private List<PointAssignment> pointAssignments;
     private transient PlanNodeSnapshot metadata;
 
-    public TestCase id(String id) {
+    public TestCase id(
+            String id
+    ) {
         this.id = id;
         return this;
     }
@@ -40,7 +42,9 @@ public class TestCase extends BaseModel {
         return id;
     }
 
-    public TestCase name(String name) {
+    public TestCase name(
+            String name
+    ) {
         this.name = name;
         return this;
     }
@@ -49,7 +53,9 @@ public class TestCase extends BaseModel {
         return name;
     }
 
-    public TestCase description(String description) {
+    public TestCase description(
+            String description
+    ) {
         this.description = description;
         return this;
     }
@@ -58,7 +64,9 @@ public class TestCase extends BaseModel {
         return description;
     }
 
-    public TestCase tag(String tag) {
+    public TestCase tag(
+            String tag
+    ) {
         this.tag = tag;
         return this;
     }
@@ -67,7 +75,9 @@ public class TestCase extends BaseModel {
         return tag;
     }
 
-    public TestCase order(int order) {
+    public TestCase order(
+            int order
+    ) {
         this.order = order;
         return this;
     }
@@ -76,7 +86,9 @@ public class TestCase extends BaseModel {
         return order;
     }
 
-    public TestCase suite(TestSuite suite) {
+    public TestCase suite(
+            TestSuite suite
+    ) {
         this.suite = suite;
         return this;
     }
@@ -85,7 +97,9 @@ public class TestCase extends BaseModel {
         return suite;
     }
 
-    public TestCase pointAssignments(List<PointAssignment> pointAssignments) {
+    public TestCase pointAssignments(
+            List<PointAssignment> pointAssignments
+    ) {
         this.pointAssignments = pointAssignments;
         return this;
     }
@@ -94,7 +108,9 @@ public class TestCase extends BaseModel {
         return pointAssignments;
     }
 
-    public TestCase metadata(PlanNodeSnapshot metadata) {
+    public TestCase metadata(
+            PlanNodeSnapshot metadata
+    ) {
         this.metadata = metadata;
         return this;
     }
@@ -112,13 +128,17 @@ public class TestCase extends BaseModel {
         return this.name.replaceAll("^\\[([^]]+)].+$", "$1");
     }
 
-    public boolean isDifferent(TestCase testCase) {
-        return Objects.nonNull(testCase) &&
-                (!this.name.equals(testCase.name) || !Objects.equals(this.description, testCase.description)
-        );
+    public boolean isDifferent(
+            TestCase testCase
+    ) {
+        return Objects.nonNull(testCase)
+                && (!this.name.equals(testCase.name) || !Objects.equals(this.description, testCase.description)
+                );
     }
 
-    public TestCase merge(TestCase testCase) {
+    public TestCase merge(
+            TestCase testCase
+    ) {
         this.suite = testCase.suite;
         this.name = testCase.name;
         this.description = testCase.description;

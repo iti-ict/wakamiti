@@ -31,6 +31,8 @@ interface NodeExecution {
      * @param listener The listener to notify execution events to.
      * @return The result of the node execution.
      */
-    Result execute(EngineExecutionListener listener);
+    Result execute(
+            EngineExecutionListener listener
+    );
 
 }

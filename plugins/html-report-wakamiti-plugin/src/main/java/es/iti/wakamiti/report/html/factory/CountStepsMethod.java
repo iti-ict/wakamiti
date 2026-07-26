@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.report.html.factory;
 
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
@@ -16,19 +17,24 @@ import freemarker.template.TemplateMethodModelEx;
 
 import java.util.List;
 
+
 public class CountStepsMethod implements TemplateMethodModelEx {
 
     @Override
-    public Object exec(List args) {
+    public Object exec(
+            List args
+    ) {
         if (args.size() < 1 || !(args.get(0) instanceof StringModel)
-            || !(((StringModel) args.get(0)).getWrappedObject() instanceof PlanNodeSnapshot)) {
+                || !(((StringModel) args.get(0)).getWrappedObject() instanceof PlanNodeSnapshot)) {
             throw new WakamitiException("Argument must be a PlanNodeSnapshot");
         }
         return args.size() == 1 ? countSteps((PlanNodeSnapshot) ((StringModel) args.get(0)).getWrappedObject())
                 : countSteps((PlanNodeSnapshot) ((StringModel) args.get(0)).getWrappedObject(), args.get(1).toString());
     }
 
-    private long countSteps(PlanNodeSnapshot node) {
+    private long countSteps(
+            PlanNodeSnapshot node
+    ) {
         long sum = node.getChildren() == null ? 0 : node.getChildren().stream().mapToLong(this::countSteps).sum();
         if (node.getNodeType().isAnyOf(NodeType.VIRTUAL_STEP, NodeType.STEP)) {
             sum++;
@@ -36,12 +42,16 @@ public class CountStepsMethod implements TemplateMethodModelEx {
         return sum;
     }
 
-    private long countSteps(PlanNodeSnapshot node, String result) {
+    private long countSteps(
+            PlanNodeSnapshot node,
+            String result
+    ) {
         long sum = node.getChildren() == null ? 0 : node.getChildren().stream().mapToLong(c -> countSteps(c, result)).sum();
         if (node.getNodeType().isAnyOf(NodeType.VIRTUAL_STEP, NodeType.STEP)
-            && node.getResult() == Result.valueOf(result)) {
+                && node.getResult() == Result.valueOf(result)) {
             sum++;
         }
         return sum;
     }
+
 }

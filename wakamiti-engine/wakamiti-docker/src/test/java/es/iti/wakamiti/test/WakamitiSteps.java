@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.test;
 
+
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
@@ -28,13 +29,18 @@ public class WakamitiSteps implements StepContributor {
     }
 
     @Step(value = "number.addition", args = {"x:int", "y:int"})
-    public void whatever(Integer x, Integer y) {
+    public void whatever(
+            Integer x,
+            Integer y
+    ) {
         int result = x + y;
         LOGGER.info("{} + {} = {}", x, y, result);
     }
 
     @Step(value = "something", args = {"name:word"})
-    public void something(String name) {
+    public void something(
+            String name
+    ) {
         LOGGER.info("Hello {}!", name);
         LOGGER.info("TZ: {}", ZoneId.systemDefault());
 

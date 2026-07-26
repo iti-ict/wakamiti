@@ -61,7 +61,10 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
      * @throws WakamitiException If the property cannot be resolved.
      */
     @Override
-    public String evalProperty(String property, Matcher matcher) {
+    public String evalProperty(
+            String property,
+            Matcher matcher
+    ) {
         WakamitiStepRunContext context = WakamitiStepRunContext.current();
         Map<?, ?> steps = Optional.ofNullable(context.backend().getExtraProperties()
                         .get(RunnableBackend.ContextMap.RESULTS_PROP))
@@ -105,7 +108,9 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
      * @param object The object to check.
      * @return {@code true} if the object is in JSON format, {@code false} otherwise.
      */
-    private boolean isJson(Object object) {
+    private boolean isJson(
+            Object object
+    ) {
         return object instanceof JsonNode || (object instanceof String && isJson((String) object));
     }
 
@@ -115,7 +120,9 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
      * @param string The string to check.
      * @return {@code true} if the string is in JSON format, {@code false} otherwise.
      */
-    private boolean isJson(String string) {
+    private boolean isJson(
+            String string
+    ) {
         try {
             JsonUtils.json(string);
             return true;
@@ -130,7 +137,9 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
      * @param object The object to check.
      * @return {@code true} if the object is in XML format, {@code false} otherwise.
      */
-    private boolean isXml(Object object) {
+    private boolean isXml(
+            Object object
+    ) {
         return object instanceof XmlObject || (object instanceof String && isXml((String) object));
     }
 
@@ -140,7 +149,9 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
      * @param string The string to check.
      * @return {@code true} if the string is in XML format, {@code false} otherwise.
      */
-    private boolean isXml(String string) {
+    private boolean isXml(
+            String string
+    ) {
         try {
             XmlUtils.xml(string);
             return true;
@@ -148,4 +159,5 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
             return false;
         }
     }
+
 }

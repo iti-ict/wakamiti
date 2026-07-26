@@ -21,7 +21,9 @@ class ExtensionVersion {
     private final int major;
     private final int minor;
 
-    ExtensionVersion(String version) {
+    public ExtensionVersion(
+            String version
+    ) {
         String[] str = version.split("\\.");
         if (str.length != 2) {
             throw new IllegalArgumentException("Not valid version number " + version);
@@ -50,7 +52,9 @@ class ExtensionVersion {
      * @param otherVersion The other version to compare with.
      * @return {@code true} if compatible, {@code false} otherwise.
      */
-    public boolean isCompatibleWith(ExtensionVersion otherVersion) {
+    public boolean isCompatibleWith(
+            ExtensionVersion otherVersion
+    ) {
         return (major == otherVersion.major && minor >= otherVersion.minor);
     }
 

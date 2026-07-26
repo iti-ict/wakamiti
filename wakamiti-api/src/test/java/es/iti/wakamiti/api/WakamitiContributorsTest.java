@@ -55,5 +55,4 @@ public class WakamitiContributorsTest {
         assertEquals(Integer.valueOf(10), parsed.get().value());
     }
 
-
 }

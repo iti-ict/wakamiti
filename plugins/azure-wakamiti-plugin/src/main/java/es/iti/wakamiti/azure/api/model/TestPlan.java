@@ -32,15 +32,22 @@ public class TestPlan extends BaseModel {
     @JsonProperty
     private TestSuite rootSuite;
 
-    public TestPlan() { }
+    public TestPlan() {
+    }
 
-    public TestPlan(String name, Path area, Path iteration) {
+    public TestPlan(
+            String name,
+            Path area,
+            Path iteration
+    ) {
         this.name = name;
         area(area);
         iteration(iteration);
     }
 
-    public TestPlan id(String id) {
+    public TestPlan id(
+            String id
+    ) {
         this.id = id;
         return this;
     }
@@ -49,7 +56,9 @@ public class TestPlan extends BaseModel {
         return id;
     }
 
-    public TestPlan name(String name) {
+    public TestPlan name(
+            String name
+    ) {
         this.name = name;
         return this;
     }
@@ -58,7 +67,9 @@ public class TestPlan extends BaseModel {
         return name;
     }
 
-    public TestPlan area(Path area) {
+    public TestPlan area(
+            Path area
+    ) {
         this.area = area.toString().replace("/", "\\");
         return this;
     }
@@ -67,7 +78,9 @@ public class TestPlan extends BaseModel {
         return Path.of(area);
     }
 
-    public TestPlan iteration(Path iteration) {
+    public TestPlan iteration(
+            Path iteration
+    ) {
         this.iteration = iteration.toString().replace("/", "\\");
         return this;
     }
@@ -76,7 +89,9 @@ public class TestPlan extends BaseModel {
         return Path.of(iteration);
     }
 
-    public TestPlan state(String state) {
+    public TestPlan state(
+            String state
+    ) {
         this.state = state;
         return this;
     }
@@ -85,7 +100,9 @@ public class TestPlan extends BaseModel {
         return state;
     }
 
-    public TestPlan rootSuite(TestSuite rootSuite) {
+    public TestPlan rootSuite(
+            TestSuite rootSuite
+    ) {
         this.rootSuite = rootSuite;
         return this;
     }

@@ -58,16 +58,13 @@ import static es.iti.wakamiti.core.maven.MavenFetcherProperties.*;
  */
 public class MavenFetcher {
 
-
-
     static {
         AnsiLogger.addStyle("repository", "yellow,bold");
         AnsiLogger.addStyle("artifact", "green,bold");
     }
 
-
     private final List<RemoteRepository> remoteRepositories = new ArrayList<>(List.of(
-        createRemoteRepository("maven-central",  "https://repo.maven.apache.org/maven2")
+            createRemoteRepository("maven-central", "https://repo.maven.apache.org/maven2")
     ));
 
     private RepositorySystem system;
@@ -78,73 +75,78 @@ public class MavenFetcher {
     private List<String> proxyExceptions;
     private Logger logger = AnsiLogger.of(LoggerFactory.getLogger(MavenFetcher.class));
 
-
-
     /**
      * Set the logger for this object
      */
-    public MavenFetcher logger(Logger logger) {
+    public MavenFetcher logger(
+            Logger logger
+    ) {
         this.logger = AnsiLogger.of(logger);
         return this;
     }
 
-
     /**
      * Set the URL for the net proxy
      */
-    public MavenFetcher proxyURL(String url) throws MalformedURLException {
+    public MavenFetcher proxyURL(
+            String url
+    ) throws MalformedURLException {
         checkURL(url);
         checkNonNull(url);
         this.proxyURL = url;
         return this;
     }
 
-
     /**
      * Set the credentials for the next proxy
      */
-    public MavenFetcher proxyCredentials(String username, String password) {
+    public MavenFetcher proxyCredentials(
+            String username,
+            String password
+    ) {
         checkNonNull(username, password);
         this.proxyUsername = username;
         this.proxyPassword = password;
         return this;
     }
 
-
     /**
      * Set exceptions for the next proxy
      */
-    public MavenFetcher proxyExceptions(Collection<String> exceptions) {
+    public MavenFetcher proxyExceptions(
+            Collection<String> exceptions
+    ) {
         checkNonNull(exceptions);
         this.proxyExceptions = new ArrayList<>(exceptions);
         return this;
     }
 
-
     /**
      * Set the local repository path
      */
-    public MavenFetcher localRepositoryPath(String localRepositoryPath) {
+    public MavenFetcher localRepositoryPath(
+            String localRepositoryPath
+    ) {
         this.localRepository = new LocalRepository(localRepositoryPath);
         return this;
     }
 
-
     /**
      * Set the local repository path
      */
-    public MavenFetcher localRepositoryPath(Path localRepositoryPath) {
+    public MavenFetcher localRepositoryPath(
+            Path localRepositoryPath
+    ) {
         if (localRepositoryPath == null) {
             throw new IllegalArgumentException("Local repository path cannot be null");
         }
         return localRepositoryPath(localRepositoryPath.toString());
     }
 
-
     /**
      * Remove all remote repositories, including the default Maven central repository.
      * <p>
-     * Use this method if you want to restrict artifact downloading to a set 
+     * Use this method if you want to restrict artifact downloading to a set
      * of private repositories,
      */
     public MavenFetcher clearRemoteRepositories() {
@@ -152,47 +154,47 @@ public class MavenFetcher {
         return this;
     }
 
-
     /**
      * Add a remote repository
      */
-    public MavenFetcher addRemoteRepository(Repository repository) {
+    public MavenFetcher addRemoteRepository(
+            Repository repository
+    ) {
         if (repository.priority() > -1) {
-            this.remoteRepositories.add(repository.priority(),parseRemoteRepository(repository.toString()));
+            this.remoteRepositories.add(repository.priority(), parseRemoteRepository(repository.toString()));
         } else {
             this.remoteRepositories.add(parseRemoteRepository(repository.toString()));
         }
         return this;
     }
 
-
     /**
      * Add a remote repository
      */
-    public MavenFetcher addRemoteRepository(String id, String url) {
-        return addRemoteRepository(new Repository(id,url));
+    public MavenFetcher addRemoteRepository(
+            String id,
+            String url
+    ) {
+        return addRemoteRepository(new Repository(id, url));
     }
-
-
-
-
-
 
     /**
      * @return A list with the string representation of the configured remote repositories
      */
     public List<String> remoteRepositories() {
         return this.remoteRepositories.stream()
-            .map(RemoteRepository::toString)
-            .collect(Collectors.toList());
+                .map(RemoteRepository::toString)
+                .collect(Collectors.toList());
     }
-
 
     /**
      * Configure the fetcher according a set of properties
+     *
      * @see MavenFetcherProperties
      */
-    public MavenFetcher config(Properties properties) {
+    public MavenFetcher config(
+            Properties properties
+    ) {
         if ("false".equalsIgnoreCase(properties.getProperty(USE_DEFAULT_REMOTE_REPOSITORY, "true"))) {
             clearRemoteRepositories();
         }
@@ -220,42 +222,44 @@ public class MavenFetcher {
                         this.proxyURL = value;
                         break;
                     default:
-                        logger.warn("Property {} is not recognized and would be ignored",property);
+                        logger.warn("Property {} is not recognized and would be ignored", property);
                 }
             } catch (Exception e) {
-                throw new MavenFetchException("Invalid value for property '"+property+"' : "+e.getMessage(), e);
+                throw new MavenFetchException("Invalid value for property '" + property + "' : " + e.getMessage(), e);
             }
         }
         return this;
     }
 
-
-    private void addRemoteRepositories(List<String> repositories) {
+    private void addRemoteRepositories(
+            List<String> repositories
+    ) {
         for (String repository : repositories) {
             this.remoteRepositories.add(parseRemoteRepository(repository));
         }
     }
 
-
     /**
      * Retrieve the specified artifacts and their dependencies from the remote
-     * repositories. 
+     * repositories.
      */
-    public MavenFetchResult fetchArtifacts(MavenFetchRequest request) {
+    public MavenFetchResult fetchArtifacts(
+            MavenFetchRequest request
+    ) {
         try {
             if (remoteRepositories.isEmpty()) {
                 throw new IllegalArgumentException("Remote repositories not specified");
             }
             MavenTransferListener listener = new MavenTransferListener(logger);
             MavenFetchResult result = new MavenArtifactFetcher(
-                system(),
-                remoteRepositories,
-                newSession(listener),
-                request,
-                listener,
-                logger
+                    system(),
+                    remoteRepositories,
+                    newSession(listener),
+                    request,
+                    listener,
+                    logger
             )
-            .fetch();
+                    .fetch();
             if (result.hasErrors()) {
                 logger.warn("Some dependencies were not fetched!");
             }
@@ -267,9 +271,6 @@ public class MavenFetcher {
         }
     }
 
-
-
-
     private RepositorySystem system() {
         if (system == null) {
             system = new RepositorySystemSupplier().get();
@@ -280,18 +281,17 @@ public class MavenFetcher {
         return system;
     }
 
-
-
-    private DefaultRepositorySystemSession newSession(MavenTransferListener listener) {
+    private DefaultRepositorySystemSession newSession(
+            MavenTransferListener listener
+    ) {
         DefaultRepositorySystemSession session = newRepositorySystemSession();
         session
-            .setLocalRepositoryManager(system().newLocalRepositoryManager(session, localRepository));
+                .setLocalRepositoryManager(system().newLocalRepositoryManager(session, localRepository));
         session.setTransferListener(listener);
         session.setSystemProperties(System.getProperties());
         proxy().ifPresent(session::setProxySelector);
         return session;
     }
-
 
     private Optional<ProxySelector> proxy() {
         if (proxyURL == null) {
@@ -308,17 +308,16 @@ public class MavenFetcher {
         Authentication authentication = null;
         if (proxyUsername != null) {
             authentication = new AuthenticationBuilder()
-                .addUsername(proxyUsername)
-                .addPassword(proxyPassword)
-                .build();
+                    .addUsername(proxyUsername)
+                    .addPassword(proxyPassword)
+                    .build();
         }
-        var proxy =  new Proxy(url.getProtocol(), url.getHost(), port, authentication);
+        var proxy = new Proxy(url.getProtocol(), url.getHost(), port, authentication);
         return Optional.of(
-            new DefaultProxySelector()
-                .add(proxy, proxyExceptions == null ? "" : String.join("|", proxyExceptions))
+                new DefaultProxySelector()
+                        .add(proxy, proxyExceptions == null ? "" : String.join("|", proxyExceptions))
         );
     }
-
 
     private static DefaultRepositorySystemSession newRepositorySystemSession() {
         DefaultRepositorySystemSession session = new DefaultRepositorySystemSession();
@@ -367,82 +366,90 @@ public class MavenFetcher {
         return session;
     }
 
-
-
-    private static RemoteRepository createRemoteRepository(String id, String url) {
+    private static RemoteRepository createRemoteRepository(
+            String id,
+            String url
+    ) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(url);
         return new RemoteRepository.Builder(id, "default", url).build();
     }
 
-
-
     private static RemoteRepository createRemoteRepository(
-        String id,
-        String url,
-        String user,
-        String password
+            String id,
+            String url,
+            String user,
+            String password
     ) {
         return new RemoteRepository.Builder(id, "default", url)
-            .setAuthentication(new AuthenticationBuilder().addUsername(user).addPassword(password).build())
-            .build();
+                .setAuthentication(new AuthenticationBuilder().addUsername(user).addPassword(password).build())
+                .build();
     }
 
-
-    private static RemoteRepository parseRemoteRepository (String value) {
+    private static RemoteRepository parseRemoteRepository(
+            String value
+    ) {
         // id=url
         // id=url [user:password]
-        String expression = value.strip().replaceAll("\\s+"," ");
-        String[] parts = expression.split("=",2);
-        if (parts.length != 2) throwInvalidRepositoryValue(value);
+        String expression = value.strip().replaceAll("\\s+", " ");
+        String[] parts = expression.split("=", 2);
+        if (parts.length != 2) {
+            throwInvalidRepositoryValue(value);
+        }
         String id = parts[0];
         expression = parts[1];
 
-        parts = expression.split(" ",2);
+        parts = expression.split(" ", 2);
         String url = parts[0];
         if (parts.length == 1) {
-            return createRemoteRepository(id,url);
+            return createRemoteRepository(id, url);
         }
 
         int start = parts[1].indexOf("[");
         int end = parts[1].lastIndexOf("]");
-        if (start == -1 || end == -1) throwInvalidRepositoryValue(value);
+        if (start == -1 || end == -1) {
+            throwInvalidRepositoryValue(value);
+        }
 
-        expression = parts[1].substring(start+1,end);
+        expression = parts[1].substring(start + 1, end);
 
-        parts = expression.split(":",2);
-        if (parts.length != 2) throwInvalidRepositoryValue(value);
+        parts = expression.split(":", 2);
+        if (parts.length != 2) {
+            throwInvalidRepositoryValue(value);
+        }
 
-        return createRemoteRepository(id,url,parts[0],parts[1]);
-
+        return createRemoteRepository(id, url, parts[0], parts[1]);
     }
 
-    private static void throwInvalidRepositoryValue(String value) {
-        throw new IllegalArgumentException("Invalid repository value '"+ value +"' .\n"+
-            "Expected formats are 'id=url' and 'id=url [user:pwd]'"
+    private static void throwInvalidRepositoryValue(
+            String value
+    ) {
+        throw new IllegalArgumentException("Invalid repository value '" + value + "' .\n"
+                + "Expected formats are 'id=url' and 'id=url [user:pwd]'"
         );
     }
 
-
-    private static void checkNonNull(Object... objects) {
+    private static void checkNonNull(
+            Object... objects
+    ) {
         for (Object object : objects) {
             Objects.requireNonNull(object);
         }
     }
 
-
-    private static void checkNonNull(Collection<?> collection) {
+    private static void checkNonNull(
+            Collection<?> collection
+    ) {
         Objects.requireNonNull(collection);
         for (Object object : collection) {
             Objects.requireNonNull(object);
         }
     }
 
-
-    private static void checkURL(String url) throws MalformedURLException {
+    private static void checkURL(
+            String url
+    ) throws MalformedURLException {
         new URL(url);
     }
-
-
 
 }

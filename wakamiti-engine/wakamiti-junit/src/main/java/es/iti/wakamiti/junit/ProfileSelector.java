@@ -21,13 +21,13 @@ final class ProfileSelector {
     static final String STRICT_PROPERTY = "wakamiti.junit.profile.strict";
     static final String STRICT_FALLBACK_PROPERTY = "wakamiti.profile.strict";
 
-
     private ProfileSelector() {
         // static utility
     }
 
-
-    static boolean isEnabled(Class<?> testClass) {
+    static boolean isEnabled(
+            Class<?> testClass
+    ) {
         Set<String> activeProfiles = activeProfiles();
         boolean strictMode = strictMode();
         Profile profile = testClass.getAnnotation(Profile.class);
@@ -44,12 +44,10 @@ final class ProfileSelector {
         return declaredProfiles.stream().anyMatch(activeProfiles::contains);
     }
 
-
     static String activeProfilesDescription() {
         Set<String> profiles = activeProfiles();
         return profiles.isEmpty() ? "<none>" : String.join(",", profiles);
     }
-
 
     private static Set<String> activeProfiles() {
         return normalizeProfiles(firstNonBlank(
@@ -58,7 +56,6 @@ final class ProfileSelector {
         ));
     }
 
-
     private static boolean strictMode() {
         return Boolean.parseBoolean(firstNonBlank(
                 System.getProperty(STRICT_PROPERTY),
@@ -66,8 +63,10 @@ final class ProfileSelector {
         ));
     }
 
-
-    private static String firstNonBlank(String preferred, String fallback) {
+    private static String firstNonBlank(
+            String preferred,
+            String fallback
+    ) {
         if (preferred != null && !preferred.isBlank()) {
             return preferred;
         }
@@ -77,8 +76,9 @@ final class ProfileSelector {
         return "";
     }
 
-
-    private static Set<String> normalizeProfiles(String... rawProfiles) {
+    private static Set<String> normalizeProfiles(
+            String... rawProfiles
+    ) {
         if (rawProfiles == null || rawProfiles.length == 0) {
             return Set.of();
         }

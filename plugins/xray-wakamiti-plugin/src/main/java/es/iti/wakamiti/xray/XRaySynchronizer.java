@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray;
 
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
@@ -35,7 +36,13 @@ import java.util.stream.Collectors;
 import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_ENABLED;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-@Extension(provider = "es.iti.wakamiti", name = "xray-reporter", version = "2.6", priority = 10)
+
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "xray-reporter",
+        version = "2.6",
+        priority = Extension.NORMAL_PRIORITY * 2
+)
 public class XRaySynchronizer implements EventObserver {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(XRaySynchronizer.class);
@@ -60,61 +67,91 @@ public class XRaySynchronizer implements EventObserver {
     private XRayApi xRayApi;
     private JiraApi jiraApi;
 
-    public void enabled(boolean enabled) {
+    public void enabled(
+            boolean enabled
+    ) {
         this.enabled = enabled;
     }
 
-    public void xRayBaseURL(URL xRayBaseURL) {
+    public void xRayBaseURL(
+            URL xRayBaseURL
+    ) {
         this.xRayBaseURL = xRayBaseURL;
     }
 
-    public void jiraBaseURL(URL jiraBaseURL) {
+    public void jiraBaseURL(
+            URL jiraBaseURL
+    ) {
         this.jiraBaseURL = jiraBaseURL;
     }
 
-    public void xRayclientId(String clientId) {
+    public void xRayclientId(
+            String clientId
+    ) {
         this.xRayclientId = clientId;
     }
 
-    public void xRayclientSecret(String clientSecret) {
+    public void xRayclientSecret(
+            String clientSecret
+    ) {
         this.xRayclientSecret = clientSecret;
     }
 
-    public void jiraCredentials(String jiraCredentials) {
+    public void jiraCredentials(
+            String jiraCredentials
+    ) {
         this.jiraCredentials = jiraCredentials;
     }
 
-    public void project(String project) {
+    public void project(
+            String project
+    ) {
         this.project = project;
     }
 
-    public void testPlan(TestPlan testPlan) {
+    public void testPlan(
+            TestPlan testPlan
+    ) {
         this.testPlan = testPlan;
     }
 
-    public void testSet(String testSet) {
+    public void testSet(
+            String testSet
+    ) {
         this.testSet = testSet;
     }
 
-    public void tag(String tag) {
+    public void tag(
+            String tag
+    ) {
         this.tag = tag;
     }
 
-    public void createItemsIfAbsent(boolean createItemsIfAbsent) {
+    public void createItemsIfAbsent(
+            boolean createItemsIfAbsent
+    ) {
         this.createItemsIfAbsent = createItemsIfAbsent;
     }
 
-    public void testCasePerFeature(boolean testCasePerFeature) {
+    public void testCasePerFeature(
+            boolean testCasePerFeature
+    ) {
         this.testCasePerFeature = testCasePerFeature;
     }
 
-    public void attachments(Set<String> attachments) {
+    public void attachments(
+            Set<String> attachments
+    ) {
         this.attachments.addAll(attachments);
     }
 
     @Override
-    public void eventReceived(Event event) {
-        if (!enabled) return;
+    public void eventReceived(
+            Event event
+    ) {
+        if (!enabled) {
+            return;
+        }
 
         initializeXRayApi();
         initializeJiraApi();
@@ -123,10 +160,9 @@ public class XRaySynchronizer implements EventObserver {
             try {
                 LOGGER.info("Sync plan to XRay...");
                 sync((PlanNodeSnapshot) event.data());
-
             } catch (Exception e) {
-                throw new WakamitiException("The test plan could not be synchronized. " +
-                        "You can disable the plugin with the '{}' option to continue.", XRAY_ENABLED, e);
+                throw new WakamitiException("The test plan could not be synchronized. "
+                        + "You can disable the plugin with the '{}' option to continue.", XRAY_ENABLED, e);
             }
         }
 
@@ -163,11 +199,15 @@ public class XRaySynchronizer implements EventObserver {
     }
 
     @Override
-    public boolean acceptType(String eventType) {
+    public boolean acceptType(
+            String eventType
+    ) {
         return List.of(Event.PLAN_RUN_STARTED, Event.PLAN_RUN_FINISHED, Event.REPORT_OUTPUT_FILE_WRITTEN).contains(eventType);
     }
 
-    private void sync(PlanNodeSnapshot plan) {
+    private void sync(
+            PlanNodeSnapshot plan
+    ) {
         createTestPlan();
 
         List<TestCase> tests = getTests(plan);
@@ -185,12 +225,22 @@ public class XRaySynchronizer implements EventObserver {
 
     private void createTestExecution() {
         List<String> createdIssuesId = testPlan.getTestCases().stream().map(TestCase::getIssueId).collect(Collectors.toList());
-        TestExecution testExecution = xRayApi.createTestExecution("Test Execution ".concat(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))), createdIssuesId, project);
+        TestExecution testExecution = xRayApi.createTestExecution(
+                "Test Execution ".concat(
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+                ),
+                createdIssuesId,
+                project
+        );
         testPlan.testExecution(testExecution);
         xRayApi.addTestExecutionsToTestPlan(testExecution.getIssueId(), testPlan);
     }
 
-    private void createNewTests(List<TestCase> tests, List<Pair<TestCase, TestCase>> modTests, List<TestSet> remoteTestSets) {
+    private void createNewTests(
+            List<TestCase> tests,
+            List<Pair<TestCase, TestCase>> modTests,
+            List<TestSet> remoteTestSets
+    ) {
         List<String> remoteTestsSummaries = testPlan.getTestCases().stream()
                 .map(TestCase::getJira).map(JiraIssue::getSummary)
                 .distinct()
@@ -210,11 +260,12 @@ public class XRaySynchronizer implements EventObserver {
             xRayApi.addTestsToSets(createdIssues, remoteTestSets);
 
             LOGGER.debug("{} remote test cases created", newTests.size());
-
         }
     }
 
-    private List<Pair<TestCase, TestCase>> updateModifiedTests(List<TestCase> tests) {
+    private List<Pair<TestCase, TestCase>> updateModifiedTests(
+            List<TestCase> tests
+    ) {
         List<Pair<TestCase, TestCase>> modTests = testPlan.getTestCases().stream()
                 .filter(t -> tests.stream().anyMatch(c -> t.hasSameLabels(c) && t.isDifferent(c)))
                 .map(t -> new Pair<>(t, tests.stream()
@@ -230,7 +281,9 @@ public class XRaySynchronizer implements EventObserver {
         return modTests;
     }
 
-    private void getRemoteTests(List<TestSet> remoteTestSets) {
+    private void getRemoteTests(
+            List<TestSet> remoteTestSets
+    ) {
         List<TestCase> remoteTests = remoteTestSets.stream().parallel()
                 .map(TestSet::getTestCases)
                 .flatMap(List::stream)
@@ -242,7 +295,9 @@ public class XRaySynchronizer implements EventObserver {
         testPlan.testCases(remoteTests);
     }
 
-    private List<TestCase> getTests(PlanNodeSnapshot plan) {
+    private List<TestCase> getTests(
+            PlanNodeSnapshot plan
+    ) {
         String gherkinType = testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO;
         Mapper mapper = Mapper.ofType(gherkinType).instance(testSet);
 
@@ -251,7 +306,9 @@ public class XRaySynchronizer implements EventObserver {
                 .collect(Collectors.toList());
     }
 
-    private List<TestSet> createTestSets(List<TestCase> tests) {
+    private List<TestSet> createTestSets(
+            List<TestCase> tests
+    ) {
         List<TestSet> testSets = tests.stream().map(TestCase::getTestSetList).flatMap(List::stream).collect(Collectors.toList());
         List<TestSet> remoteTestSets = xRayApi.getTestSets();
         List<String> remoteTestSetsSummary = remoteTestSets.stream().map(TestSet::getJira).map(JiraIssue::getSummary).collect(Collectors.toList());
@@ -282,7 +339,9 @@ public class XRaySynchronizer implements EventObserver {
         LOGGER.debug("Remote plan #{} ready to sync", testPlan.getIssueId());
     }
 
-    private void updateResults(PlanNodeSnapshot data) {
+    private void updateResults(
+            PlanNodeSnapshot data
+    ) {
         data.getChildren().forEach(child ->
                 child.getChildren().forEach(results ->
                         testPlan.getTestCases().stream()
@@ -294,8 +353,9 @@ public class XRaySynchronizer implements EventObserver {
         xRayApi.updateTestRunStatus(testPlan.getTestCases());
     }
 
-
-    private void uploadAttachment(Path data) {
+    private void uploadAttachment(
+            Path data
+    ) {
         jiraApi.addAttachment(testPlan.getTestExecution().getJira().getKey(), data);
     }
 

@@ -31,6 +31,8 @@ public interface PlanNodeData {
      * @param replacer The UnaryOperator to apply to each variable in the data.
      * @return A new instance of PlanNodeData with variables replaced.
      */
-    PlanNodeData copyReplacingVariables(UnaryOperator<String> replacer);
+    PlanNodeData copyReplacingVariables(
+            UnaryOperator<String> replacer
+    );
 
 }

@@ -19,22 +19,24 @@ import org.junit.ComparisonFailure;
  * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
 @Extension(
-        provider =  "es.iti.wakamiti",
+        provider = "es.iti.wakamiti",
         name = "rest-text-helper",
         version = "2.6",
-        extensionPoint =  "es.iti.wakamiti.rest.ContentTypeHelper"
+        extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
 )
 public class TextHelper implements ContentTypeHelper {
-
 
     @Override
     public ContentType contentType() {
         return ContentType.TEXT;
     }
 
-
     @Override
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
+    public void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    ) {
         switch (matchMode) {
             case STRICT:
             case STRICT_ANY_ORDER:
@@ -48,6 +50,5 @@ public class TextHelper implements ContentTypeHelper {
                 }
         }
     }
-
 
 }

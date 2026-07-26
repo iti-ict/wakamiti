@@ -26,7 +26,9 @@ public interface EventObserver extends Contributor {
      *
      * @param event The received event.
      */
-    void eventReceived(Event event);
+    void eventReceived(
+            Event event
+    );
 
     /**
      * Determines whether the observer accepts events of the specified type.
@@ -34,5 +36,8 @@ public interface EventObserver extends Contributor {
      * @param eventType The type of the event.
      * @return {@code true} if the observer accepts events of the specified type, {@code false} otherwise.
      */
-    boolean acceptType(String eventType);
+    boolean acceptType(
+            String eventType
+    );
+
 }

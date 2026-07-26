@@ -41,36 +41,53 @@ public abstract class AbstractFilesUploader implements EventObserver {
 
     private Instant executionInstant;
 
-    protected AbstractFilesUploader(String eventType, String category) {
+    protected AbstractFilesUploader(
+            String eventType,
+            String category
+    ) {
         this.eventType = eventType;
         this.category = category;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(
+            boolean enabled
+    ) {
         this.enabled = enabled;
     }
 
-    public void setHost(String host) {
+    public void setHost(
+            String host
+    ) {
         this.host = host;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(
+            String username
+    ) {
         this.username = username;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(
+            String password
+    ) {
         this.password = password;
     }
 
-    public void setRemotePath(String remotePath) {
+    public void setRemotePath(
+            String remotePath
+    ) {
         this.remotePath = remotePath;
     }
 
-    public void setProtocol(String protocol) {
+    public void setProtocol(
+            String protocol
+    ) {
         this.protocol = protocol;
     }
 
-    public void setIdentity(String identity) {
+    public void setIdentity(
+            String identity
+    ) {
         this.identity = identity;
     }
 
@@ -79,7 +96,9 @@ public abstract class AbstractFilesUploader implements EventObserver {
     }
 
     @Override
-    public void eventReceived(Event event) {
+    public void eventReceived(
+            Event event
+    ) {
         if (!enabled) {
             return;
         }
@@ -96,7 +115,6 @@ public abstract class AbstractFilesUploader implements EventObserver {
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-
     }
 
     public boolean isConnected() {
@@ -129,7 +147,9 @@ public abstract class AbstractFilesUploader implements EventObserver {
         transmitter = null;
     }
 
-    private void uploadFile(Path fileToSend) throws IOException {
+    private void uploadFile(
+            Path fileToSend
+    ) throws IOException {
         Path dirPath = replaceTemporalPlaceholders(remotePath, executionInstant.atZone(ZoneId.systemDefault()));
         Path localFile = WakamitiAPI.instance().resourceLoader().absolutePath(fileToSend);
         LOGGER.info("Uploading file {uri} to {uri}", localFile, host + "/" + dirPath);
@@ -137,14 +157,19 @@ public abstract class AbstractFilesUploader implements EventObserver {
     }
 
     @Override
-    public boolean acceptType(String eventType) {
-        return Event.BEFORE_WRITE_OUTPUT_FILES.equals(eventType) ||
-                Event.AFTER_WRITE_OUTPUT_FILES.equals(eventType) ||
-                this.eventType.equals(eventType);
+    public boolean acceptType(
+            String eventType
+    ) {
+        return Event.BEFORE_WRITE_OUTPUT_FILES.equals(eventType)
+                || Event.AFTER_WRITE_OUTPUT_FILES.equals(eventType)
+                || this.eventType.equals(eventType);
     }
 
-    // TODO: move to wakamiti-api
-    private static Path replaceTemporalPlaceholders(String pathString, ZonedDateTime instant) {
+    // TODO: This helper belongs in wakamiti-api.
+    private static Path replaceTemporalPlaceholders(
+            String pathString,
+            ZonedDateTime instant
+    ) {
         pathString = pathString.replace("%YYYY%", DateTimeFormatter.ofPattern("yyyy").format(instant));
         pathString = pathString.replace("%YY%", DateTimeFormatter.ofPattern("yy").format(instant));
         pathString = pathString.replace("%MM%", DateTimeFormatter.ofPattern("MM").format(instant));
@@ -157,4 +182,5 @@ public abstract class AbstractFilesUploader implements EventObserver {
         pathString = pathString.replace("%TIME%", DateTimeFormatter.ofPattern("HHmmssSSS").format(instant));
         return Path.of(pathString);
     }
+
 }

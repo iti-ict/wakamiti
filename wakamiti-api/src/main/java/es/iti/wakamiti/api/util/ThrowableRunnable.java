@@ -24,6 +24,8 @@ public interface ThrowableRunnable {
      * @return The result of the operation.
      * @throws Exception If an exception occurs during the operation.
      */
-    Object run(Object... arguments) throws Exception;
+    Object run(
+            Object... arguments
+    ) throws Exception;
 
 }

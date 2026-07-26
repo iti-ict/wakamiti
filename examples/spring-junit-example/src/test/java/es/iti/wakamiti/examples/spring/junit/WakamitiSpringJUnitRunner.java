@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.examples.spring.junit;
 
+
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * Runner variant that bootstraps Spring before Wakamiti initialization.
@@ -122,12 +124,18 @@ public class WakamitiSpringJUnitRunner extends WakamitiJUnitRunner {
     }
 
     private static final class SpringBootstrapConfig {
+
         private final Class<?>[] sources;
         private final String[] profiles;
         private final String[] properties;
         private final String[] args;
 
-        private SpringBootstrapConfig(Class<?>[] sources, String[] profiles, String[] properties, String[] args) {
+        private SpringBootstrapConfig(
+                Class<?>[] sources,
+                String[] profiles,
+                String[] properties,
+                String[] args
+        ) {
             this.sources = sources;
             this.profiles = profiles;
             this.properties = properties;
@@ -149,5 +157,7 @@ public class WakamitiSpringJUnitRunner extends WakamitiJUnitRunner {
         private String[] args() {
             return args;
         }
+
     }
+
 }

@@ -23,7 +23,9 @@ public class WakamitiDataTypeRegistry {
 
     private final Map<String, WakamitiDataType<?>> types;
 
-    public WakamitiDataTypeRegistry(Map<String, WakamitiDataType<?>> types) {
+    public WakamitiDataTypeRegistry(
+            Map<String, WakamitiDataType<?>> types
+    ) {
         this.types = types;
     }
 
@@ -35,7 +37,9 @@ public class WakamitiDataTypeRegistry {
      * @return The Wakamiti data type corresponding to the
      * specified name.
      */
-    public WakamitiDataType<?> getType(String name) {
+    public WakamitiDataType<?> getType(
+            String name
+    ) {
         return types.get(name);
     }
 
@@ -58,7 +62,9 @@ public class WakamitiDataTypeRegistry {
      * @return A stream of Wakamiti data types associated with the
      * specified Java type.
      */
-    public Stream<WakamitiDataType<?>> findTypesForJavaType(Class<?> javaType) {
+    public Stream<WakamitiDataType<?>> findTypesForJavaType(
+            Class<?> javaType
+    ) {
         return this.types.values().stream()
                 .filter(type -> type.getJavaType().equals(javaType));
     }

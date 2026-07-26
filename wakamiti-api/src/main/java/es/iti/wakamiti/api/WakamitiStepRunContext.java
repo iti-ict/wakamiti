@@ -44,7 +44,9 @@ public class WakamitiStepRunContext {
      *
      * @param context The WakamitiStepRunContext to set.
      */
-    public static void set(WakamitiStepRunContext context) {
+    public static void set(
+            WakamitiStepRunContext context
+    ) {
         singleton.set(context);
     }
 

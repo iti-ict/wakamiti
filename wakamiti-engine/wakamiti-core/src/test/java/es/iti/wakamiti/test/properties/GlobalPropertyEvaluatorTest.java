@@ -75,4 +75,5 @@ public class GlobalPropertyEvaluatorTest {
     public void testResolveWhenPropertyIsNotPresentWithError() {
         resolver.eval("'${other}'");
     }
+
 }

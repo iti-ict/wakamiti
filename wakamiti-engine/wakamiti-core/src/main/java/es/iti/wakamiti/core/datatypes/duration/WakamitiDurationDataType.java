@@ -36,8 +36,11 @@ public class WakamitiDurationDataType extends WakamitiDataTypeBase<Duration> {
         return expression -> PROVIDER.durationFromExpression(locale, expression).orElse(null);
     }
 
-    public static String regexPattern(Locale locale) {
+    public static String regexPattern(
+            Locale locale
+    ) {
         String[] expressions = PROVIDER.regex(locale).toArray(new String[0]);
         return "(" + String.join("|", expressions) + ")";
     }
+
 }

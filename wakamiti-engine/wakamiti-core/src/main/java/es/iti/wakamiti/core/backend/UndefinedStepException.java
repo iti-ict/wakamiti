@@ -31,7 +31,11 @@ public class UndefinedStepException extends WakamitiException {
      *                  exception.
      * @param extraInfo Additional information about the exception.
      */
-    public UndefinedStepException(PlanNode step, String message, String extraInfo) {
+    public UndefinedStepException(
+            PlanNode step,
+            String message,
+            String extraInfo
+    ) {
         this(Either.of(step), message, extraInfo);
     }
 
@@ -44,7 +48,11 @@ public class UndefinedStepException extends WakamitiException {
      *                  exception.
      * @param extraInfo Additional information about the exception.
      */
-    public UndefinedStepException(Either<PlanNode, String> step, String message, String extraInfo) {
+    public UndefinedStepException(
+            Either<PlanNode, String> step,
+            String message,
+            String extraInfo
+    ) {
         super(
                 step
                         .value()
@@ -63,7 +71,10 @@ public class UndefinedStepException extends WakamitiException {
      *                exception.
      * @param args    Optional arguments to be included in the message.
      */
-    public UndefinedStepException(String message, Object... args) {
+    public UndefinedStepException(
+            String message,
+            Object... args
+    ) {
         super(message, args);
     }
 

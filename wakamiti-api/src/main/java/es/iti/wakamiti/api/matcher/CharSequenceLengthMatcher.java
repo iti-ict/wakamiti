@@ -31,7 +31,9 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
      *
      * @param lengthMatcher the matcher to apply to the examined {@link CharSequence}
      */
-    public static CharSequenceLengthMatcher length(Matcher<? super Integer> lengthMatcher) {
+    public static CharSequenceLengthMatcher length(
+            Matcher<? super Integer> lengthMatcher
+    ) {
         return new CharSequenceLengthMatcher(lengthMatcher);
     }
 
@@ -45,28 +47,44 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
      * @param length the length that the returned matcher will expect any
      *               examined string to have
      */
-    public static CharSequenceLengthMatcher length(int length) {
+    public static CharSequenceLengthMatcher length(
+            int length
+    ) {
         return length(equalTo(length));
     }
 
     private final Matcher<? super Integer> lengthMatcher;
 
-    public CharSequenceLengthMatcher(Matcher<? super Integer> lengthMatcher) {
+    public CharSequenceLengthMatcher(
+            Matcher<? super Integer> lengthMatcher
+    ) {
         this.lengthMatcher = lengthMatcher;
     }
 
     @Override
-    protected boolean matchesSafely(CharSequence text) {
+    protected boolean matchesSafely(
+            CharSequence text
+    ) {
         return lengthMatcher.matches(text != null ? text.length() : 0);
     }
 
     @Override
     public void describeMismatchSafely(CharSequence item, Description mismatchDescription) {
         mismatchDescription.appendText("was length \"").appendText(item == null ? null : String.valueOf(item.length())).appendText("\"");
+    public void describeMismatchSafely(
+            CharSequence item,
+            Description mismatchDescription
+    ) {
+        mismatchDescription.appendText("was length \"")
+                .appendText(item == null ? null : String.valueOf(item.length()))
+                .appendText("\"");
     }
 
     @Override
-    public void describeTo(Description description) {
+    public void describeTo(
+            Description description
+    ) {
         description.appendText("has string length ").appendDescriptionOf(lengthMatcher);
     }
+
 }

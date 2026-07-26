@@ -15,12 +15,12 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Property;
 import org.junit.runner.RunWith;
 
+
 @RunWith(WakamitiJUnitRunner.class)
 @AnnotatedConfiguration({
         @Property(key = WakamitiConfiguration.RESOURCE_TYPES, value = "gherkin"),
         @Property(key = WakamitiConfiguration.RESOURCE_PATH, value = "src/test/resources/features"),
 })
 public class ${PluginId}Test {
-
 
 }

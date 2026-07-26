@@ -90,7 +90,6 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
             description = Description.createSuiteDescription(getNode().displayName(), getUniqueId());
             getChildren().stream().map(WakamitiPlanNodeRunner.class::cast)
                     .forEach(child -> description.addChild(describeChild(child)));
-
         }
         return description;
     }
@@ -99,10 +98,12 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
      * Runs the test suite and notifies the RunNotifier.
      *
      * @param notifier The RunNotifier to notify during the test execution.
-     * @return         The Result of the test suite execution.
+     * @return The Result of the test suite execution.
      */
     @Override
-    public Result run(RunNotifier notifier) {
+    public Result run(
+            RunNotifier notifier
+    ) {
         this.notifier = notifier;
         EachTestNotifier testNotifier = new EachTestNotifier(notifier, this.getDescription());
         testNotifier.fireTestSuiteStarted();
@@ -147,23 +148,23 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
                     String childPath = childNodePath(index);
                     return child.nodeType().isAnyOf(target())
                             ? new PlanNodeTargetRunner(
-                                    child,
-                                    configuration(),
-                                    backendFactory(),
-                                    getBackend(),
-                                    getLogger(),
-                                    childPath,
-                                    testClassName
-                            )
+                            child,
+                            configuration(),
+                            backendFactory(),
+                            getBackend(),
+                            getLogger(),
+                            childPath,
+                            testClassName
+                    )
                             : new PlanNodeJUnitRunner(
-                                    child,
-                                    configuration(),
-                                    backendFactory(),
-                                    getBackend(),
-                                    getLogger(),
-                                    childPath,
-                                    testClassName
-                            );
+                            child,
+                            configuration(),
+                            backendFactory(),
+                            getBackend(),
+                            getLogger(),
+                            childPath,
+                            testClassName
+                    );
                 })
                 .collect(Collectors.toList());
     }
@@ -188,7 +189,9 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
      * @param child The Describable representing a child node.
      * @return The Description object representing the child node.
      */
-    protected Description describeChild(Describable child) {
+    protected Description describeChild(
+            Describable child
+    ) {
         return child.getDescription();
     }
 

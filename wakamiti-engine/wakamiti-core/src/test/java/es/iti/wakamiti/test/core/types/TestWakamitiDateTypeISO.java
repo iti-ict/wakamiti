@@ -44,7 +44,6 @@ public class TestWakamitiDateTypeISO {
         }
     }
 
-
     @Test
     public void testISOTime() {
         // ISO time should be accepted by any locale
@@ -59,7 +58,6 @@ public class TestWakamitiDateTypeISO {
                     .isEqualTo(LocalTime.of(17, 35, 29, 743000000));
         }
     }
-
 
     @Test
     public void testISODateTime() {

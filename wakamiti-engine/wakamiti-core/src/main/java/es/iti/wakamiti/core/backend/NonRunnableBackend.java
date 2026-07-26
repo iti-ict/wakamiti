@@ -42,7 +42,9 @@ public class NonRunnableBackend extends AbstractBackend {
      * @throws UnsupportedOperationException Always thrown, as running steps is not supported.
      */
     @Override
-    public void runStep(PlanNode step) {
+    public void runStep(
+            PlanNode step
+    ) {
         throw new UnsupportedOperationException();
     }
 

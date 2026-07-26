@@ -23,7 +23,6 @@ var currentExecutionView: CurrentExecutionView;
 var languageClient: WakamitiLanguageClient;
 
 
-
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Activating Wakamiti VSCode extension...');
 	languageClient = new WakamitiLanguageClient(context, reconnectLanguageServer.id);
@@ -36,15 +35,9 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 
-
-
 export function deactivate() {
 	console.log('Wakamiti VSCode extension deactivated.');
 }
-
-
-
-
 
 
 function registerCommands(context: vscode.ExtensionContext) {
@@ -62,7 +55,6 @@ function registerCommands(context: vscode.ExtensionContext) {
 			vscode.commands.registerCommand(it.id, it.action)
 		)
 	);
-
 
 
 }

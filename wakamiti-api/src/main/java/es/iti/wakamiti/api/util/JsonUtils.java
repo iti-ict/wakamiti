@@ -52,7 +52,6 @@ public class JsonUtils {
             .build();
 
     private JsonUtils() {
-
     }
 
     /**
@@ -63,7 +62,9 @@ public class JsonUtils {
      * @throws JsonRuntimeException     If there is an issue parsing the JSON string.
      * @throws IllegalArgumentException If the JSON string represents a single value.
      */
-    public static JsonNode json(String input) {
+    public static JsonNode json(
+            String input
+    ) {
         try {
             JsonNode result = MAPPER.readTree(input);
             if (result instanceof ValueNode) {
@@ -83,7 +84,9 @@ public class JsonUtils {
      * @throws JsonRuntimeException     If there is an issue reading or parsing the JSON content.
      * @throws IllegalArgumentException If the JSON content represents a single value.
      */
-    public static JsonNode json(InputStream input) {
+    public static JsonNode json(
+            InputStream input
+    ) {
         try {
             JsonNode result = MAPPER.readTree(input);
             if (result instanceof ValueNode) {
@@ -103,7 +106,9 @@ public class JsonUtils {
      * @throws JsonRuntimeException     If there is an issue converting or parsing the JSON string.
      * @throws IllegalArgumentException If the JSON string represents a single value.
      */
-    public static JsonNode json(Object input) {
+    public static JsonNode json(
+            Object input
+    ) {
         try {
             return json(MAPPER.writeValueAsString(input));
         } catch (JsonProcessingException e) {
@@ -118,24 +123,38 @@ public class JsonUtils {
      * @param expression The JSONPath expression specifying the value to read.
      * @return The string value read from the JsonNode.
      */
-    public static String readStringValue(JsonNode obj, String expression) {
+    public static String readStringValue(
+            JsonNode obj,
+            String expression
+    ) {
         return read(obj, expression, String.class);
     }
 
-    public static <T> T read(JsonNode obj, String expression, Class<T> type) {
+    public static <T> T read(
+            JsonNode obj,
+            String expression,
+            Class<T> type
+    ) {
         if (expression.startsWith("$")) {
             return JsonPath.using(CONFIG).parse(obj).read(expression, type);
         } else {
             return read(obj, expression, TypeFactory.defaultInstance().constructType(type));
-
         }
     }
 
-    public static <T> T read(JsonNode obj, String expression) {
-        return read(obj, expression, new TypeRef<>() {});
+    public static <T> T read(
+            JsonNode obj,
+            String expression
+    ) {
+        return read(obj, expression, new TypeRef<>() {
+        });
     }
 
-    public static <T> T read(JsonNode obj, String expression, TypeRef<T> type) {
+    public static <T> T read(
+            JsonNode obj,
+            String expression,
+            TypeRef<T> type
+    ) {
         if (expression.startsWith("$")) {
             return JsonPath.using(CONFIG).parse(obj).read(expression, type);
         } else {
@@ -143,22 +162,34 @@ public class JsonUtils {
         }
     }
 
-    public static <T> T read(JsonNode obj, Class<T> type) {
+    public static <T> T read(
+            JsonNode obj,
+            Class<T> type
+    ) {
         return MAPPER.convertValue(obj, type);
     }
 
-    public static <T> T read(JsonNode obj, TypeRef<T> type) {
+    public static <T> T read(
+            JsonNode obj,
+            TypeRef<T> type
+    ) {
         return MAPPER.convertValue(obj, MAPPER.getTypeFactory().constructType(type.getType()));
     }
 
-    private static <T> T read(JsonNode obj, String expression, JavaType type) {
+    private static <T> T read(
+            JsonNode obj,
+            String expression,
+            JavaType type
+    ) {
         Binding binding = new Binding();
         binding.setVariable("obj", obj.toString());
         binding.setVariable("exp", expression);
         GroovyShell shell = new GroovyShell(binding);
         String exp = (obj.isArray() && expression.startsWith("[") ? "'x'" : "'x.'") + " + exp";
         Object result = shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), " + exp + ")");
-        if (result == null) return null;
+        if (result == null) {
+            return null;
+        }
         return MAPPER.convertValue(result, type);
     }
 
@@ -167,13 +198,19 @@ public class JsonUtils {
      */
     public static class JsonRuntimeException extends RuntimeException {
 
-        JsonRuntimeException(String message, Throwable cause) {
+        JsonRuntimeException(
+                String message,
+                Throwable cause
+        ) {
             super(message, cause);
         }
 
-        JsonRuntimeException(Throwable cause) {
+        JsonRuntimeException(
+                Throwable cause
+        ) {
             super(cause);
         }
+
     }
 
 }

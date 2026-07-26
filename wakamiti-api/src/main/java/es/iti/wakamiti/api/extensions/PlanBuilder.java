@@ -33,8 +33,9 @@ public interface PlanBuilder extends Contributor {
      * @return {@code true} if the plan builder accepts the specified resource
      * type, {@code false} otherwise.
      */
-    boolean acceptResourceType(ResourceType<?> resourceType);
-
+    boolean acceptResourceType(
+            ResourceType<?> resourceType
+    );
 
     /**
      * Creates a plan using the provided list of resources.
@@ -42,6 +43,8 @@ public interface PlanBuilder extends Contributor {
      * @param resources The list of resources for the plan.
      * @return A {@link PlanNodeBuilder} representing the created plan.
      */
-    PlanNodeBuilder createPlan(List<Resource<?>> resources);
+    PlanNodeBuilder createPlan(
+            List<Resource<?>> resources
+    );
 
 }

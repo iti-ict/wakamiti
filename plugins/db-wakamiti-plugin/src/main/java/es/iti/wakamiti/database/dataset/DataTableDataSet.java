@@ -28,7 +28,11 @@ public class DataTableDataSet extends DataSet {
      * @param dataTable  The DataTable object.
      * @param nullSymbol The {@code null} symbol.
      */
-    public DataTableDataSet(String table, DataTable dataTable, String nullSymbol) {
+    public DataTableDataSet(
+            String table,
+            DataTable dataTable,
+            String nullSymbol
+    ) {
         super(table, "data table", nullSymbol);
         this.dataTable = dataTable;
         this.columns = new String[dataTable.columns()];
@@ -69,7 +73,9 @@ public class DataTableDataSet extends DataSet {
      * @return The value of the column.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return nullIfMatchNullSymbol(dataTable.value(rowNumber, columnIndex));
     }
 

@@ -124,7 +124,9 @@ public class PlanNodeRunner {
         return nodePath;
     }
 
-    protected String childNodePath(int childIndex) {
+    protected String childNodePath(
+            int childIndex
+    ) {
         return String.format("%s/%d", nodePath, childIndex);
     }
 
@@ -209,7 +211,9 @@ public class PlanNodeRunner {
         return result;
     }
 
-    private Result aggregatorFinish(Stream<Pair<Instant, Result>> results) {
+    private Result aggregatorFinish(
+            Stream<Pair<Instant, Result>> results
+    ) {
         Pair<Instant, Result> aux = results
                 .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
                 .orElse(new Pair<>(Instant.now(), Result.FAILED));
@@ -245,7 +249,10 @@ public class PlanNodeRunner {
         return node.executionState().flatMap(ExecutionState::result).orElse(null);
     }
 
-    private void doNotImplemented(PlanNode node, Result result) {
+    private void doNotImplemented(
+            PlanNode node,
+            Result result
+    ) {
         Instant startInstant = Instant.now();
 
         node.children().forEach(c -> {
@@ -257,7 +264,9 @@ public class PlanNodeRunner {
         node.prepareExecution().markFinished(startInstant, result);
     }
 
-    private void markFilteredTestCase(PlanNode node) {
+    private void markFilteredTestCase(
+            PlanNode node
+    ) {
         Instant startInstant = Instant.now();
         node.prepareExecution().markStarted(startInstant);
         node.prepareExecution().markFinished(startInstant, Result.SKIPPED);
@@ -282,20 +291,28 @@ public class PlanNodeRunner {
         return node;
     }
 
-    protected void testCasePreExecution(PlanNode node) {
+    protected void testCasePreExecution(
+            PlanNode node
+    ) {
         logger.logTestCaseHeader(node);
         getBackend().ifPresent(Backend::setUp);
     }
 
-    protected void testCasePostExecution(PlanNode node) {
+    protected void testCasePostExecution(
+            PlanNode node
+    ) {
         getBackend().ifPresent(Backend::tearDown);
     }
 
-    protected void stepPreExecution(PlanNode step) {
+    protected void stepPreExecution(
+            PlanNode step
+    ) {
         /* nothing by default */
     }
 
-    protected void stepPostExecution(PlanNode step) {
+    protected void stepPostExecution(
+            PlanNode step
+    ) {
         logger.logStepResult(step);
     }
 
@@ -303,7 +320,10 @@ public class PlanNodeRunner {
         PREPARED, RUNNING, FINISHED
     }
 
-    private static String stableUniqueId(String nodePath, PlanNode node) {
+    private static String stableUniqueId(
+            String nodePath,
+            PlanNode node
+    ) {
         String stableKey = String.join("|",
                 nodePath,
                 Objects.toString(node.nodeType(), ""),

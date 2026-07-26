@@ -18,8 +18,11 @@ import es.iti.wakamiti.api.util.PathUtil;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
-
-@Extension(provider = "es.iti.wakamiti", name = "jacoco-config", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "jacoco-config",
+        version = "2.6"
+)
 public class JacocoConfig implements ConfigContributor<JacocoReporter> {
 
     public static final String JACOCO_HOST = "jacoco.dump.host";
@@ -33,7 +36,6 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
     public static final String JACOCO_SOURCES = "jacoco.report.sources";
     public static final String JACOCO_TABWITH = "jacoco.report.tabwith";
     public static final String JACOCO_NAME = "jacoco.report.name";
-
 
     @Override
     public Configuration defaultConfiguration() {
@@ -87,4 +89,5 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
                 .orElseThrow(() -> new WakamitiException("Property '{}' is required", property));
         setter.accept(value);
     }
+
 }

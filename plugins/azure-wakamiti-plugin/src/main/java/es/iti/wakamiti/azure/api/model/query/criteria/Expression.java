@@ -9,4 +9,5 @@ package es.iti.wakamiti.azure.api.model.query.criteria;
 
 
 public interface Expression {
+
 }

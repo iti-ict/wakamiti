@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.test;
 
+
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
@@ -14,6 +15,7 @@ import org.junit.runner.RunWith;
 
 import static es.iti.wakamiti.api.WakamitiConfiguration.*;
 import static es.iti.wakamiti.xray.XrayConfigContributor.*;
+
 
 @AnnotatedConfiguration({
         @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.xray.test.MockSteps"),
@@ -38,4 +40,3 @@ import static es.iti.wakamiti.xray.XrayConfigContributor.*;
 public class TestRunConfig {
 
 }
-

@@ -123,5 +123,4 @@ public class TestStep {
         assertThat(deserializedStep.getResponse()).isEqualTo(returnedStep.getResponse());
     }
 
-
 }

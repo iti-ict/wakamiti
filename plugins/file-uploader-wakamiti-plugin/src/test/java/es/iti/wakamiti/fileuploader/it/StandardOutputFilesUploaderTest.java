@@ -56,4 +56,5 @@ public class StandardOutputFilesUploaderTest {
     private static String today() {
         return DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()).format(Instant.now());
     }
+
 }

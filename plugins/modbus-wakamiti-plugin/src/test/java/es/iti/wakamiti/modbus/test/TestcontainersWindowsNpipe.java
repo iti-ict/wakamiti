@@ -7,17 +7,21 @@
  */
 package es.iti.wakamiti.modbus.test;
 
+
 import org.junit.AssumptionViolatedException;
 import org.testcontainers.lifecycle.Startable;
 
 import java.util.Locale;
+
 
 final class TestcontainersWindowsNpipe {
 
     private TestcontainersWindowsNpipe() {
     }
 
-    static void startOrSkipOnWindowsNpipeFailure(Startable container) {
+    static void startOrSkipOnWindowsNpipeFailure(
+            Startable container
+    ) {
         try {
             container.start();
         } catch (RuntimeException e) {
@@ -34,7 +38,9 @@ final class TestcontainersWindowsNpipe {
         return osName.toLowerCase(Locale.ROOT).contains("win");
     }
 
-    private static boolean hasNpipeConnectionError(Throwable throwable) {
+    private static boolean hasNpipeConnectionError(
+            Throwable throwable
+    ) {
         Throwable current = throwable;
         while (current != null) {
             String message = current.getMessage();
@@ -48,4 +54,5 @@ final class TestcontainersWindowsNpipe {
         }
         return false;
     }
+
 }

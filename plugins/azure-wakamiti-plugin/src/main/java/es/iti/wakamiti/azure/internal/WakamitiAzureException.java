@@ -16,15 +16,23 @@ public class WakamitiAzureException extends WakamitiException {
     private static final String MESSAGE = System.lineSeparator()
             + "Please try to fix this problem in azure.";
 
-    public WakamitiAzureException(String message) {
+    public WakamitiAzureException(
+            String message
+    ) {
         super(message + MESSAGE);
     }
 
-    public WakamitiAzureException(String message, Throwable cause) {
+    public WakamitiAzureException(
+            String message,
+            Throwable cause
+    ) {
         super(message + MESSAGE, cause);
     }
 
-    public WakamitiAzureException(String message, Object... args) {
+    public WakamitiAzureException(
+            String message,
+            Object... args
+    ) {
         super(message + MESSAGE, args);
     }
 

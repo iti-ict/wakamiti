@@ -62,7 +62,7 @@ public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
      */
     @Override
     public NodeType[] target() {
-        return new NodeType[] {NodeType.STEP, NodeType.VIRTUAL_STEP};
+        return new NodeType[]{NodeType.STEP, NodeType.VIRTUAL_STEP};
     }
 
     /**
@@ -79,23 +79,23 @@ public class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
                     String childPath = childNodePath(index);
                     return child.nodeType().isAnyOf(target())
                             ? new PlanNodeTargetRunner(
-                                    child,
-                                    configuration(),
-                                    backendFactory(),
-                                    getBackend(),
-                                    getLogger(),
-                                    childPath,
-                                    testClassName()
-                            )
+                            child,
+                            configuration(),
+                            backendFactory(),
+                            getBackend(),
+                            getLogger(),
+                            childPath,
+                            testClassName()
+                    )
                             : new PlanNodeStepJUnitRunner(
-                                    child,
-                                    configuration(),
-                                    backendFactory(),
-                                    getBackend(),
-                                    getLogger(),
-                                    childPath,
-                                    testClassName()
-                            );
+                            child,
+                            configuration(),
+                            backendFactory(),
+                            getBackend(),
+                            getLogger(),
+                            childPath,
+                            testClassName()
+                    );
                 })
                 .collect(Collectors.toList());
     }

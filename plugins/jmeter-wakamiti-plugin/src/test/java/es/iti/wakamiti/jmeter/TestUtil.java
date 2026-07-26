@@ -52,7 +52,9 @@ public class TestUtil {
             .configure(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE, true)
             .build();
 
-    public static String json(Map<?, ?> map) {
+    public static String json(
+            Map<?, ?> map
+    ) {
         try {
             return new ObjectMapper().writeValueAsString(map);
         } catch (JsonProcessingException e) {
@@ -60,7 +62,9 @@ public class TestUtil {
         }
     }
 
-    public static String json(List<?> list) {
+    public static String json(
+            List<?> list
+    ) {
         try {
             return new ObjectMapper().writeValueAsString(list);
         } catch (JsonProcessingException e) {
@@ -68,7 +72,10 @@ public class TestUtil {
         }
     }
 
-    public static <T> T json(String string, TypeReference<T> type) {
+    public static <T> T json(
+            String string,
+            TypeReference<T> type
+    ) {
         try {
             return new ObjectMapper().readValue(string, type);
         } catch (JsonProcessingException e) {
@@ -76,7 +83,9 @@ public class TestUtil {
         }
     }
 
-    public static String xml(Map<?, ?> map) {
+    public static String xml(
+            Map<?, ?> map
+    ) {
         try {
             return xmlMapper.writeValueAsString(map);
         } catch (JsonProcessingException e) {
@@ -84,7 +93,9 @@ public class TestUtil {
         }
     }
 
-    public static String xml(List<?> list) {
+    public static String xml(
+            List<?> list
+    ) {
         try {
             return xmlMapper.writeValueAsString(list);
         } catch (JsonProcessingException e) {
@@ -92,7 +103,10 @@ public class TestUtil {
         }
     }
 
-    public static <T> T xml(String string, TypeReference<T> type) {
+    public static <T> T xml(
+            String string,
+            TypeReference<T> type
+    ) {
         try {
             SimpleModule m = new SimpleModule("module", new Version(1, 0, 0, null, null, null));
             m.addDeserializer(Map.class, new CustomDeserializer());
@@ -103,7 +117,9 @@ public class TestUtil {
         }
     }
 
-    public static File file(String path) {
+    public static File file(
+            String path
+    ) {
         try {
             return new File(TestUtil.class.getClassLoader().getResource(path).toURI());
         } catch (URISyntaxException e) {
@@ -111,7 +127,9 @@ public class TestUtil {
         }
     }
 
-    public static String read(File file) {
+    public static String read(
+            File file
+    ) {
         try {
             return IOUtils.toString(file.toURI(), Charset.defaultCharset());
         } catch (IOException e) {
@@ -119,25 +137,33 @@ public class TestUtil {
         }
     }
 
-    public static void prepare(MockServerClient client, String rootPath, Predicate<MediaType> filter) throws IOException {
+    public static void prepare(
+            MockServerClient client,
+            String rootPath,
+            Predicate<MediaType> filter
+    ) throws IOException {
         ConfigurationProperties.attemptToProxyIfNoMatchingExpectation(false);
         Expectation[] expectations = prepare(rootPath, filter);
         for (Expectation expectation : expectations) {
             client.when(expectation.getHttpRequest()).respond(expectation.getHttpResponse());
         }
-
     }
 
     @SuppressWarnings("unchecked")
-    public static Expectation[] prepare(String rootPath, Predicate<MediaType> filter) throws IOException {
+    public static Expectation[] prepare(
+            String rootPath,
+            Predicate<MediaType> filter
+    ) throws IOException {
         List<Expectation> expectations = new LinkedList<>();
         Map<MediaType, Function<List<Map<String, Object>>, String>> listToString = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
                 MediaType.APPLICATION_XML, TestUtil::xml
         );
         Map<MediaType, Function<String, Map<String, Object>>> stringToMap = Map.of(
-                MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {}),
-                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {})
+                MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
+                }),
+                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
+                })
         );
 
         File root = file(rootPath);
@@ -194,7 +220,9 @@ public class TestUtil {
                             .map(MediaType::parse)
                             .get();
 
-                    if (!filter.test(mimeType)) return;
+                    if (!filter.test(mimeType)) {
+                        return;
+                    }
 
                     String body = read(file);
                     String path = "/" + FileUtils.removeExtension(p.toString()).replace("\\", "/");
@@ -247,8 +275,9 @@ public class TestUtil {
         return expectations.toArray(new Expectation[0]);
     }
 
-
-    private static List<File> listFiles(final File folder) throws IOException {
+    private static List<File> listFiles(
+            final File folder
+    ) throws IOException {
         List<File> files = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(folder.getPath()))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(files::add);
@@ -261,11 +290,13 @@ public class TestUtil {
     static class CustomDeserializer extends JsonDeserializer<Map<String, ?>> {
 
         @Override
-        public Map<String, ?> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+        public Map<String, ?> deserialize(
+                JsonParser parser,
+                DeserializationContext context
+        ) throws IOException {
             Map<String, Object> map = new LinkedHashMap<>();
             JsonToken token;
             while ((token = parser.nextToken()) != null && token != JsonToken.END_OBJECT) {
-
                 if (token == JsonToken.FIELD_NAME) {
                     String name = parser.getCurrentName();
                     token = parser.nextToken();
@@ -296,6 +327,7 @@ public class TestUtil {
             }
             return map;
         }
+
     }
 
 }

@@ -51,7 +51,10 @@ public abstract class Util {
      * @param zoneId   the target time zone.
      * @return the formatted datetime string in ISO local date-time format.
      */
-    public static String toZoneId(String datetime, ZoneId zoneId) {
+    public static String toZoneId(
+            String datetime,
+            ZoneId zoneId
+    ) {
         try {
             return ZonedDateTime.parse(datetime).withZoneSameInstant(zoneId).toLocalDateTime()
                     .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
@@ -68,7 +71,10 @@ public abstract class Util {
      * @param zoneId   the target time zone.
      * @return the converted {@link LocalDateTime}.
      */
-    public static LocalDateTime toZoneId(LocalDateTime dateTime, ZoneId zoneId) {
+    public static LocalDateTime toZoneId(
+            LocalDateTime dateTime,
+            ZoneId zoneId
+    ) {
         return dateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(zoneId).toLocalDateTime();
     }
 
@@ -78,7 +84,9 @@ public abstract class Util {
      * @param suites the hierarchical list of test suite trees.
      * @return a flat list of {@link TestSuite} objects.
      */
-    public static List<TestSuite> readTree(List<TestSuiteTree> suites) {
+    public static List<TestSuite> readTree(
+            List<TestSuiteTree> suites
+    ) {
         List<TestSuite> result = new LinkedList<>();
         if (!isEmpty(suites)) {
             suites.forEach(it -> {
@@ -100,7 +108,9 @@ public abstract class Util {
      * @param suites the list of test suites to process.
      * @return the updated list of test suites.
      */
-    public static List<TestSuite> filterHasChildren(List<TestSuite> suites) {
+    public static List<TestSuite> filterHasChildren(
+            List<TestSuite> suites
+    ) {
         return suites.stream().peek(suite -> {
             if (Objects.nonNull(suite.parent())) {
                 suite.parent().hasChildren(true);
@@ -114,7 +124,9 @@ public abstract class Util {
      * @param suite the test suite to flatten.
      * @return a stream of {@link TestSuite} objects from the hierarchy.
      */
-    public static Stream<TestSuite> flatten(TestSuite suite) {
+    public static Stream<TestSuite> flatten(
+            TestSuite suite
+    ) {
         if (suite.parent() == null) {
             return Stream.of(suite);
         } else {
@@ -128,7 +140,9 @@ public abstract class Util {
      * @param path the path to convert.
      * @return the path string with backslashes.
      */
-    public static String path(Path path) {
+    public static String path(
+            Path path
+    ) {
         return path.toString().replace("/", "\\");
     }
 
@@ -139,7 +153,10 @@ public abstract class Util {
      * @param glob the glob pattern to match files against.
      * @return {@code true} if the file matches with glob, {@code false} otherwise.
      */
-    public static boolean match(Path file, String glob) {
+    public static boolean match(
+            Path file,
+            String glob
+    ) {
         return FileSystems.getDefault().getPathMatcher("glob:" + glob).matches(file);
     }
 

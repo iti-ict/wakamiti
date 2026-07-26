@@ -22,7 +22,6 @@ import { PropertyError } from './shared/property-error';
 import * as settings from './shared/settings';
 
 
-
 const LANGUAGE_ID = 'wakamiti-gherkin';
 
 
@@ -62,7 +61,6 @@ const STATUS_BAR_TOOLTIP_ONLINE = 'Connected with Wakamiti Language Server';
 var client: LanguageClient;
 
 
-
 export class WakamitiLanguageClient {
 
     readonly context: vscode.ExtensionContext;
@@ -79,7 +77,6 @@ export class WakamitiLanguageClient {
         this.listenPropertiesChanges();
         this.start();
     }
-
 
 
     public start() {
@@ -123,7 +120,6 @@ export class WakamitiLanguageClient {
     
 
 
-
     private startJavaProcessLanguageCLiente() {
 
         const pluginsPath :string = vscode.workspace.getConfiguration().get(settings.PROPERTY_JAVA_PLUGIN_PATH, '');
@@ -163,7 +159,6 @@ export class WakamitiLanguageClient {
     }
 
 
-
     private listenPropertiesChanges() {
         this.context.subscriptions.push(
             vscode.workspace.onDidChangeConfiguration(event => {
@@ -180,7 +175,6 @@ export class WakamitiLanguageClient {
             })
         );
     }
-
 
 
     private tcpServerProvider(host: string, port: number) : Promise<StreamInfo> {
@@ -233,11 +227,6 @@ export class WakamitiLanguageClient {
 }
 
 
-
-
-
-
-
 function onLanguageClientInitializacionFailed(error: any) {
     console.error('Error initializing Wakamiti language client', error);
     return false;
@@ -255,7 +244,6 @@ function onLanguageClientClosed() {
     console.log('Wakamiti language client closed.');
     return CloseAction.DoNotRestart;
 }
-
 
 
 function runLanguageServerAsJavaProcess(pluginPath: string): Promise<cp.ChildProcess> {

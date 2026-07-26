@@ -41,7 +41,9 @@ public class MapperTest {
         planSuite = new JsonPlanSerializer().read(resource("wakamiti_suite.json"));
     }
 
-    private static InputStream resource(String resource) {
+    private static InputStream resource(
+            String resource
+    ) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
     }
 
@@ -93,7 +95,7 @@ public class MapperTest {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(1)
-                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api"+SLASH_CODE+"suite/azure"))
+                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api" + SLASH_CODE + "suite/azure"))
                         && tc.suite().name().equals("azure")
                         && tc.suite().parent().name().equals("api/suite")
                 )
@@ -158,7 +160,7 @@ public class MapperTest {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(3)
-                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api"+SLASH_CODE+"suite/azure"))
+                .allMatch(tc -> tc.suite().asPath().equals(Path.of("api" + SLASH_CODE + "suite/azure"))
                         && tc.suite().name().equals("azure")
                         && tc.suite().parent().name().equals("api/suite")
                 );
@@ -170,7 +172,10 @@ public class MapperTest {
         assertThat(tests.get(2)).hasFieldOrPropertyWithValue("order", 2);
     }
 
-    private void logResult(Object o) {
+    private void logResult(
+            Object o
+    ) {
         LOGGER.debug("Result: {}", o);
     }
+
 }

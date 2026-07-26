@@ -36,7 +36,11 @@ import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.*;
  *
  * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "gherkin-redefinition-transformer", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "gherkin-redefinition-transformer",
+        version = "2.6"
+)
 public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
         implements PlanTransformer {
 
@@ -49,7 +53,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
      * @return A list of plan node builder rules.
      */
     @Override
-    protected List<PlanNodeBuilderRule> createRules(Configuration configuration) {
+    protected List<PlanNodeBuilderRule> createRules(
+            Configuration configuration
+    ) {
         GherkinRedefinitionRules rules = new GherkinRedefinitionRules(configuration);
         return Arrays.asList(
 
@@ -108,7 +114,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          *
          * @param configuration The configuration for Gherkin redefinition.
          */
-        public GherkinRedefinitionRules(Configuration configuration) {
+        public GherkinRedefinitionRules(
+                Configuration configuration
+        ) {
             gherkinPlanBuilder = new GherkinPlanBuilder();
             gherkinPlanBuilder.configure(configuration);
             implementationTag = implementationTag(configuration);
@@ -360,7 +368,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param configuration The configuration for Gherkin redefinition.
          * @return The definition tag.
          */
-        private String definitionTag(Configuration configuration) {
+        private String definitionTag(
+                Configuration configuration
+        ) {
             return configuration
                     .get(WakamitiConfiguration.REDEFINITION_DEFINITION_TAG, String.class)
                     .orElseThrow();
@@ -372,7 +382,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param configuration The configuration for Gherkin redefinition.
          * @return The implementation tag.
          */
-        private String implementationTag(Configuration configuration) {
+        private String implementationTag(
+                Configuration configuration
+        ) {
             return configuration
                     .get(WakamitiConfiguration.REDEFINITION_IMPLEMENTATION_TAG, String.class)
                     .orElseThrow();
@@ -384,7 +396,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param gherkinType The Gherkin type to check.
          * @return A predicate for checking Gherkin type.
          */
-        private Predicate<PlanNodeBuilder> withGherkinType(String gherkinType) {
+        private Predicate<PlanNodeBuilder> withGherkinType(
+                String gherkinType
+        ) {
             return withProperty(GHERKIN_PROPERTY, gherkinType);
         }
 
@@ -431,7 +445,10 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param implNode       The implementation node.
          * @return The step map.
          */
-        private int[] computeStepMap(int numDefChildren, PlanNodeBuilder implNode) {
+        private int[] computeStepMap(
+                int numDefChildren,
+                PlanNodeBuilder implNode
+        ) {
             int[] stepMap = new int[numDefChildren];
             String stepMapProperty = implNode.properties()
                     .get(WakamitiConfiguration.REDEFINITION_STEP_MAP);

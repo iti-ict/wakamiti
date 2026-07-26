@@ -49,7 +49,10 @@ public interface ResourceType<T> extends Contributor {
      * @return The parsed content of the resource.
      * @throws IOException If an I/O error occurs during parsing.
      */
-    T parse(InputStream stream, Charset charset) throws IOException;
+    T parse(
+            InputStream stream,
+            Charset charset
+    ) throws IOException;
 
     /**
      * Parse the reader to obtain the content.
@@ -58,7 +61,9 @@ public interface ResourceType<T> extends Contributor {
      * @return The parsed content of the resource.
      * @throws IOException If an I/O error occurs during parsing.
      */
-    T parse(Reader reader) throws IOException;
+    T parse(
+            Reader reader
+    ) throws IOException;
 
     /**
      * Check if the resource type accepts the given filename.
@@ -66,6 +71,8 @@ public interface ResourceType<T> extends Contributor {
      * @param filename The filename to check.
      * @return True if the resource type accepts the filename, false otherwise.
      */
-    boolean acceptsFilename(String filename);
+    boolean acceptsFilename(
+            String filename
+    );
 
 }

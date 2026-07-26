@@ -32,10 +32,8 @@ public class TestwakamitiAssertTypesEs {
 
     private final Locale locale = Locale.forLanguageTag("es");
 
-
     @Test
     public void testInteger() throws ParseException {
-
         WakamitiDataType<Assertion> intAssertion = WakamitiAssertTypes
                 .binaryNumberAssert("int-assert", false, Number::intValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -63,13 +61,10 @@ public class TestwakamitiAssertTypesEs {
 
         intAssertion.parse(locale, "es nulo").test(null);
         intAssertion.parse(locale, "no es nulo").test(7);
-
     }
-
 
     @Test
     public void testLong() throws ParseException {
-
         WakamitiDataType<Assertion> longAssertion = WakamitiAssertTypes
                 .binaryNumberAssert("long-assert", false, Number::longValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -97,13 +92,10 @@ public class TestwakamitiAssertTypesEs {
 
         longAssertion.parse(locale, "es nulo").test(null);
         longAssertion.parse(locale, "no es nulo").test(7L);
-
     }
-
 
     @Test
     public void testDouble() throws ParseException {
-
         WakamitiDataType<Assertion> doubleAssertion = WakamitiAssertTypes
                 .binaryNumberAssert("double-assert", true, Number::doubleValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -126,10 +118,8 @@ public class TestwakamitiAssertTypesEs {
         }
     }
 
-
     @Test
     public void testBigDecimal() throws ParseException {
-
         WakamitiDataType<Assertion> bigDecimalAssertion = WakamitiAssertTypes
                 .binaryBigDecimalAssert("bigdecimal-assert", true, x -> x);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -312,4 +302,5 @@ public class TestwakamitiAssertTypesEs {
                     .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
     }
+
 }

@@ -16,7 +16,18 @@ public class DecimalPropertyType implements PropertyType {
     private final Double min;
     private final Double max;
 
-    public DecimalPropertyType(Number min, Number max) {
+    /**
+     * Creates a decimal validator with optional inclusive bounds.
+     *
+     * @param min the lower bound, or {@code null} for no minimum
+     * @param max the upper bound, or {@code null} for no maximum
+     * @throws IllegalArgumentException if {@code min} is greater than
+     *                                  {@code max}
+     */
+    public DecimalPropertyType(
+            Number min,
+            Number max
+    ) {
         this.min = (min == null ? null : min.doubleValue());
         this.max = (max == null ? null : max.doubleValue());
         if (this.min != null && this.max != null && this.min > this.max) {
@@ -32,20 +43,22 @@ public class DecimalPropertyType implements PropertyType {
     @Override
     public String hint() {
         String hint;
-        if (min==null && max==null) {
+        if (min == null && max == null) {
             hint = "Any decimal number";
-        } else if (min==null) {
-            hint = "Decimal number less than "+max;
-        } else if (max==null) {
-            hint = "Decimal number greater than "+min;
+        } else if (min == null) {
+            hint = "Decimal number less than " + max;
+        } else if (max == null) {
+            hint = "Decimal number greater than " + min;
         } else {
-            hint = "Decimal number between "+min+" and "+max;
+            hint = "Decimal number between " + min + " and " + max;
         }
         return hint;
     }
 
     @Override
-    public boolean accepts(String value) {
+    public boolean accepts(
+            String value
+    ) {
         boolean accepted = true;
         try {
             Double parsedValue = Double.valueOf(value);
@@ -60,4 +73,5 @@ public class DecimalPropertyType implements PropertyType {
             return false;
         }
     }
+
 }

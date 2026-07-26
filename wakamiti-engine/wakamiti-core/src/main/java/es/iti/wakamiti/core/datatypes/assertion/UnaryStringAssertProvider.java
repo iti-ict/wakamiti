@@ -60,7 +60,9 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String key : expressions()) {
             translatedExpressions
@@ -73,7 +75,9 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    public LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -83,7 +87,11 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    protected Matcher<?> createMatcher(Locale locale, String expression, String value) {
+    protected Matcher<?> createMatcher(
+            Locale locale,
+            String expression,
+            String value
+    ) {
         return matchers.get(expression).get();
     }
 

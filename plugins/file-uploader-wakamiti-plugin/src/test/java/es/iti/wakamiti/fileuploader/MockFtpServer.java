@@ -36,7 +36,9 @@ public class MockFtpServer {
     private final int port;
     private Path tmpDir;
 
-    public MockFtpServer(int port) {
+    public MockFtpServer(
+            int port
+    ) {
         this.port = port;
         ListenerFactory factory = new ListenerFactory();
         factory.setPort(port);
@@ -61,16 +63,13 @@ public class MockFtpServer {
         return this;
     }
 
-
     public int getPort() {
         return port;
     }
 
-
     public void stop() {
         server.stop();
     }
-
 
     public Path getTmpDir() {
         return tmpDir;
@@ -89,21 +88,24 @@ public class MockFtpServer {
         return user;
     }
 
-
     private PasswordEncryptor passwordEncryptor() {
         return new PasswordEncryptor() {
             @Override
-            public String encrypt(String password) {
+            public String encrypt(
+                    String password
+            ) {
                 return password;
             }
 
             @Override
-            public boolean matches(String passwordToCheck, String storedPassword) {
+            public boolean matches(
+                    String passwordToCheck,
+                    String storedPassword
+            ) {
                 return passwordToCheck.equals(storedPassword);
             }
         };
     }
-
 
     private static int findFreePort() {
         try (ServerSocket serverSocket = new ServerSocket(0)) {
@@ -112,6 +114,5 @@ public class MockFtpServer {
             throw new WakamitiException(e);
         }
     }
-
 
 }

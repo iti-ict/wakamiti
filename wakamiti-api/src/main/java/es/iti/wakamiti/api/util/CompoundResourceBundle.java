@@ -35,7 +35,9 @@ public class CompoundResourceBundle extends ResourceBundle {
 
     private final List<ResourceBundle> resourceBundles;
 
-    public CompoundResourceBundle(List<ResourceBundle> resourceBundles) {
+    public CompoundResourceBundle(
+            List<ResourceBundle> resourceBundles
+    ) {
         this.resourceBundles = new ArrayList<>(resourceBundles);
     }
 
@@ -50,7 +52,9 @@ public class CompoundResourceBundle extends ResourceBundle {
      * @return The value associated with the specified key, or {@code null} if not found.
      */
     @Override
-    protected Object handleGetObject(String key) {
+    protected Object handleGetObject(
+            String key
+    ) {
         for (ResourceBundle resourceBundle : resourceBundles) {
             Object value = resourceBundle.getObject(key);
             if (value != null) {

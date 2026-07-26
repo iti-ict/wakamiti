@@ -21,7 +21,9 @@ import java.util.List;
 
 public class ProjectStub extends MavenProjectStub {
 
-    public ProjectStub(File pom) {
+    public ProjectStub(
+            File pom
+    ) {
         final MavenXpp3Reader pomReader = new MavenXpp3Reader();
         Model model;
         try {
@@ -56,4 +58,5 @@ public class ProjectStub extends MavenProjectStub {
     public List<Plugin> getBuildPlugins() {
         return getBuild().getPlugins();
     }
+
 }

@@ -70,7 +70,9 @@ public class ContentTypeUtil {
      * @return The {@link ContentType} object.
      * @throws IllegalArgumentException if the content type name is not found.
      */
-    public static ContentType valueOf(final String contentType) {
+    public static ContentType valueOf(
+            final String contentType
+    ) {
         if (!CONTENT_TYPE_MAP.containsKey(contentType)) {
             throw new IllegalArgumentException("No such content type: " + contentType);
         }

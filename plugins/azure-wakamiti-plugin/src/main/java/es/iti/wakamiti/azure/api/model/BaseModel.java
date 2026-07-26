@@ -18,9 +18,11 @@ import java.util.Objects;
 public abstract class BaseModel implements Serializable {
 
     @Override
-    public boolean equals(Object obj) {
-        return obj != null &&
-                (this.getClass().isAssignableFrom(obj.getClass()) || obj.getClass().isAssignableFrom(this.getClass()))
+    public boolean equals(
+            Object obj
+    ) {
+        return obj != null
+                && (this.getClass().isAssignableFrom(obj.getClass()) || obj.getClass().isAssignableFrom(this.getClass()))
                 && this.hashCode() == obj.hashCode();
     }
 

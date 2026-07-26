@@ -157,11 +157,14 @@ public class XmlUtilsTest {
         assertThat(result).isEqualTo("47");
     }
 
-    private Map<String, Object> map(Object... pairs) {
+    private Map<String, Object> map(
+            Object... pairs
+    ) {
         Map<String, Object> result = new LinkedHashMap<>();
         for (int i = 0; i < pairs.length; i = i + 2) {
             result.put((String) pairs[i], pairs[i + 1]);
         }
         return result;
     }
+
 }

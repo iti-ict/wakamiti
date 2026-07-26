@@ -43,12 +43,16 @@ public enum DatabaseType {
      *
      * @param healthCheckSql the SQL query used for health check
      */
-    DatabaseType(String healthCheckSql) {
+    DatabaseType(
+            String healthCheckSql
+    ) {
         this.healthCheckSql = healthCheckSql;
         this.format = new DefaultSqlFormat();
     }
 
-    DatabaseType(SqlFormat format) {
+    DatabaseType(
+            SqlFormat format
+    ) {
         this.healthCheckSql = DEFAULT;
         this.format = format;
     }
@@ -65,7 +69,9 @@ public enum DatabaseType {
      * @return the corresponding DatabaseType enum constant
      * @throws WakamitiException if the JDBC URL is null or does not start with "jdbc:"
      */
-    public static DatabaseType fromUrl(String url) {
+    public static DatabaseType fromUrl(
+            String url
+    ) {
         if (url == null || !url.startsWith("jdbc:")) {
             throw new WakamitiException("Bad jdbc url");
         }
@@ -88,4 +94,5 @@ public enum DatabaseType {
     public SqlFormat formatter() {
         return this.format;
     }
+
 }

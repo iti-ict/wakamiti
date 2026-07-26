@@ -332,8 +332,8 @@ public class TestPlanApiTest {
             //check
         } catch (WakamitiAzureException e) {
             requests.forEach(mock::verify);
-            assertThat(e).hasMessage("There is no default configuration available. " + System.lineSeparator() +
-                    "Please try to fix this problem in azure.");
+            assertThat(e).hasMessage("There is no default configuration available. " + System.lineSeparator()
+                    + "Please try to fix this problem in azure.");
             throw e;
         }
     }
@@ -382,8 +382,8 @@ public class TestPlanApiTest {
             //check
         } catch (WakamitiAzureException e) {
             requests.forEach(mock::verify);
-            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator() +
-                    "Please try to fix this problem in azure.");
+            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator()
+                    + "Please try to fix this problem in azure.");
             assertThat(e.getCause()).isNotNull().hasMessage("Default test case category");
             throw e;
         }
@@ -424,13 +424,12 @@ public class TestPlanApiTest {
             //check
         } catch (Exception e) {
             requests.forEach(mock::verify);
-            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator() +
-                    "Please try to fix this problem in azure.");
+            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator()
+                    + "Please try to fix this problem in azure.");
             assertThat(e.getCause()).isNotNull().hasMessage("The Azure API returned a non-OK response");
             throw e;
         }
     }
-
 
     @Test
     public void testGetTestPlanWhenExistsWithSuccess() throws IOException {
@@ -513,11 +512,11 @@ public class TestPlanApiTest {
         ).ifPresent(requests::add);
         mockServer(
                 request().withMethod("POST").withPath("/ST/ACS/_apis/testplan/plans")
-                        .withBody(json("{" +
-                                                "\"name\":\"Wakamiti Test Plan\"," +
-                                                "\"areaPath\":\"ACS\"," +
-                                                "\"iteration\":\"ACS\\\\Iteración 1\"" +
-                                        "}", MatchType.ONLY_MATCHING_FIELDS)
+                        .withBody(json("{"
+                                + "\"name\":\"Wakamiti Test Plan\","
+                                + "\"areaPath\":\"ACS\","
+                                + "\"iteration\":\"ACS\\\\Iteración 1\""
+                                + "}", MatchType.ONLY_MATCHING_FIELDS)
                         ),
                 response()
                         .withStatusCode(200)
@@ -527,9 +526,9 @@ public class TestPlanApiTest {
         mockServer(
                 request().withBody("PATCH").withPath("/ST/ACS/_apis/wit/workitems/56983")
                         .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
-                        .withBody(json("[" +
-                                "{\"op\":\"add\",\"path\":\"/fields/System.Tags\",\"value\":\"wakamiti\"}" +
-                                "]", MatchType.ONLY_MATCHING_FIELDS )),
+                        .withBody(json("["
+                                + "{\"op\":\"add\",\"path\":\"/fields/System.Tags\",\"value\":\"wakamiti\"}"
+                                + "]", MatchType.ONLY_MATCHING_FIELDS)),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -666,9 +665,9 @@ public class TestPlanApiTest {
                 request()
                         .withMethod("POST")
                         .withPath("/ST/ACS/_apis/testplan/Plans/56983/suites")
-                        .withBody(regex(".*\"name\":\"Feature 1/abc\".+" +
-                                "\"suiteType\":\"staticTestSuite\".+" +
-                                "\"parentSuite\":\\{\"id\":\"56984\".*")),
+                        .withBody(regex(".*\"name\":\"Feature 1/abc\".+"
+                                + "\"suiteType\":\"staticTestSuite\".+"
+                                + "\"parentSuite\":\\{\"id\":\"56984\".*")),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -740,7 +739,6 @@ public class TestPlanApiTest {
                 .hasFieldOrPropertyWithValue("name", "Wakamiti Test Plan");
     }
 
-
     @Test
     public void testGetTestCasesWhenExistsWithSuccess() throws IOException {
         // prepare
@@ -760,7 +758,6 @@ public class TestPlanApiTest {
 
         AzureApi client = new AzureApi(new URL(BASE_URL), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
-
 
         TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
@@ -853,11 +850,11 @@ public class TestPlanApiTest {
                             .withMethod("POST")
                             .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
                             .withPath("/ST/ACS/_apis/wit/workitems/.+")
-                            .withBody(regex(format(".+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
+                            .withBody(regex(format(".+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
                                     Pattern.quote(t.name()), t.tag()))),
                     response()
                             .withStatusCode(200)
@@ -956,7 +953,6 @@ public class TestPlanApiTest {
         AzureApi client = new AzureApi(new URL(BASE_URL), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
-
         TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
                 .id("56983").rootSuite(root);
@@ -1035,8 +1031,8 @@ public class TestPlanApiTest {
                             .withMethod("PATCH")
                             .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
                             .withPath(format("/ST/ACS/_apis/wit/workitems/{}", p.key()))
-                            .withBody(regex(format(".+" +
-                                            "\\{\"op\":\"replace\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+",
+                            .withBody(regex(format(".+"
+                                            + "\\{\"op\":\"replace\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+",
                                     Pattern.quote(p.value().name())))),
                     response()
                             .withStatusCode(200)
@@ -1152,11 +1148,11 @@ public class TestPlanApiTest {
                             .withMethod("POST")
                             .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
                             .withPath("/ST/ACS/_apis/wit/workitems/.+")
-                            .withBody(regex(format(".+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
+                            .withBody(regex(format(".+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
                                     Pattern.quote(p.value().name()), p.value().tag()))),
                     response()
                             .withStatusCode(200)
@@ -1228,17 +1224,23 @@ public class TestPlanApiTest {
                 .extracting(t -> t.suite().id()).isEqualTo("56985");
     }
 
-
-    private void logResult(Object o) {
+    private void logResult(
+            Object o
+    ) {
         LOGGER.debug("Result: {}", o);
     }
 
-    private Optional<HttpRequest> mockServer(HttpRequest expected, HttpResponse response) {
+    private Optional<HttpRequest> mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
         mock.when(expected, Times.once()).respond(response);
         return Optional.of(expected);
     }
 
-    private String resource(String resource) throws IOException {
+    private String resource(
+            String resource
+    ) throws IOException {
         return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource));
     }
 

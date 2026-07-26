@@ -10,7 +10,9 @@ package es.iti.wakamiti.azure.api.model.query.criteria;
 
 public class PredicateGroup extends Predicate {
 
-    public PredicateGroup(Expression criteria) {
+    public PredicateGroup(
+            Expression criteria
+    ) {
         super(criteria);
     }
 

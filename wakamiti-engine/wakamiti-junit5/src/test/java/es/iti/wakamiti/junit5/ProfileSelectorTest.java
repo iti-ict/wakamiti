@@ -78,17 +78,22 @@ class ProfileSelectorTest {
     }
 
     static class WithoutProfile {
+
     }
 
     @Profile("A")
     static class ProfileA {
+
     }
 
     @Profile("B")
     static class ProfileB {
+
     }
 
     @Profile("C")
     static class ProfileC {
+
     }
+
 }

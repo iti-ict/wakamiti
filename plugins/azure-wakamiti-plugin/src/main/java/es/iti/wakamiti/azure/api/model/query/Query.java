@@ -31,7 +31,9 @@ public abstract class Query {
 
     public abstract String getEntity();
 
-    public Query select(List<?> fields) {
+    public Query select(
+            List<?> fields
+    ) {
         this.fields.clear();
         this.fields.addAll(fields.stream()
                 .map(f -> f instanceof Field ? (Field) f : Field.of(f.toString()))
@@ -39,11 +41,15 @@ public abstract class Query {
         return this;
     }
 
-    public Query select(String... fields) {
+    public Query select(
+            String... fields
+    ) {
         return select(List.of(fields));
     }
 
-    public Query select(Field... fields) {
+    public Query select(
+            Field... fields
+    ) {
         return select(List.of(fields));
     }
 
@@ -51,12 +57,16 @@ public abstract class Query {
         return select("System.Id");
     }
 
-    public Query where(Expression criteria) {
+    public Query where(
+            Expression criteria
+    ) {
         this.criteria = criteria;
         return this;
     }
 
-    public Query orderBy(List<?> elements) {
+    public Query orderBy(
+            List<?> elements
+    ) {
         this.orderElements.clear();
         this.orderElements.addAll(elements.stream()
                         .map(e -> e instanceof OrderElement ? (OrderElement) e
@@ -65,19 +75,27 @@ public abstract class Query {
         return this;
     }
 
-    public Query orderBy(OrderElement... elements) {
+    public Query orderBy(
+            OrderElement... elements
+    ) {
         return orderBy(List.of(elements));
     }
 
-    public Query orderBy(Field... elements) {
+    public Query orderBy(
+            Field... elements
+    ) {
         return orderBy(List.of(elements));
     }
 
-    public Query orderBy(String... elements) {
+    public Query orderBy(
+            String... elements
+    ) {
         return orderBy(List.of(elements));
     }
 
-    public Query asof(String date) {
+    public Query asof(
+            String date
+    ) {
         this.asof = date;
         return this;
     }
@@ -109,7 +127,9 @@ public abstract class Query {
 
         private final String name;
 
-        Mode(String name) {
+        Mode(
+                String name
+        ) {
             this.name = name;
         }
 
@@ -117,5 +137,7 @@ public abstract class Query {
         public String toString() {
             return name;
         }
+
     }
+
 }

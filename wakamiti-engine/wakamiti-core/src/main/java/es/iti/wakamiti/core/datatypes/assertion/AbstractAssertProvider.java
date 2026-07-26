@@ -42,8 +42,11 @@ public abstract class AbstractAssertProvider extends AbstractProvider {
      * @param prefix The prefix used to filter expressions.
      * @return A list of expressions with the specified prefix.
      */
-    public static List<String> getAllExpressions(Locale locale, String prefix) {
-        ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
+    public static List<String> getAllExpressions(
+            Locale locale,
+            String prefix
+    ) {
+        ResourceBundle bundle = RESOURCE_LOADER.resourceBundle(MATCHERS_RESOURCE, locale);
         return bundle.keySet().stream()
                 .filter(key -> key.startsWith(prefix))
                 .map(bundle::getString)
@@ -57,7 +60,10 @@ public abstract class AbstractAssertProvider extends AbstractProvider {
      * @param expression The expression used to create the matcher.
      * @return An optional containing the matcher if one is created, or empty otherwise.
      */
-    public Optional<Matcher<?>> matcherFromExpression(Locale locale, String expression) {
+    public Optional<Matcher<?>> matcherFromExpression(
+            Locale locale,
+            String expression
+    ) {
         ThrowableFunction<Pair<String, String>, Matcher<?>> mapper = p -> createMatcher(locale, p.key(), p.value());
         return fromExpression(locale, expression).map(mapper);
     }

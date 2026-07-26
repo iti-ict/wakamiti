@@ -24,7 +24,6 @@ import java.util.Optional;
 @Mojo(name = "control", defaultPhase = LifecyclePhase.VERIFY)
 public class FailedControlMojo extends AbstractMojo {
 
-
     /**
      * Executes the plugin.
      *

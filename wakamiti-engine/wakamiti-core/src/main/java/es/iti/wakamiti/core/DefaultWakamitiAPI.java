@@ -64,7 +64,10 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
      * {@inheritDoc}
      */
     @Override
-    public void publishEvent(String eventType, Object data) {
+    public void publishEvent(
+            String eventType,
+            Object data
+    ) {
         Wakamiti.instance().publishEvent(eventType, data);
     }
 
@@ -80,7 +83,9 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
      * {@inheritDoc}
      */
     @Override
-    public Path workingDir(Configuration configuration) {
+    public Path workingDir(
+            Configuration configuration
+    ) {
         return Wakamiti.workingDir(configuration);
     }
 

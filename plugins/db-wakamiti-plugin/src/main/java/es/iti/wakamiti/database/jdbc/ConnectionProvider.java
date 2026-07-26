@@ -37,7 +37,9 @@ public class ConnectionProvider implements AutoCloseable {
      *
      * @param parameters The connection parameters.
      */
-    public ConnectionProvider(ConnectionParameters parameters) {
+    public ConnectionProvider(
+            ConnectionParameters parameters
+    ) {
         this.parameters = parameters;
     }
 
@@ -106,4 +108,5 @@ public class ConnectionProvider implements AutoCloseable {
             throw new WakamitiException("Connection closure has failed", e);
         }
     }
+
 }

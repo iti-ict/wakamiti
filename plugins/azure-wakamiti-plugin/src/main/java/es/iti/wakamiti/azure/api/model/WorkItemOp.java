@@ -20,7 +20,9 @@ public class WorkItemOp {
     @JsonProperty
     private String value;
 
-    public WorkItemOp op(Operation op) {
+    public WorkItemOp op(
+            Operation op
+    ) {
         this.op = op;
         return this;
     }
@@ -29,7 +31,9 @@ public class WorkItemOp {
         return op;
     }
 
-    public WorkItemOp path(String path) {
+    public WorkItemOp path(
+            String path
+    ) {
         this.path = path;
         return this;
     }
@@ -38,7 +42,9 @@ public class WorkItemOp {
         return path;
     }
 
-    public WorkItemOp value(String value) {
+    public WorkItemOp value(
+            String value
+    ) {
         this.value = value;
         return this;
     }

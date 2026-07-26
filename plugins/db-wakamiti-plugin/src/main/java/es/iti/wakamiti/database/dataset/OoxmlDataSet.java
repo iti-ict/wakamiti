@@ -43,7 +43,11 @@ public class OoxmlDataSet extends MultiDataSet {
      * @param nullSymbol       The symbol representing {@code null} values.
      * @throws IOException If an I/O error occurs.
      */
-    public OoxmlDataSet(File file, String ignoreSheetRegex, String nullSymbol) throws IOException {
+    public OoxmlDataSet(
+            File file,
+            String ignoreSheetRegex,
+            String nullSymbol
+    ) throws IOException {
         this.workbook = WorkbookFactory.create(file, null, true);
         this.file = file;
         this.ignoreSheetRegex = ignoreSheetRegex;
@@ -102,7 +106,11 @@ public class OoxmlDataSet extends MultiDataSet {
          * @param file       The OOXML file.
          * @param nullSymbol The symbol representing {@code null} values.
          */
-        public OoxmlSheetDataSet(Sheet sheet, File file, String nullSymbol) {
+        public OoxmlSheetDataSet(
+                Sheet sheet,
+                File file,
+                String nullSymbol
+        ) {
             super(sheet.getSheetName(), "file '" + file + "'", nullSymbol);
             this.rowIterator = sheet.rowIterator();
             this.columns = sheetHeaders(rowIterator.next());
@@ -114,7 +122,9 @@ public class OoxmlDataSet extends MultiDataSet {
          * @param row The row containing headers.
          * @return An array of column headers.
          */
-        private String[] sheetHeaders(Row row) {
+        private String[] sheetHeaders(
+                Row row
+        ) {
             List<String> rawHeaders = new ArrayList<>();
             row.cellIterator().forEachRemaining(cell -> {
                 String header = Optional.ofNullable(cell.getStringCellValue()).map(String::trim).orElse(null);
@@ -160,7 +170,9 @@ public class OoxmlDataSet extends MultiDataSet {
          * @return The value of the column.
          */
         @Override
-        public Object rowValue(int columnIndex) {
+        public Object rowValue(
+                int columnIndex
+        ) {
             Cell cell = currentRow.getCell(columnIndex);
             Object value = null;
             if (cell != null) {
@@ -204,6 +216,7 @@ public class OoxmlDataSet extends MultiDataSet {
                     "Cannot copy data set outside the container multi data set"
             );
         }
+
     }
 
 }

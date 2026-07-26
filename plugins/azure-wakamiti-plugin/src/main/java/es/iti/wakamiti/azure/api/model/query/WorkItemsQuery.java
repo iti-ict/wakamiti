@@ -16,4 +16,5 @@ public class WorkItemsQuery extends Query {
     public String getEntity() {
         return ENTITY;
     }
+
 }

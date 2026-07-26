@@ -7,12 +7,14 @@
  */
 package es.iti.wakamiti.api;
 
+
 import es.iti.commons.jext.ExtensionManager;
 import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.imconfig.Configuration;
 
 import java.nio.file.Path;
+
 
 public class WakamitiAPITest implements WakamitiAPI {
 
@@ -37,7 +39,10 @@ public class WakamitiAPITest implements WakamitiAPI {
     }
 
     @Override
-    public void publishEvent(String eventType, Object data) {
+    public void publishEvent(
+            String eventType,
+            Object data
+    ) {
         // this implementation method does nothing
     }
 
@@ -47,7 +52,9 @@ public class WakamitiAPITest implements WakamitiAPI {
     }
 
     @Override
-    public Path workingDir(Configuration configuration) {
+    public Path workingDir(
+            Configuration configuration
+    ) {
         return null;
     }
 
@@ -55,4 +62,5 @@ public class WakamitiAPITest implements WakamitiAPI {
     public Configuration defaultConfiguration() {
         return null;
     }
+
 }

@@ -30,4 +30,5 @@ public class SampleSteps implements StepContributor {
     public void error() {
         throw new IllegalStateException("Synthetic error for Allure");
     }
+
 }

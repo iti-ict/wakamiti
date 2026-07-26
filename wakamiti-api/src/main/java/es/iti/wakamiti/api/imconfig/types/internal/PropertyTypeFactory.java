@@ -18,7 +18,10 @@ import java.util.Map;
 
 public final class PropertyTypeFactory {
 
-    public PropertyType create(String type, Map<String, Object> arguments) {
+    public PropertyType create(
+            String type,
+            Map<String, Object> arguments
+    ) {
         if (type == null) {
             throw new ConfigurationException("type must be defined");
         }
@@ -34,9 +37,11 @@ public final class PropertyTypeFactory {
         }
     }
 
-
     @SuppressWarnings("unchecked")
-    private PropertyType createrPropertyType(String type, Map<String, ?> arguments) {
+    private PropertyType createrPropertyType(
+            String type,
+            Map<String, ?> arguments
+    ) {
         if ("text".equals(type)) {
             return new TextPropertyType((String) arguments.get("pattern"));
         }

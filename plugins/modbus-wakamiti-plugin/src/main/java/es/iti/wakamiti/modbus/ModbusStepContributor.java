@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.modbus;
 
+
 import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMasterTCP;
@@ -29,7 +30,11 @@ import java.util.Arrays;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "modbus", version = "2.7")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "modbus",
+        version = "2.7"
+)
 @I18nResource("es_iti_wakamiti_modbus")
 public class ModbusStepContributor implements StepContributor {
 
@@ -40,13 +45,17 @@ public class ModbusStepContributor implements StepContributor {
     protected int slaveId;
 
     protected ModbusMaster master;
-    int[] registersRead = null;
+    int[] registersRead;
 
-    protected void setHost(String host) {
+    protected void setHost(
+            String host
+    ) {
         this.host = host;
     }
 
-    protected void setPort(Integer port) {
+    protected void setPort(
+            Integer port
+    ) {
         this.port = port;
     }
 
@@ -66,7 +75,6 @@ public class ModbusStepContributor implements StepContributor {
         } catch (UnknownHostException e) {
             throw new WakamitiException("Cannot locate host {}", host, e);
         }
-
     }
 
     @TearDown
@@ -85,7 +93,10 @@ public class ModbusStepContributor implements StepContributor {
      * @param port the base port to be set.
      */
     @Step(value = "modbus.define.baseURL", args = {"host:word", "port:int"})
-    public void setBaseURL(String host, Integer port) {
+    public void setBaseURL(
+            String host,
+            Integer port
+    ) {
         this.host = host;
         this.port = port;
     }
@@ -96,12 +107,17 @@ public class ModbusStepContributor implements StepContributor {
      * @param slaveId the slave id to be set.
      */
     @Step(value = "modbus.define.slaveId", args = "slaveId:text")
-    public void setSlaveId(String slaveId) {
+    public void setSlaveId(
+            String slaveId
+    ) {
         this.slaveId = Integer.parseInt(slaveId);
     }
 
     @Step(value = "modbus.execute.read", args = {"quantity:int", "address:int"})
-    public void executeRead(Integer quantity, Integer address) {
+    public void executeRead(
+            Integer quantity,
+            Integer address
+    ) {
         try {
             registersRead = master.readHoldingRegisters(slaveId, address, quantity);
         } catch (Exception e) {
@@ -110,7 +126,10 @@ public class ModbusStepContributor implements StepContributor {
     }
 
     @Step(value = "modbus.execute.write", args = {"value:int", "address:int"})
-    public void executeWrite(Integer value, Integer address) {
+    public void executeWrite(
+            Integer value,
+            Integer address
+    ) {
         try {
             master.writeSingleRegister(slaveId, address, value);
         } catch (Exception e) {
@@ -119,13 +138,17 @@ public class ModbusStepContributor implements StepContributor {
     }
 
     @Step(value = "modbus.assert.read.value", args = {"value:int"})
-    public void assertReadValue(Integer value) {
+    public void assertReadValue(
+            Integer value
+    ) {
         assertRegistersRead();
         Arrays.stream(registersRead).filter(v -> v == value).findAny()
                 .orElseThrow(() -> new WakamitiException("Register {} not found", value));
     }
 
-    protected void checkURL(URL url) {
+    protected void checkURL(
+            URL url
+    ) {
         if (!isBlank(url.getQuery())) {
             throw new WakamitiException("Query parameters are not allowed here. Please, use steps for that purpose.");
         }

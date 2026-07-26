@@ -75,7 +75,9 @@ public class ExecutionState<R> {
      * @return True if the result of the execution is equal to
      * the given result, false otherwise
      */
-    public boolean hasResult(R result) {
+    public boolean hasResult(
+            R result
+    ) {
         return this.result.isPresent() && this.result.get().equals(result);
     }
 
@@ -114,7 +116,9 @@ public class ExecutionState<R> {
      * @throws IllegalStateException If the execution was already
      *                               marked as started
      */
-    public void markStarted(Instant instant) {
+    public void markStarted(
+            Instant instant
+    ) {
         if (startInstant.isPresent()) {
             throw new IllegalStateException("Node execution already started");
         }
@@ -129,7 +133,10 @@ public class ExecutionState<R> {
      * @throws IllegalStateException If the execution was already
      *                               marked as finished
      */
-    public void markFinished(Instant instant, R result) {
+    public void markFinished(
+            Instant instant,
+            R result
+    ) {
         markFinished(instant, result, null, null, null);
     }
 
@@ -146,7 +153,12 @@ public class ExecutionState<R> {
      * @throws IllegalStateException If the execution was already marked
      *                               as finished
      */
-    public void markFinished(Instant instant, R result, Throwable error, String errorClassifier) {
+    public void markFinished(
+            Instant instant,
+            R result,
+            Throwable error,
+            String errorClassifier
+    ) {
         markFinished(instant, result, error, errorClassifier, null);
     }
 
@@ -160,7 +172,7 @@ public class ExecutionState<R> {
      *                        Can be null.
      * @param errorClassifier The error classifier associated with the
      *                        error
-     * @param response   The returned value associated with the
+     * @param response        The returned value associated with the
      *                        execution. Can be null.
      * @throws IllegalStateException If the execution was already marked
      *                               as finished

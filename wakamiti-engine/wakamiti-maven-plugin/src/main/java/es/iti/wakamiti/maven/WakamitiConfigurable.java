@@ -60,4 +60,5 @@ public interface WakamitiConfigurable {
      * @return The Maven logger.
      */
     Log getLog();
+
 }

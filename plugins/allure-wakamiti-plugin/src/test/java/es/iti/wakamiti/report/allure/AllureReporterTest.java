@@ -423,4 +423,5 @@ public class AllureReporterTest {
         }
         return false;
     }
+
 }

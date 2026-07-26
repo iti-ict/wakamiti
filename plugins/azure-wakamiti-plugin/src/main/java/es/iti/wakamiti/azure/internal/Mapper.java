@@ -47,7 +47,9 @@ public abstract class Mapper {
      *
      * @param suiteBase the base directory for mapping test suites.
      */
-    protected Mapper(final String suiteBase) {
+    protected Mapper(
+            final String suiteBase
+    ) {
         this.suiteBase = suiteBase;
     }
 
@@ -58,7 +60,9 @@ public abstract class Mapper {
      * @param type the Gherkin type (e.g., feature or scenario).
      * @return an instantiator that creates a mapper for the specified type.
      */
-    public static Instantiator ofType(String type) {
+    public static Instantiator ofType(
+            String type
+    ) {
         return MapUtils.<String, Instantiator>map(
                 GHERKIN_TYPE_FEATURE, FeatureMapper::new,
                 GHERKIN_TYPE_SCENARIO, ScenarioMapper::new
@@ -72,7 +76,9 @@ public abstract class Mapper {
      * @return a stream of pairs, where each pair contains a plan
      * node and its corresponding test suite.
      */
-    protected Stream<Pair<PlanNodeSnapshot, TestSuite>> suiteMap(PlanNodeSnapshot target) {
+    protected Stream<Pair<PlanNodeSnapshot, TestSuite>> suiteMap(
+            PlanNodeSnapshot target
+    ) {
         Path suitePath = target.getProperties().entrySet().stream()
                 .filter(k -> k.getKey().equals(AZURE_SUITE))
                 .map(Map.Entry::getValue)
@@ -103,12 +109,16 @@ public abstract class Mapper {
     /**
      * Maps a single plan node snapshot to a test case.
      *
-     * @param idx      the order of the test case within its suite.
+     * @param idx    the order of the test case within its suite.
      * @param suite  the test suite to which the test case belongs.
      * @param target the plan node snapshot to map.
      * @return a test case representing the mapped plan node snapshot.
      */
-    protected TestCase caseMap(int idx, TestSuite suite, PlanNodeSnapshot target) {
+    protected TestCase caseMap(
+            int idx,
+            TestSuite suite,
+            PlanNodeSnapshot target
+    ) {
         String id = Optional.of(target.getId()).filter(i -> !i.startsWith("#"))
                 .orElseThrow(() -> new WakamitiException("Target {} needs the idTag", gherkinType(target)));
         return new TestCase()
@@ -126,13 +136,14 @@ public abstract class Mapper {
      * @param target the plan node snapshot to map.
      * @return a test result representing the mapped plan node snapshot.
      */
-    protected TestResult resultMap(PlanNodeSnapshot target) {
+    protected TestResult resultMap(
+            PlanNodeSnapshot target
+    ) {
         return new TestResult()
                 .outcome(TestResult.Type.valueOf(target.getResult()))
                 .startedDate(target.getStartInstant())
                 .completedDate(target.getFinishInstant())
-                .errorMessage(target.getErrorMessage())
-            ;
+                .errorMessage(target.getErrorMessage());
     }
 
     /**
@@ -141,12 +152,13 @@ public abstract class Mapper {
      * @param plan the plan node snapshot to process.
      * @return a stream of mapped test cases.
      */
-    public Stream<TestCase> mapTests(PlanNodeSnapshot plan) {
+    public Stream<TestCase> mapTests(
+            PlanNodeSnapshot plan
+    ) {
         return getSuites(plan)
                 .entrySet().stream().flatMap(e ->
-                    IntStream.range(0, e.getValue().size()).mapToObj(i -> caseMap(i, e.getKey(), e.getValue().get(i)))
+                        IntStream.range(0, e.getValue().size()).mapToObj(i -> caseMap(i, e.getKey(), e.getValue().get(i)))
                 );
-
     }
 
     /**
@@ -155,7 +167,9 @@ public abstract class Mapper {
      * @param plan the plan node snapshot to process.
      * @return a stream of mapped test results.
      */
-    public Stream<TestResult> mapResults(PlanNodeSnapshot plan) {
+    public Stream<TestResult> mapResults(
+            PlanNodeSnapshot plan
+    ) {
         return getSuites(plan)
                 .entrySet().stream().flatMap(e ->
                         IntStream.range(0, e.getValue().size()).mapToObj(i ->
@@ -173,7 +187,9 @@ public abstract class Mapper {
      * @return a map where each key is a test suite, and
      * the value is a list of associated plan nodes.
      */
-    private Map<TestSuite, List<PlanNodeSnapshot>> getSuites(PlanNodeSnapshot plan) {
+    private Map<TestSuite, List<PlanNodeSnapshot>> getSuites(
+            PlanNodeSnapshot plan
+    ) {
         return plan
                 .flatten(node -> gherkinType(node).equals(GHERKIN_TYPE_FEATURE))
                 .flatMap(this::suiteMap)
@@ -193,7 +209,9 @@ public abstract class Mapper {
      * @param node the plan node snapshot to inspect.
      * @return the Gherkin type of the node, or an empty string if not defined.
      */
-    protected String gherkinType(PlanNodeSnapshot node) {
+    protected String gherkinType(
+            PlanNodeSnapshot node
+    ) {
         return Optional.ofNullable(node.getProperties()).map(p -> p.get("gherkinType")).orElse("");
     }
 
@@ -208,6 +226,10 @@ public abstract class Mapper {
          * @param suiteBase the base directory for mapping test suites.
          * @return a new Mapper instance.
          */
-        Mapper instance(String suiteBase);
+        Mapper instance(
+                String suiteBase
+        );
+
     }
+
 }

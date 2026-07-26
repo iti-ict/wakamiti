@@ -27,7 +27,10 @@ public class Either<T, U> {
     private final Optional<T> value;
     private final U fallback;
 
-    private Either(Optional<T> value, U fallback) {
+    private Either(
+            Optional<T> value,
+            U fallback
+    ) {
         this.value = value;
         this.fallback = fallback;
     }
@@ -40,7 +43,9 @@ public class Either<T, U> {
      * @param <U>   The type of the fallback value.
      * @return An instance of Either with the specified primary value and no fallback.
      */
-    public static <T, U> Either<T, U> of(T value) {
+    public static <T, U> Either<T, U> of(
+            T value
+    ) {
         return new Either<>(Optional.of(value), null);
     }
 
@@ -53,7 +58,10 @@ public class Either<T, U> {
      * @param <U>      The type of the fallback value.
      * @return An instance of Either with the specified Optional primary value and fallback value.
      */
-    public static <T, U> Either<T, U> of(Optional<T> value, U fallback) {
+    public static <T, U> Either<T, U> of(
+            Optional<T> value,
+            U fallback
+    ) {
         return new Either<>(value, fallback);
     }
 
@@ -65,7 +73,9 @@ public class Either<T, U> {
      * @param <U>      The type of the fallback value.
      * @return An instance of Either with no primary value and the specified fallback value.
      */
-    public static <T, U> Either<T, U> fallback(U fallback) {
+    public static <T, U> Either<T, U> fallback(
+            U fallback
+    ) {
         return new Either<>(Optional.empty(), fallback);
     }
 
@@ -93,7 +103,9 @@ public class Either<T, U> {
      * @param fallbackMapper The function to apply to the fallback value.
      * @return The primary value if present; otherwise, the result of applying the fallback mapping function.
      */
-    public T valueOrMapFallback(Function<U, T> fallbackMapper) {
+    public T valueOrMapFallback(
+            Function<U, T> fallbackMapper
+    ) {
         return value.orElseGet(() -> fallbackMapper.apply(fallback));
     }
 
@@ -103,7 +115,9 @@ public class Either<T, U> {
      * @param valueMapper The function to apply to the primary value.
      * @return The result of applying the value mapping function, or the fallback value if the primary value is absent.
      */
-    public U mapValueOrFallback(Function<T, U> valueMapper) {
+    public U mapValueOrFallback(
+            Function<T, U> valueMapper
+    ) {
         return value.map(valueMapper).orElse(fallback);
     }
 

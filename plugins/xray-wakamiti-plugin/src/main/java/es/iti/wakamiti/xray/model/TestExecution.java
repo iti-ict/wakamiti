@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.model;
 
+
 public class TestExecution {
 
     private String issueId;
@@ -20,7 +21,9 @@ public class TestExecution {
         return jira;
     }
 
-    public TestExecution jira(JiraIssue jira) {
+    public TestExecution jira(
+            JiraIssue jira
+    ) {
         this.jira = jira;
         return this;
     }
@@ -29,8 +32,11 @@ public class TestExecution {
         return issueId;
     }
 
-    public TestExecution issueId(String issueId) {
+    public TestExecution issueId(
+            String issueId
+    ) {
         this.issueId = issueId;
         return this;
     }
+
 }

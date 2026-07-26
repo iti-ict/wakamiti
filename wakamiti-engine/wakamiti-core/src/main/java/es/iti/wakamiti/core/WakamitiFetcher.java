@@ -43,12 +43,14 @@ public class WakamitiFetcher {
     private final Logger logger;
     private final Configuration conf;
 
-
     public WakamitiFetcher() {
         this(Wakamiti.LOGGER, Wakamiti.defaultConfiguration());
     }
 
-    protected WakamitiFetcher(Logger logger, Configuration mavenFetcherConfiguration) {
+    protected WakamitiFetcher(
+            Logger logger,
+            Configuration mavenFetcherConfiguration
+    ) {
         this.logger = logger;
         this.conf = mavenFetcherConfiguration;
     }
@@ -59,7 +61,9 @@ public class WakamitiFetcher {
      * @param mavenFetcherConfiguration The configuration to be used by the new fetcher.
      * @return A new WakamitiFetcher instance with the specified configuration.
      */
-    public WakamitiFetcher withConfiguration(Configuration mavenFetcherConfiguration) {
+    public WakamitiFetcher withConfiguration(
+            Configuration mavenFetcherConfiguration
+    ) {
         return new WakamitiFetcher(logger, mavenFetcherConfiguration);
     }
 
@@ -71,9 +75,11 @@ public class WakamitiFetcher {
      * @return A list of paths to the fetched artifacts.
      * @throws WakamitiException If an error occurs during the fetching process.
      */
-    public List<Path> fetch(List<String> modules, boolean mustClean) {
+    public List<Path> fetch(
+            List<String> modules,
+            boolean mustClean
+    ) {
         try {
-
             if (modules.isEmpty()) {
                 logger.info("Nothing to fetch");
                 return Collections.emptyList();
@@ -117,7 +123,6 @@ public class WakamitiFetcher {
 
             updateClasspath(paths);
             return paths;
-
         } catch (RuntimeException | IOException e) {
             logger.error("Error fetching dependencies");
             throw new WakamitiException(e);
@@ -127,10 +132,12 @@ public class WakamitiFetcher {
     /**
      * Cleans the local Maven repository cache.
      *
-     * @param mavenRepo     The path to the local Maven repository.
-     * @throws IOException  If an I/O error occurs during the cache cleaning process.
+     * @param mavenRepo The path to the local Maven repository.
+     * @throws IOException If an I/O error occurs during the cache cleaning process.
      */
-    private void cleanCache(Path mavenRepo) throws IOException {
+    private void cleanCache(
+            Path mavenRepo
+    ) throws IOException {
         try (Stream<Path> walker = Files.walk(mavenRepo)) {
             walker
                     .sorted(Comparator.reverseOrder())
@@ -142,9 +149,11 @@ public class WakamitiFetcher {
     /**
      * Updates the classpath with the specified artifacts.
      *
-     * @param artifacts     The list of paths to the fetched artifacts.
+     * @param artifacts The list of paths to the fetched artifacts.
      */
-    private void updateClasspath(List<Path> artifacts) {
+    private void updateClasspath(
+            List<Path> artifacts
+    ) {
         for (Path artifact : artifacts) {
             if (artifact.toString().endsWith(".jar")) {
                 if (!artifact.toFile().exists()) {
@@ -165,4 +174,5 @@ public class WakamitiFetcher {
             }
         }
     }
+
 }

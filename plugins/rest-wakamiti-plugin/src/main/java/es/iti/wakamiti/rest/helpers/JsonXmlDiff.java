@@ -36,8 +36,9 @@ public class JsonXmlDiff {
 
     private final ObjectMapper mapper;
 
-
-    public JsonXmlDiff(ContentType contentType) {
+    public JsonXmlDiff(
+            ContentType contentType
+    ) {
         if (contentType == ContentType.JSON) {
             this.mapper = new ObjectMapper();
         } else if (contentType == ContentType.XML) {
@@ -48,21 +49,33 @@ public class JsonXmlDiff {
         this.mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
     }
 
-    private static String literalSegmentExpected(String prefix) {
+    private static String literalSegmentExpected(
+            String prefix
+    ) {
         return prefix.isEmpty() ? "root segment expected" : "segment '" + prefix + "' expected";
     }
 
-    private static <T> List<T> asList(Iterator<T> i) {
+    private static <T> List<T> asList(
+            Iterator<T> i
+    ) {
         List<T> list = new ArrayList<>();
         i.forEachRemaining(list::add);
         return list;
     }
 
-    private static String errorSize(JsonNode expectedNode, JsonNode actualNode, String segmentExpected) {
+    private static String errorSize(
+            JsonNode expectedNode,
+            JsonNode actualNode,
+            String segmentExpected
+    ) {
         return segmentExpected + " size: " + expectedNode.size() + ", actual size: " + actualNode.size();
     }
 
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
+    public void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    ) {
         try {
             List<String> errors = new ArrayList<>();
             JsonNode expectedJson = mapper.readTree(expected);
@@ -74,7 +87,11 @@ public class JsonXmlDiff {
         }
     }
 
-    private void throwExceptionIfHasErrors(List<String> errors, String expected, String actual)
+    private void throwExceptionIfHasErrors(
+            List<String> errors,
+            String expected,
+            String actual
+    )
             throws ComparisonFailure, JsonProcessingException {
         if (!errors.isEmpty()) {
             var message = errors.stream().collect(Collectors.joining(
@@ -84,7 +101,9 @@ public class JsonXmlDiff {
         }
     }
 
-    private String format(String content) throws JsonProcessingException {
+    private String format(
+            String content
+    ) throws JsonProcessingException {
         return mapper.writeValueAsString(mapper.readTree(content));
     }
 
@@ -127,8 +146,8 @@ public class JsonXmlDiff {
             compareJsonObject(matchMode, expectedNode, actualNode, prefix, errors);
         } else if (expectedNode.isValueNode() && !new JsonNumEquivalence().equivalent(expectedNode, actualNode)) {
             errors.add(
-                    segmentExpected + ": '" + expectedNode.asText() +
-                            "', actual: '" + actualNode.asText() + "'"
+                    segmentExpected + ": '" + expectedNode.asText()
+                            + "', actual: '" + actualNode.asText() + "'"
             );
         }
     }
@@ -227,7 +246,6 @@ public class JsonXmlDiff {
             String prefix,
             List<String> errors
     ) {
-
         String segmentExpected = literalSegmentExpected(prefix);
         var expectedFields = asList(expectedNode.fieldNames());
         var actualFields = asList(actualNode.fieldNames());
@@ -241,16 +259,16 @@ public class JsonXmlDiff {
 
         if (!missingExpectedFields.isEmpty()) {
             errors.add(
-                    segmentExpected + " to have fields " + missingExpectedFields +
-                            ", but they are not present"
+                    segmentExpected + " to have fields " + missingExpectedFields
+                            + ", but they are not present"
             );
             return;
         }
 
         if (!nonExpectedActualFields.isEmpty() && List.of(STRICT, STRICT_ANY_ORDER).contains(matchMode)) {
             errors.add(
-                    segmentExpected + " not to have fields " + nonExpectedActualFields +
-                            ", but they are present"
+                    segmentExpected + " not to have fields " + nonExpectedActualFields
+                            + ", but they are present"
             );
         }
 
@@ -259,8 +277,8 @@ public class JsonXmlDiff {
             String actualFieldInSamePosition = actualFields.get(i);
             if (matchMode == STRICT && !expectedField.equals(actualFieldInSamePosition)) {
                 errors.add(
-                        segmentExpected + " to have field '" + expectedField + "' at position " +
-                                i + " but it was '" + actualFieldInSamePosition + "'"
+                        segmentExpected + " to have field '" + expectedField + "' at position "
+                                + i + " but it was '" + actualFieldInSamePosition + "'"
                 );
                 continue;
             }
@@ -268,8 +286,7 @@ public class JsonXmlDiff {
                     matchMode,
                     expectedNode.get(expectedField),
                     actualNode.get(expectedField),
-                    prefix + (prefix.isEmpty() ? "" : ".") + expectedField, errors)
-            ;
+                    prefix + (prefix.isEmpty() ? "" : ".") + expectedField, errors);
         }
     }
 

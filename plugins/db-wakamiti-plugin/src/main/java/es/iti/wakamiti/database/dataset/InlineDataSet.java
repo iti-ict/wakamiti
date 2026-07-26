@@ -27,7 +27,12 @@ public class InlineDataSet extends DataSet {
      * @param values     The array of values.
      * @param nullSymbol The symbol representing {@code null} values.
      */
-    public InlineDataSet(String table, String[] columns, Object[] values, String nullSymbol) {
+    public InlineDataSet(
+            String table,
+            String[] columns,
+            Object[] values,
+            String nullSymbol
+    ) {
         super(table, "inline values", nullSymbol);
         this.columns = columns;
         this.values = values;
@@ -64,7 +69,9 @@ public class InlineDataSet extends DataSet {
      * @return The value of the specified column in the current row.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return nullIfMatchNullSymbol(values[columnIndex]);
     }
 

@@ -30,7 +30,10 @@ public class Record {
      * @param data  The array of data retrieved from the query
      * @param score The score indicating the similarity of the data with predefined criteria
      */
-    public Record(String[] data, double score) {
+    public Record(
+            String[] data,
+            double score
+    ) {
         this.data = data;
         this.score = score;
     }

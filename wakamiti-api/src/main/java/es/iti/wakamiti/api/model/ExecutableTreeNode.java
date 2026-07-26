@@ -36,11 +36,11 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
     private String executionID;
     private ExecutionState<R> executionState;
 
-
-    protected ExecutableTreeNode(List<S> children) {
+    protected ExecutableTreeNode(
+            List<S> children
+    ) {
         super(children);
     }
-
 
     /**
      * Assigns an execution ID to this node.
@@ -49,7 +49,9 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
      * @throws IllegalStateException If the execution ID
      *                               has already been assigned
      */
-    public void assignExecutionID(String executionID) {
+    public void assignExecutionID(
+            String executionID
+    ) {
         if (this.executionID != null) {
             throw new IllegalStateException("ExecutionID already assigned");
         }
@@ -89,7 +91,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         return new ExecutionState<>();
     }
 
-
     /**
      * Gets the execution state of this node.
      *
@@ -99,7 +100,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
     public Optional<ExecutionState<R>> executionState() {
         return Optional.ofNullable(executionState);
     }
-
 
     /**
      * Gets the start instant of this node, if executed.
@@ -119,7 +119,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         return executionState().flatMap(ExecutionState::startInstant);
     }
 
-
     /**
      * Gets the finish instant of this node, if executed.
      * In the case of child-populated nodes returns the
@@ -138,7 +137,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         return executionState().flatMap(ExecutionState::finishInstant);
     }
 
-
     /**
      * Gets the duration of the execution of this node, if executed.
      * In the case of child-populated nodes returns the sum of
@@ -156,7 +154,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         }
         return executionState().flatMap(ExecutionState::duration);
     }
-
 
     /**
      * Gets the result of this node, if executed. In the case
@@ -177,7 +174,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         return result;
     }
 
-
     /**
      * Gets a stream with the errors of this node, if executed
      * and failed. In the case of child-populated nodes returns
@@ -192,7 +188,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         return executionState().flatMap(ExecutionState::error).stream();
     }
 
-
     /**
      * Gets a stream with the error classifiers of this node, if
      * executed and failed. In the case of child-populated nodes
@@ -206,7 +201,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         }
         return executionState().flatMap(ExecutionState::errorClassifier).stream();
     }
-
 
     /**
      * Checks whether the execution of this node has been marked as
@@ -223,7 +217,6 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         return executionState().map(ExecutionState::hasStarted).orElse(false);
     }
 
-
     /**
      * Checks whether the execution of this node has been marked as
      * finished. In the case of child-populated nodes, returns true
@@ -238,4 +231,5 @@ public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R e
         }
         return executionState().map(ExecutionState::hasFinished).orElse(false);
     }
+
 }

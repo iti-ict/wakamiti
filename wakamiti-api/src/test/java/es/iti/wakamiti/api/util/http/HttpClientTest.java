@@ -80,8 +80,7 @@ public class HttpClientTest {
                                 param("param2", "value2")
                         )
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withHeader("Accept", "application/json")
-                ,
+                        .withHeader("Accept", "application/json"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -114,8 +113,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", basic("user", "pass"))
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -150,8 +148,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -189,8 +186,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -213,7 +209,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -228,8 +223,7 @@ public class HttpClientTest {
                         )
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
-                        .withHeader("Authorization", "bearer abc")
-                ,
+                        .withHeader("Authorization", "bearer abc"),
                 response()
                         .withStatusCode(204)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -263,8 +257,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -287,7 +280,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -303,8 +295,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -327,7 +318,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -343,8 +333,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -367,7 +356,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -383,8 +371,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -409,7 +396,6 @@ public class HttpClientTest {
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
-
         // act
         response = abstractClient.newRequest()
                 .pathParam("id", "123")
@@ -425,7 +411,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test(expected = WakamitiException.class)
@@ -452,23 +437,36 @@ public class HttpClientTest {
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    private void mockServer(HttpRequest expected, HttpResponse response) {
+    private void mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
         mockServer(expected, response, Times.once());
     }
 
-    private void mockServer(HttpRequest expected, HttpResponse response, Times times) {
+    private void mockServer(
+            HttpRequest expected,
+            HttpResponse response,
+            Times times
+    ) {
         server.when(expected, times).respond(response);
     }
 
-    private String basic(String username, String password) {
+    private String basic(
+            String username,
+            String password
+    ) {
         return "Basic " + Base64.encodeBase64String((username + ":" + password).getBytes());
     }
 
     private static class TestApi extends HttpClient<TestApi> {
 
-        public TestApi(URL baseUrl) {
+        public TestApi(
+                URL baseUrl
+        ) {
             super(baseUrl);
         }
 
     }
+
 }

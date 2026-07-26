@@ -119,9 +119,9 @@ public class PatchedListDelimiterHandler extends DefaultListDelimiterHandler {
      * structures to be traversed safely.</p>
      *
      * @param handler active list delimiter handler
-     * @param value current value to flatten
-     * @param limit maximum number of elements to produce
-     * @param dejaVu identity-based set of recursive containers currently being traversed
+     * @param value   current value to flatten
+     * @param limit   maximum number of elements to produce
+     * @param dejaVu  identity-based set of recursive containers currently being traversed
      * @return flattened collection of values
      */
     private Collection<?> flatten(
@@ -165,11 +165,11 @@ public class PatchedListDelimiterHandler extends DefaultListDelimiterHandler {
      * <p>Repeated scalar values are preserved. Only recursive container instances already present
      * in {@code dejaVu} are skipped in order to prevent infinite recursion.</p>
      *
-     * @param handler active list delimiter handler
-     * @param target target collection receiving the flattened values
+     * @param handler  active list delimiter handler
+     * @param target   target collection receiving the flattened values
      * @param iterator iterator to traverse
-     * @param limit maximum number of elements to produce
-     * @param dejaVue identity-based set of recursive containers currently being traversed
+     * @param limit    maximum number of elements to produce
+     * @param dejaVue  identity-based set of recursive containers currently being traversed
      */
     private void flattenIterator(
             final ListDelimiterHandler handler,
@@ -188,9 +188,12 @@ public class PatchedListDelimiterHandler extends DefaultListDelimiterHandler {
         }
     }
 
-    private boolean isRecursiveContainer(final Object value) {
+    private boolean isRecursiveContainer(
+            final Object value
+    ) {
         return value instanceof Iterator
                 || value instanceof Iterable && !(value instanceof Path)
                 || value != null && value.getClass().isArray();
     }
+
 }

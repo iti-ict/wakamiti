@@ -30,8 +30,12 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.ID_TAG_PATTERN;
 import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "azure-config", version = "2.6",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "azure-config",
+        version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class AzureConfigContributor implements ConfigContributor<AzureSynchronizer> {
 
     public static final String AZURE_ENABLED = "azure.enabled";
@@ -69,7 +73,10 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
         return this::configure;
     }
 
-    private void configure(AzureSynchronizer synchronizer, Configuration configuration) {
+    private void configure(
+            AzureSynchronizer synchronizer,
+            Configuration configuration
+    ) {
         requiredProperty(configuration, AZURE_ENABLED, Boolean.class, synchronizer::enabled);
         requiredProperty(configuration, AZURE_BASE_URL, URL.class, synchronizer::baseURL);
 
@@ -92,12 +99,16 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
         synchronizer.attachments(new HashSet<>(configuration.getList(AZURE_ATTACHMENTS, String.class)));
     }
 
-    private Optional<Pair<String, String>> credentials(Configuration configuration) {
+    private Optional<Pair<String, String>> credentials(
+            Configuration configuration
+    ) {
         String password = configuration.get(AZURE_AUTH_PASSWORD, String.class).orElse("");
         return configuration.get(AZURE_AUTH_USERNAME, String.class).map(user -> new Pair<>(user, password));
     }
 
-    private TestPlan plan(Configuration configuration) {
+    private TestPlan plan(
+            Configuration configuration
+    ) {
         if (configuration.inner(AZURE_PLAN).asMap().isEmpty()) {
             throw new WakamitiException("Property '{}' is required", AZURE_PLAN);
         }
@@ -108,7 +119,12 @@ public class AzureConfigContributor implements ConfigContributor<AzureSynchroniz
         return plan;
     }
 
-    private <T> void requiredProperty(Configuration config, String property, Class<T> type, Consumer<T> setter) {
+    private <T> void requiredProperty(
+            Configuration config,
+            String property,
+            Class<T> type,
+            Consumer<T> setter
+    ) {
         T value = config.get(property, type)
                 .orElseThrow(() -> new WakamitiException("Property '{}' is required", property));
         setter.accept(value);

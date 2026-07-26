@@ -22,14 +22,18 @@ import java.util.stream.Collectors;
  *
  * @see ConfigContributor
  */
-@Extension(provider = "es.iti.wakamiti", name = "database-step-config", version = "2.6",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "database-step-config",
+        version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class DatabaseConfigContributor implements ConfigContributor<DatabaseStepContributor> {
 
     public static final String DATABASE_NULL_SYMBOL = "database.nullSymbol";
     public static final String DATABASE_ENABLE_CLEANUP_UPON_COMPLETION = "database.enableCleanupUponCompletion";
     public static final String DATABASE_XLS_IGNORE_SHEET_PATTERN = "database.xls.ignoreSheetPattern";
-    /* The CSV format name as specified at {@link CSVFormat} */
+    /** The CSV format name as specified by {@code CSVFormat}. */
     public static final String DATABASE_CSV_FORMAT = "database.csv.format";
     public static final String DATABASE_HEALTHCHECK = "database.healthcheck";
     /**
@@ -80,10 +84,13 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     /**
      * Configures the database step contributor with the provided configuration.
      *
-     * @param contributor  The database step contributor
+     * @param contributor   The database step contributor
      * @param configuration The configuration to apply
      */
-    private void configure(DatabaseStepContributor contributor, Configuration configuration) {
+    private void configure(
+            DatabaseStepContributor contributor,
+            Configuration configuration
+    ) {
         Configuration databaseConfig = configuration.inner(PROPERTY_BASE);
 
         configuration.get(DATABASE_XLS_IGNORE_SHEET_PATTERN, String.class).ifPresent(contributor::setXlsIgnoreSheetRegex);
@@ -115,7 +122,9 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
      * @param configuration The configuration to extract connection parameters from
      * @return The connection parameters
      */
-    private ConnectionParameters parameters(Configuration configuration) {
+    private ConnectionParameters parameters(
+            Configuration configuration
+    ) {
         ConnectionParameters connectionParameters = new ConnectionParameters();
         configuration.get(CONNECTION_URL, String.class).ifPresent(connectionParameters::url);
         configuration.get(CONNECTION_USERNAME, String.class).ifPresent(connectionParameters::username);

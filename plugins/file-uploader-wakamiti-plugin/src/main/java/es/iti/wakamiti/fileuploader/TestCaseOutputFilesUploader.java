@@ -13,7 +13,14 @@ import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "test-case-output-files-uploader", version = "2.6")
+/**
+ * Provides the Test Case Output Files Uploader functionality used by Wakamiti.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "test-case-output-files-uploader",
+        version = "2.6"
+)
 public class TestCaseOutputFilesUploader extends AbstractFilesUploader implements EventObserver {
 
     public static final String CATEGORY = "testCaseOutputs";

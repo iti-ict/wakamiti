@@ -44,14 +44,18 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
     }
 
     @Override
-    public Configuration withPrefix(String keyPrefix) {
+    public Configuration withPrefix(
+            String keyPrefix
+    ) {
         BaseConfiguration innerConf = prepare(configurationFactory.newBaseConfiguration());
         conf.getKeys().forEachRemaining(key -> innerConf.addProperty(keyPrefix + "." + key, conf.getProperty(key)));
         return new ApacheConfiguration2(configurationFactory, definitions, innerConf);
     }
 
     @Override
-    public Configuration filtered(String keyPrefix) {
+    public Configuration filtered(
+            String keyPrefix
+    ) {
         BaseConfiguration innerConf = prepare(configurationFactory.newBaseConfiguration());
         conf.getKeys(keyPrefix).forEachRemaining(key -> {
             if (key.startsWith(keyPrefix)) {
@@ -62,7 +66,9 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
     }
 
     @Override
-    public Configuration inner(String keyPrefix) {
+    public Configuration inner(
+            String keyPrefix
+    ) {
         if (keyPrefix == null || keyPrefix.isEmpty()) {
             return this;
         }
@@ -79,7 +85,9 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
     }
 
     @Override
-    public boolean hasProperty(String key) {
+    public boolean hasProperty(
+            String key
+    ) {
         return conf.containsKey(key);
     }
 
@@ -105,7 +113,10 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
     }
 
     @Override
-    public <T> Optional<T> get(String key, Class<T> type) {
+    public <T> Optional<T> get(
+            String key,
+            Class<T> type
+    ) {
         var definition = definitions.get(key);
         if (isMissingOrEmpty(key)) {
             return definition == null
@@ -117,7 +128,10 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> Optional<T> get(String key, TypeReference<T> type) {
+    public <T> Optional<T> get(
+            String key,
+            TypeReference<T> type
+    ) {
         JavaType jt = TypeFactory.defaultInstance().constructType(type.getType());
         Class<?> rawType = jt.getRawClass();
         if (Map.class.isAssignableFrom(rawType)) {
@@ -147,23 +161,35 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
         return get(key, (Class<T>) rawType);
     }
 
-    private Class<?> containedRawType(JavaType type, int index) {
+    private Class<?> containedRawType(
+            JavaType type,
+            int index
+    ) {
         JavaType containedType = type.containedType(index);
         return containedType == null ? String.class : containedType.getRawClass();
     }
 
     @Override
-    public <T> List<T> getList(String key, Class<T> type) {
+    public <T> List<T> getList(
+            String key,
+            Class<T> type
+    ) {
         return conf.getList(type, key, List.of());
     }
 
     @Override
-    public <T> Set<T> getSet(String key, Class<T> type) {
+    public <T> Set<T> getSet(
+            String key,
+            Class<T> type
+    ) {
         return new HashSet<>(getList(key, type));
     }
 
     @Override
-    public <T> Stream<T> getStream(String key, Class<T> type) {
+    public <T> Stream<T> getStream(
+            String key,
+            Class<T> type
+    ) {
         return getList(key, type).stream();
     }
 
@@ -202,21 +228,30 @@ public class ApacheConfiguration2 extends AbstractConfiguration {
     }
 
     @Override
-    public void forEach(BiConsumer<String, String> consumer) {
+    public void forEach(
+            BiConsumer<String, String> consumer
+    ) {
         conf.getKeys().forEachRemaining(key -> consumer.accept(key, get(key, String.class).orElse(null)));
     }
 
-    private boolean isMissingOrEmpty(String key) {
+    private boolean isMissingOrEmpty(
+            String key
+    ) {
         Object raw = conf.getProperty(key);
         return raw == null || raw instanceof String value && value.isEmpty();
     }
 
-    private <T> T convert(Object raw, Class<T> type) {
+    private <T> T convert(
+            Object raw,
+            Class<T> type
+    ) {
         var configuration = (org.apache.commons.configuration2.AbstractConfiguration) conf;
         return configuration.getConversionHandler().to(raw, type, configuration.getInterpolator());
     }
 
-    private <T extends org.apache.commons.configuration2.AbstractConfiguration> T prepare(T configuration) {
+    private <T extends org.apache.commons.configuration2.AbstractConfiguration> T prepare(
+            T configuration
+    ) {
         var current = (org.apache.commons.configuration2.AbstractConfiguration) conf;
         configuration.setConversionHandler(current.getConversionHandler());
         configuration.setListDelimiterHandler(current.getListDelimiterHandler());

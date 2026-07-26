@@ -8,7 +8,6 @@
 import * as http from 'http';
 
 
-
 var authorization: string | undefined = undefined;
 
 export function setAuthorization(newAuthorization: string | undefined) {

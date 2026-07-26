@@ -89,7 +89,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @param configurationClass The test class containing the Wakamiti configuration annotations.
      * @throws InitializationError If there is an error initializing the runner.
      */
-    public WakamitiJUnitRunner(Class<?> configurationClass) throws InitializationError {
+    public WakamitiJUnitRunner(
+            Class<?> configurationClass
+    ) throws InitializationError {
         super(configurationClass);
         this.profileEnabled = ProfileSelector.isEnabled(configurationClass);
         if (!profileEnabled) {
@@ -124,7 +126,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @return The Wakamiti configuration for the specified test class.
      * @throws InitializationError If an error occurs during configuration retrieval.
      */
-    private Configuration retrieveConfiguration(Class<?> testedClass) throws InitializationError {
+    private Configuration retrieveConfiguration(
+            Class<?> testedClass
+    ) throws InitializationError {
         try {
             Configuration config = es.iti.wakamiti.core.Wakamiti.defaultConfiguration();
             Optional<String> altDir = Optional.ofNullable(getClass().getClassLoader().getResource("."))
@@ -171,7 +175,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     }
 
     @Override
-    public void run(RunNotifier notifier) {
+    public void run(
+            RunNotifier notifier
+    ) {
         lifecycleNotifier = notifier;
         if (!profileEnabled) {
             notifier.fireTestIgnored(profileSkipDescription());
@@ -194,7 +200,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @return A Description object representing the child node.
      */
     @Override
-    protected Description describeChild(PlanNodeJUnitRunner child) {
+    protected Description describeChild(
+            PlanNodeJUnitRunner child
+    ) {
         return child.getDescription();
     }
 
@@ -207,7 +215,10 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @param notifier The RunNotifier for reporting test execution events.
      */
     @Override
-    protected void runChild(PlanNodeJUnitRunner child, RunNotifier notifier) {
+    protected void runChild(
+            PlanNodeJUnitRunner child,
+            RunNotifier notifier
+    ) {
         child.run(notifier);
     }
 
@@ -220,7 +231,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @param errors The list to which validation errors are added.
      */
     @Override
-    protected void collectInitializationErrors(List<Throwable> errors) {
+    protected void collectInitializationErrors(
+            List<Throwable> errors
+    ) {
         super.collectInitializationErrors(errors);
         validateNoAnnotatedMethod(getTestClass().getJavaClass(), Before.class, errors);
         validateNoAnnotatedMethod(getTestClass().getJavaClass(), After.class, errors);
@@ -289,7 +302,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @throws WakamitiException If the method to initialize Wakamiti is not found.
      */
     @Override
-    protected Statement withBeforeClasses(Statement statement) {
+    protected Statement withBeforeClasses(
+            Statement statement
+    ) {
         List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(BeforeClass.class);
         return new Statement() {
             @Override
@@ -317,7 +332,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @throws WakamitiException If the method to finalize Wakamiti is not found.
      */
     @Override
-    protected Statement withAfterClasses(Statement statement) {
+    protected Statement withAfterClasses(
+            Statement statement
+    ) {
         List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(AfterClass.class);
         return new Statement() {
             @Override
@@ -407,7 +424,10 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
         wakamiti.generateReports(configuration, snapshot);
     }
 
-    private void runLifecyclePhase(String phaseName, LifecycleAction action) throws Throwable {
+    private void runLifecyclePhase(
+            String phaseName,
+            LifecycleAction action
+    ) throws Throwable {
         if (lifecycleNotifier == null) {
             action.run();
             return;
@@ -427,7 +447,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
 
     @FunctionalInterface
     private interface LifecycleAction {
+
         void run() throws Throwable;
+
     }
 
 }

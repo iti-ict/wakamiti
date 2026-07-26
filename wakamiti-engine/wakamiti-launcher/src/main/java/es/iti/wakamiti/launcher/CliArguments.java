@@ -83,7 +83,9 @@ public class CliArguments {
      * @return The CliArguments instance for method chaining.
      * @throws ParseException If a parsing exception occurs.
      */
-    public CliArguments parse(String... args) throws ParseException {
+    public CliArguments parse(
+            String... args
+    ) throws ParseException {
         CommandLineParser cliParser = new DefaultParser();
         this.cliCommand = cliParser.parse(cliOptions, args, false);
         return this;
@@ -157,7 +159,6 @@ public class CliArguments {
         return cliCommand.hasOption(ARG_LIST);
     }
 
-
     /**
      * Checks if the noExecution option is specified in the command-line arguments.
      *
@@ -173,12 +174,14 @@ public class CliArguments {
      * @return The list of modules, or an empty list if not specified.
      */
     public List<String> modules() {
-        return cliCommand.hasOption(ARG_MODULES) ?
-                Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(",")) :
-                List.of();
+        return cliCommand.hasOption(ARG_MODULES)
+                ? Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(","))
+                : List.of();
     }
 
-    public String getValue(String key) {
+    public String getValue(
+            String key
+    ) {
         return cliCommand.getOptionValue(key, "");
     }
 

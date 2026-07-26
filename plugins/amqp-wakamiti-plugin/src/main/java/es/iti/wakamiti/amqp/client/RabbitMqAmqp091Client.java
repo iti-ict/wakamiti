@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp.client;
 
 
@@ -88,9 +87,9 @@ public class RabbitMqAmqp091Client implements AmqpClient {
     ) {
         try {
             AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
-                .contentType(contentType)
-                .deliveryMode(persistent ? 2 : 1)
-                .build();
+                    .contentType(contentType)
+                    .deliveryMode(persistent ? 2 : 1)
+                    .build();
             channel().basicPublish("", destination, properties, text.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -113,20 +112,20 @@ public class RabbitMqAmqp091Client implements AmqpClient {
             Channel consumeChannel = connection().createChannel();
             if (queueConfig != null) {
                 consumeChannel.queueDeclare(
-                    destination,
-                    queueConfig.durable,
-                    queueConfig.exclusive,
-                    queueConfig.autoDelete,
-                    null
+                        destination,
+                        queueConfig.durable,
+                        queueConfig.exclusive,
+                        queueConfig.autoDelete,
+                        null
                 );
             }
             consumeChannel.basicConsume(
-                destination,
-                true,
-                (consumerTag, delivery) -> listener.accept(new String(delivery.getBody(), StandardCharsets.UTF_8)),
-                consumerTag -> {
-                    // no-op
-                }
+                    destination,
+                    true,
+                    (consumerTag, delivery) -> listener.accept(new String(delivery.getBody(), StandardCharsets.UTF_8)),
+                    consumerTag -> {
+                        // no-op
+                    }
             );
             consumers.put(destination, consumeChannel);
         } catch (IOException e) {
@@ -221,19 +220,25 @@ public class RabbitMqAmqp091Client implements AmqpClient {
         }
     }
 
-
     /**
      * Minimal immutable holder for queue declaration flags.
      */
     private static class QueueConfig {
+
         private final boolean durable;
         private final boolean exclusive;
         private final boolean autoDelete;
 
-        private QueueConfig(boolean durable, boolean exclusive, boolean autoDelete) {
+        private QueueConfig(
+                boolean durable,
+                boolean exclusive,
+                boolean autoDelete
+        ) {
             this.durable = durable;
             this.exclusive = exclusive;
             this.autoDelete = autoDelete;
         }
+
     }
+
 }

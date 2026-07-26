@@ -25,7 +25,11 @@ public interface ContentTypeHelper {
 
     ContentType contentType();
 
-    void assertContent(String expected, String actual, MatchMode matchMode);
+    void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    );
 
     default void assertContent(
             String fragment,
@@ -61,7 +65,11 @@ public interface ContentTypeHelper {
         throw new UnsupportedOperationException("Not implemented for content type " + contentType());
     }
 
-    default void assertContentSchema(String expectedSchema, String content) {
+    default void assertContentSchema(
+            String expectedSchema,
+            String content
+    ) {
         throw new UnsupportedOperationException("Not implemented for content type " + contentType());
     }
+
 }

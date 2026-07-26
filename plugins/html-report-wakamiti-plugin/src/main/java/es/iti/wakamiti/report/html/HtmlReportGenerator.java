@@ -72,19 +72,27 @@ public class HtmlReportGenerator implements Reporter {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    void setCssFile(String cssFile) {
+    void setCssFile(
+            String cssFile
+    ) {
         this.cssFile = cssFile;
     }
 
-    void setOutputFile(String outputFile) {
+    void setOutputFile(
+            String outputFile
+    ) {
         this.outputFile = outputFile;
     }
 
-    void setTitle(String title) {
+    void setTitle(
+            String title
+    ) {
         this.title = title;
     }
 
-    public void setConfiguration(Configuration configuration) {
+    public void setConfiguration(
+            Configuration configuration
+    ) {
         configuration.get(CSS_FILE, String.class).ifPresent(this::setCssFile);
         configuration.get(OUTPUT_FILE, String.class).ifPresent(this::setOutputFile);
         configuration.get(TITLE, String.class).ifPresent(this::setTitle);
@@ -95,7 +103,9 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     @Override
-    public void report(PlanNodeSnapshot rootNode) {
+    public void report(
+            PlanNodeSnapshot rootNode
+    ) {
         try {
             var resourceLoader = WakamitiAPI.instance().resourceLoader();
             Path output = resourceLoader.absolutePath(PathUtil.replaceTemporalPlaceholders(Path.of(Objects.requireNonNull(
@@ -123,12 +133,10 @@ public class HtmlReportGenerator implements Reporter {
             try (var writer = new BufferedWriter(new FileWriter(output.toFile(), StandardCharsets.UTF_8))) {
                 template("report.ftl").process(templateParameters, writer);
                 WakamitiAPI.instance().publishEvent(Event.REPORT_OUTPUT_FILE_WRITTEN, output);
-
             }
         } catch (IOException | TemplateException e) {
             LOGGER.error("Error generating HTML report: {}", e.getMessage(), e);
         }
-
     }
 
     private String readStyles() {
@@ -154,7 +162,9 @@ public class HtmlReportGenerator implements Reporter {
         return localCss;
     }
 
-    private String readJavascript(String resource) {
+    private String readJavascript(
+            String resource
+    ) {
         try (InputStream is = resource(resource)) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -170,15 +180,21 @@ public class HtmlReportGenerator implements Reporter {
         }
     }
 
-    private Template template(String resource) throws IOException {
+    private Template template(
+            String resource
+    ) throws IOException {
         return templateConfiguration.getTemplate(resource);
     }
 
-    private InputStream resource(String resource) {
+    private InputStream resource(
+            String resource
+    ) {
         return Objects.requireNonNull(classLoader().getResourceAsStream(resource), "Resource not found: " + resource);
     }
 
-    private String asSafeEmbeddedJson(Object value) throws IOException {
+    private String asSafeEmbeddedJson(
+            Object value
+    ) throws IOException {
         return OBJECT_MAPPER.writeValueAsString(value)
                 .replace("<", "\\u003C")
                 .replace(">", "\\u003E")

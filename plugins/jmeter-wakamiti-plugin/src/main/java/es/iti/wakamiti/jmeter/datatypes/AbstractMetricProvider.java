@@ -37,7 +37,10 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
      * @param prefix The prefix used to filter expressions.
      * @return A list of expressions with the specified prefix.
      */
-    public static List<String> getAllExpressions(Locale locale, String prefix) {
+    public static List<String> getAllExpressions(
+            Locale locale,
+            String prefix
+    ) {
         ResourceBundle bundle = resourceLoader.resourceBundle(RESOURCE, locale);
         return bundle.keySet().stream()
                 .filter(key -> key.startsWith(prefix))
@@ -45,14 +48,15 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
                 .collect(Collectors.toList());
     }
 
-
     /**
      * Retrieves a map of translated expressions for a specific locale.
      *
      * @param locale The locale for which the expressions are translated.
      * @return A linked hash map of translated expressions.
      */
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions()) {
             translatedExpressions.put(
@@ -63,7 +67,9 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
         return translatedExpressions;
     }
 
-    public LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -76,7 +82,10 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
      * @param expression The expression used to create the metric.
      * @return An optional containing the metric if one is created, or empty otherwise.
      */
-    public Optional<Metric<?>> metricFromExpression(Locale locale, String expression) {
+    public Optional<Metric<?>> metricFromExpression(
+            Locale locale,
+            String expression
+    ) {
         ThrowableFunction<String, Metric<?>> mapper = this::createMetric;
         return fromExpression(locale, expression).map(Pair::key).map(mapper);
     }
@@ -84,9 +93,11 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
     /**
      * Creates a metric for a specific locale, key, and value.
      *
-     * @param key    The key identifying the metric.
+     * @param key The key identifying the metric.
      * @return The created matcher.
      */
-    protected abstract Metric<?> createMetric(String key);
+    protected abstract Metric<?> createMetric(
+            String key
+    );
 
 }

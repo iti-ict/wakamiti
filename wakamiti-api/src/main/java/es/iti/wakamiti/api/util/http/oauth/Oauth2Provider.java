@@ -45,7 +45,9 @@ public final class Oauth2Provider {
         return oauth2ProviderConfig;
     }
 
-    public Oauth2Provider setRetriever(AccessTokenRetriever retriever) {
+    public Oauth2Provider setRetriever(
+            AccessTokenRetriever retriever
+    ) {
         if (retriever == null) {
             throw new WakamitiException("Access token retriever is needed");
         }
@@ -64,12 +66,17 @@ public final class Oauth2Provider {
 
     public interface AccessTokenRetriever {
 
-        String get(Oauth2ProviderConfig config);
+        String get(
+                Oauth2ProviderConfig config
+        );
+
     }
 
     private static class DefaultAccessTokenRetriever implements AccessTokenRetriever {
 
-        public String get(Oauth2ProviderConfig config) {
+        public String get(
+                Oauth2ProviderConfig config
+        ) {
             String auth = Base64.getEncoder()
                     .encodeToString((config.clientId() + ":" + config.clientSecret()).getBytes());
             List<NameValuePair> formData = config.parameters().entrySet().stream()
@@ -98,6 +105,7 @@ public final class Oauth2Provider {
                 throw new WakamitiException("Error retrieving oauth2 authentication", e);
             }
         }
+
     }
 
 }

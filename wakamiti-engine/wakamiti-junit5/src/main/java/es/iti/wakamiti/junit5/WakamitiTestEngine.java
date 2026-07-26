@@ -57,7 +57,10 @@ public class WakamitiTestEngine implements TestEngine {
     }
 
     @Override
-    public TestDescriptor discover(EngineDiscoveryRequest request, UniqueId uniqueId) {
+    public TestDescriptor discover(
+            EngineDiscoveryRequest request,
+            UniqueId uniqueId
+    ) {
         EngineDescriptor engineDescriptor = new EngineDescriptor(uniqueId, "Wakamiti");
 
         request.getSelectorsByType(ClassSelector.class).forEach(selector ->
@@ -85,7 +88,9 @@ public class WakamitiTestEngine implements TestEngine {
     }
 
     @Override
-    public void execute(ExecutionRequest request) {
+    public void execute(
+            ExecutionRequest request
+    ) {
         EngineExecutionListener listener = request.getEngineExecutionListener();
         TestDescriptor root = request.getRootTestDescriptor();
         listener.executionStarted(root);
@@ -111,7 +116,10 @@ public class WakamitiTestEngine implements TestEngine {
         engineDescriptor.addChild(new WakamitiClassDescriptor(classId, candidate));
     }
 
-    private void addByUniqueId(EngineDescriptor engineDescriptor, UniqueId uniqueId) {
+    private void addByUniqueId(
+            EngineDescriptor engineDescriptor,
+            UniqueId uniqueId
+    ) {
         uniqueId.getSegments().stream()
                 .filter(segment -> "class".equals(segment.getType()))
                 .findFirst()
@@ -124,14 +132,18 @@ public class WakamitiTestEngine implements TestEngine {
                 });
     }
 
-    private boolean isPlanClass(Class<?> candidate) {
+    private boolean isPlanClass(
+            Class<?> candidate
+    ) {
         return candidate != null
                 && !Modifier.isAbstract(candidate.getModifiers())
                 && !candidate.isInterface()
                 && candidate.isAnnotationPresent(WakamitiPlan.class);
     }
 
-    private boolean isTopLevelPlanClass(Class<?> candidate) {
+    private boolean isTopLevelPlanClass(
+            Class<?> candidate
+    ) {
         return isPlanClass(candidate)
                 && !candidate.isMemberClass()
                 && !candidate.isLocalClass()

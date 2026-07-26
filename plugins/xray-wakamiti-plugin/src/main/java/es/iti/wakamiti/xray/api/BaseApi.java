@@ -27,6 +27,17 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.util.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.xray.internal.WakamitiXRayException;
+
+
+/**
+ * Provides access to the Base Api service.
+ */
 public class BaseApi {
 
     public static final String APPLICATION_JSON = "application/json";
@@ -39,9 +50,11 @@ public class BaseApi {
     private final HttpClient httpClient;
     private final Logger logger;
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
-    public BaseApi(URL baseURL, String authorization, Logger logger) {
+    public BaseApi(
+            URL baseURL,
+            String authorization,
+            Logger logger
+    ) {
         this.baseURL = baseURL;
         this.authorization = authorization;
         this.logger = logger;
@@ -53,7 +66,13 @@ public class BaseApi {
                 .build();
     }
 
-    public BaseApi(URL baseURL, String authURL, String clientId, String clientSecret, Logger logger) {
+    public BaseApi(
+            URL baseURL,
+            String authURL,
+            String clientId,
+            String clientSecret,
+            Logger logger
+    ) {
         this.logger = logger;
         this.baseURL = baseURL;
         this.httpClient = HttpClient.newBuilder()
@@ -68,13 +87,20 @@ public class BaseApi {
 
     }
 
-
-    protected <T> T extractList(String json, String path, String errorMessage) {
+    protected <T> T extractList(
+            String json,
+            String path,
+            String errorMessage
+    ) {
         Object object = validatePath(json, path, errorMessage);
         return (T) object;
     }
 
-    protected String extract(String json, String path, String errorMessage) {
+    protected String extract(
+            String json,
+            String path,
+            String errorMessage
+    ) {
         Object object = validatePath(json, path, errorMessage);
         String extracted;
         if (object instanceof List<?>) {
@@ -90,7 +116,11 @@ public class BaseApi {
         return extracted;
     }
 
-    private Object validatePath(String json, String path, String errorMessage) {
+    private Object validatePath(
+            String json,
+            String path,
+            String errorMessage
+    ) {
         logger.debug("checking path {}", path);
         Object object = JsonPath.read(json, path);
         if (object == null) {
@@ -99,12 +129,16 @@ public class BaseApi {
         return object;
     }
 
-    protected String extract(String json, String path) {
+    protected String extract(
+            String json,
+            String path
+    ) {
         return extract(json, path, "Cannot extract path " + path + " from response");
     }
 
-
-    protected JsonNode get(String uri) {
+    protected JsonNode get(
+            String uri
+    ) {
         try {
             return mapper.readTree(send(request("GET", uri), ""));
         } catch (JsonProcessingException e) {
@@ -112,7 +146,10 @@ public class BaseApi {
         }
     }
 
-    protected JsonNode post(String uri, String payload) {
+    protected JsonNode post(
+            String uri,
+            String payload
+    ) {
         try {
             return mapper.readTree(post(uri, payload, APPLICATION_JSON));
         } catch (JsonProcessingException e) {
@@ -120,7 +157,10 @@ public class BaseApi {
         }
     }
 
-    protected JsonNode put(String uri, String payload) {
+    protected JsonNode put(
+            String uri,
+            String payload
+    ) {
         try {
             return mapper.readTree(put(uri, payload, APPLICATION_JSON));
         } catch (JsonProcessingException e) {
@@ -128,30 +168,48 @@ public class BaseApi {
         }
     }
 
-
-    protected String patch(String uri, String payload) {
+    protected String patch(
+            String uri,
+            String payload
+    ) {
         return patch(uri, payload, APPLICATION_JSON);
     }
 
-
-    protected void post(String uri, File file) {
+    protected void post(
+            String uri,
+            File file
+    ) {
         send(request(uri, file), "");
     }
 
-    protected String post(String uri, String payload, String contentType) {
+    protected String post(
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return send(request("POST", uri, payload, contentType), payload);
     }
 
-    protected String put(String uri, String payload, String contentType) {
+    protected String put(
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return send(request("PUT", uri, payload, contentType), payload);
     }
 
-
-    protected String patch(String uri, String payload, String contentType) {
+    protected String patch(
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return send(request("PATCH", uri, payload, contentType), payload);
     }
 
-    private HttpRequest request(String method, String uri) {
+    private HttpRequest request(
+            String method,
+            String uri
+    ) {
         return HttpRequest.newBuilder()
                 .method(method, HttpRequest.BodyPublishers.noBody())
                 .uri(url(uri))
@@ -160,7 +218,12 @@ public class BaseApi {
                 .build();
     }
 
-    private HttpRequest request(String method, String uri, String payload, String contentType) {
+    private HttpRequest request(
+            String method,
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return HttpRequest.newBuilder()
                 .method(method, HttpRequest.BodyPublishers.ofString(payload))
                 .uri(url(uri))
@@ -170,8 +233,12 @@ public class BaseApi {
                 .build();
     }
 
-    private HttpRequest request(String uri, File file) {
-        String boundary = "----WebKitFormBoundary" + UUID.randomUUID().toString().substring(0, 16);
+    private HttpRequest request(
+            String uri,
+            File file
+    ) {
+        String boundary = "----WebKitFormBoundary"
+                + UUID.randomUUID().toString().substring(0, 16);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         try {
@@ -190,7 +257,10 @@ public class BaseApi {
                 .build();
     }
 
-    private HttpRequest authRequest(String uri, String payload) {
+    private HttpRequest authRequest(
+            String uri,
+            String payload
+    ) {
         return HttpRequest.newBuilder()
                 .method("POST", HttpRequest.BodyPublishers.ofString(payload))
                 .uri(url(uri))
@@ -198,11 +268,16 @@ public class BaseApi {
                 .build();
     }
 
-    private URI url(String uri) {
+    private URI url(
+            String uri
+    ) {
         return URI.create(baseURL + uri);
     }
 
-    private String send(HttpRequest request, String payload) {
+    private String send(
+            HttpRequest request,
+            String payload
+    ) {
         try {
             if (logger.isTraceEnabled()) {
                 logger.trace("HTTP call => {} {} {} ", request.method(), request.uri(), payload);
@@ -223,7 +298,9 @@ public class BaseApi {
         }
     }
 
-    protected String toJSON(Object value) {
+    protected String toJSON(
+            Object value
+    ) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(value);
@@ -232,7 +309,9 @@ public class BaseApi {
         }
     }
 
-    protected String valueBy(String... args) {
+    protected String valueBy(
+            String... args
+    ) {
         List<String> criteria = new LinkedList<>();
         for (int i = 0; i < args.length; i += 2) {
             criteria.add("@." + args[i] + "=='" + args[i + 1] + "'");
@@ -240,8 +319,12 @@ public class BaseApi {
         return "$.value[?(" + String.join(" && ", criteria) + ")]";
     }
 
-
-    private static void writeFormData(ByteArrayOutputStream outputStream, String boundary, File file, byte[] fileContent) throws IOException {
+    private static void writeFormData(
+            ByteArrayOutputStream outputStream,
+            String boundary,
+            File file,
+            byte[] fileContent
+    ) throws IOException {
         String fileName = file.getName();
 
         outputStream.write(("--" + boundary + "\r\n").getBytes());
@@ -256,4 +339,5 @@ public class BaseApi {
 
         outputStream.write(("--" + boundary + "--\r\n").getBytes());
     }
+
 }

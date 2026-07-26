@@ -35,7 +35,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JsonUtilsTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
     private final String json = "{\"name\":\"Arnold\",\"age\":47}";
     private final String jsonList = "[{\"name\":\"Arnold\",\"age\":47},{\"name\":\"Susan\",\"age\":32}]";
     private final String jsonError = "{\"name:\"Arnold\",\"age\":47}";
@@ -143,7 +142,6 @@ public class JsonUtilsTest {
 
     @Test
     public void testReadWhenClassWithSuccess() throws MalformedURLException {
-
         assertThat(read(json(jsonList), "[1].age", Long.class))
                 .isEqualTo(32L);
 
@@ -158,7 +156,8 @@ public class JsonUtilsTest {
 
     @Test
     public void testReadWhenTypeRefWithSuccess() {
-        assertThat(read(json("{\"date\":\"2010-12-03\"}"), new TypeRef<Map<String, LocalDate>>(){}))
+        assertThat(read(json("{\"date\":\"2010-12-03\"}"), new TypeRef<Map<String, LocalDate>>() {
+        }))
                 .isEqualTo(map("date", LocalDate.parse("2010-12-03")));
     }
 
@@ -174,4 +173,5 @@ public class JsonUtilsTest {
 
         assertThat(readStringValue(obj, "$.body.id")).isNull();
     }
+
 }

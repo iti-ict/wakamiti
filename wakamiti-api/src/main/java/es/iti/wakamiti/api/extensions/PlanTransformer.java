@@ -29,6 +29,9 @@ public interface PlanTransformer extends Contributor {
      * @param configuration The configuration to apply during the transformation.
      * @return A {@link PlanNodeBuilder} representing the transformed plan.
      */
-    PlanNodeBuilder transform(PlanNodeBuilder plan, Configuration configuration);
+    PlanNodeBuilder transform(
+            PlanNodeBuilder plan,
+            Configuration configuration
+    );
 
 }

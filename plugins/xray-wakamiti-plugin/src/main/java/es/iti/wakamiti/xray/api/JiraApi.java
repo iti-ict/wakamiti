@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.xray.api;
 
+
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.model.Attachment;
 import es.iti.wakamiti.xray.model.TestCase;
@@ -25,21 +26,31 @@ import java.util.Map;
 
 import static es.iti.wakamiti.api.util.JsonUtils.json;
 
+
 public class JiraApi extends BaseApi {
 
     private static final String API_ISSUE = "/rest/api/2/issue";
     private final Logger logger;
 
-    public JiraApi(URL urlBase, String credentials, Logger logger) {
+    public JiraApi(
+            URL urlBase,
+            String credentials,
+            Logger logger
+    ) {
         super(urlBase, "Basic " + credentials, logger);
         this.logger = logger;
     }
 
-    public void addAttachment(String id, Path attachment) {
+    public void addAttachment(
+            String id,
+            Path attachment
+    ) {
         post(API_ISSUE + "/" + id + "/attachments", attachment.toFile());
     }
 
-    public void updateTestCases(List<Pair<TestCase, TestCase>> testCases) {
+    public void updateTestCases(
+            List<Pair<TestCase, TestCase>> testCases
+    ) {
         testCases.forEach(p -> {
             TestCase oldTest = p.key();
             TestCase newTest = p.value();
@@ -48,8 +59,10 @@ public class JiraApi extends BaseApi {
         });
     }
 
-    private void updateIssue(String id, String newSummary) {
-
+    private void updateIssue(
+            String id,
+            String newSummary
+    ) {
         String payload = toJSON(Map.of(
                 "update", Map.of(
                         "summary", Collections.singletonList(Map.of(

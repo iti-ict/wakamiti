@@ -20,7 +20,6 @@ var nextTokenExpiration : number | undefined = undefined;
 var token : string | undefined = undefined;
 
 
-
 export function requestAnalyze(): Promise<PlanNodeSnapshot> {
     if (!vscode.workspace.workspaceFolders) {
         return Promise.reject('There is no workspace opened');
@@ -62,7 +61,6 @@ export function launchExecution(): Promise<Execution> {
 }
 
 
-
 export function retrieveExecutions(): Promise<Execution[]> {
     const { host, port } = getHostAndPort(); 
     return obtainToken(host,port).then( ()=>{ 
@@ -77,8 +75,6 @@ export function retrieveExecution(executionID: string): Promise<Execution> {
         return http.get<Execution>(host,port,`executions/${executionID}`);
     });
 }
-
-
 
 
 function getHostAndPort() {

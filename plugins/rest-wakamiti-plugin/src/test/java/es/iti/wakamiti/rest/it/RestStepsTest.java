@@ -40,13 +40,11 @@ public class RestStepsTest {
 
     public static final ClientAndServer client = startClientAndServer(8888);
 
-
     @BeforeClass
     public static void setupServer() throws IOException {
         ConfigurationProperties.logLevel("OFF");
         prepare(client, "wakamiti/server", media -> true);
     }
-
 
     @AfterClass
     public static void teardownServer() {

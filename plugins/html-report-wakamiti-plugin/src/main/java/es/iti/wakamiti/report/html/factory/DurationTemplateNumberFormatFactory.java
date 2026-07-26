@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.report.html.factory;
 
+
 import freemarker.core.Environment;
 import freemarker.core.TemplateNumberFormat;
 import freemarker.core.TemplateNumberFormatFactory;
@@ -16,6 +17,7 @@ import freemarker.template.TemplateNumberModel;
 
 import java.time.Duration;
 import java.util.Locale;
+
 
 public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFactory {
 
@@ -27,7 +29,11 @@ public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFac
     }
 
     @Override
-    public TemplateNumberFormat get(String params, Locale locale, Environment env) throws TemplateValueFormatException {
+    public TemplateNumberFormat get(
+            String params,
+            Locale locale,
+            Environment env
+    ) throws TemplateValueFormatException {
         return new DurationNumberFormat(env.getTemplateNumberFormat(params, locale));
     }
 
@@ -35,12 +41,16 @@ public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFac
 
         private final TemplateNumberFormat innerFormat;
 
-        private DurationNumberFormat(TemplateNumberFormat innerFormat) {
+        private DurationNumberFormat(
+                TemplateNumberFormat innerFormat
+        ) {
             this.innerFormat = innerFormat;
         }
 
         @Override
-        public String formatToPlainText(TemplateNumberModel numberModel) throws TemplateModelException {
+        public String formatToPlainText(
+                TemplateNumberModel numberModel
+        ) throws TemplateModelException {
             return DurationTemplateNumberFormatFactory.format(numberModel.getAsNumber().longValue());
         }
 
@@ -56,7 +66,9 @@ public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFac
 
     }
 
-    public static String format(long value) {
+    public static String format(
+            long value
+    ) {
         Duration duration = Duration.ofMillis(value);
         int hours = duration.toHoursPart();
         int minutes = duration.toMinutesPart();
@@ -64,11 +76,18 @@ public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFac
         int millis = duration.toMillisPart();
 
         StringBuilder sb = new StringBuilder();
-        if (hours > 0) sb.append(hours).append("h ");
-        if (minutes > 0) sb.append(minutes).append("m ");
-        if (seconds > 0) sb.append(seconds).append("s ");
+        if (hours > 0) {
+            sb.append(hours).append("h ");
+        }
+        if (minutes > 0) {
+            sb.append(minutes).append("m ");
+        }
+        if (seconds > 0) {
+            sb.append(seconds).append("s ");
+        }
         sb.append(millis).append("ms");
 
         return sb.toString();
     }
+
 }

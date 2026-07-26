@@ -25,40 +25,46 @@ public class ContributorTest {
         assertThat(new TestContributorExt3().info()).isEqualTo("es.iti_someText:test_aCapText:1.0.2");
     }
 
-
     @ExtensionPoint
     interface MockContributor extends Contributor {
+
     }
 
-
     static class TestContributor implements MockContributor {
+
     }
 
     @Extension(provider = "wakamiti-moreText", name = "test-contrib-moreText")
     static
     class TestContributorExt1 implements MockContributor {
+
         @Override
         public String version() {
             return "1.0";
         }
+
     }
 
     @Extension(provider = "es.iti_somethingElse", name = "test_somethingElse")
     static
     class TestContributorExt2 implements MockContributor {
+
         @Override
         public String version() {
             return "1.0";
         }
+
     }
 
     @Extension(provider = "es.iti_someText", name = "test_aCapText")
     static
     class TestContributorExt3 implements MockContributor {
+
         @Override
         public String version() {
             return "1.0.2";
         }
+
     }
 
 }

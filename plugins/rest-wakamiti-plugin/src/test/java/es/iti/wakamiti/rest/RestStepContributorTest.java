@@ -112,8 +112,7 @@ public class RestStepContributorTest {
                         .withPath("/")
                         .withHeader(
                                 header("Content-Type", String.format("%s.*", MediaType.APPLICATION_JSON))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -138,8 +137,7 @@ public class RestStepContributorTest {
                         .withPath("/")
                         .withHeader(
                                 header("Content-Type", String.format("%s.*", MediaType.APPLICATION_XML))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -175,8 +173,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -205,8 +202,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -229,8 +225,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_XML)
@@ -259,8 +254,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_XML)
@@ -283,8 +277,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.TEXT_PLAIN)
@@ -313,8 +306,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.TEXT_PLAIN)
@@ -342,8 +334,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
         );
@@ -371,8 +362,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -400,8 +390,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -430,8 +419,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -456,8 +444,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users/10/list/4")
-                ,
+                        .withPath("/users/10/list/4"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -484,8 +471,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users/10/list/4")
-                ,
+                        .withPath("/users/10/list/4"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -511,8 +497,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/users/10/list/4")
-                ,
+                        .withPath("/users/10/list/4"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -543,8 +528,7 @@ public class RestStepContributorTest {
                                 header("param1", "value1", "value2"),
                                 header("param2", "value1", "value2"),
                                 header("Accept-Language", "es")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -576,8 +560,7 @@ public class RestStepContributorTest {
                                 header("param1", "value1", "value2"),
                                 header("param2", "value2"),
                                 header("Accept-Language", "*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -619,8 +602,7 @@ public class RestStepContributorTest {
         // prepare
         mockServer(
                 request()
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withDelay(new Delay(TimeUnit.SECONDS, 5))
         );
@@ -645,8 +627,7 @@ public class RestStepContributorTest {
         mockServer(
                 request()
                         .withPath("/")
-                        .withHeader("Authorization", "Basic " + token)
-                ,
+                        .withHeader("Authorization", "Basic " + token),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_XML)
@@ -682,8 +663,7 @@ public class RestStepContributorTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)))
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -721,8 +701,7 @@ public class RestStepContributorTest {
                                         param("grant_type", "client_credentials"),
                                         param("scope", "something")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)))
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -759,8 +738,7 @@ public class RestStepContributorTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)))
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -800,8 +778,7 @@ public class RestStepContributorTest {
                                         param("username", "username"),
                                         param("password", "password")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)))
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -842,8 +819,7 @@ public class RestStepContributorTest {
                                         param("password", "password"),
                                         param("scope", "something")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)))
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -882,8 +858,7 @@ public class RestStepContributorTest {
                                         param("username", "username"),
                                         param("password", "password")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)))
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -916,8 +891,7 @@ public class RestStepContributorTest {
                         .withPath("/")
                         .withHeader(
                                 header(not("Authorization"))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(401)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1039,8 +1013,7 @@ public class RestStepContributorTest {
 
         mockServer(
                 request()
-                        .withPath("/token")
-                ,
+                        .withPath("/token"),
                 response()
                         .withStatusCode(400)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1067,8 +1040,7 @@ public class RestStepContributorTest {
 
         mockServer(
                 request()
-                        .withPath("/token")
-                ,
+                        .withPath("/token"),
                 response(json(map("other", "123")))
                         .withContentType(MediaType.APPLICATION_JSON)
         );
@@ -1094,8 +1066,7 @@ public class RestStepContributorTest {
         mockServer(
                 request()
                         .withPath("/")
-                        .withHeader("Authorization", "Bearer " + token)
-                ,
+                        .withHeader("Authorization", "Bearer " + token),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1141,8 +1112,7 @@ public class RestStepContributorTest {
                         )
                         .withBody(
                                 regex(".*file\\.txt.*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1183,8 +1153,7 @@ public class RestStepContributorTest {
                         )
                         .withBody(
                                 regex(".*file\\.json.*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1216,8 +1185,7 @@ public class RestStepContributorTest {
                                         + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 regex(".*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1249,8 +1217,7 @@ public class RestStepContributorTest {
                                         + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 regex(".*fichero\\.txt.*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1277,8 +1244,8 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/")
                         .withHeader("Content-Type",
-                                    MediaType.MULTIPART_FORM_DATA + "; boundary="
-                                            + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                                MediaType.MULTIPART_FORM_DATA + "; boundary="
+                                        + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 attached(
                                         file(
@@ -1297,8 +1264,7 @@ public class RestStepContributorTest {
                         )
                         .withBody(
                                 regex(".*file\\.txt.*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1339,8 +1305,7 @@ public class RestStepContributorTest {
                         )
                         .withBody(
                                 regex(".*token\\.txt.*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1379,8 +1344,8 @@ public class RestStepContributorTest {
                 request()
                         .withPath("/")
                         .withHeader("Content-Type",
-                                    MediaType.MULTIPART_FORM_DATA
-                                            + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
+                                MediaType.MULTIPART_FORM_DATA
+                                        + "; boundary=" + RestAssured.config().getMultiPartConfig().defaultBoundary())
                         .withBody(
                                 attached(
                                         file(
@@ -1393,8 +1358,7 @@ public class RestStepContributorTest {
                         )
                         .withBody(
                                 regex(".*schema\\.xml.*")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1439,8 +1403,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1473,8 +1436,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameters(
                                 param("param1", "value1"),
                                 param("param2", "value2")
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1498,8 +1460,7 @@ public class RestStepContributorTest {
         mockServer(
                 request()
                         .withMethod("DELETE")
-                        .withBody(json(map("user", "Pepe")))
-                ,
+                        .withBody(json(map("user", "Pepe"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1523,8 +1484,7 @@ public class RestStepContributorTest {
         mockServer(
                 request()
                         .withMethod("DELETE")
-                        .withBody("1234567890")
-                ,
+                        .withBody("1234567890"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1548,8 +1508,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("PUT")
                         .withPath("/")
-                        .withBody(json(map("user", "Pepe")))
-                ,
+                        .withBody(json(map("user", "Pepe"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1574,8 +1533,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("PUT")
                         .withPath("/")
-                        .withBody("1234567890")
-                ,
+                        .withBody("1234567890"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1603,8 +1561,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameter("param1", "value1")
                         .withBody(
                                 Not.not(regex(".+"))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1632,8 +1589,7 @@ public class RestStepContributorTest {
                         .withPath("/")
                         .withBody(
                                 Not.not(regex(".+"))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1657,8 +1613,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("PATCH")
                         .withPath("/")
-                        .withBody(json(map("user", "Pepe")))
-                ,
+                        .withBody(json(map("user", "Pepe"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1683,8 +1638,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("PATCH")
                         .withPath("/")
-                        .withBody("1234567890")
-                ,
+                        .withBody("1234567890"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1712,8 +1666,7 @@ public class RestStepContributorTest {
                         .withQueryStringParameter("param1", "value1")
                         .withBody(
                                 Not.not(regex(".+"))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1740,13 +1693,11 @@ public class RestStepContributorTest {
                         .withPath("/")
                         .withBody(
                                 Not.not(regex(".+"))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
         );
-
 
         // act
         JsonNode result = (JsonNode) contributor.executePatchSubject();
@@ -1766,13 +1717,11 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("POST")
                         .withPath("/")
-                        .withBody(json(map("user", "Pepe")))
-                ,
+                        .withBody(json(map("user", "Pepe"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
         );
-
 
         // act
         JsonNode result = (JsonNode) contributor
@@ -1795,8 +1744,7 @@ public class RestStepContributorTest {
                         .withMethod("POST")
                         .withPath("/")
                         .withQueryStringParameter("param1", "value1")
-                        .withBody(json(map("user", "Pepe")))
-                ,
+                        .withBody(json(map("user", "Pepe"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1822,8 +1770,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("POST")
                         .withPath("/")
-                        .withBody("1234567890")
-                ,
+                        .withBody("1234567890"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1849,8 +1796,7 @@ public class RestStepContributorTest {
                         .withMethod("POST")
                         .withPath("/")
                         .withQueryStringParameter("param1", "value1")
-                        .withBody(Not.not(regex(".+")))
-                ,
+                        .withBody(Not.not(regex(".+"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1877,8 +1823,7 @@ public class RestStepContributorTest {
                         .withPath("/")
                         .withBody(
                                 Not.not(regex(".+"))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1902,8 +1847,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("POST")
                         .withPath("/")
-                        .withBody(json(map("user", "Pepe")))
-                ,
+                        .withBody(json(map("user", "Pepe"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1928,8 +1872,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("POST")
                         .withPath("/")
-                        .withBody("1234567890")
-                ,
+                        .withBody("1234567890"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1953,8 +1896,7 @@ public class RestStepContributorTest {
                 request()
                         .withMethod("DELETE")
                         .withPath("/")
-                        .withBody("1234567890")
-                ,
+                        .withBody("1234567890"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -1980,8 +1922,7 @@ public class RestStepContributorTest {
                         .withMethod("POST")
                         .withPath("/")
                         .withQueryStringParameter("param1", "value1")
-                        .withBody(Not.not(regex(".+")))
-                ,
+                        .withBody(Not.not(regex(".+"))),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -2008,8 +1949,7 @@ public class RestStepContributorTest {
                         .withPath("/")
                         .withBody(
                                 Not.not(regex(".+"))
-                        )
-                ,
+                        ),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -2041,8 +1981,7 @@ public class RestStepContributorTest {
         mockServer(
                 request()
                         .withMethod("GET")
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_BINARY)
@@ -2067,8 +2006,7 @@ public class RestStepContributorTest {
         mockServer(
                 request()
                         .withMethod("GET")
-                        .withPath("/")
-                ,
+                        .withPath("/"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_OCTET_STREAM)
@@ -2083,12 +2021,16 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
-
-    private void mockServer(HttpRequest expected, HttpResponse response) {
+    private void mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
         client.when(expected, Times.once()).respond(response);
     }
 
-    private DataTable dataTable(String... data) {
+    private DataTable dataTable(
+            String... data
+    ) {
         List<String[]> result = new LinkedList<>();
         result.add(new String[]{"name", "value"});
         for (int i = 0; i < data.length; i = i + 2) {

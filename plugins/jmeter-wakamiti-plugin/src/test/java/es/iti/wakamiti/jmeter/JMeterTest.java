@@ -58,5 +58,4 @@ public class JMeterTest {
         client.close();
     }
 
-
 }

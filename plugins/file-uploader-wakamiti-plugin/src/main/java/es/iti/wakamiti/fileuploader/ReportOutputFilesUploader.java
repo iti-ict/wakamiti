@@ -13,7 +13,14 @@ import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "report-output-files-uploader", version = "2.6")
+/**
+ * Provides the Report Output Files Uploader functionality used by Wakamiti.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "report-output-files-uploader",
+        version = "2.6"
+)
 public class ReportOutputFilesUploader extends AbstractFilesUploader implements EventObserver {
 
     public static final String CATEGORY = "reportOutputs";

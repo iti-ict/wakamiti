@@ -50,4 +50,5 @@ public class AllureReporterConfig implements ConfigContributor<AllureReporter> {
                 .map(PathUtil::replaceTemporalPlaceholders)
                 .ifPresent(reporter::setOutputDir);
     }
+
 }

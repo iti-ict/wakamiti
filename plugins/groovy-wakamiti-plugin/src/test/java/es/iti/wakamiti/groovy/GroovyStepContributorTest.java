@@ -7,6 +7,7 @@
  */
 package es.iti.wakamiti.groovy;
 
+
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
@@ -40,8 +41,8 @@ public class GroovyStepContributorTest {
     @Test
     public void testExecute() {
         Object result = contributor.execute(new Document(
-                "def result = 2 + 2;" +
-                        "result + 2 as String"
+                "def result = 2 + 2;"
+                        + "result + 2 as String"
         ));
         assertThat(result).isEqualTo("6");
     }

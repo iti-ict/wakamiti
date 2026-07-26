@@ -143,7 +143,6 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
         System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.simple.SimpleLoggerContextFactory");
         System.setProperty("org.slf4j.simpleLogger.log.es.iti.wakamiti", logLevel);
 
@@ -186,22 +185,31 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
                     new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
             errorControl(exception);
         }
-
     }
 
-    private void errorControl(AbstractMojoExecutionException exception)
+    private void errorControl(
+            AbstractMojoExecutionException exception
+    )
             throws MojoExecutionException, MojoFailureException {
-        if (testFailureIgnore) return;
+        if (testFailureIgnore) {
+            return;
+        }
         if (mojoExecution.getPlugin().getExecutions().stream()
                 .noneMatch(execution -> execution.getGoals().contains("control"))) {
-            if (exception instanceof MojoExecutionException) throw (MojoExecutionException) exception;
-            if (exception instanceof MojoFailureException) throw (MojoFailureException) exception;
+            if (exception instanceof MojoExecutionException) {
+                throw (MojoExecutionException) exception;
+            }
+            if (exception instanceof MojoFailureException) {
+                throw (MojoFailureException) exception;
+            }
         }
         MojoResult.setError(exception);
     }
 
     private void resolvePluginDependencies() {
-        if (!includeProjectDependencies) return;
+        if (!includeProjectDependencies) {
+            return;
+        }
         try {
             Set<URL> urls = new HashSet<>();
             for (String element : projectDependencies) {

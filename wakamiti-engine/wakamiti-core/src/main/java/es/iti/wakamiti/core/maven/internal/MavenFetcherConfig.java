@@ -32,23 +32,26 @@ public class MavenFetcherConfig {
 
     private final Properties properties;
 
-
-    public MavenFetcherConfig(String configFile) throws IOException {
+    public MavenFetcherConfig(
+            String configFile
+    ) throws IOException {
         try (Reader reader = new InputStreamReader(
-            new FileInputStream(configFile), StandardCharsets.UTF_8
+                new FileInputStream(configFile), StandardCharsets.UTF_8
         )) {
             this.properties = new Properties();
             this.properties.load(reader);
         }
     }
 
-
-    public MavenFetcherConfig(Properties properties) {
+    public MavenFetcherConfig(
+            Properties properties
+    ) {
         this.properties = properties;
     }
 
-
-    public void config(MavenFetcher fetcher) throws MalformedURLException {
+    public void config(
+            MavenFetcher fetcher
+    ) throws MalformedURLException {
         String remoteRepositories = properties.getProperty(REMOTE_REPOSITORIES);
         if (remoteRepositories != null) {
             for (String remoteRepository : remoteRepositories.split(";")) {

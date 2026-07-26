@@ -22,7 +22,9 @@ public abstract class Util {
         // prevent instantiation
     }
 
-    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor
+    ) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
@@ -34,7 +36,11 @@ public abstract class Util {
      * @param glob the glob pattern to match files against.
      * @return {@code true} if the file matches with glob, {@code false} otherwise.
      */
-    public static boolean match(Path file, String glob) {
+    public static boolean match(
+            Path file,
+            String glob
+    ) {
         return FileSystems.getDefault().getPathMatcher("glob:" + glob).matches(file);
     }
+
 }

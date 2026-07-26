@@ -32,15 +32,21 @@ import java.util.stream.Stream;
  *
  * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
-@Extension(provider =  "es.iti.wakamiti", name = "groovy-loader", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "groovy-loader",
+        version = "2.6"
+)
 public class GroovyLoaderContributor implements LoaderContributor {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.groovy");
+    public static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.groovy");
 
     private final GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
 
     @Override
-    public Stream<? extends Class<?>> load(List<String> discoveryPaths) {
+    public Stream<? extends Class<?>> load(
+            List<String> discoveryPaths
+    ) {
         List<Path> groovyPaths = discoveryPaths.stream()
                 .map(Paths::get)
                 .flatMap(this::listFiles)
@@ -54,7 +60,6 @@ public class GroovyLoaderContributor implements LoaderContributor {
             groovyPaths.forEach(path -> LOGGER.debug("Groovy file [{}] found", path.getFileName()));
         }
 
-
         groovyPaths.stream().map(Path::getParent).map(Path::toUri).distinct()
                 .map((ThrowableFunction<URI, URL>) URI::toURL)
                 .forEach(groovyClassLoader::addURL);
@@ -64,8 +69,10 @@ public class GroovyLoaderContributor implements LoaderContributor {
         return loadClasses(groovyPaths).stream();
     }
 
-    private List<Class<?>> loadClasses(List<Path> paths) {
-        List<Class<?>> compiled = new LinkedList<>();;
+    private List<Class<?>> loadClasses(
+            List<Path> paths
+    ) {
+        List<Class<?>> compiled = new LinkedList<>();
         List<Path> pending = new ArrayList<>(paths);
         Map<Path, Exception> failed = new HashMap<>();
 
@@ -87,7 +94,9 @@ public class GroovyLoaderContributor implements LoaderContributor {
         return compiled;
     }
 
-    private Stream<Path> listFiles(Path dir) {
+    private Stream<Path> listFiles(
+            Path dir
+    ) {
         try {
             return Stream.concat(
                     list(dir).filter(Files::isDirectory).flatMap(this::listFiles),
@@ -98,7 +107,9 @@ public class GroovyLoaderContributor implements LoaderContributor {
         }
     }
 
-    private Stream<Path> list(Path dir) throws IOException {
+    private Stream<Path> list(
+            Path dir
+    ) throws IOException {
         try (var stream = Files.list(dir)) {
             return stream.collect(Collectors.toList()).stream();
         }

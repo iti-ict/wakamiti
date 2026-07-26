@@ -19,7 +19,7 @@ public class ConnectionParameters {
     private String driver;
     private String schema;
     private String catalog;
-    private boolean autoTrim = false;
+    private boolean autoTrim;
     private Boolean autoCommit;
 
     /**
@@ -37,7 +37,9 @@ public class ConnectionParameters {
      * @param url The URL
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters url(String url) {
+    public ConnectionParameters url(
+            String url
+    ) {
         this.url = url;
         return this;
     }
@@ -57,7 +59,9 @@ public class ConnectionParameters {
      * @param username The username
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters username(String username) {
+    public ConnectionParameters username(
+            String username
+    ) {
         this.username = username;
         return this;
     }
@@ -77,7 +81,9 @@ public class ConnectionParameters {
      * @param password The password
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters password(String password) {
+    public ConnectionParameters password(
+            String password
+    ) {
         this.password = password;
         return this;
     }
@@ -97,7 +103,9 @@ public class ConnectionParameters {
      * @param driver The driver
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters driver(String driver) {
+    public ConnectionParameters driver(
+            String driver
+    ) {
         this.driver = driver;
         return this;
     }
@@ -117,7 +125,9 @@ public class ConnectionParameters {
      * @param schema The schema
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters schema(String schema) {
+    public ConnectionParameters schema(
+            String schema
+    ) {
         this.schema = schema;
         return this;
     }
@@ -137,7 +147,9 @@ public class ConnectionParameters {
      * @param catalog The catalog
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters catalog(String catalog) {
+    public ConnectionParameters catalog(
+            String catalog
+    ) {
         this.catalog = catalog;
         return this;
     }
@@ -156,7 +168,9 @@ public class ConnectionParameters {
      *
      * @param autoTrim {@code true} to enable auto trim, {@code false} otherwise.
      */
-    public ConnectionParameters autoTrim(boolean autoTrim) {
+    public ConnectionParameters autoTrim(
+            boolean autoTrim
+    ) {
         this.autoTrim = autoTrim;
         return this;
     }
@@ -165,7 +179,9 @@ public class ConnectionParameters {
         return autoCommit;
     }
 
-    public ConnectionParameters autoCommit(boolean autoCommit) {
+    public ConnectionParameters autoCommit(
+            boolean autoCommit
+    ) {
         this.autoCommit = autoCommit;
         return this;
     }
@@ -194,4 +210,5 @@ public class ConnectionParameters {
         }
         return builder.toString().replaceAll(separator + "$", "]");
     }
+
 }

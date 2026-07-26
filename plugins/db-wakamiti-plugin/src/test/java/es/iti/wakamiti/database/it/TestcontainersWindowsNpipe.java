@@ -7,10 +7,12 @@
  */
 package es.iti.wakamiti.database.it;
 
+
 import org.junit.AssumptionViolatedException;
 import org.testcontainers.lifecycle.Startable;
 
 import java.util.Locale;
+
 
 final class TestcontainersWindowsNpipe {
 
@@ -27,7 +29,9 @@ final class TestcontainersWindowsNpipe {
     private TestcontainersWindowsNpipe() {
     }
 
-    static void startOrSkipOnWindowsNpipeFailure(Startable container) {
+    static void startOrSkipOnWindowsNpipeFailure(
+            Startable container
+    ) {
         try {
             container.start();
         } catch (RuntimeException e) {
@@ -44,7 +48,9 @@ final class TestcontainersWindowsNpipe {
         return osName.toLowerCase(Locale.ROOT).contains("win");
     }
 
-    static boolean isWindowsNpipeConnectionError(Throwable throwable) {
+    static boolean isWindowsNpipeConnectionError(
+            Throwable throwable
+    ) {
         Throwable current = throwable;
         while (current != null) {
             String message = current.getMessage();
@@ -60,4 +66,5 @@ final class TestcontainersWindowsNpipe {
         }
         return false;
     }
+
 }

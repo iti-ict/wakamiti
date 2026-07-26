@@ -32,7 +32,9 @@ public class TagFilter {
      *
      * @param tagExpression The tag expression to be parsed and used for filtering.
      */
-    public TagFilter(String tagExpression) {
+    public TagFilter(
+            String tagExpression
+    ) {
         this.tagParsedExpression = TagExpressionParser.parse(
                 tagExpression.replace("@", "").toLowerCase());
     }
@@ -47,7 +49,9 @@ public class TagFilter {
      * @param tags The collection of tags to be filtered.
      * @return {@code true} if the collection of tags satisfies the expression, {@code false} otherwise.
      */
-    public boolean filter(Collection<String> tags) {
+    public boolean filter(
+            Collection<String> tags
+    ) {
         return tagParsedExpression.evaluate(
                 tags.stream()
                         .map(String::toLowerCase)

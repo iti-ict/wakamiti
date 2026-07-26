@@ -22,12 +22,11 @@ public class TestNonRunnableBackend {
 
     @Test
     public void testNonRunnableBackend() {
-
         Configuration configuration = Wakamiti.defaultConfiguration().appendFromPairs(
                 NON_REGISTERED_STEP_PROVIDERS, "es.iti.wakamiti.test.gherkin.WakamitiSteps"
         );
         var backend = Wakamiti.instance().newBackendFactory().createNonRunnableBackend(configuration);
         assertThat(backend.getAvailableSteps(Locale.ENGLISH, true)).isNotEmpty();
-
     }
+
 }

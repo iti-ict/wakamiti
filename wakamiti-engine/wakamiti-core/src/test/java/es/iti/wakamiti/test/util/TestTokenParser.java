@@ -31,7 +31,6 @@ public class TestTokenParser {
             " "
     );
 
-
     @Test
     public void testTokenParser1() {
         TokenParser parser = new TokenParser(
@@ -49,7 +48,6 @@ public class TestTokenParser {
         assertNextToken(parser, "yy");
     }
 
-
     @Test
     public void testTokenParser2() {
         TokenParser parser = new TokenParser(
@@ -62,8 +60,10 @@ public class TestTokenParser {
         assertNextToken(parser, "yyyy");
     }
 
-
-    private void assertNextToken(TokenParser parser, String string) {
+    private void assertNextToken(
+            TokenParser parser,
+            String string
+    ) {
         Assertions.assertThat(parser.hasMoreTokens()).isTrue();
         Assertions.assertThat(parser.nextToken()).isEqualTo(string);
     }

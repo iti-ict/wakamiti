@@ -26,7 +26,9 @@ public class FeatureMapper extends Mapper {
      *
      * @param suiteBase the base directory for mapping test suites.
      */
-    public FeatureMapper(String suiteBase) {
+    public FeatureMapper(
+            String suiteBase
+    ) {
         super(suiteBase);
     }
 

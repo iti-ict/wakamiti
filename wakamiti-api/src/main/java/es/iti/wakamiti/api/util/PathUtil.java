@@ -39,7 +39,6 @@ public class PathUtil {
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HHmmssSSS", Locale.ENGLISH);
 
     private PathUtil() {
-
     }
 
     /**
@@ -49,7 +48,10 @@ public class PathUtil {
      * @param planNode The PlanNode containing information for placeholder replacement.
      * @return The path with replaced placeholders.
      */
-    public static Path replacePlaceholders(Path path, PlanNode planNode) {
+    public static Path replacePlaceholders(
+            Path path,
+            PlanNode planNode
+    ) {
         var instant = planNode.startInstant().orElseGet(Instant::now).atZone(ZoneId.systemDefault());
         var executionID = Objects.requireNonNullElse(planNode.executionID(), "");
         String pathString = replaceTemporalPlaceholders(path.toString(), instant);
@@ -63,15 +65,23 @@ public class PathUtil {
      * @param path The original path with temporal placeholders.
      * @return The path with replaced temporal placeholders.
      */
-    public static Path replaceTemporalPlaceholders(Path path) {
+    public static Path replaceTemporalPlaceholders(
+            Path path
+    ) {
         return replaceTemporalPlaceholders(path, Instant.now());
     }
 
-    public static Path replaceTemporalPlaceholders(Path path, Instant instant) {
+    public static Path replaceTemporalPlaceholders(
+            Path path,
+            Instant instant
+    ) {
         return Path.of(replaceTemporalPlaceholders(path.toString(), instant.atZone(ZoneId.systemDefault())));
     }
 
-    private static String replaceTemporalPlaceholders(String pathString, ZonedDateTime instant) {
+    private static String replaceTemporalPlaceholders(
+            String pathString,
+            ZonedDateTime instant
+    ) {
         pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
         pathString = pathString.replace("%YY%", YEAR_2.format(instant));
         pathString = pathString.replace("%MM%", MONTH.format(instant));
@@ -85,14 +95,18 @@ public class PathUtil {
         return pathString;
     }
 
-    public static String encodeURI(String input) {
+    public static String encodeURI(
+            String input
+    ) {
         return Pattern.compile("[^;,/?:@&=+$\\w-.!~*'()]").matcher(input).replaceAll(m -> {
             String hex = Integer.toHexString(m.group().toCharArray()[0]).toUpperCase();
             return "%" + (hex.length() == 1 ? '0' + hex : hex);
         });
     }
 
-    public static String decodeURI(String input) {
+    public static String decodeURI(
+            String input
+    ) {
         return Pattern.compile("%(\\d{2})").matcher(input).replaceAll(m -> {
             String hex = m.group(1);
             return String.valueOf((char) Integer.parseInt(hex, 16));

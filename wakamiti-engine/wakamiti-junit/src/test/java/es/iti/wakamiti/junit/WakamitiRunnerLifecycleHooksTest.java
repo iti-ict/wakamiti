@@ -73,18 +73,27 @@ public class WakamitiRunnerLifecycleHooksTest {
         private static void clearHooks() {
             hookContexts.clear();
         }
+
     }
 
     private static class RecordingListener extends RunListener {
 
         @Override
-        public void testStarted(org.junit.runner.Description description) {
+        public void testStarted(
+                org.junit.runner
+                        .Description description
+        ) {
             currentTestName = description.getMethodName();
         }
 
         @Override
-        public void testFinished(org.junit.runner.Description description) {
+        public void testFinished(
+                org.junit.runner
+                        .Description description
+        ) {
             currentTestName = null;
         }
+
     }
+
 }

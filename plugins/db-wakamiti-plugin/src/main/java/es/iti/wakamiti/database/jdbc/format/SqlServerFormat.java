@@ -16,8 +16,13 @@ import static java.util.Objects.isNull;
 public class SqlServerFormat extends DefaultSqlFormat {
 
     @Override
-    public Object formatValue(String value, JDBCType type) {
-        if (isNull(value)) return null;
+    public Object formatValue(
+            String value,
+            JDBCType type
+    ) {
+        if (isNull(value)) {
+            return null;
+        }
         return switch (type) {
             case BIT, BOOLEAN -> formatInteger(value);
             default -> super.formatValue(value, type);

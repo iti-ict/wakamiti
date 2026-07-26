@@ -5,7 +5,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser;
 
 import es.iti.wakamiti.core.gherkin.parser.Node;
@@ -18,7 +17,9 @@ public class DataTable extends Node {
 
     private final List<TableRow> rows;
 
-    public DataTable(List<TableRow> rows) {
+    public DataTable(
+            List<TableRow> rows
+    ) {
         super(rows.get(0).getLocation());
         this.rows = Collections.unmodifiableList(rows);
     }
@@ -26,4 +27,5 @@ public class DataTable extends Node {
     public List<TableRow> getRows() {
         return rows;
     }
+
 }

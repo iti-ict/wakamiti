@@ -33,7 +33,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
         super();
     }
 
-    protected TreeNodeBuilder(Collection<S> children) {
+    protected TreeNodeBuilder(
+            Collection<S> children
+    ) {
         addChildren(children);
     }
 
@@ -53,7 +55,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param filter The predicate to filter children
      * @return The stream of filtered children
      */
-    public Stream<S> children(Predicate<S> filter) {
+    public Stream<S> children(
+            Predicate<S> filter
+    ) {
         return children.stream().filter(filter);
     }
 
@@ -63,7 +67,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param index The index of the child
      * @return The child at the specified index
      */
-    public S child(int index) {
+    public S child(
+            int index
+    ) {
         return children.get(index);
     }
 
@@ -102,7 +108,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param child The child to find
      * @return The position of the child, or -1 if not found
      */
-    public int positionOfChild(S child) {
+    public int positionOfChild(
+            S child
+    ) {
         return children.indexOf(child);
     }
 
@@ -159,7 +167,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param child The child to add
      * @return This tree node builder
      */
-    public S addChild(S child) {
+    public S addChild(
+            S child
+    ) {
         children.add(child);
         child.parent().ifPresent(previousParent -> previousParent.removeChild(child));
         ((TreeNodeBuilder<S>) child).parent = (S) this;
@@ -174,7 +184,10 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param index The index at which to add the child
      * @return This tree node builder
      */
-    public S addChild(S child, int index) {
+    public S addChild(
+            S child,
+            int index
+    ) {
         children.add(index, child);
         child.parent().ifPresent(previousParent -> previousParent.removeChild(child));
         ((TreeNodeBuilder<S>) child).parent = (S) this;
@@ -188,7 +201,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param child The child to add
      * @return This tree node builder
      */
-    public S addFirstChild(S child) {
+    public S addFirstChild(
+            S child
+    ) {
         return addChild(child, 0);
     }
 
@@ -201,7 +216,10 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      *                  the child
      * @return This tree node builder
      */
-    public S addChildIf(S child, Predicate<S> predicate) {
+    public S addChildIf(
+            S child,
+            Predicate<S> predicate
+    ) {
         if (predicate.test(child)) {
             addChild(child);
         }
@@ -214,7 +232,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param children The children to add
      * @return This tree node builder
      */
-    public S addChildren(Collection<S> children) {
+    public S addChildren(
+            Collection<S> children
+    ) {
         for (S child : children) {
             addChild(child);
         }
@@ -231,7 +251,10 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @throws IllegalArgumentException If the old child is not
      *                                  a current child node
      */
-    public S replaceChild(S oldChild, S newChild) {
+    public S replaceChild(
+            S oldChild,
+            S newChild
+    ) {
         int index = children.indexOf(oldChild);
         if (index == -1) {
             throw new IllegalArgumentException("Node to replace is not a current child node");
@@ -250,7 +273,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @return {@code true} if the child is present,
      * {@code false} otherwise
      */
-    public boolean containsChild(S child) {
+    public boolean containsChild(
+            S child
+    ) {
         return children.contains(child);
     }
 
@@ -260,7 +285,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param child The child to remove
      * @return This tree node builder
      */
-    public S removeChild(S child) {
+    public S removeChild(
+            S child
+    ) {
         children.remove(child);
         ((TreeNodeBuilder<S>) child).parent = null;
         return (S) this;
@@ -274,7 +301,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      *                  removal
      * @return This tree node builder
      */
-    public S removeChildrenIf(Predicate<S> predicate) {
+    public S removeChildrenIf(
+            Predicate<S> predicate
+    ) {
         for (S child : children) {
             if (predicate.test(child)) {
                 removeChild(child);
@@ -307,7 +336,9 @@ public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {
      * @param copy The tree node builder to copy
      * @return This tree node builder
      */
-    protected S copy(S copy) {
+    protected S copy(
+            S copy
+    ) {
         for (S child : this.children) {
             copy.addChild(child.copy());
         }
