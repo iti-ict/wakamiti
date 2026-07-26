@@ -58,6 +58,12 @@
         <java.version>17</java.version>
         <maven.version>3.9.16</maven.version>
         <maven.compiler.plugin>3.15.0</maven.compiler.plugin>
+        <maven.checkstyle.plugin>3.6.0</maven.checkstyle.plugin>
+        <checkstyle.version>12.3.1</checkstyle.version>
+        <wakamiti.checkstyle.version>1.0.0-SNAPSHOT</wakamiti.checkstyle.version>
+        <checkstyle.config.folder>${maven.multiModuleProjectDirectory}/config/checkstyle</checkstyle.config.folder>
+        <checkstyle.config.location>${checkstyle.config.folder}/checkstyle.xml</checkstyle.config.location>
+        <checkstyle.lineLength>160</checkstyle.lineLength>
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -101,6 +107,50 @@
                     <configuration>
                         <encoding>UTF-8</encoding>
                     </configuration>
+                </plugin>
+                <!-- Check Java code formatting -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven.checkstyle.plugin}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>es.iti.wakamiti</groupId>
+                            <artifactId>wakamiti-checkstyle</artifactId>
+                            <version>${wakamiti.checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+                        <consoleOutput>true</consoleOutput>
+                        <failOnViolation>true</failOnViolation>
+                        <failsOnError>false</failsOnError>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <includeResources>false</includeResources>
+                        <includeTestResources>false</includeTestResources>
+                        <excludeGeneratedSources>true</excludeGeneratedSources>
+                        <excludes>**/module-info.java</excludes>
+                        <linkXRef>false</linkXRef>
+                        <configLocation>${checkstyle.config.location}</configLocation>
+                        <propertyExpansion>
+                            checkstyle.lineLength=${checkstyle.lineLength}
+                            checkstyle.config.folder=${checkstyle.config.folder}
+                        </propertyExpansion>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>checkstyle</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <!-- dependency convergence enforce -->
                 <plugin>
@@ -222,6 +272,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+            </plugin>
+            <!-- Check Java code formatting -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
             <!-- dependency convergence enforce -->
             <plugin>
