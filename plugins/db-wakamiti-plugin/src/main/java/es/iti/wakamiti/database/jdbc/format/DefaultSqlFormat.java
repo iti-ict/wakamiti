@@ -29,31 +29,14 @@ public class DefaultSqlFormat implements SqlFormat {
 
     public Object formatValue(String value, JDBCType type) {
         if (isNull(value)) return null;
-        switch (type) {
-            case BIT:
-            case BOOLEAN:
-                return formatBoolean(value);
-            case TINYINT:
-            case BIGINT:
-            case INTEGER:
-            case SMALLINT:
-                return formatInteger(value);
-            case DECIMAL:
-            case DOUBLE:
-            case FLOAT:
-            case NUMERIC:
-            case REAL:
-                return formatDecimal(value);
-            case DATE:
-                return formatDate(value);
-            case TIMESTAMP:
-            case TIME:
-            case TIME_WITH_TIMEZONE:
-            case TIMESTAMP_WITH_TIMEZONE:
-                return formatDateTime(value);
-            default:
-                return value;
-        }
+        return switch (type) {
+            case BIT, BOOLEAN -> formatBoolean(value);
+            case TINYINT, BIGINT, INTEGER, SMALLINT -> formatInteger(value);
+            case DECIMAL, DOUBLE, FLOAT, NUMERIC, REAL -> formatDecimal(value);
+            case DATE -> formatDate(value);
+            case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE -> formatDateTime(value);
+            default -> value;
+        };
     }
 
     protected Object formatBoolean(String value) {

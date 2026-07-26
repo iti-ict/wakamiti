@@ -132,24 +132,13 @@ public class CucumberExporter implements Reporter {
         map.put(KEYWORD, keyword(definitionStep));
         map.put(NAME, definitionStep.getName());
         Map<String, Object> result = new LinkedHashMap<>();
-        String status;
-        switch (definitionStep.getResult()) {
-            case PASSED:
-                status = "passed";
-                break;
-            case FAILED:
-            case ERROR:
-                status = "failed";
-                break;
-            case SKIPPED:
-                status = "skipped";
-                break;
-            case UNDEFINED:
-                status = "ambiguous";
-                break;
-            default:
-                status = "pending";
-        }
+        String status = switch (definitionStep.getResult()) {
+            case PASSED -> "passed";
+            case FAILED, ERROR -> "failed";
+            case SKIPPED -> "skipped";
+            case UNDEFINED -> "ambiguous";
+            default -> "pending";
+        };
         result.put(STATUS, status);
         result.put(DURATION, definitionStep.getDuration());
         if (resultStep != null) {

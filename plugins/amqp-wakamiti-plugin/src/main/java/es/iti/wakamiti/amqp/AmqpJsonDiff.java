@@ -75,16 +75,12 @@ class AmqpJsonDiff {
             JsonNode expectedNode,
             JsonNode actualNode
     ) {
-        switch (matchMode) {
-            case STRICT:
-                return compareJsonArrayStrict(expectedNode, actualNode);
-            case STRICT_ANY_ORDER:
-                return compareJsonArrayStrictAnyOrder(expectedNode, actualNode);
-            case LOOSE:
-                return compareJsonArrayLoose(expectedNode, actualNode);
-            default:
-                return false;
-        }
+        return switch (matchMode) {
+            case STRICT -> compareJsonArrayStrict(expectedNode, actualNode);
+            case STRICT_ANY_ORDER -> compareJsonArrayStrictAnyOrder(expectedNode, actualNode);
+            case LOOSE -> compareJsonArrayLoose(expectedNode, actualNode);
+            default -> false;
+        };
     }
 
     private boolean compareJsonArrayStrict(

@@ -16,13 +16,10 @@ public class SqlServerFormat extends DefaultSqlFormat {
     @Override
     public Object formatValue(String value, JDBCType type) {
         if (isNull(value)) return null;
-        switch (type) {
-            case BIT:
-            case BOOLEAN:
-                return formatInteger(value);
-            default:
-                return super.formatValue(value, type);
-        }
+        return switch (type) {
+            case BIT, BOOLEAN -> formatInteger(value);
+            default -> super.formatValue(value, type);
+        };
     }
 
 }

@@ -280,20 +280,13 @@ public class AllureReporter implements Reporter {
         if (result == null) {
             return "unknown";
         }
-        switch (result) {
-            case PASSED:
-                return "passed";
-            case FAILED:
-                return "failed";
-            case ERROR:
-            case UNDEFINED:
-                return "broken";
-            case SKIPPED:
-            case NOT_IMPLEMENTED:
-                return "skipped";
-            default:
-                return "unknown";
-        }
+        return switch (result) {
+            case PASSED -> "passed";
+            case FAILED -> "failed";
+            case ERROR, UNDEFINED -> "broken";
+            case SKIPPED, NOT_IMPLEMENTED -> "skipped";
+            default -> "unknown";
+        };
     }
 
     private Long toEpochMillis(

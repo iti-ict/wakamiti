@@ -217,18 +217,11 @@ public class ExtensionManager {
      * @return The resolved instance of the extension based on the load strategy.
      */
     protected <T> T resolveInstance(T extension, ExtensionLoadContext<T> context) {
-        T instance;
-        switch (context.extensionPointData().loadStrategy()) {
-            case SINGLETON:
-                instance = singleton(extension);
-                break;
-            case FRESH:
-                instance = newInstance(extension);
-                break;
-            default:
-                instance = extension;
-        }
-        return instance;
+        return switch (context.extensionPointData().loadStrategy()) {
+            case SINGLETON -> singleton(extension);
+            case FRESH -> newInstance(extension);
+            default -> extension;
+        };
     }
 
     /**
