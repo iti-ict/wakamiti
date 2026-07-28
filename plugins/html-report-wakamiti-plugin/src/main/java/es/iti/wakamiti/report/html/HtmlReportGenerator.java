@@ -52,9 +52,6 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 @Extension(provider = "es.iti.wakamiti", name = "html-report", version = "2.6")
 public class HtmlReportGenerator implements Reporter {
 

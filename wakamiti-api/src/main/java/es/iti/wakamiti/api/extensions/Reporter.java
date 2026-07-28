@@ -15,8 +15,6 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 /**
  * This interface defines a contract for implementing reporters that generate reports based on
  * the provided plan node descriptors.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @ExtensionPoint
 public interface Reporter extends Contributor {

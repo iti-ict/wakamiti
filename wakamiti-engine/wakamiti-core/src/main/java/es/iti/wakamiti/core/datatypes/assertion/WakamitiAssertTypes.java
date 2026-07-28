@@ -38,8 +38,6 @@ import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
  * A contributor for Wakamiti data types related to assertions.
  * It provides various assertion types for functional and Java
  * data types, such as integer, decimal, and text assertions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(provider = "es.iti.wakamiti", name = "assertion-types")
 public class WakamitiAssertTypes implements DataTypeContributor {

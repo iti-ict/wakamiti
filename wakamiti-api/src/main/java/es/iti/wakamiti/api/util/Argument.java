@@ -34,8 +34,6 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
  * process can be customized by overriding the {@link #doResolve()}
  * and {@link #resolveForEach(String)} methods.
  * </p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class Argument {
 

@@ -40,8 +40,6 @@ import es.iti.wakamiti.api.model.ExecutionState;
  * This class is an immutable, non-executable representation of a
  * {@link PlanNode} in a specific state. It is mainly used for
  * serialization/deserialization operations.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeSnapshot {
 

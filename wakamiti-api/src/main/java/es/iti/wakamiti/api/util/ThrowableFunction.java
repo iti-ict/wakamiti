@@ -19,7 +19,6 @@ import es.iti.wakamiti.api.WakamitiException;
  *
  * @param <T> The type of the input to the function.
  * @param <R> The type of the result of the function.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @FunctionalInterface
 public interface ThrowableFunction<T, R> extends Function<T, R> {

@@ -13,9 +13,6 @@ import es.iti.commons.jext.Extension;
 
 /**
  * Base interface for all Wakamiti extensions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public interface Contributor {
 

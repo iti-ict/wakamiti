@@ -14,7 +14,6 @@ package es.iti.wakamiti.api.datatypes;
  * description and describing a failure when the assertion is not satisfied.
  *
  * @param <T> The type of value to which the assertion applies.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface Assertion<T> {
 

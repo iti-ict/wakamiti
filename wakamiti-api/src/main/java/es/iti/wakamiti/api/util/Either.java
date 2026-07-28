@@ -20,7 +20,6 @@ import java.util.function.Function;
  *
  * @param <T> The type of the primary value.
  * @param <U> The type of the fallback value.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Either<T, U> {
 

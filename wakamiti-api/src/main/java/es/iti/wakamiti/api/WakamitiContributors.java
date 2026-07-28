@@ -43,9 +43,6 @@ import es.iti.wakamiti.api.util.Pair;
  * It handles various types of contributors, such as StepContributors, PlanBuilders, etc.
  * Provides methods to retrieve contributors, create instances, and perform configuration.
  * Acts as a central manager for contributors in Wakamiti API.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class WakamitiContributors {
 

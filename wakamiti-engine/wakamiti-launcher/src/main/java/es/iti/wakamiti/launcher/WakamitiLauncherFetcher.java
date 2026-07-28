@@ -25,8 +25,6 @@ import net.harawata.appdirs.AppDirsFactory;
  *
  * <p>This class extends WakamitiFetcher and is tailored for the WakamitiLauncher application.
  * It provides methods to fetch and update the classpath based on the specified modules.</p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiLauncherFetcher extends WakamitiFetcher {
 

@@ -19,8 +19,6 @@ import es.iti.wakamiti.api.plan.Result;
  *
  * <p>Implementations of this interface should provide the ability to run a Wakamiti test plan and
  * return the result of the execution.</p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public interface WakamitiPlanNodeRunner extends Describable {
 

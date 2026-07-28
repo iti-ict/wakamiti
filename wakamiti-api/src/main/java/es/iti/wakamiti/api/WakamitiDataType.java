@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
  * Represents a data type in the context of Wakamiti.
  *
  * @param <T> The Java type associated with the Wakamiti data type.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface WakamitiDataType<T> {
 

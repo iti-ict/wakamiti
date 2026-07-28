@@ -15,8 +15,6 @@ import java.time.Instant;
  * The {@code Event} class represents an event that occurs during the execution of a system.
  * Events may have different types and carry associated data. Each event is timestamped with
  * the moment it occurred.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Event {
 

@@ -67,7 +67,6 @@ import es.iti.wakamiti.core.runner.PlanNodeLogger;
  * <p>Annotations such as {@link BeforeClass}, {@link AfterClass}, and {@link Test} are not allowed on the
  * test class, as Wakamiti manages its own lifecycle and execution flow.</p>
  *
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
 

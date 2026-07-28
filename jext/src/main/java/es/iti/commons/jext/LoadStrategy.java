@@ -11,8 +11,6 @@ package es.iti.commons.jext;
 /**
  * The different strategies that can be used each time an extension is
  * requested using the {@link ExtensionManager}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public enum LoadStrategy {
 

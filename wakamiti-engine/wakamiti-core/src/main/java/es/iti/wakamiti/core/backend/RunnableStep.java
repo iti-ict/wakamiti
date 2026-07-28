@@ -34,8 +34,6 @@ import es.iti.wakamiti.core.Wakamiti;
 
 /**
  * Represents a RunnableStep used in test execution.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class RunnableStep {
 

@@ -24,9 +24,6 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-json-helper",

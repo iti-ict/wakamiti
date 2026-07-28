@@ -27,8 +27,6 @@ import java.lang.annotation.Target;
  * order to avoid runtime errors. Otherwise, increment the minor part of the
  * version in order to state the previous methods are still valid.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

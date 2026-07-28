@@ -23,8 +23,6 @@ import es.iti.wakamiti.api.model.TreeNodeBuilder;
 
 /**
  * Builder class for creating instances of {@link PlanNode}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
 

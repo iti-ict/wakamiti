@@ -20,8 +20,6 @@ import es.iti.wakamiti.api.imconfig.Configurer;
  * Defines a contract for configuring any component with the global configuration settings.
  *
  * @param <T> The class of the component to configure
- * @author Luis Iñesta Gelabert - linesta@iti.es
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @ExtensionPoint
 public interface ConfigContributor<T> extends Contributor {

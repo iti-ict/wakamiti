@@ -38,8 +38,6 @@ import es.iti.wakamiti.api.ExpressionMatcher;
 
 /**
  * A provider for binary string assertions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class BinaryStringAssertProvider extends AbstractAssertProvider {
 

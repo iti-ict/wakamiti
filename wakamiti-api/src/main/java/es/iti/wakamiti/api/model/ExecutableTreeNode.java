@@ -27,7 +27,6 @@ import java.util.stream.Stream;
  * @param <S> The type of the executable tree node itself
  * @param <R> The type of the result that can be obtained
  *            after execution
- * @author Luis Iñesta Gelabert - linesta@iti.es
  * @see TreeNode
  */
 public abstract class ExecutableTreeNode<S extends ExecutableTreeNode<S, R>, R extends Comparable<R>>

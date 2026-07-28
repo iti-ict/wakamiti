@@ -54,8 +54,6 @@ import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 
 /**
  * A utility class for loading and working with resources.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class ResourceLoader {
 

@@ -45,7 +45,6 @@ import es.iti.wakamiti.core.util.TokenParser;
  * functionality specific to the handling of temporal data types.</p>
  *
  * @param <T> Type of temporal data implementing the {@link TemporalAccessor} interface.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDataTypeBase<T> {
 

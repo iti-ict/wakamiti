@@ -24,8 +24,6 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
  * Provides methods to parse Gherkin feature files and
  * determine if a given filename is compatible with the
  * Gherkin resource type.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(
         provider = "es.iti.wakamiti",

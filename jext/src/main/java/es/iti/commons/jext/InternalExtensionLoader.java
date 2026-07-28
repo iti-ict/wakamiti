@@ -19,8 +19,6 @@ import org.slf4j.LoggerFactory;
 /**
  * An internal implementation of the {@link ExtensionLoader} interface used for loading
  * extensions. This loader delegates the loading process to {@link ServiceLoader}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 class InternalExtensionLoader implements ExtensionLoader {
 

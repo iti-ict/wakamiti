@@ -45,7 +45,6 @@ import es.iti.wakamiti.core.util.LocaleLoader;
  * It provides the capability to execute individual test steps and
  * handle the setup and teardown operations.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class RunnableBackend extends AbstractBackend {
 

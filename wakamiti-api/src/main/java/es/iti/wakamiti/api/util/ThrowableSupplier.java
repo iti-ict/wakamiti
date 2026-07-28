@@ -18,7 +18,6 @@ import es.iti.wakamiti.api.WakamitiException;
  * that may throw checked exceptions.
  *
  * @param <T> The type of the supplied result.
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public interface ThrowableSupplier<T> extends Supplier<T> {
 

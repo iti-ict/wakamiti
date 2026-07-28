@@ -19,8 +19,6 @@ import es.iti.wakamiti.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
 /**
  * An abstract implementation of the {@link PlanTransformer} interface that applies a set
  * of rules to transform a {@link PlanNodeBuilder}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class RuleBasedPlanTransformer implements PlanTransformer {
 

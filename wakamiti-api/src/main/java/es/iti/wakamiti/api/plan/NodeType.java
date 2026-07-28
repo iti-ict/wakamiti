@@ -10,8 +10,6 @@ package es.iti.wakamiti.api.plan;
 
 /**
  * Represents different types of plan nodes.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public enum NodeType {
 

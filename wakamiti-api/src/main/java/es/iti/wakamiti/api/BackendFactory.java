@@ -21,8 +21,6 @@ import es.iti.wakamiti.api.plan.PlanNode;
  * backend for exposing information without executing tests.</p>
  * <p>Additionally, it can create a hinter for providing
  * suggestions and hints.</p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface BackendFactory {
 

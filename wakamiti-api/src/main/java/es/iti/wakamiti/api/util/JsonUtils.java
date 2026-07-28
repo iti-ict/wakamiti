@@ -35,8 +35,6 @@ import groovy.lang.GroovyShell;
  *
  * <p>This class provides methods for converting JSON strings, InputStreams, and objects into {@link JsonNode}.
  * It also includes a method for reading string values from a JsonNode based on a JSONPath expression.</p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class JsonUtils {
 

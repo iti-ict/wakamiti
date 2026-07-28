@@ -14,8 +14,6 @@ import java.util.function.UnaryOperator;
 
 /**
  * Represents a data table for a test plan node.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class DataTable implements PlanNodeData {
 

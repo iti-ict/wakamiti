@@ -16,9 +16,6 @@ import es.iti.wakamiti.rest.MatchMode;
 import io.restassured.http.ContentType;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-text-helper",

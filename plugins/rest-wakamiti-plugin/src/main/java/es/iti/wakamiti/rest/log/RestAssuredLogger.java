@@ -27,9 +27,6 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 public class RestAssuredLogger implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger( "es.iti.wakamiti.rest");

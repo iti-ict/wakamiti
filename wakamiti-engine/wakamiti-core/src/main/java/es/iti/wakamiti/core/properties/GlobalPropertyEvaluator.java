@@ -31,7 +31,6 @@ import es.iti.wakamiti.api.imconfig.Configuration;
  *     ${credential.password}
  * </pre></blockquote>
  *
- * @author Maria Galbis Calomarde | mgalbis@iti.es
  * @see PropertyEvaluator
  */
 @Extension(

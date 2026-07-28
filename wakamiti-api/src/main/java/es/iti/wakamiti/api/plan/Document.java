@@ -13,8 +13,6 @@ import java.util.function.UnaryOperator;
 
 /**
  * Represents a document for a test plan node.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Document implements PlanNodeData {
 

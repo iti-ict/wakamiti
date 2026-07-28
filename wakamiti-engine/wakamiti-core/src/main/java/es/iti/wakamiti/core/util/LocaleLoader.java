@@ -17,8 +17,6 @@ import java.util.Locale;
  *
  * <p>This class is designed to work with language strings that follow the BCP
  * 47-language tag format.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class LocaleLoader {
 

@@ -25,8 +25,6 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
 /**
  * This interface defines methods for the serialization and deserialization
  * of {@link PlanNodeSnapshot} objects.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface PlanSerializer {
 

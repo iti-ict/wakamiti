@@ -18,8 +18,6 @@ import es.iti.wakamiti.api.extensions.EventObserver;
  * The {@code EventDispatcher} class manages the distribution of events to registered
  * {@link EventObserver} instances. It allows adding and removing observers and publishing
  * events to those observers.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class EventDispatcher {
 

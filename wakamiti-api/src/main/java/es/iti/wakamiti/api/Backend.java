@@ -26,8 +26,6 @@ import es.iti.wakamiti.api.plan.PlanNode;
  * backend to ensure isolation in multi-thread environments.
  * The backend is created by a BackendFactory based on the
  * context information regarding a test case.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface Backend {
 

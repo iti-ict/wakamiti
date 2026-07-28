@@ -16,8 +16,6 @@ import java.util.Arrays;
 /**
  * An exception class specific to Wakamiti, providing additional features for
  * formatting messages and handling throwable.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiException extends RuntimeException {
 

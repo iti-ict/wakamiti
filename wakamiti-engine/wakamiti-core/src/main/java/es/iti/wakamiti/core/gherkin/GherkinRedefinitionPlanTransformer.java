@@ -52,7 +52,6 @@ import es.iti.wakamiti.core.plan.RuleBasedPlanTransformer;
  * Represents a transformer for Gherkin-based test plans that allows
  * redefining certain aspects of the plan structure.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(
         provider = "es.iti.wakamiti",

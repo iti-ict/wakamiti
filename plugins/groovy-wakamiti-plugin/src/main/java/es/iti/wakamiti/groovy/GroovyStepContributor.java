@@ -17,8 +17,6 @@ import es.iti.wakamiti.api.plan.Document;
 
 /**
  * The groovy steps' definition.
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @I18nResource("iti_wakamiti_wakamiti-groovy")
 @Extension(

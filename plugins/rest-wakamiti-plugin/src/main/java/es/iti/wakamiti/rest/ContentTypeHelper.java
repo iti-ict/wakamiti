@@ -17,9 +17,6 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 @ExtensionPoint
 public interface ContentTypeHelper {
 

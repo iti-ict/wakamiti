@@ -18,7 +18,6 @@ import es.iti.wakamiti.api.WakamitiDataType;
  * This interface defines a contract for contributors that provide additional
  * data types to the Wakamiti system.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @ExtensionPoint
 public interface DataTypeContributor extends Contributor {

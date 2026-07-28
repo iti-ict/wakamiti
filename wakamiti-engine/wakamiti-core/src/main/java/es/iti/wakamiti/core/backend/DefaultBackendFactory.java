@@ -53,8 +53,6 @@ import es.iti.wakamiti.core.Wakamiti;
  * It manages the loading of step contributors and data type contributors to support the creation of runnable steps.
  * The factory supports the creation of both RunnableBackend for executing test cases and NonRunnableBackend
  * for scenarios that don't involve test execution.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class DefaultBackendFactory implements BackendFactory {
 

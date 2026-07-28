@@ -26,7 +26,6 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
  * about the data type.
  *
  * @param <T> The type of the Wakamiti data.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
 

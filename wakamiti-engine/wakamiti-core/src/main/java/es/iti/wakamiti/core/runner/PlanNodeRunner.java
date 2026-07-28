@@ -37,8 +37,6 @@ import es.iti.wakamiti.core.Wakamiti;
  * PlanNode and managing its lifecycle.
  * It provides methods to run a node, handle pre- and post-execution
  * actions, and create child runners for nested nodes.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeRunner {
 

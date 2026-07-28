@@ -46,8 +46,6 @@ import es.iti.wakamiti.core.runner.PlanNodeRunner;
  * in the test report. It supports the execution of child nodes, whether they are
  * test cases or nested test suites, by creating appropriate runner instances for
  * each child.</p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner {
 

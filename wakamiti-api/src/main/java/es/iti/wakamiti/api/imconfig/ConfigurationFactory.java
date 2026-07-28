@@ -27,8 +27,6 @@ import java.util.ServiceLoader;
  * automatically detect the resource type (usually by looking at its file
  * extension) and handle the content properly, accepting multiple formats such
  * as JSON, YAML, XML, and .properties files.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface ConfigurationFactory {
 

@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
  *
  * <p>Each token can be a literal or match a regular expression, and the order
  * of tokens defines the precedence in case of overlapping matches.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class TokenParser {
 

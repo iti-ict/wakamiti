@@ -34,8 +34,6 @@ import java.util.Set;
  *
  * <p>Instances of this class are typically used to combine resource bundles from
  * different sources, providing a unified interface for resource key lookup.</p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class CompoundResourceBundle extends ResourceBundle {
 

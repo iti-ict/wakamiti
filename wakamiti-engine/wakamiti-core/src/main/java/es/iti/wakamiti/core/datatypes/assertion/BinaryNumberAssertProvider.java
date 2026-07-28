@@ -43,7 +43,6 @@ import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
  * A provider for binary number assertions.
  *
  * @param <T> The type of numbers to compare.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends AbstractAssertProvider {
 

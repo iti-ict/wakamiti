@@ -25,8 +25,6 @@ import es.iti.wakamiti.api.plan.PlanSerializer;
  * and deserialization of {@link PlanNodeSnapshot} instances in JSON format.
  *
  * <p>This implementation uses the Jackson library for JSON processing and serialization.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class JsonPlanSerializer implements PlanSerializer {
 

@@ -18,9 +18,6 @@ import io.cucumber.tagexpressions.TagExpressionParser;
  * The TagFilter class provides a mechanism to filter a collection
  * of tags based on a tag expression. It uses the Cucumber tag expressions
  * library to parse and evaluate tag expressions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class TagFilter {
 

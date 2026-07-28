@@ -18,7 +18,6 @@ import java.util.function.Predicate;
  * the extensions.
  *
  * @param <T> the type of the extensions to be loaded
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class ExtensionLoadContext<T> {
 

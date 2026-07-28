@@ -15,8 +15,6 @@ import es.iti.wakamiti.api.util.Either;
 
 /**
  * Exception thrown when a step cannot be matched with any defined step.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class UndefinedStepException extends WakamitiException {
 

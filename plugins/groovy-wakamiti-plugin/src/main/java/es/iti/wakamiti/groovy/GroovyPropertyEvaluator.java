@@ -25,8 +25,6 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
  *     ${=1+1}
  *     ${=new Date().format('yyyy-MM-dd')}
  * </pre></blockquote>
- *
- * @author Maria Galbis Calomarde | mgalbis@iti.es
  */
 @Extension(
         provider = "es.iti.wakamiti",

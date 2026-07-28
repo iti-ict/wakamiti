@@ -66,7 +66,6 @@ import groovy.xml.slurpersupport.NodeChildren;
  * <p>This class provides methods for parsing XML from strings, InputStreams, Nodes, and Map representations.
  * It also includes a method for reading string values from an XmlObject based on an XPath expression.</p>
  *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class XmlUtils {
 

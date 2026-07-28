@@ -36,9 +36,6 @@ import io.restassured.config.LogConfig;
 import io.restassured.config.RestAssuredConfig;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 @Extension(provider = "es.iti.wakamiti", name = "rest-configurator", version = "2.6",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {

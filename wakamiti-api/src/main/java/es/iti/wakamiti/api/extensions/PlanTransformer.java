@@ -17,7 +17,6 @@ import es.iti.wakamiti.api.plan.PlanNodeBuilder;
  * This interface defines a contract for contributors that transform plans
  * for processing resources.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @ExtensionPoint
 public interface PlanTransformer extends Contributor {

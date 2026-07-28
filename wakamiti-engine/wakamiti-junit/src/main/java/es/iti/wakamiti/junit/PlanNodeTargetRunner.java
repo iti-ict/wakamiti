@@ -37,8 +37,6 @@ import es.iti.wakamiti.core.runner.PlanNodeRunner;
  * <p>It handles the execution of targeted plan nodes, managing the notifications
  * and results using JUnit's RunNotifier and EachTestNotifier. Additionally, it
  * provides descriptions for the tests to be displayed in the test report.</p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner {
 

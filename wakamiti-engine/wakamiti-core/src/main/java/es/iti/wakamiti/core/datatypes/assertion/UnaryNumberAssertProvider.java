@@ -27,8 +27,6 @@ import es.iti.wakamiti.api.ExpressionMatcher;
 
 /**
  * A provider for unary number assertions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class UnaryNumberAssertProvider extends AbstractAssertProvider {
 

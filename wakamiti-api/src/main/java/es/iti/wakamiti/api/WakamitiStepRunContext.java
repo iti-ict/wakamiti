@@ -16,8 +16,6 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 /**
  * Represents the context in which a Wakamiti step is run. This context includes information
  * such as the configuration, backend, step locale, data locale, and the type registry.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiStepRunContext {
 

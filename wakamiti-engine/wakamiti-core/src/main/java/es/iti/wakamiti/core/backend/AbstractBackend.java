@@ -25,8 +25,6 @@ import es.iti.wakamiti.core.util.LocaleLoader;
 /**
  * Abstract implementation of the {@link Backend} interface, providing common functionality
  * for backends without running capabilities.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class AbstractBackend implements Backend {
 

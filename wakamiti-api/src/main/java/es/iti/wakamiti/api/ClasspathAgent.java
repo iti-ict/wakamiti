@@ -15,8 +15,6 @@ import java.util.jar.JarFile;
 /**
  * ClasspathAgent is a Java agent that can be used to add JAR
  * files to the system classpath at runtime.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class ClasspathAgent {
 

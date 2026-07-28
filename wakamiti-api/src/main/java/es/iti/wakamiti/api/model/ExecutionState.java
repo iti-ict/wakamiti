@@ -17,7 +17,6 @@ import java.util.Optional;
  * A test {@code PlanNode} object is any of the parts that form a test plan.
  *
  * @param <R> The type of the result of the execution
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class ExecutionState<R> {
 

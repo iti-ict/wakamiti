@@ -20,8 +20,6 @@ import es.iti.wakamiti.api.util.ResourceLoader;
 /**
  * Provides access to various components and services within the
  * Wakamiti application.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface WakamitiAPI {
 

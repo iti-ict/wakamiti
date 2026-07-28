@@ -16,8 +16,6 @@ package es.iti.commons.jext;
  * This is specially suited for IoC injection frameworks that may manage
  * object instances in a wide range of different ways.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface ExtensionLoader {
 

@@ -30,8 +30,6 @@ import es.iti.wakamiti.api.extensions.DataTypeContributor;
 /**
  * A contributor for Wakamiti core data types. It provides
  * various core data types for functional and Java types.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(
         provider = "es.iti.wakamiti",

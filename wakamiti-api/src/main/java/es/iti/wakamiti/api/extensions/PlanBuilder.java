@@ -20,8 +20,6 @@ import es.iti.wakamiti.api.plan.PlanNodeBuilder;
  * This interface defines the methods required to instantiate a
  * Wakamiti model {@link es.iti.wakamiti.api.plan} from a set of
  * Gherkin resources.
- *
- * @author @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @ExtensionPoint(loadStrategy = LoadStrategy.FRESH)
 public interface PlanBuilder extends Contributor {

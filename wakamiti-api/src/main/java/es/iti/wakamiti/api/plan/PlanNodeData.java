@@ -13,8 +13,6 @@ import java.util.function.UnaryOperator;
 
 /**
  * Represents data associated with a {@link PlanNode}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface PlanNodeData {
 

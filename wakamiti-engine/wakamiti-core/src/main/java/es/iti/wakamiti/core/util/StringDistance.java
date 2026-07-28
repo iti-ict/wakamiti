@@ -19,8 +19,6 @@ import es.iti.wakamiti.api.util.Pair;
  * Provides utility methods for calculating the distance between strings.
  * It includes a method to find closer strings from a collection based on
  * a reference string.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class StringDistance {
 

@@ -35,8 +35,6 @@ import groovy.lang.GroovyClassLoader;
 /**
  * This {@link LoaderContributor} allows load groovy sources as Java
  * classes.
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @Extension(
         provider = "es.iti.wakamiti",

@@ -29,8 +29,6 @@ import es.iti.wakamiti.api.util.Pair;
  * Represents the arguments associated with a step in the Wakamiti framework.
  * It parses, infers, and validates the arguments for a step based on the
  * Step annotation and the method signature of the step provider.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class BackendArguments implements Iterable<Pair<String, String>> {
 

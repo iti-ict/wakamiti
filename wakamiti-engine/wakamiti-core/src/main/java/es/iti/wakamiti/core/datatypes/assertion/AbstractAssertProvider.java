@@ -25,8 +25,6 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
 /**
  * Serves as the base for assertion providers.
  * Provides functionality for retrieving and creating matchers from expressions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class AbstractAssertProvider extends AbstractProvider {
 

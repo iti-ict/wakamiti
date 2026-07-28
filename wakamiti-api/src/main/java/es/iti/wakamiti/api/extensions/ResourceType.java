@@ -20,7 +20,6 @@ import es.iti.commons.jext.ExtensionPoint;
  * This interface defines a contract for handling different resource types.
  *
  * @param <T> The type of content that the resource represents.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  * @implNote Implementations should provide logic for parsing different types of inputs
  * (e.g., InputStream, Reader) and specify the content type they handle.
  */

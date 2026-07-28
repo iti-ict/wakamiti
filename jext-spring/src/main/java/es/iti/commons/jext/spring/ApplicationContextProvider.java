@@ -22,8 +22,6 @@ import org.springframework.stereotype.Component;
  * This class is intended to be used in Spring applications where access to the ApplicationContext is required
  * outside of the Spring container, for example, in non-Spring managed classes.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Component
 public class ApplicationContextProvider implements ApplicationContextAware {

@@ -11,8 +11,6 @@ package es.iti.wakamiti.api.util;
 /**
  * A functional interface representing a runnable operation
  * that may throw checked exceptions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @FunctionalInterface
 public interface ThrowableRunnable {

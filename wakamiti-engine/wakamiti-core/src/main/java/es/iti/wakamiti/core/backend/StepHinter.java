@@ -29,8 +29,6 @@ import es.iti.wakamiti.core.util.StringDistance;
 
 /**
  * Provides suggestions and information related to available steps and properties for Wakamiti.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class StepHinter implements Hinter {
 

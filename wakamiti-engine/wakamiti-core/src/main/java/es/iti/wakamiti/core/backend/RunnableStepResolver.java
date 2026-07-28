@@ -25,8 +25,6 @@ import es.iti.wakamiti.api.util.Pair;
 /**
  * This class is responsible for resolving RunnableSteps during test execution.
  * It helps locate the appropriate RunnableStep based on a given step definition.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class RunnableStepResolver {
 

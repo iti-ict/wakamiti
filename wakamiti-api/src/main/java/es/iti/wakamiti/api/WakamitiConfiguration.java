@@ -18,8 +18,6 @@ import es.iti.wakamiti.api.imconfig.Configurer;
  * Configuration contributor for Wakamiti API.
  * This class provides default configurations and accepts specific contributors.
  * Configurations include various settings related to Wakamiti's behavior.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(
         name = "core-properties",

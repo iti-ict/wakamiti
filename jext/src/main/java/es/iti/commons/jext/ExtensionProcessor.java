@@ -42,8 +42,6 @@ import javax.tools.StandardLocation;
  * {@code META-INF/services/} directory to facilitate the service loading
  * mechanism.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @SupportedAnnotationTypes("es.iti.commons.jext.Extension")
 public class ExtensionProcessor extends AbstractProcessor {

@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Component that provides operations to retrieve instances of
  * classes annotated with {@link Extension}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class ExtensionManager {
 

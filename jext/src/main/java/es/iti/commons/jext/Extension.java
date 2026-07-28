@@ -23,8 +23,6 @@ import java.util.ServiceLoader;
  * managed in spite of implementing or extending the {@link ExtensionPoint}
  * class.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

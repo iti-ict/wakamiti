@@ -32,8 +32,6 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
  * It provides methods for generating regular expressions based on
  * translated step definitions and performing pattern matching on
  * model step names.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class ExpressionMatcher {
 

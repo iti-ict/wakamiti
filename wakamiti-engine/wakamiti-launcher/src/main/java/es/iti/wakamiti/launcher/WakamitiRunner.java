@@ -23,8 +23,6 @@ import es.iti.wakamiti.core.Wakamiti;
  *
  * <p>This class initializes Wakamiti with the provided configuration and executes the test plan.
  * It also retrieves and displays contributions if needed.</p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiRunner {
 

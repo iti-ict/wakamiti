@@ -18,7 +18,6 @@ import java.util.stream.Stream;
  * Abstract class representing a tree node with a generic type.
  *
  * @param <S> The type of the tree node
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class TreeNode<S extends TreeNode<S>> {
 

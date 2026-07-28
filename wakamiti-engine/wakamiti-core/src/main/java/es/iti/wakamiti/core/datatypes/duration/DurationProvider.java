@@ -34,8 +34,6 @@ import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 
 /**
  * A provider for durations.
- *
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class DurationProvider extends AbstractProvider {
 

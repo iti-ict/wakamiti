@@ -21,7 +21,6 @@ import java.util.stream.Stream;
  * a generic type.
  *
  * @param <S> The type of the tree node builder
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @SuppressWarnings("unchecked")
 public abstract class TreeNodeBuilder<S extends TreeNodeBuilder<S>> {

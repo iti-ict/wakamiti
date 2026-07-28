@@ -12,8 +12,6 @@ package es.iti.wakamiti.api.plan;
  * Represents different results of the execution of a node
  * in a plan.
  * Results are ordered in inverted order of severity.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public enum Result implements Comparable<Result> {
 

@@ -21,7 +21,6 @@ import es.iti.wakamiti.api.datatypes.Assertion;
  * {@link Matcher}.
  *
  * @param <T> The type of the value being asserted.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class MatcherAssertion<T> implements Assertion<T> {
 

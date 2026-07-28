@@ -19,8 +19,6 @@ import es.iti.wakamiti.api.extensions.DataTypeContributor;
  * The {@code WakamitiDurationType} class contributes the duration data type to Wakamiti.
  * It defines the behavior for handling duration data and provides methods for contributing
  * the duration data type to the Wakamiti system.
- *
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 @Extension(provider = "es.iti.wakamiti", name = "duration-types", version = "2.6")
 public class WakamitiDurationType implements DataTypeContributor {

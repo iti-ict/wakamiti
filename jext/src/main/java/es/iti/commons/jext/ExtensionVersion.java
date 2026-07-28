@@ -13,8 +13,6 @@ package es.iti.commons.jext;
  * {@code <major>.<minor>}. It provides methods for extracting the major and minor
  * components, checking compatibility with another version, and generating a
  * string representation.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 class ExtensionVersion {
 

@@ -26,8 +26,6 @@ import es.iti.wakamiti.api.plan.Result;
 /**
  * Utility class for logging information related to
  * the execution of a test plan.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeLogger {
 

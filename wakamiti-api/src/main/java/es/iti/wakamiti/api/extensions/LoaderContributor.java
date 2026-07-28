@@ -18,7 +18,6 @@ import es.iti.commons.jext.ExtensionPoint;
  * This interface allows adding extra class loaders from sources other
  * than java.
  *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @ExtensionPoint
 public interface LoaderContributor extends Contributor {

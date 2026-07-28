@@ -16,8 +16,6 @@ import java.util.stream.Stream;
 /**
  * Registry for Wakamiti data types, allowing retrieval and
  * querying of data types.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiDataTypeRegistry {
 

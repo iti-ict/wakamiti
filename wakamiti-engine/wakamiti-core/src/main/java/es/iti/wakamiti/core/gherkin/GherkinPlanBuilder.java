@@ -65,8 +65,6 @@ import es.iti.wakamiti.core.gherkin.parser.Tag;
 /**
  * GherkinPlanBuilder is a PlanBuilder extension for processing
  * Gherkin documents and creating test plans.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(
         provider = "es.iti.wakamiti",

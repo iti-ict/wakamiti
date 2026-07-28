@@ -22,8 +22,6 @@ import es.iti.wakamiti.api.plan.PlanNode;
 
 /**
  * Utility class for working with paths and replacing placeholders.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PathUtil {
 

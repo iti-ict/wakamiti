@@ -15,7 +15,6 @@ import es.iti.wakamiti.api.event.Event;
 /**
  * This interface defines a contract for observers that handle Wakamiti events.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  * @see Event
  */
 @ExtensionPoint

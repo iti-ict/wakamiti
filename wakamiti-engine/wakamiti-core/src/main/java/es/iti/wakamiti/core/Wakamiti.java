@@ -75,8 +75,6 @@ import es.iti.wakamiti.core.util.TagFilter;
  * It serves as a central hub for configuration, plan creation,
  * execution, and report generation.
  * This class uses contributors and extensions for extensibility.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Wakamiti {
 

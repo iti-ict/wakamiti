@@ -19,8 +19,6 @@ import es.iti.wakamiti.api.plan.PlanNode;
  * Implementation of the Backend interface that does not allow running tests.
  * Its main purpose is to provide information about available steps to
  * third-party components, such as completion tools.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class NonRunnableBackend extends AbstractBackend {
 

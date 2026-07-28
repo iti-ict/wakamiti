@@ -63,8 +63,6 @@ import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
  * Provides methods for parsing SQL statements, constructing SQL queries, and generating
  * WHERE clause expressions. It also handles conversions between different data types and
  * formats SQL expressions.
- *
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class SQLParser {
 

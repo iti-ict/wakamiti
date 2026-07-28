@@ -13,8 +13,6 @@ import es.iti.wakamiti.api.WakamitiException;
 
 /**
  * Exception thrown when a step definition is incorrect.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WrongStepDefinitionException extends WakamitiException {
 

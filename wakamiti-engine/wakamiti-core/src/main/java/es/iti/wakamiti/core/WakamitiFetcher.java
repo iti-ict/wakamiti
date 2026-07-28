@@ -36,8 +36,6 @@ import net.harawata.appdirs.AppDirsFactory;
 
 /**
  * This class provides functionality for fetching Maven dependencies.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiFetcher {
 

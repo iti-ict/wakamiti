@@ -16,8 +16,6 @@ import es.iti.commons.jext.LoadStrategy;
  * This interface extends {@link Contributor} and serves as
  * an ExtensionPoint for implementing an Extension step provider.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  * @see Contributor
  */
 @ExtensionPoint(loadStrategy = LoadStrategy.FRESH)

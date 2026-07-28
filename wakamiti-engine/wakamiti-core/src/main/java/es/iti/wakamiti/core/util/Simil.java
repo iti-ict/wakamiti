@@ -16,9 +16,6 @@ import java.util.regex.Pattern;
 /**
  * Implementation of the Ratcliff/Obershelp Pattern Matching Algorithm as
  * described in the July 1988 issue of <a href=http://www.ddj.com/184407970?pgno=5>Dr. Dobbs Journal</a>
- *
- * @author Marco Petris
- * @author Luis Iñesta - luiinge@gmail.com (Additional tweaks and fixes)
  */
 public class Simil {
 

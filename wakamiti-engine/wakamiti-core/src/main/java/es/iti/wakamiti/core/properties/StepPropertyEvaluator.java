@@ -38,7 +38,6 @@ import es.iti.wakamiti.core.backend.RunnableBackend;
  *     ${2#}
  * </pre></blockquote>
  *
- * @author Maria Galbis Calomarde | mgalbis@iti.es
  * @see PropertyEvaluator
  */
 @Extension(provider = "es.iti.wakamiti", name = "step-property-resolver",

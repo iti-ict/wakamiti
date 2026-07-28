@@ -25,8 +25,6 @@ import es.iti.commons.jext.ExtensionLoader;
  * It leverages the {@link ApplicationContextProvider} to obtain beans of a specified type
  * from the Spring application context.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class SpringExtensionLoader implements ExtensionLoader {
 

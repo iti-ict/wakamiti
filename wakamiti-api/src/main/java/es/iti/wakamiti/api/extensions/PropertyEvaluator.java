@@ -25,8 +25,6 @@ import es.iti.wakamiti.api.WakamitiAPI;
  * This interface allows using dynamic properties to make easier the passing of
  * information to the Scenario execution through the syntax
  * {@code ${[property description]}}.
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @ExtensionPoint(loadStrategy = LoadStrategy.SINGLETON)
 public abstract class PropertyEvaluator implements Contributor {

@@ -29,7 +29,6 @@ import es.iti.wakamiti.api.plan.PlanNodeBuilder;
  * Provides a set of rules and predicates for defining conditions
  * and actions when building a test plan using {@link PlanNodeBuilder}.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeBuilderRules {
 

@@ -14,8 +14,6 @@ import java.util.List;
 /**
  * This interface provides utility methods to offer completion suggestions
  * about a test plan.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface Hinter {
 

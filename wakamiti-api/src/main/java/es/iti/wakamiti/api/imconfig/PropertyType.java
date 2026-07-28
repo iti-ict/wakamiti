@@ -11,8 +11,6 @@ package es.iti.wakamiti.api.imconfig;
 /**
  * This class determines what are the accepted values for a specific
  * property.
- *
- * @author Luis Iñesta Gelabert - luiinge@gmail.com
  */
 public interface PropertyType {
 

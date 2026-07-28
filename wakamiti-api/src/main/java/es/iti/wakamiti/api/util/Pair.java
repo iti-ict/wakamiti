@@ -22,7 +22,6 @@ import java.util.stream.Collector;
  *
  * @param <T> The type of the key.
  * @param <U> The type of the value.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Pair<T, U> {
 

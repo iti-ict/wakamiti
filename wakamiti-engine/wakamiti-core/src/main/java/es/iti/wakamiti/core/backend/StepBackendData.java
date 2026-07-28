@@ -19,8 +19,6 @@ import es.iti.wakamiti.api.util.Argument;
 /**
  * Holds data related to the execution of a step, including the step itself, locales,
  * runnable step instance, step matcher, invoking arguments, exception (if any), and classifier.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class StepBackendData {
 

@@ -22,7 +22,6 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
  * Class representing a data type for numeric values in Wakamiti.
  *
  * @param <T> Type of numeric data.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
 

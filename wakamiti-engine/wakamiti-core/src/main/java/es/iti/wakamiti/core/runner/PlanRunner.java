@@ -25,13 +25,6 @@ import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 
 
-/**
- * Executes a test plan represented by a PlanNode. It manages
- * the execution of child nodes using PlanNodeRunners and provides
- * logging and event handling.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
- */
 public class PlanRunner {
 
     private static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();

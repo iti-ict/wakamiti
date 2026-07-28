@@ -11,8 +11,6 @@ package es.iti.wakamiti.api;
 /**
  * An exception class specific to Wakamiti, indicating that a test
  * case or step has been skipped.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiSkippedException extends WakamitiException {
 

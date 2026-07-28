@@ -26,8 +26,6 @@ import es.iti.wakamiti.api.ExpressionMatcher;
 
 /**
  * A provider for unary string assertions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class UnaryStringAssertProvider extends AbstractAssertProvider {
 

@@ -51,9 +51,6 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
- */
 public class RestSupport {
 
     public static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.rest");

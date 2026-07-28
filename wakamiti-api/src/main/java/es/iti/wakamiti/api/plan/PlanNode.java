@@ -22,11 +22,6 @@ import es.iti.wakamiti.api.model.ExecutableTreeNode;
 import es.iti.wakamiti.api.util.Argument;
 
 
-/**
- * Represents a node in a test plan.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
- */
 public class PlanNode extends ExecutableTreeNode<PlanNode, Result> {
 
     List<String> description;

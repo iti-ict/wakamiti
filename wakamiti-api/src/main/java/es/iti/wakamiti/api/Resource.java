@@ -13,7 +13,6 @@ package es.iti.wakamiti.api;
  * and associated content.
  *
  * @param <T> The type of content held by the resource.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Resource<T> {
 
