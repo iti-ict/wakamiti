@@ -8,6 +8,24 @@
 package es.iti.wakamiti.email;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import javax.mail.Message;
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
@@ -18,14 +36,7 @@ import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import org.hamcrest.*;
 
-import javax.mail.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.time.Duration;
-import java.util.*;
 
 @Extension(
         provider = "es.iti.wakamiti",

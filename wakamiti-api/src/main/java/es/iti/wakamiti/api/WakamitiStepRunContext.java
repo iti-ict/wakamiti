@@ -8,9 +8,9 @@
 package es.iti.wakamiti.api;
 
 
-import es.iti.wakamiti.api.imconfig.Configuration;
-
 import java.util.Locale;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 /**

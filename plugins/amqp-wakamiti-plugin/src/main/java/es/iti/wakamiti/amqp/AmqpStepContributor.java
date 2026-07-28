@@ -8,6 +8,12 @@
 package es.iti.wakamiti.amqp;
 
 
+import static org.awaitility.Awaitility.await;
+
+import java.io.File;
+import java.net.URI;
+import java.time.Duration;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.annotations.I18nResource;
@@ -15,12 +21,6 @@ import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
-
-import java.io.File;
-import java.net.URI;
-import java.time.Duration;
-
-import static org.awaitility.Awaitility.await;
 
 
 /**

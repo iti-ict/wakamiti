@@ -8,10 +8,10 @@
 package es.iti.wakamiti.database.it;
 
 
+import java.util.Locale;
+
 import org.junit.AssumptionViolatedException;
 import org.testcontainers.lifecycle.Startable;
-
-import java.util.Locale;
 
 
 final class TestcontainersWindowsNpipe {

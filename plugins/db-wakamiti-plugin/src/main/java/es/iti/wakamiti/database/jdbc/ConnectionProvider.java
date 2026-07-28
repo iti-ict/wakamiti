@@ -8,16 +8,17 @@
 package es.iti.wakamiti.database.jdbc;
 
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.ConnectionManager;
 import es.iti.wakamiti.database.ConnectionParameters;
-import org.slf4j.Logger;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 
 /**

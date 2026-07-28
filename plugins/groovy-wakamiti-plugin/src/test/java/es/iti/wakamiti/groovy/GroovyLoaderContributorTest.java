@@ -8,8 +8,7 @@
 package es.iti.wakamiti.groovy;
 
 
-import es.iti.wakamiti.api.extensions.StepContributor;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.net.URI;
@@ -17,7 +16,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.extensions.StepContributor;
 
 
 public class GroovyLoaderContributorTest {

@@ -8,32 +8,58 @@
 package es.iti.wakamiti.core.gherkin;
 
 
+import static java.util.Objects.isNull;
+
+import java.io.File;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.Resource;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.PlanBuilder;
 import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.api.imconfig.Configurable;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.gherkin.parser.*;
-import es.iti.wakamiti.api.imconfig.Configurable;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.slf4j.Logger;
-
-import java.io.File;
-import java.security.SecureRandom;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
+import es.iti.wakamiti.core.gherkin.parser.Background;
+import es.iti.wakamiti.core.gherkin.parser.Comment;
+import es.iti.wakamiti.core.gherkin.parser.CommentedNode;
+import es.iti.wakamiti.core.gherkin.parser.DocString;
+import es.iti.wakamiti.core.gherkin.parser.Examples;
+import es.iti.wakamiti.core.gherkin.parser.Feature;
+import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
+import es.iti.wakamiti.core.gherkin.parser.Location;
+import es.iti.wakamiti.core.gherkin.parser.Scenario;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
+import es.iti.wakamiti.core.gherkin.parser.Step;
+import es.iti.wakamiti.core.gherkin.parser.TableCell;
+import es.iti.wakamiti.core.gherkin.parser.TableRow;
+import es.iti.wakamiti.core.gherkin.parser.Tag;
 
 
 /**

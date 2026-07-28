@@ -8,18 +8,6 @@
 package es.iti.wakamiti.report.allure;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.extensions.Reporter;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
@@ -35,6 +23,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.extensions.Reporter;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 @Extension(

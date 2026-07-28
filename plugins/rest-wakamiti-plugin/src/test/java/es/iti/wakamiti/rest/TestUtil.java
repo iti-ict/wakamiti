@@ -8,6 +8,39 @@
 package es.iti.wakamiti.rest;
 
 
+import static org.mockserver.model.Header.header;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.RegexBody.regex;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import org.apache.commons.io.IOUtils;
+import org.codehaus.plexus.util.FileUtils;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.configuration.ConfigurationProperties;
+import org.mockserver.mock.Expectation;
+import org.mockserver.model.HttpStatusCode;
+import org.mockserver.model.MediaType;
+import org.mockserver.model.RegexBody;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
@@ -21,32 +54,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import io.restassured.RestAssured;
-import org.apache.commons.io.IOUtils;
-import org.codehaus.plexus.util.FileUtils;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.configuration.ConfigurationProperties;
-import org.mockserver.mock.Expectation;
-import org.mockserver.model.HttpStatusCode;
-import org.mockserver.model.MediaType;
-import org.mockserver.model.RegexBody;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.mockserver.model.Header.header;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.RegexBody.regex;
 
 public class TestUtil {
 

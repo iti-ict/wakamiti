@@ -8,15 +8,15 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.database.exception.SQLRuntimeException;
+import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
+import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.function.IntConsumer;
 
-import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
-import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
+import es.iti.wakamiti.database.exception.SQLRuntimeException;
 
 
 /**

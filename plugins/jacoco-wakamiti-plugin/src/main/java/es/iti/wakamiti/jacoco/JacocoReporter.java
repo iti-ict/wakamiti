@@ -8,25 +8,7 @@
 package es.iti.wakamiti.jacoco;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.extensions.EventObserver;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.jacoco.core.analysis.Analyzer;
-import org.jacoco.core.analysis.CoverageBuilder;
-import org.jacoco.core.analysis.IBundleCoverage;
-import org.jacoco.core.analysis.IClassCoverage;
-import org.jacoco.core.data.ExecutionDataStore;
-import org.jacoco.core.tools.ExecDumpClient;
-import org.jacoco.core.tools.ExecFileLoader;
-import org.jacoco.report.*;
-import org.jacoco.report.csv.CSVFormatter;
-import org.jacoco.report.html.HTMLFormatter;
-import org.jacoco.report.xml.XMLFormatter;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.util.StringUtils.format;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,7 +23,31 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.StringUtils.format;
+import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.analysis.CoverageBuilder;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.tools.ExecDumpClient;
+import org.jacoco.core.tools.ExecFileLoader;
+import org.jacoco.report.DirectorySourceFileLocator;
+import org.jacoco.report.FileMultiReportOutput;
+import org.jacoco.report.IReportVisitor;
+import org.jacoco.report.ISourceFileLocator;
+import org.jacoco.report.MultiReportVisitor;
+import org.jacoco.report.MultiSourceFileLocator;
+import org.jacoco.report.csv.CSVFormatter;
+import org.jacoco.report.html.HTMLFormatter;
+import org.jacoco.report.xml.XMLFormatter;
+import org.slf4j.Logger;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.extensions.EventObserver;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 @Extension(

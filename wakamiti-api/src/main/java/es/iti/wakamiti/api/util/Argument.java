@@ -8,12 +8,12 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.extensions.PropertyEvaluator;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 
 
 /**

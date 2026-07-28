@@ -8,6 +8,9 @@
 package es.iti.wakamiti.api.util;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JavaType;
@@ -25,9 +28,6 @@ import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 
 /**

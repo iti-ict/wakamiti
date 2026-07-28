@@ -12,9 +12,6 @@ import java.util.List;
 
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLine;
-import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan;
-import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
 
 
 public class Token {

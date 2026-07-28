@@ -8,6 +8,12 @@
 package es.iti.wakamiti.rest.helpers;
 
 
+import org.hamcrest.Matchers;
+import org.junit.ComparisonFailure;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import es.iti.wakamiti.rest.MatchMode;
 import io.restassured.builder.ResponseBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;

@@ -14,9 +14,6 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLine;
-import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
-import es.iti.wakamiti.core.gherkin.parser.internal.Token;
 
 
 /**

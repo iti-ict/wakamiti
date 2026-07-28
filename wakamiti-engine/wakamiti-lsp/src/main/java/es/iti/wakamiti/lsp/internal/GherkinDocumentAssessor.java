@@ -11,18 +11,32 @@ package es.iti.wakamiti.lsp.internal;
 import java.io.StringReader;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.*;
+import java.util.stream.Stream;
 
-import es.iti.wakamiti.core.gherkin.parser.*;
-import es.iti.wakamiti.api.imconfig.Configuration;
+import org.eclipse.lsp4j.CodeAction;
+import org.eclipse.lsp4j.CompletionItem;
+import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.DocumentSymbol;
+import org.eclipse.lsp4j.Position;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import es.iti.wakamiti.api.Hinter;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import org.eclipse.lsp4j.*;
-import org.slf4j.*;
+import es.iti.wakamiti.core.gherkin.parser.Comment;
+import es.iti.wakamiti.core.gherkin.parser.Feature;
+import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
+import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
+import es.iti.wakamiti.core.gherkin.parser.Scenario;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
+import es.iti.wakamiti.core.gherkin.parser.Tag;
 
 
 public class GherkinDocumentAssessor {

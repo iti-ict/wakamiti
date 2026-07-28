@@ -8,12 +8,6 @@
 package es.iti.wakamiti.junit5;
 
 
-import es.iti.wakamiti.api.plan.PlanNode;
-import org.junit.platform.engine.TestSource;
-import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
-import org.junit.platform.engine.support.descriptor.FilePosition;
-import org.junit.platform.engine.support.descriptor.FileSource;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +15,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.junit.platform.engine.TestSource;
+import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
+import org.junit.platform.engine.support.descriptor.FilePosition;
+import org.junit.platform.engine.support.descriptor.FileSource;
+
+import es.iti.wakamiti.api.plan.PlanNode;
 
 
 /**

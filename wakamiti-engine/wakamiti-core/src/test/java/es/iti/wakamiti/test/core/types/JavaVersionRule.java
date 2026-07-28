@@ -8,12 +8,12 @@
 package es.iti.wakamiti.test.core.types;
 
 
+import java.util.function.IntPredicate;
+
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import java.util.function.IntPredicate;
 
 
 public class JavaVersionRule implements TestRule {

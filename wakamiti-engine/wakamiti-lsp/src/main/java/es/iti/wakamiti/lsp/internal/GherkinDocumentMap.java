@@ -10,15 +10,17 @@ package es.iti.wakamiti.lsp.internal;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialectProvider;
 import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
-import es.iti.wakamiti.core.gherkin.parser.*;
-import es.iti.wakamiti.api.WakamitiConfiguration;
 
 
 /**

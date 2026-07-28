@@ -8,21 +8,28 @@
 package es.iti.wakamiti.core.datatypes.duration;
 
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.api.datatypes.AbstractProvider;
-import es.iti.wakamiti.api.ExpressionMatcher;
-import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
+import static es.iti.wakamiti.api.util.MapUtils.map;
 
 import java.text.NumberFormat;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.util.MapUtils.map;
+import es.iti.wakamiti.api.ExpressionMatcher;
+import es.iti.wakamiti.api.datatypes.AbstractProvider;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.ThrowableFunction;
+import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 
 
 /**

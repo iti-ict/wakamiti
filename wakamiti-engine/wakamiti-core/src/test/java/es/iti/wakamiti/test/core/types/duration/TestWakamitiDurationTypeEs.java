@@ -8,9 +8,7 @@
 package es.iti.wakamiti.test.core.types.duration;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationType;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -18,7 +16,10 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationType;
 
 
 @SuppressWarnings("unchecked")

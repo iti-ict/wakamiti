@@ -8,18 +8,16 @@
 package es.iti.wakamiti.appium;
 
 
-import io.appium.java_client.AppiumDriver;
-import es.iti.wakamiti.api.WakamitiException;
-
+import java.util.List;
+import java.util.Map;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 
-
-import java.util.List;
-import java.util.Map;
+import es.iti.wakamiti.api.WakamitiException;
+import io.appium.java_client.AppiumDriver;
 
 
 public class DriverHelper {

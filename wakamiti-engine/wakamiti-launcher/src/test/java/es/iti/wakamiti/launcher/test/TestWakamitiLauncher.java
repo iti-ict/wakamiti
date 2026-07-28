@@ -8,12 +8,15 @@
 package es.iti.wakamiti.launcher.test;
 
 
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.launcher.CliArguments;
-import es.iti.wakamiti.launcher.WakamitiLauncher;
-import es.iti.wakamiti.launcher.WakamitiLauncherFetcher;
-import es.iti.wakamiti.launcher.WakamitiRunner;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.entry;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+
 import org.apache.commons.cli.ParseException;
 import org.assertj.core.util.Files;
 import org.junit.Test;
@@ -21,14 +24,12 @@ import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.entry;
-import static org.mockito.Mockito.when;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.launcher.CliArguments;
+import es.iti.wakamiti.launcher.WakamitiLauncher;
+import es.iti.wakamiti.launcher.WakamitiLauncherFetcher;
+import es.iti.wakamiti.launcher.WakamitiRunner;
 
 
 public class TestWakamitiLauncher {

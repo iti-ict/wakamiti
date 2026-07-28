@@ -8,23 +8,40 @@
 package es.iti.wakamiti.lsp;
 
 
-import es.iti.wakamiti.lsp.internal.DocumentDiagnostics;
-import es.iti.wakamiti.lsp.internal.GherkinWorkspace;
-import org.eclipse.lsp4j.*;
-import org.eclipse.lsp4j.services.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import es.iti.wakamiti.lsp.internal.*;
-
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
+import org.eclipse.lsp4j.CodeActionOptions;
+import org.eclipse.lsp4j.CompletionOptions;
+import org.eclipse.lsp4j.InitializeParams;
+import org.eclipse.lsp4j.InitializeResult;
+import org.eclipse.lsp4j.InitializedParams;
+import org.eclipse.lsp4j.MessageParams;
+import org.eclipse.lsp4j.MessageType;
+import org.eclipse.lsp4j.PublishDiagnosticsParams;
+import org.eclipse.lsp4j.ServerCapabilities;
+import org.eclipse.lsp4j.TextDocumentSyncKind;
+import org.eclipse.lsp4j.WorkspaceFolder;
+import org.eclipse.lsp4j.services.LanguageClient;
+import org.eclipse.lsp4j.services.LanguageClientAware;
+import org.eclipse.lsp4j.services.LanguageServer;
+import org.eclipse.lsp4j.services.TextDocumentService;
+import org.eclipse.lsp4j.services.WorkspaceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import es.iti.wakamiti.lsp.internal.DocumentDiagnostics;
+import es.iti.wakamiti.lsp.internal.GherkinWorkspace;
+
+
+/**
+ * Provides the Wakamiti Language Server functionality used by Wakamiti.
+ */
 public class WakamitiLanguageServer implements LanguageServer, LanguageClientAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WakamitiLanguageServer.class);

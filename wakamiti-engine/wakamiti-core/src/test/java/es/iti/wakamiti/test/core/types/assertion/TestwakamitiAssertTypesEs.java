@@ -8,10 +8,7 @@
 package es.iti.wakamiti.test.core.types.assertion;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -24,7 +21,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
 
 
 @SuppressWarnings("rawtypes")

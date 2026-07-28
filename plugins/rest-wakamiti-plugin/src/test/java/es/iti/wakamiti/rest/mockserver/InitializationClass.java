@@ -8,14 +8,15 @@
 package es.iti.wakamiti.rest.mockserver;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
+import static es.iti.wakamiti.rest.TestUtil.prepare;
+
+import java.io.IOException;
+
 import org.mockserver.client.MockServerClient;
 import org.mockserver.client.initialize.PluginExpectationInitializer;
 import org.slf4j.Logger;
 
-import java.io.IOException;
-
-import static es.iti.wakamiti.rest.TestUtil.prepare;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 public class InitializationClass implements PluginExpectationInitializer {

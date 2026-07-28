@@ -8,15 +8,15 @@
 package es.iti.wakamiti.maven.utils;
 
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ProjectStub extends MavenProjectStub {

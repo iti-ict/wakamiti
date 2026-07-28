@@ -8,10 +8,6 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
-import es.iti.wakamiti.core.gherkin.parser.*;
-import es.iti.wakamiti.core.gherkin.parser.Comment;
-import es.iti.wakamiti.core.gherkin.parser.Location;
-
 import java.util.Collections;
 import java.util.List;
 

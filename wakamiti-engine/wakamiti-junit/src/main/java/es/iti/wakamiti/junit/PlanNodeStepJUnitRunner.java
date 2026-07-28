@@ -8,18 +8,18 @@
 package es.iti.wakamiti.junit;
 
 
-import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.api.BackendFactory;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import es.iti.wakamiti.api.imconfig.Configuration;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
+import es.iti.wakamiti.core.runner.PlanNodeRunner;
 
 
 /**

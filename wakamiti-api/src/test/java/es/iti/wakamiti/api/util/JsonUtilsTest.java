@@ -8,17 +8,11 @@
 package es.iti.wakamiti.api.util;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.PathNotFoundException;
-import com.jayway.jsonpath.TypeRef;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.api.util.JsonUtils.read;
+import static es.iti.wakamiti.api.util.JsonUtils.readStringValue;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
@@ -27,9 +21,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static es.iti.wakamiti.api.util.JsonUtils.*;
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.TypeRef;
 
 
 public class JsonUtilsTest {

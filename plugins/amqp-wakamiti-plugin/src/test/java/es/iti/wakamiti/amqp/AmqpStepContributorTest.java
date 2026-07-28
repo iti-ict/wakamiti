@@ -8,10 +8,16 @@
 package es.iti.wakamiti.amqp;
 
 
-import es.iti.wakamiti.amqp.client.AmqpClient;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.plan.Document;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -19,12 +25,11 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import org.junit.Test;
+
+import es.iti.wakamiti.amqp.client.AmqpClient;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.plan.Document;
 
 
 public class AmqpStepContributorTest {

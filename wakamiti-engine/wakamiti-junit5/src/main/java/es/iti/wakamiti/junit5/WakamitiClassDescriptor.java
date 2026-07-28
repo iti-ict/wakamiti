@@ -8,24 +8,10 @@
 package es.iti.wakamiti.junit5;
 
 
-import es.iti.wakamiti.api.BackendFactory;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.platform.engine.EngineExecutionListener;
-import org.junit.platform.engine.TestExecutionResult;
-import org.junit.platform.engine.UniqueId;
-import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
-import org.junit.platform.engine.support.descriptor.ClassSource;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.WakamitiConfiguration.EXECUTION_ID;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -39,10 +25,25 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.EXECUTION_ID;
-import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
-import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE_PATH;
-import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.engine.EngineExecutionListener;
+import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.UniqueId;
+import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
+import org.junit.platform.engine.support.descriptor.ClassSource;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
 
 
 /**

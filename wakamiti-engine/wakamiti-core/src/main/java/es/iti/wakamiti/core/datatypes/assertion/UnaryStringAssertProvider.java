@@ -8,14 +8,20 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
-import es.iti.wakamiti.api.ExpressionMatcher;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+import es.iti.wakamiti.api.ExpressionMatcher;
 
 
 /**

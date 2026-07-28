@@ -8,9 +8,10 @@
 package es.iti.wakamiti.junit;
 
 
-import es.iti.wakamiti.api.plan.Result;
 import org.junit.runner.Describable;
 import org.junit.runner.notification.RunNotifier;
+
+import es.iti.wakamiti.api.plan.Result;
 
 
 /**

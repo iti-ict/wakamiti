@@ -8,14 +8,9 @@
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
 
-import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
-import es.iti.wakamiti.core.gherkin.parser.internal.Token;
-import es.iti.wakamiti.core.gherkin.parser.internal.TokenFormatter;
+public class TokenFormatterBuilder implements Parser.Builder<String> {
 
-
-public class TokenFormatterBuilder implements es.iti.wakamiti.core.gherkin.parser.internal.Parser.Builder<String> {
-
-    private final es.iti.wakamiti.core.gherkin.parser.internal.TokenFormatter formatter = new TokenFormatter();
+    private final TokenFormatter formatter = new TokenFormatter();
     private final StringBuilder tokensTextBuilder = new StringBuilder();
 
     @Override
@@ -27,15 +22,13 @@ public class TokenFormatterBuilder implements es.iti.wakamiti.core.gherkin.parse
 
     @Override
     public void startRule(
-            es.iti.wakamiti.core.gherkin.parser.internal.Parser
-                    .RuleType ruleType
+            Parser.RuleType ruleType
     ) {
     }
 
     @Override
     public void endRule(
-            Parser
-                    .RuleType ruleType
+            Parser.RuleType ruleType
     ) {
     }
 

@@ -8,12 +8,12 @@
 package es.iti.wakamiti.jmeter.datatypes;
 
 
-import es.iti.wakamiti.jmeter.Metric;
+import static es.iti.wakamiti.api.util.MapUtils.map;
 
 import java.time.Duration;
 import java.util.Map;
 
-import static es.iti.wakamiti.api.util.MapUtils.map;
+import es.iti.wakamiti.jmeter.Metric;
 
 
 public class DurationMetricProvider extends AbstractMetricProvider {

@@ -8,10 +8,10 @@
 package es.iti.wakamiti.core.datatypes.duration;
 
 
-import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
-
 import java.time.Duration;
 import java.util.Locale;
+
+import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
 
 
 public class WakamitiDurationDataType extends WakamitiDataTypeBase<Duration> {

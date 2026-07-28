@@ -8,18 +8,19 @@
 package es.iti.wakamiti.rest.helpers;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.rest.MatchMode;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
-import static es.iti.wakamiti.api.util.JsonUtils.json;
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.assertj.core.api.Assertions.assertThat;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.rest.MatchMode;
 
 
 public class JsonHelperTest {

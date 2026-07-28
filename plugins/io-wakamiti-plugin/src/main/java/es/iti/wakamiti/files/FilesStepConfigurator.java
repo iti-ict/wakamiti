@@ -8,11 +8,6 @@
 package es.iti.wakamiti.files;
 
 
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.Configurer;
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.extensions.ConfigContributor;
-
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

@@ -8,12 +8,8 @@
 package es.iti.wakamiti.fileuploader;
 
 
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.apache.ftpserver.ftplet.FtpException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -21,8 +17,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 public class TestFileUploader {

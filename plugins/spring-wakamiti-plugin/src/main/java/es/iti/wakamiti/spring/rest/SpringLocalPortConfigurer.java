@@ -11,11 +11,6 @@ package es.iti.wakamiti.spring.rest;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import es.iti.wakamiti.spring.db.SpringConnectionProvider;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import es.iti.wakamiti.api.imconfig.Configurer;
-import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -24,7 +19,12 @@ import org.springframework.stereotype.Component;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.Configurer;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.rest.RestStepContributor;
+import es.iti.wakamiti.spring.db.SpringConnectionProvider;
 
 
 @Extension(

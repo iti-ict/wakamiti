@@ -10,7 +10,6 @@ package es.iti.wakamiti.core.gherkin.parser;
 
 import java.io.Reader;
 
-import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
 import es.iti.wakamiti.core.gherkin.parser.internal.GherkinAstBuilder;
 import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
 

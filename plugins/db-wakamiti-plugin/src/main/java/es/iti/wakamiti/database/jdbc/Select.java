@@ -8,7 +8,7 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.database.exception.SQLRuntimeException;
+import static es.iti.wakamiti.database.jdbc.LogUtils.traceResultRow;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.database.jdbc.LogUtils.traceResultRow;
+import es.iti.wakamiti.database.exception.SQLRuntimeException;
 
 
 /**

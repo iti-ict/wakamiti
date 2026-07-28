@@ -30,10 +30,6 @@ import es.iti.wakamiti.core.gherkin.parser.Step;
 import es.iti.wakamiti.core.gherkin.parser.TableCell;
 import es.iti.wakamiti.core.gherkin.parser.TableRow;
 import es.iti.wakamiti.core.gherkin.parser.Tag;
-import es.iti.wakamiti.core.gherkin.parser.internal.AstNode;
-import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan;
-import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
-import es.iti.wakamiti.core.gherkin.parser.internal.Token;
 
 
 public class GherkinAstBuilder implements Parser.Builder<GherkinDocument> {

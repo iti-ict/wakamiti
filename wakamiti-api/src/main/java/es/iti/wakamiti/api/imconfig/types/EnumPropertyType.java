@@ -8,11 +8,10 @@
 package es.iti.wakamiti.api.imconfig.types;
 
 
-import es.iti.wakamiti.api.imconfig.PropertyType;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
+import es.iti.wakamiti.api.imconfig.PropertyType;
 
 
 public class EnumPropertyType implements PropertyType {

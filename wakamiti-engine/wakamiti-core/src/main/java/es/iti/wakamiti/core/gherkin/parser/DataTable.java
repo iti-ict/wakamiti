@@ -7,11 +7,10 @@
  */
 package es.iti.wakamiti.core.gherkin.parser;
 
-import es.iti.wakamiti.core.gherkin.parser.Node;
-import es.iti.wakamiti.core.gherkin.parser.TableRow;
 
 import java.util.Collections;
 import java.util.List;
+
 
 public class DataTable extends Node {
 

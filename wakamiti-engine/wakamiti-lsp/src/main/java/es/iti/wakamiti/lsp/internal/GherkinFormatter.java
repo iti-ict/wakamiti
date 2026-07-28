@@ -8,9 +8,15 @@
 package es.iti.wakamiti.lsp.internal;
 
 
-import static es.iti.wakamiti.lsp.internal.GherkinFormatter.Type.*;
+import static es.iti.wakamiti.lsp.internal.GherkinFormatter.Type.DOCUMENT_CONTENT;
+import static es.iti.wakamiti.lsp.internal.GherkinFormatter.Type.FEATURE;
+import static es.iti.wakamiti.lsp.internal.GherkinFormatter.Type.FEATURE_CONTENT;
+import static es.iti.wakamiti.lsp.internal.GherkinFormatter.Type.STEP;
+import static es.iti.wakamiti.lsp.internal.GherkinFormatter.Type.TABLE_HEADER;
+import static es.iti.wakamiti.lsp.internal.GherkinFormatter.Type.TABLE_ROW;
 
-import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 

@@ -8,17 +8,30 @@
 package es.iti.wakamiti.lsp.internal;
 
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import es.iti.wakamiti.core.gherkin.parser.ParserException;
-import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
-import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.CodeAction;
+import org.eclipse.lsp4j.CodeActionKind;
+import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.DiagnosticRelatedInformation;
+import org.eclipse.lsp4j.DiagnosticSeverity;
 import org.eclipse.lsp4j.Location;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.TextDocumentEdit;
+import org.eclipse.lsp4j.TextEdit;
+import org.eclipse.lsp4j.VersionedTextDocumentIdentifier;
+import org.eclipse.lsp4j.WorkspaceEdit;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 
-import es.iti.wakamiti.core.gherkin.parser.*;
+import es.iti.wakamiti.core.gherkin.parser.ParserException;
 import es.iti.wakamiti.core.gherkin.parser.ParserException.CompositeParserException;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
 
 
 /**

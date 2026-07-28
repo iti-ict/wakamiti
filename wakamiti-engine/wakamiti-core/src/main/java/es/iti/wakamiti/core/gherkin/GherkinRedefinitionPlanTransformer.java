@@ -8,17 +8,26 @@
 package es.iti.wakamiti.core.gherkin;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.extensions.PlanTransformer;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeBuilder;
-import es.iti.wakamiti.core.gherkin.parser.Examples;
-import es.iti.wakamiti.core.gherkin.parser.Feature;
-import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
-import es.iti.wakamiti.core.plan.RuleBasedPlanTransformer;
-import es.iti.wakamiti.api.imconfig.Configuration;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO_OUTLINE;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.anyNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.anyOtherNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.childOf;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.copyProperties;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.forEachNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.removeNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.sharing;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withAnyAncestor;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withNoneAncestor;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withNoneDescendant;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withProperty;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withTag;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withType;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withoutChildren;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +35,17 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.*;
-import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.*;
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.PlanTransformer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeBuilder;
+import es.iti.wakamiti.core.gherkin.parser.Examples;
+import es.iti.wakamiti.core.gherkin.parser.Feature;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
+import es.iti.wakamiti.core.plan.RuleBasedPlanTransformer;
 
 
 /**

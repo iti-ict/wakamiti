@@ -8,6 +8,17 @@
 package es.iti.wakamiti.amqp.client;
 
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -15,17 +26,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import es.iti.wakamiti.amqp.AmqpConnectionParams;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.concurrent.TimeoutException;
 
 
 /**

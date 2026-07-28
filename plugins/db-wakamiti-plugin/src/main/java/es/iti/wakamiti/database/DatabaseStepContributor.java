@@ -8,19 +8,8 @@
 package es.iti.wakamiti.database;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.annotations.I18nResource;
-import es.iti.wakamiti.api.annotations.Step;
-import es.iti.wakamiti.api.annotations.TearDown;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.extensions.StepContributor;
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.database.dataset.*;
-import es.iti.wakamiti.database.jdbc.ConnectionProvider;
-import es.iti.wakamiti.database.jdbc.Database;
-import org.assertj.core.api.Assertions;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,8 +21,25 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.util.JsonUtils.json;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+import org.assertj.core.api.Assertions;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.Step;
+import es.iti.wakamiti.api.annotations.TearDown;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.database.dataset.CsvDataSet;
+import es.iti.wakamiti.database.dataset.DataSet;
+import es.iti.wakamiti.database.dataset.DataTableDataSet;
+import es.iti.wakamiti.database.dataset.InlineDataSet;
+import es.iti.wakamiti.database.dataset.MultiDataSet;
+import es.iti.wakamiti.database.dataset.OoxmlDataSet;
+import es.iti.wakamiti.database.jdbc.ConnectionProvider;
+import es.iti.wakamiti.database.jdbc.Database;
 
 
 /**

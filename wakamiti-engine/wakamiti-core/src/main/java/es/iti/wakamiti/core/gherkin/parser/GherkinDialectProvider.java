@@ -9,13 +9,12 @@ package es.iti.wakamiti.core.gherkin.parser;
 
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
-import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.ParserException;
 import es.iti.wakamiti.core.gherkin.parser.internal.ResourceLoader;
 
 

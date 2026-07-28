@@ -13,13 +13,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import es.iti.wakamiti.lsp.internal.GherkinDocumentAssessor;
-import es.iti.wakamiti.lsp.internal.TextRange;
 import org.eclipse.lsp4j.CompletionItem;
 import org.junit.Test;
 
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.lsp.internal.*;
+import es.iti.wakamiti.lsp.internal.GherkinDocumentAssessor;
+import es.iti.wakamiti.lsp.internal.TextRange;
 
 
 public class TestCompletion {

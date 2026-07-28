@@ -8,9 +8,9 @@
 package es.iti.wakamiti.api.imconfig.types;
 
 
-import es.iti.wakamiti.api.imconfig.PropertyType;
-
 import java.util.regex.Pattern;
+
+import es.iti.wakamiti.api.imconfig.PropertyType;
 
 
 public class TextPropertyType implements PropertyType {

@@ -8,17 +8,18 @@
 package es.iti.wakamiti.amqp;
 
 
-import es.iti.wakamiti.amqp.client.AmqpClient;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.plan.Document;
-import org.junit.Test;
-
-import java.lang.reflect.Field;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Field;
+
+import org.junit.Test;
+
+import es.iti.wakamiti.amqp.client.AmqpClient;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.Document;
 
 
 public class AmqpConfigContributorTest {

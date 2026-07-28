@@ -8,16 +8,36 @@
 package es.iti.wakamiti.jmeter;
 
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.httpSampler;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.testPlan;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.threadGroup;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
+
+import org.apache.http.entity.ContentType;
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.jmeter.dsl.ContentTypeUtil;
-import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
 import us.abstracta.jmeter.javadsl.core.DslTestPlan;
 import us.abstracta.jmeter.javadsl.core.TestPlanStats;
 import us.abstracta.jmeter.javadsl.core.configs.BaseConfigElement;
@@ -26,17 +46,6 @@ import us.abstracta.jmeter.javadsl.core.listeners.BaseListener;
 import us.abstracta.jmeter.javadsl.core.threadgroups.DslDefaultThreadGroup;
 import us.abstracta.jmeter.javadsl.http.DslHttpDefaults;
 import us.abstracta.jmeter.javadsl.http.DslHttpSampler;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
 
 
 /**

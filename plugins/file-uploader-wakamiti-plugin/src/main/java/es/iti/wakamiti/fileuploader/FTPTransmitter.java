@@ -8,14 +8,17 @@
 package es.iti.wakamiti.fileuploader;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import es.iti.wakamiti.api.WakamitiException;
 
+
+/**
+ * Defines the contract implemented by FTPTransmitter.
+ */
 public interface FTPTransmitter {
 
     static FTPTransmitter of(

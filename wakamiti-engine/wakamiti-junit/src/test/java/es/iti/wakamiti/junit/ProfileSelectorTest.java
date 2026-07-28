@@ -8,10 +8,10 @@
 package es.iti.wakamiti.junit;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.After;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ProfileSelectorTest {

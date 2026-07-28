@@ -8,12 +8,13 @@
 package es.iti.wakamiti.groovy;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class GroovyHelper {

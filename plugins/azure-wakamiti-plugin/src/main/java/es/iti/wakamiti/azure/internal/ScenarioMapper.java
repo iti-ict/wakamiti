@@ -8,13 +8,12 @@
 package es.iti.wakamiti.azure.internal;
 
 
-import es.iti.wakamiti.api.plan.NodeType;
+import java.util.stream.Stream;
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.azure.AzureSynchronizer;
 import es.iti.wakamiti.azure.api.model.TestSuite;
-
-import java.util.stream.Stream;
 
 
 /**

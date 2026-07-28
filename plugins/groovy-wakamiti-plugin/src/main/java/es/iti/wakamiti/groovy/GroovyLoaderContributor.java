@@ -7,14 +7,6 @@
  */
 package es.iti.wakamiti.groovy;
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import groovy.lang.GroovyClassLoader;
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.extensions.LoaderContributor;
-import groovy.lang.GroovyCodeSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,9 +14,23 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.extensions.LoaderContributor;
+import es.iti.wakamiti.api.util.ThrowableFunction;
+import groovy.lang.GroovyClassLoader;
+
 
 /**
  * This {@link LoaderContributor} allows load groovy sources as Java

@@ -8,12 +8,15 @@
 package es.iti.wakamiti.xray.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+
+/**
+ * Provides the Jira Issue functionality used by Wakamiti.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JiraIssue {
 

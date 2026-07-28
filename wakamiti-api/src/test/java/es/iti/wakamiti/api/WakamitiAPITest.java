@@ -8,12 +8,12 @@
 package es.iti.wakamiti.api;
 
 
+import java.nio.file.Path;
+
 import es.iti.commons.jext.ExtensionManager;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.ResourceLoader;
-import es.iti.wakamiti.api.imconfig.Configuration;
-
-import java.nio.file.Path;
 
 
 public class WakamitiAPITest implements WakamitiAPI {

@@ -8,12 +8,9 @@
 package es.iti.wakamiti.azure.internal;
 
 
-import es.iti.wakamiti.azure.api.model.TestSuite;
-import es.iti.wakamiti.azure.api.model.TestSuiteTree;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
-import java.io.IOException;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -23,11 +20,10 @@ import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.api.model.TestSuiteTree;
 
 
 /**

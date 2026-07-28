@@ -8,19 +8,20 @@
 package es.iti.wakamiti.test.core.types;
 
 
-import es.iti.wakamiti.api.ExpressionMatcher;
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.util.Either;
-import es.iti.wakamiti.core.Wakamiti;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.ExpressionMatcher;
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.util.Either;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 public class TestExpressionMatcher {

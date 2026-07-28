@@ -10,6 +10,7 @@ package es.iti.wakamiti.xray.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
 public class Attachment {
 
     @JsonProperty

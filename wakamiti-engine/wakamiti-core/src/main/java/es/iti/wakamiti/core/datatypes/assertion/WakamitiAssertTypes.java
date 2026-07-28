@@ -8,6 +8,20 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.hamcrest.Matcher;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -18,15 +32,6 @@ import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
 import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
-import org.hamcrest.Matcher;
-
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAccessor;
-import java.util.*;
 
 
 /**

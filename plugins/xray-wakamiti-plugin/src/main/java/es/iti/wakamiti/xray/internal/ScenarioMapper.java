@@ -8,14 +8,13 @@
 package es.iti.wakamiti.xray.internal;
 
 
+import java.util.stream.Stream;
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.XRaySynchronizer;
 import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.TestSet;
-
-import java.util.Collections;
-import java.util.stream.Stream;
 
 
 public class ScenarioMapper extends Mapper {

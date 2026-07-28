@@ -8,27 +8,28 @@
 package es.iti.wakamiti.rest;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import io.restassured.RestAssured;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.Duration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import io.restassured.RestAssured;
 
 
 @RunWith(MockitoJUnitRunner.class)

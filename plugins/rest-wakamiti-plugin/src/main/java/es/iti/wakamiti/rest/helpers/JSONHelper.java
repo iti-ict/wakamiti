@@ -8,6 +8,10 @@
 package es.iti.wakamiti.rest.helpers;
 
 
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
+
+import org.hamcrest.MatcherAssert;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -18,9 +22,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.hamcrest.MatcherAssert;
-
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 
 
 /**

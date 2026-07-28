@@ -8,15 +8,26 @@
 package es.iti.wakamiti.lsp.internal;
 
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import es.iti.wakamiti.core.gherkin.parser.*;
-import es.iti.wakamiti.core.gherkin.parser.Location;
-import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.DocumentSymbol;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.SymbolKind;
 
-import es.iti.wakamiti.core.gherkin.parser.*;
+import es.iti.wakamiti.core.gherkin.parser.Background;
+import es.iti.wakamiti.core.gherkin.parser.CommentedNode;
+import es.iti.wakamiti.core.gherkin.parser.DataTable;
+import es.iti.wakamiti.core.gherkin.parser.DocString;
+import es.iti.wakamiti.core.gherkin.parser.Feature;
+import es.iti.wakamiti.core.gherkin.parser.Location;
+import es.iti.wakamiti.core.gherkin.parser.Node;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
+import es.iti.wakamiti.core.gherkin.parser.Step;
 
 
 public class SymbolCollector {

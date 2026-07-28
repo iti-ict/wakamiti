@@ -8,11 +8,11 @@
 package es.iti.wakamiti.core.datatypes.duration;
 
 
+import java.util.List;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.extensions.DataTypeContributor;
-
-import java.util.List;
 
 
 /**

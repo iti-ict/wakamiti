@@ -8,14 +8,6 @@
 package es.iti.wakamiti.api;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.commons.jext.ExtensionManager;
-import es.iti.wakamiti.api.extensions.*;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.imconfig.Configurable;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +18,24 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import es.iti.commons.jext.Extension;
+import es.iti.commons.jext.ExtensionManager;
+import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.extensions.Contributor;
+import es.iti.wakamiti.api.extensions.DataTypeContributor;
+import es.iti.wakamiti.api.extensions.EventObserver;
+import es.iti.wakamiti.api.extensions.LoaderContributor;
+import es.iti.wakamiti.api.extensions.PlanBuilder;
+import es.iti.wakamiti.api.extensions.PlanTransformer;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
+import es.iti.wakamiti.api.extensions.Reporter;
+import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.api.imconfig.Configurable;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.util.Pair;
 
 
 /**

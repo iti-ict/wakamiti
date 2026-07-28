@@ -11,15 +11,13 @@ package es.iti.wakamiti.lsp;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.eclipse.lsp4j.Diagnostic;
+import org.junit.Test;
 
 import es.iti.wakamiti.lsp.internal.DocumentDiagnostics;
 import es.iti.wakamiti.lsp.internal.GherkinDocumentAssessor;
 import es.iti.wakamiti.lsp.internal.TextRange;
-import org.eclipse.lsp4j.*;
-import org.junit.Test;
-
-import es.iti.wakamiti.lsp.internal.*;
 
 
 public class TestDiagnostics {

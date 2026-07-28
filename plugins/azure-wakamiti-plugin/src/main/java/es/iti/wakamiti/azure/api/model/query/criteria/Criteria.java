@@ -8,15 +8,15 @@
 package es.iti.wakamiti.azure.api.model.query.criteria;
 
 
-import es.iti.wakamiti.azure.api.model.query.Field;
-import es.iti.wakamiti.azure.internal.Util;
+import static es.iti.wakamiti.azure.internal.Util.path;
+import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.azure.internal.Util.path;
-import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
+import es.iti.wakamiti.azure.api.model.query.Field;
+import es.iti.wakamiti.azure.internal.Util;
 
 
 public class Criteria implements Expression {

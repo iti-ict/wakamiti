@@ -8,9 +8,9 @@
 package es.iti.wakamiti.api;
 
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 
 public class ResourceTest {

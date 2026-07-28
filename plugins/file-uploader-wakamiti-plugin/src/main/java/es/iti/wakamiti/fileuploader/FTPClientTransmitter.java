@@ -8,18 +8,22 @@
 package es.iti.wakamiti.fileuploader;
 
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.ResourceLoader;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPSClient;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPSClient;
 
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.ResourceLoader;
+
+
+/**
+ * Provides the FTPClient Transmitter functionality used by Wakamiti.
+ */
 public class FTPClientTransmitter implements FTPTransmitter {
 
     private final FTPClient ftpClient;

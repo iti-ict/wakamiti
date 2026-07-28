@@ -8,21 +8,22 @@
 package es.iti.wakamiti.junit;
 
 
-import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.api.BackendFactory;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiSkippedException;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import es.iti.wakamiti.api.imconfig.Configuration;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 
-import java.util.Objects;
-import java.util.Optional;
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiSkippedException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
+import es.iti.wakamiti.core.runner.PlanNodeRunner;
 
 
 /**

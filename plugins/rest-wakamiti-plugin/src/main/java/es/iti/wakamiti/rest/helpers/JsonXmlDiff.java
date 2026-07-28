@@ -8,16 +8,9 @@
 package es.iti.wakamiti.rest.helpers;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.github.fge.jackson.JsonNumEquivalence;
-import io.restassured.http.ContentType;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.rest.MatchMode;
-import org.junit.ComparisonFailure;
+import static es.iti.wakamiti.rest.MatchMode.LOOSE;
+import static es.iti.wakamiti.rest.MatchMode.STRICT;
+import static es.iti.wakamiti.rest.MatchMode.STRICT_ANY_ORDER;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -26,7 +19,17 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.rest.MatchMode.*;
+import org.junit.ComparisonFailure;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.github.fge.jackson.JsonNumEquivalence;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.rest.MatchMode;
+import io.restassured.http.ContentType;
 
 
 /**

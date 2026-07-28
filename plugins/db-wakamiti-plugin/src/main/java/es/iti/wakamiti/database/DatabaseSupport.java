@@ -8,16 +8,58 @@
 package es.iti.wakamiti.database;
 
 
+import static es.iti.wakamiti.database.DatabaseHelper.collectToMap;
+import static es.iti.wakamiti.database.DatabaseHelper.toMap;
+import static es.iti.wakamiti.database.DatabaseHelper.toPair;
+import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.awaitility.Awaitility.await;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLTimeoutException;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.Temporal;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.awaitility.Durations;
+import org.awaitility.core.ConditionTimeoutException;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.util.*;
+import es.iti.wakamiti.api.util.MapUtils;
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.dataset.DataSet;
 import es.iti.wakamiti.database.dataset.EmptyDataSet;
 import es.iti.wakamiti.database.dataset.MapDataSet;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
+import es.iti.wakamiti.database.jdbc.Call;
+import es.iti.wakamiti.database.jdbc.ConnectionProvider;
+import es.iti.wakamiti.database.jdbc.Database;
 import es.iti.wakamiti.database.jdbc.Record;
-import es.iti.wakamiti.database.jdbc.*;
+import es.iti.wakamiti.database.jdbc.Select;
+import es.iti.wakamiti.database.jdbc.Update;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
@@ -26,31 +68,6 @@ import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
-import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.awaitility.Durations;
-import org.awaitility.core.ConditionTimeoutException;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLTimeoutException;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.Temporal;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BooleanSupplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static es.iti.wakamiti.database.DatabaseHelper.*;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.awaitility.Awaitility.await;
 
 
 /**

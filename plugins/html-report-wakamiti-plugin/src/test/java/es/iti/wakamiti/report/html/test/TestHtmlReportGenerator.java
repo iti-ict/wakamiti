@@ -8,11 +8,17 @@
 package es.iti.wakamiti.report.html.test;
 
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.report.html.FilteredSnapshot;
-import es.iti.wakamiti.report.html.HtmlReportGenerator;
-import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
+import static org.xmlunit.assertj.XmlAssert.assertThat;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.custommonkey.xmlunit.HTMLDocumentBuilder;
 import org.custommonkey.xmlunit.TolerantSaxDocumentBuilder;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -21,15 +27,11 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.xmlunit.assertj.XmlAssert.assertThat;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.report.html.FilteredSnapshot;
+import es.iti.wakamiti.report.html.HtmlReportGenerator;
+import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
 
 
 public class TestHtmlReportGenerator {

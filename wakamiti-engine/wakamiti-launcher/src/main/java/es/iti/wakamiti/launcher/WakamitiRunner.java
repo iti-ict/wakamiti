@@ -8,14 +8,14 @@
 package es.iti.wakamiti.launcher;
 
 
+import java.net.URISyntaxException;
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.ConfigurationException;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
-
-import java.net.URISyntaxException;
 
 
 /**

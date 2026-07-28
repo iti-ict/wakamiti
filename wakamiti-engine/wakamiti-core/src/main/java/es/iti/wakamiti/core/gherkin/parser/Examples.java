@@ -8,11 +8,6 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
-import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.Node;
-import es.iti.wakamiti.core.gherkin.parser.TableRow;
-import es.iti.wakamiti.core.gherkin.parser.Tag;
-
 import java.util.Collections;
 import java.util.List;
 

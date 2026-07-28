@@ -8,20 +8,20 @@
 package es.iti.wakamiti.xray.test;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.core.JsonPlanSerializer;
-import es.iti.wakamiti.xray.XRaySynchronizer;
-import es.iti.wakamiti.xray.XrayConfigContributor;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.Instant;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.xray.XRaySynchronizer;
+import es.iti.wakamiti.xray.XrayConfigContributor;
 
 
 public class TestXRayReporter {

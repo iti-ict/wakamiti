@@ -8,22 +8,22 @@
 package es.iti.wakamiti.xray.test;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.JsonPlanSerializer;
 import es.iti.wakamiti.xray.XRaySynchronizer;
 import es.iti.wakamiti.xray.internal.Mapper;
 import es.iti.wakamiti.xray.model.TestCase;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class MapperTest {

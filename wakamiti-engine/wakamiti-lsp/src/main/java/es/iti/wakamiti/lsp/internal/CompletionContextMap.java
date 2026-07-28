@@ -8,9 +8,18 @@
 package es.iti.wakamiti.lsp.internal;
 
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
-import es.iti.wakamiti.core.gherkin.parser.*;
+import es.iti.wakamiti.core.gherkin.parser.Comment;
+import es.iti.wakamiti.core.gherkin.parser.CommentedNode;
+import es.iti.wakamiti.core.gherkin.parser.Feature;
+import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
+import es.iti.wakamiti.core.gherkin.parser.Location;
+import es.iti.wakamiti.core.gherkin.parser.Node;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
+import es.iti.wakamiti.core.gherkin.parser.Step;
 
 
 class CompletionContextMap {

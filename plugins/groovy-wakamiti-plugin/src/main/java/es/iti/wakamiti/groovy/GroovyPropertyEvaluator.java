@@ -8,11 +8,12 @@
 package es.iti.wakamiti.groovy;
 
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This {@link PropertyEvaluator} allows eval groovy script.

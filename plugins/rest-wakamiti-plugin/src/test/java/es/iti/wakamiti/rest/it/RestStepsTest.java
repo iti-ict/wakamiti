@@ -8,23 +8,26 @@
 package es.iti.wakamiti.rest.it;
 
 
-import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import es.iti.wakamiti.rest.RestConfigContributor;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
+import static es.iti.wakamiti.rest.RestConfigContributor.BASE_URL;
+import static es.iti.wakamiti.rest.TestUtil.prepare;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+
+import java.io.IOException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
 
-import java.io.IOException;
-
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static es.iti.wakamiti.rest.RestConfigContributor.BASE_URL;
-import static es.iti.wakamiti.rest.TestUtil.prepare;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.core.gherkin.GherkinResourceType;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
+import es.iti.wakamiti.rest.RestConfigContributor;
 
 
 @AnnotatedConfiguration({

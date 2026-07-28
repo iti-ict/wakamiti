@@ -8,12 +8,19 @@
 package es.iti.wakamiti.lsp;
 
 
-import java.util.concurrent.*;
-import java.util.function.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import es.iti.wakamiti.api.util.ThrowableFunction;
-import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
-import org.slf4j.*;
 
 
 public final class FutureUtil {

@@ -8,12 +8,15 @@
 package es.iti.wakamiti.fileuploader;
 
 
+import static java.lang.String.format;
+
+import java.util.Arrays;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 
-import java.util.Arrays;
 
 @Extension(
         provider = "es.iti.wakamiti",

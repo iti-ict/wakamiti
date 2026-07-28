@@ -8,9 +8,9 @@
 package es.iti.wakamiti.api;
 
 
-import java.util.Arrays;
-
 import static es.iti.wakamiti.api.util.StringUtils.format;
+
+import java.util.Arrays;
 
 
 /**

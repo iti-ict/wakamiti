@@ -8,12 +8,8 @@
 package es.iti.wakamiti.database.jdbc.format;
 
 
-import com.mdimension.jchronic.Chronic;
-import com.mdimension.jchronic.Options;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
-import es.iti.wakamiti.database.jdbc.WakamitiTimestamp;
-import org.apache.commons.lang3.BooleanUtils;
+import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
+import static java.util.Objects.isNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -23,8 +19,13 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
-import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
-import static java.util.Objects.isNull;
+import org.apache.commons.lang3.BooleanUtils;
+
+import com.mdimension.jchronic.Chronic;
+import com.mdimension.jchronic.Options;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.database.jdbc.WakamitiTimestamp;
 
 
 public class DefaultSqlFormat implements SqlFormat {

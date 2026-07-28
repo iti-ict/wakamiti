@@ -8,12 +8,12 @@
 package es.iti.wakamiti.azure.api.model;
 
 
+import java.util.List;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-
-import java.util.List;
-import java.util.Objects;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)

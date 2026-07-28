@@ -8,13 +8,13 @@
 package es.iti.wakamiti.report.allure;
 
 
+import java.nio.file.Path;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.PathUtil;
-
-import java.nio.file.Path;
 
 
 @Extension(

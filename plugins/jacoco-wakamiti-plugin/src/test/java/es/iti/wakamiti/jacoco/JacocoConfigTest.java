@@ -8,16 +8,17 @@
 package es.iti.wakamiti.jacoco;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 public class JacocoConfigTest {

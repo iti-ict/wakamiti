@@ -8,11 +8,12 @@
 package es.iti.wakamiti.fileuploader;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @I18nResource("steps/test-wakamiti-steps")

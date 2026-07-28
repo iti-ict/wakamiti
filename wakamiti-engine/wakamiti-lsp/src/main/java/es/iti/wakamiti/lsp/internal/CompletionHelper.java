@@ -11,9 +11,12 @@ package es.iti.wakamiti.lsp.internal;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.CompletionItem;
+import org.eclipse.lsp4j.CompletionItemKind;
+import org.eclipse.lsp4j.InsertTextFormat;
 import org.slf4j.Logger;
 
 

@@ -8,11 +8,10 @@
 package es.iti.wakamiti.api.event;
 
 
-import es.iti.wakamiti.api.extensions.EventObserver;
-
 import java.time.Clock;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import es.iti.wakamiti.api.extensions.EventObserver;
 
 
 /**

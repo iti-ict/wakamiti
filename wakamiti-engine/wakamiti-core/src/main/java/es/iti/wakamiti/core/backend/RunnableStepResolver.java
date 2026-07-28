@@ -8,18 +8,18 @@
 package es.iti.wakamiti.core.backend;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.util.Either;
-import es.iti.wakamiti.api.util.Pair;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
+
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.util.Either;
+import es.iti.wakamiti.api.util.Pair;
 
 
 /**

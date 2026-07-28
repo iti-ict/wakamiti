@@ -8,12 +8,12 @@
 package es.iti.wakamiti.junit5;
 
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
+
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-
-import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 
 
 @AnnotatedConfiguration({

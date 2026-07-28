@@ -8,17 +8,38 @@
 package es.iti.wakamiti.core.maven;
 
 
-import es.iti.wakamiti.core.maven.internal.MavenArtifactFetcher;
-import es.iti.wakamiti.core.maven.internal.MavenTransferListener;
+import static es.iti.wakamiti.core.maven.MavenFetcherProperties.LOCAL_REPOSITORY;
+import static es.iti.wakamiti.core.maven.MavenFetcherProperties.PROXY_EXCEPTIONS;
+import static es.iti.wakamiti.core.maven.MavenFetcherProperties.PROXY_PASSWORD;
+import static es.iti.wakamiti.core.maven.MavenFetcherProperties.PROXY_URL;
+import static es.iti.wakamiti.core.maven.MavenFetcherProperties.PROXY_USERNAME;
+import static es.iti.wakamiti.core.maven.MavenFetcherProperties.REMOTE_REPOSITORIES;
+import static es.iti.wakamiti.core.maven.MavenFetcherProperties.USE_DEFAULT_REMOTE_REPOSITORY;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Properties;
+
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.DefaultArtifactType;
+import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.collection.DependencyGraphTransformer;
 import org.eclipse.aether.collection.DependencyManager;
 import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.collection.DependencyTraverser;
-import org.eclipse.aether.collection.DependencyCollectionException;
-import org.eclipse.aether.repository.*;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.repository.Proxy;
+import org.eclipse.aether.repository.ProxySelector;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.supplier.RepositorySystemSupplier;
 import org.eclipse.aether.util.artifact.DefaultArtifactTypeRegistry;
@@ -40,15 +61,10 @@ import org.eclipse.aether.util.repository.DefaultProxySelector;
 import org.eclipse.aether.util.repository.SimpleArtifactDescriptorPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import es.iti.wakamiti.core.maven.internal.MavenArtifactFetcher;
+import es.iti.wakamiti.core.maven.internal.MavenTransferListener;
 import slf4jansi.AnsiLogger;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.core.maven.MavenFetcherProperties.*;
 
 
 /**

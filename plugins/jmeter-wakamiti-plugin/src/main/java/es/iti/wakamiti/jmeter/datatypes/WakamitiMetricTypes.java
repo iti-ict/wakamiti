@@ -8,16 +8,20 @@
 package es.iti.wakamiti.jmeter.datatypes;
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.DataTypeContributor;
 import es.iti.wakamiti.jmeter.Metric;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @Extension(

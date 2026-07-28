@@ -8,19 +8,24 @@
 package es.iti.wakamiti.xray.api;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.jayway.jsonpath.TypeRef;
-import es.iti.wakamiti.xray.model.*;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.util.JsonUtils.read;
 
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.util.JsonUtils.read;
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.jsonpath.TypeRef;
+import es.iti.wakamiti.xray.model.JiraIssue;
+import es.iti.wakamiti.xray.model.TestCase;
+import es.iti.wakamiti.xray.model.TestExecution;
+import es.iti.wakamiti.xray.model.TestPlan;
+import es.iti.wakamiti.xray.model.TestRun;
+import es.iti.wakamiti.xray.model.TestSet;
 
 
 public class XRayApi extends BaseApi {

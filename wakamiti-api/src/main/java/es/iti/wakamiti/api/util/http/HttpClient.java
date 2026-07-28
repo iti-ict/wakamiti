@@ -8,14 +8,14 @@
 package es.iti.wakamiti.api.util.http;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.JsonUtils;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.api.util.MapUtils.entry;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.api.util.PathUtil.encodeURI;
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -25,7 +25,12 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,14 +40,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.util.JsonUtils.json;
-import static es.iti.wakamiti.api.util.MapUtils.entry;
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static es.iti.wakamiti.api.util.PathUtil.encodeURI;
-import static es.iti.wakamiti.api.util.StringUtils.format;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
+import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.JsonUtils;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF> {

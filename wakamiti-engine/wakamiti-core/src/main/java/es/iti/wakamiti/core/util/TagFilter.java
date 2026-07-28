@@ -8,11 +8,10 @@
 package es.iti.wakamiti.core.util;
 
 
+import java.util.Collection;
+
 import io.cucumber.tagexpressions.Expression;
 import io.cucumber.tagexpressions.TagExpressionParser;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 
 /**

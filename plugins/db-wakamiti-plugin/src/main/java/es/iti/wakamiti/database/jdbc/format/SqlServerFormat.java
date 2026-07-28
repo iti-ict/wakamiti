@@ -8,9 +8,9 @@
 package es.iti.wakamiti.database.jdbc.format;
 
 
-import java.sql.JDBCType;
-
 import static java.util.Objects.isNull;
+
+import java.sql.JDBCType;
 
 
 public class SqlServerFormat extends DefaultSqlFormat {

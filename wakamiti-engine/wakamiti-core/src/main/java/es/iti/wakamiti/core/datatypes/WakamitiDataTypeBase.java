@@ -8,16 +8,16 @@
 package es.iti.wakamiti.core.datatypes;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.ThrowableFunction;
 
 
 /**

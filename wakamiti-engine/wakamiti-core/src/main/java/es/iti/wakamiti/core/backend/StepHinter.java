@@ -8,18 +8,23 @@
 package es.iti.wakamiti.core.backend;
 
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import es.iti.wakamiti.api.Hinter;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.core.util.StringDistance;
 import es.iti.wakamiti.api.imconfig.Configuration;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
+import es.iti.wakamiti.core.util.StringDistance;
 
 
 /**

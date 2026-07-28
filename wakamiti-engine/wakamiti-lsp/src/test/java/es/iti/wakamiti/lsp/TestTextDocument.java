@@ -12,13 +12,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.regex.Pattern;
 
-import es.iti.wakamiti.lsp.internal.TextDocument;
-import es.iti.wakamiti.lsp.internal.TextRange;
-import es.iti.wakamiti.lsp.internal.TextSegment;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import es.iti.wakamiti.lsp.internal.*;
+import es.iti.wakamiti.lsp.internal.TextDocument;
+import es.iti.wakamiti.lsp.internal.TextRange;
+import es.iti.wakamiti.lsp.internal.TextSegment;
 
 
 public class TestTextDocument {

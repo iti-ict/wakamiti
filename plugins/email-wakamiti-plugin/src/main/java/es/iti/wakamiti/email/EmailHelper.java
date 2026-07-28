@@ -8,27 +8,41 @@
 package es.iti.wakamiti.email;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.awaitility.Awaitility;
-import org.awaitility.Durations;
-import org.slf4j.Logger;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.mail.*;
+import javax.mail.BodyPart;
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Part;
+import javax.mail.Session;
+import javax.mail.Store;
 import javax.mail.event.MessageCountAdapter;
 import javax.mail.event.MessageCountEvent;
 import javax.mail.event.MessageCountListener;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.search.FlagTerm;
 import javax.mail.search.SearchTerm;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.ThrowableFunction;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 public class EmailHelper {

@@ -8,6 +8,19 @@
 package es.iti.wakamiti.rest;
 
 
+import static io.restassured.internal.common.assertion.AssertParameter.notNull;
+
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.time.Duration;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.hamcrest.Matchers;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
@@ -21,19 +34,6 @@ import io.restassured.RestAssured;
 import io.restassured.config.Config;
 import io.restassured.config.LogConfig;
 import io.restassured.config.RestAssuredConfig;
-import org.hamcrest.Matchers;
-
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static io.restassured.internal.common.assertion.AssertParameter.notNull;
 
 
 /**

@@ -8,17 +8,16 @@
 package es.iti.wakamiti.appium;
 
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidDriver;
-import es.iti.wakamiti.api.WakamitiException;
-
+import java.net.MalformedURLException;
+import java.net.URI;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.slf4j.Logger;
 
-import java.net.MalformedURLException;
-import java.net.URI;
+import es.iti.wakamiti.api.WakamitiException;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidDriver;
 
 
 public class DriverHelperFactory {

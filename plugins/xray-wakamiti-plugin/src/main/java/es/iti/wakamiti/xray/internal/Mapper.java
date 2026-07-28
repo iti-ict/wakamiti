@@ -8,13 +8,13 @@
 package es.iti.wakamiti.xray.internal;
 
 
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.plan.PlanSerializer;
-import es.iti.wakamiti.api.util.MapUtils;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.xray.model.JiraIssue;
-import es.iti.wakamiti.xray.model.TestCase;
-import es.iti.wakamiti.xray.model.TestSet;
+import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_FEATURE;
+import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_SCENARIO;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -26,11 +26,12 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_FEATURE;
-import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_SCENARIO;
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.join;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.MapUtils;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.xray.model.JiraIssue;
+import es.iti.wakamiti.xray.model.TestCase;
+import es.iti.wakamiti.xray.model.TestSet;
 
 
 public abstract class Mapper {

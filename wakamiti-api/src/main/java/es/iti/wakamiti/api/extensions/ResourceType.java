@@ -8,12 +8,12 @@
 package es.iti.wakamiti.api.extensions;
 
 
-import es.iti.commons.jext.ExtensionPoint;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+
+import es.iti.commons.jext.ExtensionPoint;
 
 
 /**

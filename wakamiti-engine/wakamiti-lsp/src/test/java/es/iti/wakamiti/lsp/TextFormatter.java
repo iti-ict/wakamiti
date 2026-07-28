@@ -8,11 +8,11 @@
 package es.iti.wakamiti.lsp;
 
 
-import es.iti.wakamiti.lsp.internal.GherkinDocumentMap;
-import es.iti.wakamiti.lsp.internal.GherkinFormatter;
-
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import es.iti.wakamiti.lsp.internal.GherkinDocumentMap;
+import es.iti.wakamiti.lsp.internal.GherkinFormatter;
 
 
 public class TextFormatter {

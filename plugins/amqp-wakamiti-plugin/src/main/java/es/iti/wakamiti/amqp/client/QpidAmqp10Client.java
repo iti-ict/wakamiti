@@ -5,22 +5,31 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp.client;
 
-
-import es.iti.wakamiti.amqp.AmqpConnectionParams;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import jakarta.jms.*;
-import org.apache.qpid.jms.JmsConnectionFactory;
-import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import jakarta.jms.BytesMessage;
+import jakarta.jms.Connection;
+import jakarta.jms.DeliveryMode;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
+
+import org.apache.qpid.jms.JmsConnectionFactory;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.amqp.AmqpConnectionParams;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 /**

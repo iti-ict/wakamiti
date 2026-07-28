@@ -8,19 +8,17 @@
 package es.iti.wakamiti.jmeter;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.annotations.I18nResource;
-import es.iti.wakamiti.api.annotations.Step;
-import es.iti.wakamiti.api.util.http.oauth.GrantType;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.extensions.StepContributor;
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.ResourceLoader;
-import org.apache.http.entity.ContentType;
-import org.apache.jmeter.assertions.AssertionResult;
-import us.abstracta.jmeter.javadsl.core.configs.DslVariables;
-import us.abstracta.jmeter.javadsl.core.postprocessors.DslJsonExtractor;
+import static es.iti.wakamiti.jmeter.JMeterConfigContributor.PASSWORD;
+import static es.iti.wakamiti.jmeter.JMeterConfigContributor.USERNAME;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.boundaryExtractor;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.csvDataSet;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.httpCache;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.httpCookies;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.jsonExtractor;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.jsr223PostProcessor;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.regexExtractor;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.vars;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,10 +27,20 @@ import java.time.Duration;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static es.iti.wakamiti.jmeter.JMeterConfigContributor.PASSWORD;
-import static es.iti.wakamiti.jmeter.JMeterConfigContributor.USERNAME;
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
-import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
+import org.apache.http.entity.ContentType;
+import org.apache.jmeter.assertions.AssertionResult;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.Step;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
+import us.abstracta.jmeter.javadsl.core.configs.DslVariables;
+import us.abstracta.jmeter.javadsl.core.postprocessors.DslJsonExtractor;
 
 
 /**

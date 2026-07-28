@@ -8,9 +8,9 @@
 package es.iti.wakamiti.api;
 
 
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 /**

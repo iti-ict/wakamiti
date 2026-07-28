@@ -8,16 +8,14 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.Resource;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.extensions.PropertyEvaluator;
-import es.iti.wakamiti.api.extensions.ResourceType;
-import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.CharArrayReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -29,10 +27,29 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.http.entity.ContentType;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.Resource;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
+import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 
 
 /**

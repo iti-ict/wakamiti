@@ -8,15 +8,25 @@
 package es.iti.wakamiti.lsp.internal;
 
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.eclipse.lsp4j.CodeAction;
+import org.eclipse.lsp4j.CompletionItem;
+import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.DocumentSymbol;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.Range;
+import org.yaml.snakeyaml.Yaml;
 
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.util.Pair;
-import org.eclipse.lsp4j.*;
-import org.yaml.snakeyaml.Yaml;
 
 
 public class GherkinWorkspace {

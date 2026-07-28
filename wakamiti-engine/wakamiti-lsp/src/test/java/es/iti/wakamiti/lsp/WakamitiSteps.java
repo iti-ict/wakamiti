@@ -8,7 +8,6 @@
 package es.iti.wakamiti.lsp;
 
 
-import es.iti.wakamiti.api.annotations.*;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.datatypes.Assertion;

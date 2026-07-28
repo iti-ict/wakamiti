@@ -8,13 +8,12 @@
 package es.iti.wakamiti.azure.api.model.query;
 
 
-import es.iti.wakamiti.azure.api.model.query.criteria.Expression;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.join;
+import es.iti.wakamiti.azure.api.model.query.criteria.Expression;
 
 
 /**

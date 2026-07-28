@@ -8,12 +8,7 @@
 package es.iti.wakamiti.plugins.cucumber.test;
 
 
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.core.JsonPlanSerializer;
-import es.iti.wakamiti.plugins.cucumber.CucumberExporter;
-import net.masterthought.cucumber.Configuration;
-import net.masterthought.cucumber.ReportBuilder;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +16,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.core.JsonPlanSerializer;
+import es.iti.wakamiti.plugins.cucumber.CucumberExporter;
+import net.masterthought.cucumber.Configuration;
+import net.masterthought.cucumber.ReportBuilder;
 
 
 public class TestCucumberExport {

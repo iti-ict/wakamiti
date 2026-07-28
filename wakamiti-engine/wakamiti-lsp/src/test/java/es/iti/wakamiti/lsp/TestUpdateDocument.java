@@ -10,13 +10,13 @@ package es.iti.wakamiti.lsp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.stream.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.junit.Test;
 
 import es.iti.wakamiti.lsp.internal.GherkinDocumentAssessor;
 import es.iti.wakamiti.lsp.internal.TextRange;
-import org.junit.Test;
-
-import es.iti.wakamiti.lsp.internal.*;
 
 
 public class TestUpdateDocument {

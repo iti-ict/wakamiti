@@ -15,13 +15,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Executors;
 
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.WakamitiException;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import es.iti.wakamiti.api.*;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 public class TcpSocketLanguageServer {

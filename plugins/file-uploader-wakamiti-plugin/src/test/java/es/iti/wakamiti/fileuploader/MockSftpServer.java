@@ -8,11 +8,7 @@
 package es.iti.wakamiti.fileuploader;
 
 
-import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
-import org.apache.sshd.server.SshServer;
-import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.apache.sshd.server.session.ServerSession;
-import org.apache.sshd.sftp.server.SftpSubsystemFactory;
+import static java.util.Collections.singletonList;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -22,7 +18,11 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
+import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
+import org.apache.sshd.server.SshServer;
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.sftp.server.SftpSubsystemFactory;
 
 
 public class MockSftpServer {

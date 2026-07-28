@@ -8,6 +8,14 @@
 package es.iti.wakamiti.rest.log;
 
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
 import io.restassured.http.ContentType;
@@ -17,13 +25,6 @@ import io.restassured.internal.support.Prettifier;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**

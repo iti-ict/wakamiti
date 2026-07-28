@@ -8,13 +8,13 @@
 package es.iti.wakamiti.rest;
 
 
+import es.iti.commons.jext.ExtensionPoint;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.plan.Document;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import es.iti.commons.jext.ExtensionPoint;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.plan.Document;
 
 
 /**

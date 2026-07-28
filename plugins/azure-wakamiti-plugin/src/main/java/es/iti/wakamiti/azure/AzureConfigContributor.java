@@ -8,26 +8,21 @@
 package es.iti.wakamiti.azure;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.extensions.ConfigContributor;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.Configurer;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.azure.api.model.TestPlan;
-import es.iti.wakamiti.azure.internal.Util;
+import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Consumer;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.ID_TAG_PATTERN;
-import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.azure.api.model.TestPlan;
 
 
 @Extension(

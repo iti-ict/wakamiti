@@ -8,14 +8,15 @@
 package es.iti.wakamiti.test.gherkin;
 
 
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Test;
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Locale;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 public class TestNonRunnableBackend {

@@ -8,23 +8,16 @@
 package es.iti.wakamiti.xray.api;
 
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.xray.model.Attachment;
-import es.iti.wakamiti.xray.model.TestCase;
-import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
-
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static es.iti.wakamiti.api.util.JsonUtils.json;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.xray.model.TestCase;
 
 
 public class JiraApi extends BaseApi {

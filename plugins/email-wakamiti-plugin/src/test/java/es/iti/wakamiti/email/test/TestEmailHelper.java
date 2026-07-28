@@ -8,25 +8,32 @@
 package es.iti.wakamiti.email.test;
 
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+
+import jakarta.mail.Flags;
+import jakarta.mail.internet.MimeMessage;
+
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 import es.iti.wakamiti.email.EmailHelper;
-import jakarta.mail.Flags;
-import jakarta.mail.internet.MimeMessage;
-import org.awaitility.Awaitility;
-import org.awaitility.Durations;
-import org.junit.*;
-import java.time.Duration;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Stream;
 
 
 public class TestEmailHelper {

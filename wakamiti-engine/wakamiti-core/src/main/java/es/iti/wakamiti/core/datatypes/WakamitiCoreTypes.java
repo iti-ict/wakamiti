@@ -8,10 +8,8 @@
 package es.iti.wakamiti.core.datatypes;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.extensions.DataTypeContributor;
+import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromBigDecimal;
+import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromNumber;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -23,8 +21,10 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromBigDecimal;
-import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromNumber;
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.extensions.DataTypeContributor;
 
 
 /**

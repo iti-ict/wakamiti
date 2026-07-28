@@ -20,8 +20,6 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialectProvider;
 import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
 import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan;
-import es.iti.wakamiti.core.gherkin.parser.internal.Token;
 
 
 public class TokenMatcher implements ITokenMatcher {

@@ -8,14 +8,19 @@
 package es.iti.wakamiti.api.datatypes;
 
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+
+import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ResourceLoader;
-import es.iti.wakamiti.api.ExpressionMatcher;
-
-
-import java.util.*;
-import java.util.regex.Pattern;
 
 
 /**

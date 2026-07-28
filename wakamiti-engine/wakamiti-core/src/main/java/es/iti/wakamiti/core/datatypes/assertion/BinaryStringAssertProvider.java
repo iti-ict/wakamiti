@@ -8,17 +8,32 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
-import es.iti.wakamiti.api.ExpressionMatcher;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
+import static es.iti.wakamiti.api.util.MapUtils.entry;
+import static es.iti.wakamiti.api.util.MapUtils.mapEntries;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.endsWithIgnoringCase;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.startsWithIgnoringCase;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.util.MapUtils.*;
-import static org.hamcrest.Matchers.*;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+import es.iti.wakamiti.api.ExpressionMatcher;
 
 
 /**

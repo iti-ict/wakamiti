@@ -8,11 +8,11 @@
 package es.iti.wakamiti.database;
 
 
-import es.iti.commons.jext.ExtensionPoint;
-import es.iti.wakamiti.api.extensions.Contributor;
-
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import es.iti.commons.jext.ExtensionPoint;
+import es.iti.wakamiti.api.extensions.Contributor;
 
 
 /**

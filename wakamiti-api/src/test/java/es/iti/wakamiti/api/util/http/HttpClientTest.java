@@ -8,8 +8,21 @@
 package es.iti.wakamiti.api.util.http;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import es.iti.wakamiti.api.WakamitiException;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.Parameter.param;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.codec.binary.Base64;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,19 +38,8 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
-import javax.net.ssl.SSLContext;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.Parameter.param;
+import com.fasterxml.jackson.databind.JsonNode;
+import es.iti.wakamiti.api.WakamitiException;
 
 
 public class HttpClientTest {

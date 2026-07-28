@@ -8,6 +8,10 @@
 package es.iti.wakamiti.junit5;
 
 
+import java.lang.reflect.Modifier;
+import java.util.Optional;
+import java.util.function.Predicate;
+
 import org.junit.platform.commons.support.ReflectionSupport;
 import org.junit.platform.engine.EngineDiscoveryRequest;
 import org.junit.platform.engine.EngineExecutionListener;
@@ -22,10 +26,6 @@ import org.junit.platform.engine.discovery.ModuleSelector;
 import org.junit.platform.engine.discovery.PackageSelector;
 import org.junit.platform.engine.discovery.UniqueIdSelector;
 import org.junit.platform.engine.support.descriptor.EngineDescriptor;
-
-import java.lang.reflect.Modifier;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 
 /**

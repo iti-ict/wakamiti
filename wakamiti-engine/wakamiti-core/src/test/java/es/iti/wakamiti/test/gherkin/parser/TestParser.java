@@ -8,17 +8,18 @@
 package es.iti.wakamiti.test.gherkin.parser;
 
 
-import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
-import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
-import es.iti.wakamiti.core.gherkin.parser.ParserException;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.Test;
+
+import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
+import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
+import es.iti.wakamiti.core.gherkin.parser.ParserException;
 
 
 public class TestParser {

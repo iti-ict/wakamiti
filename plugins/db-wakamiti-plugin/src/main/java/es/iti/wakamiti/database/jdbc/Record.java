@@ -8,9 +8,9 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import groovy.transform.Generated;
-
 import java.util.Arrays;
+
+import groovy.transform.Generated;
 
 
 /**

@@ -8,13 +8,23 @@
 package es.iti.wakamiti.azure;
 
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_API_VERSION;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ATTACHMENTS;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_AUTH_TOKEN;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_BASE_URL;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_CONFIGURATION;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ORGANIZATION;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_PLAN_AREA;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_PLAN_ITERATION;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_PLAN_NAME;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_PROJECT;
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_SUITE_BASE;
+
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import org.junit.runner.RunWith;
-
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static es.iti.wakamiti.azure.AzureConfigContributor.*;
 
 
 @AnnotatedConfiguration({

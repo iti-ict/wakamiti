@@ -8,15 +8,8 @@
 package es.iti.wakamiti.amqp;
 
 
-import es.iti.wakamiti.amqp.client.AmqpClient;
-import es.iti.wakamiti.amqp.client.QpidAmqp10Client;
-import es.iti.wakamiti.amqp.client.RabbitMqAmqp091Client;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.awaitility.Durations;
-import org.awaitility.core.ConditionTimeoutException;
-import org.slf4j.Logger;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
+import static org.awaitility.Awaitility.await;
 
 import java.io.File;
 import java.time.Duration;
@@ -28,8 +21,16 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
-import static org.awaitility.Awaitility.await;
+import org.awaitility.Durations;
+import org.awaitility.core.ConditionTimeoutException;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.amqp.client.AmqpClient;
+import es.iti.wakamiti.amqp.client.QpidAmqp10Client;
+import es.iti.wakamiti.amqp.client.RabbitMqAmqp091Client;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 /**

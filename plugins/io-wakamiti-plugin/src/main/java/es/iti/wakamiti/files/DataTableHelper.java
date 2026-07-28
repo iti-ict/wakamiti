@@ -8,8 +8,6 @@
 package es.iti.wakamiti.files;
 
 
-import es.iti.wakamiti.api.plan.DataTable;
-
 import java.text.MessageFormat;
 import java.time.temporal.ValueRange;
 import java.util.Arrays;
@@ -17,6 +15,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import es.iti.wakamiti.api.plan.DataTable;
 
 
 public class DataTableHelper {

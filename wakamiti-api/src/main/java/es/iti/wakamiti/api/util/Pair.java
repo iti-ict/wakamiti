@@ -8,14 +8,13 @@
 package es.iti.wakamiti.api.util;
 
 
+import static es.iti.wakamiti.api.util.MapUtils.entry;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.api.util.MapUtils.entry;
 
 
 /**

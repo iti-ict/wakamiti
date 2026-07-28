@@ -8,13 +8,13 @@
 package es.iti.wakamiti.api.imconfig.internal;
 
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-
-import static java.util.Objects.requireNonNull;
 
 
 /**

@@ -8,16 +8,16 @@
 package es.iti.wakamiti.core.gherkin;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.extensions.ResourceType;
-import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
-import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
+import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
 
 
 /**

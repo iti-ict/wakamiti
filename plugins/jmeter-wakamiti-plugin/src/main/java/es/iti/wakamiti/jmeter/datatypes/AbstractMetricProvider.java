@@ -8,6 +8,16 @@
 package es.iti.wakamiti.jmeter.datatypes;
 
 
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.datatypes.AbstractProvider;
@@ -15,10 +25,6 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.jmeter.Metric;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 
 public abstract class AbstractMetricProvider extends AbstractProvider {

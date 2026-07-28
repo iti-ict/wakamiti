@@ -8,17 +8,21 @@
 package es.iti.wakamiti.core.maven.internal;
 
 
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import es.iti.wakamiti.core.maven.FetchedArtifact;
-import es.iti.wakamiti.core.maven.MavenFetchResult;
+
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.collection.CollectResult;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.repository.LocalRepositoryManager;
+
+import es.iti.wakamiti.core.maven.FetchedArtifact;
+import es.iti.wakamiti.core.maven.MavenFetchResult;
 
 
 public class MavenFetchResultImpl implements MavenFetchResult {

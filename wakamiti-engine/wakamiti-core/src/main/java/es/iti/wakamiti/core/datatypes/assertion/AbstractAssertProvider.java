@@ -8,17 +8,18 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.api.datatypes.AbstractProvider;
-import org.hamcrest.Matcher;
-
 import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+import org.hamcrest.Matcher;
+
+import es.iti.wakamiti.api.datatypes.AbstractProvider;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.ThrowableFunction;
 
 
 /**

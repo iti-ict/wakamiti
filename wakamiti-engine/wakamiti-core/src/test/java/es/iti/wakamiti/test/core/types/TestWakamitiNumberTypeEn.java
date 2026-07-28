@@ -8,15 +8,16 @@
 package es.iti.wakamiti.test.core.types;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Assert;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 
 
 public class TestWakamitiNumberTypeEn {

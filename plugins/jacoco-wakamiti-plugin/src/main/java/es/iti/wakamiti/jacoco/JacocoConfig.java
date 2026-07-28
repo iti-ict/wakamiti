@@ -8,6 +8,9 @@
 package es.iti.wakamiti.jacoco;
 
 
+import java.nio.file.Path;
+import java.util.function.Consumer;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
@@ -15,8 +18,6 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.PathUtil;
 
-import java.nio.file.Path;
-import java.util.function.Consumer;
 
 @Extension(
         provider = "es.iti.wakamiti",

@@ -8,10 +8,10 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-
 import java.util.Objects;
 import java.util.function.BiFunction;
+
+import es.iti.wakamiti.api.WakamitiException;
 
 
 /**

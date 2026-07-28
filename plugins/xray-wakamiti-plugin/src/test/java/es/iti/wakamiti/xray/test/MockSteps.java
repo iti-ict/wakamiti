@@ -8,11 +8,11 @@
 package es.iti.wakamiti.xray.test;
 
 
+import java.util.Random;
+
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
-
-import java.util.Random;
 
 
 @I18nResource("mock-steps")

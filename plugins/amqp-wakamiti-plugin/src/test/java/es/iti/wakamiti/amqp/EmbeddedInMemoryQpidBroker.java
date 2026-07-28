@@ -8,21 +8,16 @@
 package es.iti.wakamiti.amqp;
 
 
-import org.apache.qpid.server.SystemLauncher;
-import org.apache.qpid.server.configuration.IllegalConfigurationException;
-import org.apache.qpid.server.model.SystemConfig;
-import org.slf4j.Logger;
-
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import org.apache.qpid.server.SystemLauncher;
+import org.apache.qpid.server.configuration.IllegalConfigurationException;
+import org.apache.qpid.server.model.SystemConfig;
 
 
 public class EmbeddedInMemoryQpidBroker {
-
-    public static final Logger logger = getLogger(EmbeddedInMemoryQpidBroker.class);
 
     private static final String DEFAULT_INITIAL_CONFIGURATION_LOCATION = "qpid-embedded-inmemory-configuration.json";
 

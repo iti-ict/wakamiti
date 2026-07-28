@@ -8,18 +8,17 @@
 package es.iti.wakamiti.azure;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.internal.Util;
-import org.junit.Test;
-import org.slf4j.Logger;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.TimeZone;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.azure.internal.Util;
 
 
 public class TestUtil {

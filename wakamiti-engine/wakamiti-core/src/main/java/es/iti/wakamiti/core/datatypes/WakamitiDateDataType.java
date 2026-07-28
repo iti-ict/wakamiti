@@ -8,8 +8,8 @@
 package es.iti.wakamiti.core.datatypes;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.core.util.TokenParser;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.core.datatypes.WakamitiCoreTypes.PROPERTY_REGEX;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,12 +21,19 @@ import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalQuery;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static es.iti.wakamiti.core.datatypes.WakamitiCoreTypes.PROPERTY_REGEX;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.core.util.TokenParser;
 
 
 /**

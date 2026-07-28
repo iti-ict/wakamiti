@@ -8,21 +8,26 @@
 package es.iti.wakamiti.maven;
 
 
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.maven.utils.ProjectStub;
-import es.iti.wakamiti.maven.utils.WakamitiAbstractMojoTest;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.MojoExecutionException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecutionException;
+
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.maven.utils.ProjectStub;
+import es.iti.wakamiti.maven.utils.WakamitiAbstractMojoTest;
 
 
 public class WakamitiReportMojoTest extends WakamitiAbstractMojoTest {

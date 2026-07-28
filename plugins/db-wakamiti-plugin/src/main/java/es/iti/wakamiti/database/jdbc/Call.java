@@ -8,7 +8,7 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.database.exception.SQLRuntimeException;
+import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
+import es.iti.wakamiti.database.exception.SQLRuntimeException;
 
 
 /**

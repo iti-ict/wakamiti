@@ -8,12 +8,12 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.datatypes.Assertion;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 
+import es.iti.wakamiti.api.datatypes.Assertion;
 
 
 /**

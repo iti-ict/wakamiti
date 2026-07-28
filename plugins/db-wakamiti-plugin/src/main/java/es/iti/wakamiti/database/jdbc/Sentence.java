@@ -8,10 +8,10 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.database.exception.SQLRuntimeException;
-
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import es.iti.wakamiti.database.exception.SQLRuntimeException;
 
 
 /**

@@ -7,8 +7,6 @@
  */
 package es.iti.wakamiti.core.gherkin.parser;
 
-import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.Node;
 
 /**
  * Provides the Doc String functionality used by Wakamiti.

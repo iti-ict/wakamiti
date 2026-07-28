@@ -8,6 +8,15 @@
 package es.iti.wakamiti.modbus;
 
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+
 import com.intelligt.modbus.jlibmodbus.exception.ModbusIOException;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMaster;
 import com.intelligt.modbus.jlibmodbus.master.ModbusMasterTCP;
@@ -20,14 +29,6 @@ import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
-
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 @Extension(

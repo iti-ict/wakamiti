@@ -10,6 +10,7 @@ package es.iti.wakamiti.lsp.internal;
 
 import org.eclipse.lsp4j.Range;
 
+
 public class DocumentSegment {
 
     private final String uri;

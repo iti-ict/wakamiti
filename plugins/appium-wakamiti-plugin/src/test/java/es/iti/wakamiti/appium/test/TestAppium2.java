@@ -8,9 +8,9 @@
 package es.iti.wakamiti.appium.test;
 
 
+import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.appium.AppiumConfigContributor;
 
 

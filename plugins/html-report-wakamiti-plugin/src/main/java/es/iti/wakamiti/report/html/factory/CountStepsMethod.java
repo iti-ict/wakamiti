@@ -8,14 +8,14 @@
 package es.iti.wakamiti.report.html.factory;
 
 
+import java.util.List;
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateMethodModelEx;
-
-import java.util.List;
 
 
 public class CountStepsMethod implements TemplateMethodModelEx {

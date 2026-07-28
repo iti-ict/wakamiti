@@ -8,12 +8,16 @@
 package es.iti.wakamiti.api.imconfig.types.internal;
 
 
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import es.iti.wakamiti.api.imconfig.PropertyType;
-import es.iti.wakamiti.api.imconfig.types.*;
-
 import java.util.List;
 import java.util.Map;
+
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.PropertyType;
+import es.iti.wakamiti.api.imconfig.types.BooleanPropertyType;
+import es.iti.wakamiti.api.imconfig.types.DecimalPropertyType;
+import es.iti.wakamiti.api.imconfig.types.EnumPropertyType;
+import es.iti.wakamiti.api.imconfig.types.IntegerPropertyType;
+import es.iti.wakamiti.api.imconfig.types.TextPropertyType;
 
 
 public final class PropertyTypeFactory {

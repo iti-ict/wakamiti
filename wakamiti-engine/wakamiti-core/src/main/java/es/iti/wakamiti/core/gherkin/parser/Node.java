@@ -7,7 +7,6 @@
  */
 package es.iti.wakamiti.core.gherkin.parser;
 
-import es.iti.wakamiti.core.gherkin.parser.Location;
 
 public abstract class Node {
 

@@ -8,18 +8,6 @@
 package es.iti.wakamiti.core;
 
 
-import es.iti.wakamiti.api.ClasspathAgent;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.core.maven.FetchedArtifact;
-import es.iti.wakamiti.core.maven.MavenFetchRequest;
-import es.iti.wakamiti.core.maven.MavenFetchResult;
-import es.iti.wakamiti.core.maven.MavenFetcher;
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
-import org.slf4j.Logger;
-import org.slf4j.helpers.NOPLogger;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,6 +19,19 @@ import java.util.List;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.helpers.NOPLogger;
+
+import es.iti.wakamiti.api.ClasspathAgent;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.core.maven.FetchedArtifact;
+import es.iti.wakamiti.core.maven.MavenFetchRequest;
+import es.iti.wakamiti.core.maven.MavenFetchResult;
+import es.iti.wakamiti.core.maven.MavenFetcher;
+import net.harawata.appdirs.AppDirs;
+import net.harawata.appdirs.AppDirsFactory;
 
 
 /**

@@ -8,8 +8,6 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
-import es.iti.wakamiti.core.gherkin.parser.Tag;
-
 import java.util.List;
 
 

@@ -8,18 +8,30 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.database.SQLParser;
-import es.iti.wakamiti.database.exception.SQLRuntimeException;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.util.MapUtils.entryCollector;
+import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
+import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.MapUtils.entryCollector;
-import static es.iti.wakamiti.database.jdbc.LogUtils.*;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.database.SQLParser;
+import es.iti.wakamiti.database.exception.SQLRuntimeException;
 
 
 /**

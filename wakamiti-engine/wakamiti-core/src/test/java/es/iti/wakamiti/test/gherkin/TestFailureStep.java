@@ -8,23 +8,30 @@
 package es.iti.wakamiti.test.gherkin;
 
 
-import es.iti.wakamiti.api.plan.*;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.core.JsonPlanSerializer;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Test;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.PlanSerializer;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.JsonPlanSerializer;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 
 
 public class TestFailureStep {

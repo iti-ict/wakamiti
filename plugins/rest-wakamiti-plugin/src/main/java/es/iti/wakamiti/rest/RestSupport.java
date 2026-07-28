@@ -8,12 +8,37 @@
 package es.iti.wakamiti.rest;
 
 
+import static es.iti.wakamiti.api.util.http.oauth.Oauth2Provider.ACCESS_TOKEN;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.io.File;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.xmlbeans.XmlObject;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.*;
+import es.iti.wakamiti.api.util.JsonUtils;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.api.util.ThrowableSupplier;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.api.util.XmlUtils;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
@@ -24,22 +49,6 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import org.apache.xmlbeans.XmlObject;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
-
-import java.io.File;
-import java.net.URL;
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static es.iti.wakamiti.api.util.http.oauth.Oauth2Provider.ACCESS_TOKEN;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**

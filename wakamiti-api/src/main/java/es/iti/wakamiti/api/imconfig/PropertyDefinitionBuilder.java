@@ -8,10 +8,14 @@
 package es.iti.wakamiti.api.imconfig;
 
 
-import es.iti.wakamiti.api.imconfig.types.*;
-
 import java.util.List;
 import java.util.Objects;
+
+import es.iti.wakamiti.api.imconfig.types.BooleanPropertyType;
+import es.iti.wakamiti.api.imconfig.types.DecimalPropertyType;
+import es.iti.wakamiti.api.imconfig.types.EnumPropertyType;
+import es.iti.wakamiti.api.imconfig.types.IntegerPropertyType;
+import es.iti.wakamiti.api.imconfig.types.TextPropertyType;
 
 
 /**

@@ -8,11 +8,6 @@
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
 
-import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan;
-import es.iti.wakamiti.core.gherkin.parser.internal.StringUtils;
-import es.iti.wakamiti.core.gherkin.parser.internal.Token;
-
-
 public class TokenFormatter {
 
     private static final StringUtils.ToString<GherkinLineSpan> SPAN_TO_STRING =

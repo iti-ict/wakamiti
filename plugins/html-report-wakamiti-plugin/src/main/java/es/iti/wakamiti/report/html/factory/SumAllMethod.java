@@ -8,16 +8,16 @@
 package es.iti.wakamiti.report.html.factory;
 
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Stream;
+
 import es.iti.wakamiti.api.WakamitiException;
 import freemarker.core.CollectionAndSequence;
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Stream;
 
 
 public class SumAllMethod implements TemplateMethodModelEx {

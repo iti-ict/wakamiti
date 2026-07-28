@@ -8,8 +8,14 @@
 package es.iti.wakamiti.api.util.http.oauth;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.JsonUtils;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -21,13 +27,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.api.util.JsonUtils.json;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.JsonUtils;
 
 
 public final class Oauth2Provider {

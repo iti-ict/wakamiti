@@ -8,9 +8,9 @@
 package es.iti.wakamiti.jmeter;
 
 
-import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;
-
 import java.util.function.Function;
+
+import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;
 
 
 public interface Metric<T> extends Function<StatsSummary, T> {

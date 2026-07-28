@@ -8,24 +8,24 @@
 package es.iti.wakamiti.azure.internal;
 
 
+import static es.iti.wakamiti.azure.api.model.TestSuite.SLASH_CODE;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.AzureSynchronizer;
 import es.iti.wakamiti.azure.api.model.TestCase;
 import es.iti.wakamiti.core.JsonPlanSerializer;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.azure.api.model.TestSuite.SLASH_CODE;
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class MapperTest {

@@ -8,15 +8,20 @@
 package es.iti.wakamiti.api.util.http;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.io.Serializable;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import com.fasterxml.jackson.databind.JsonNode;
 
+
+/**
+ * Defines the contract implemented by Http Client Interface.
+ *
+ * @param <SELF> the concrete client type
+ */
 public interface HttpClientInterface<SELF extends HttpClientInterface<SELF>> extends Serializable {
 
     String AUTHORIZATION = "Authorization";

@@ -8,18 +8,27 @@
 package es.iti.wakamiti.api;
 
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.extensions.*;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.extensions.Contributor;
+import es.iti.wakamiti.api.extensions.DataTypeContributor;
+import es.iti.wakamiti.api.extensions.EventObserver;
+import es.iti.wakamiti.api.extensions.PlanBuilder;
+import es.iti.wakamiti.api.extensions.PlanTransformer;
+import es.iti.wakamiti.api.extensions.Reporter;
+import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.api.util.Pair;
 
 
 public class WakamitiContributorsTest {

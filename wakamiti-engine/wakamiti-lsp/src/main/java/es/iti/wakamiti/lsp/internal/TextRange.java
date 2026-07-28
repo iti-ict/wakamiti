@@ -8,7 +8,8 @@
 package es.iti.wakamiti.lsp.internal;
 
 
-import org.eclipse.lsp4j.*;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.Range;
 
 
 public class TextRange {

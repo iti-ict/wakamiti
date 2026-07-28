@@ -8,11 +8,20 @@
 package es.iti.wakamiti.xray.test.api;
 
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.xray.api.JiraApi;
-import es.iti.wakamiti.xray.api.XRayApi;
-import es.iti.wakamiti.xray.model.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.StringBody.subString;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
@@ -26,20 +35,15 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.StringBody.subString;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.xray.api.JiraApi;
+import es.iti.wakamiti.xray.api.XRayApi;
+import es.iti.wakamiti.xray.model.JiraIssue;
+import es.iti.wakamiti.xray.model.TestCase;
+import es.iti.wakamiti.xray.model.TestExecution;
+import es.iti.wakamiti.xray.model.TestPlan;
+import es.iti.wakamiti.xray.model.TestSet;
 
 
 public class TestPlanApiTest {

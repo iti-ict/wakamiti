@@ -8,11 +8,12 @@
 package es.iti.wakamiti.api.extensions;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.commons.jext.ExtensionPoint;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import es.iti.commons.jext.Extension;
+import es.iti.commons.jext.ExtensionPoint;
 
 
 public class ContributorTest {

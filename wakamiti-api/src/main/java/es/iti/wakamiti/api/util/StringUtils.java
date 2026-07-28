@@ -8,13 +8,13 @@
 package es.iti.wakamiti.api.util;
 
 
+import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 
 public class StringUtils {

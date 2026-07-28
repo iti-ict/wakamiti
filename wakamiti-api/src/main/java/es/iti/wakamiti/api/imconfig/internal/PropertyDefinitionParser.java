@@ -8,17 +8,18 @@
 package es.iti.wakamiti.api.imconfig.internal;
 
 
-import es.iti.wakamiti.api.imconfig.*;
-import es.iti.wakamiti.api.imconfig.types.internal.PropertyTypeFactory;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+
+import org.yaml.snakeyaml.Yaml;
+
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.PropertyDefinition;
+import es.iti.wakamiti.api.imconfig.types.internal.PropertyTypeFactory;
 
 
 public class PropertyDefinitionParser {

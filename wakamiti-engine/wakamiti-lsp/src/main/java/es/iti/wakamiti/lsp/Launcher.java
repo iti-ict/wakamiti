@@ -9,11 +9,12 @@ package es.iti.wakamiti.lsp;
 
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.URISyntaxException;
 
 import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.*;
-import org.apache.logging.log4j.core.config.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 
 

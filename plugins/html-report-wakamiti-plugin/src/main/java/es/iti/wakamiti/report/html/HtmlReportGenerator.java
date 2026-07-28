@@ -8,6 +8,29 @@
 package es.iti.wakamiti.report.html;
 
 
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.CSS_FILE;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.EXTRA_INFO;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.OUTPUT_FILE;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.PREFIX;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.TITLE;
+
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+
+import org.slf4j.Logger;
+
 import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -27,15 +50,6 @@ import es.iti.wakamiti.report.html.factory.SumAllMethod;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-import org.slf4j.Logger;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.function.UnaryOperator;
-
-import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
 
 
 /**

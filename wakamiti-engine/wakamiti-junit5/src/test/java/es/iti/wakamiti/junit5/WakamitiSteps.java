@@ -8,22 +8,6 @@
 package es.iti.wakamiti.junit5;
 
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
-import es.iti.wakamiti.api.annotations.I18nResource;
-import es.iti.wakamiti.api.annotations.Step;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.extensions.StepContributor;
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.JsonUtils;
-import es.iti.wakamiti.api.util.ResourceLoader;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.data.Offset;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +26,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Offset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.Step;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.JsonUtils;
+import es.iti.wakamiti.api.util.ResourceLoader;
 
 
 @I18nResource("steps/test-wakamiti-steps")

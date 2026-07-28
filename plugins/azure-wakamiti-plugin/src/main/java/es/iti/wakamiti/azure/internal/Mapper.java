@@ -8,28 +8,30 @@
 package es.iti.wakamiti.azure.internal;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.util.MapUtils;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.azure.api.model.*;
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_FEATURE;
+import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_SCENARIO;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.StringUtils.format;
-import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_FEATURE;
-import static es.iti.wakamiti.azure.AzureSynchronizer.GHERKIN_TYPE_SCENARIO;
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.apache.commons.text.StringEscapeUtils.escapeEcmaScript;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.MapUtils;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestResult;
+import es.iti.wakamiti.azure.api.model.TestSuite;
 
 
 /**

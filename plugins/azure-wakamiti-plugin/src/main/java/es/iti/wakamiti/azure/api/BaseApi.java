@@ -8,12 +8,8 @@
 package es.iti.wakamiti.azure.api;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.jayway.jsonpath.TypeRef;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.http.HttpClient;
-import es.iti.wakamiti.azure.api.model.query.Query;
+import static es.iti.wakamiti.api.util.JsonUtils.read;
+import static es.iti.wakamiti.api.util.StringUtils.format;
 
 import java.net.URL;
 import java.net.http.HttpResponse;
@@ -23,8 +19,12 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.JsonUtils.read;
-import static es.iti.wakamiti.api.util.StringUtils.format;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.jayway.jsonpath.TypeRef;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.http.HttpClient;
+import es.iti.wakamiti.azure.api.model.query.Query;
 
 
 /**

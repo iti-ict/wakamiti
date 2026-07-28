@@ -8,6 +8,21 @@
 package es.iti.wakamiti.xray;
 
 
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_ENABLED;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.net.URL;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
@@ -20,21 +35,11 @@ import es.iti.wakamiti.xray.api.XRayApi;
 import es.iti.wakamiti.xray.internal.Mapper;
 import es.iti.wakamiti.xray.internal.Util;
 import es.iti.wakamiti.xray.internal.WakamitiXRayException;
-import es.iti.wakamiti.xray.model.*;
-import org.slf4j.Logger;
-
-import java.net.URL;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_ENABLED;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import es.iti.wakamiti.xray.model.JiraIssue;
+import es.iti.wakamiti.xray.model.TestCase;
+import es.iti.wakamiti.xray.model.TestExecution;
+import es.iti.wakamiti.xray.model.TestPlan;
+import es.iti.wakamiti.xray.model.TestSet;
 
 
 @Extension(

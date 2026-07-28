@@ -8,6 +8,9 @@
 package es.iti.wakamiti.report.html.factory;
 
 
+import java.time.Duration;
+import java.util.Locale;
+
 import freemarker.core.Environment;
 import freemarker.core.TemplateNumberFormat;
 import freemarker.core.TemplateNumberFormatFactory;
@@ -15,8 +18,6 @@ import freemarker.core.TemplateValueFormatException;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 
-import java.time.Duration;
-import java.util.Locale;
 
 
 public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFactory {

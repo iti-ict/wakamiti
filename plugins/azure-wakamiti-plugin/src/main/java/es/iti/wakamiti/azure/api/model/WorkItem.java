@@ -8,13 +8,13 @@
 package es.iti.wakamiti.azure.api.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static es.iti.wakamiti.api.util.MapUtils.toMap;
 
 import java.util.List;
 import java.util.Map;
 
-import static es.iti.wakamiti.api.util.MapUtils.toMap;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)

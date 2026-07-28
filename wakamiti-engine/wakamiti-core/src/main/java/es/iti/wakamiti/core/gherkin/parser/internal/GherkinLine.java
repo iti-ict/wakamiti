@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
-import es.iti.wakamiti.core.gherkin.parser.internal.GherkinLineSpan;
-import es.iti.wakamiti.core.gherkin.parser.internal.SymbolCounter;
 
 
 public class GherkinLine {

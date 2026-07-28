@@ -8,12 +8,13 @@
 package es.iti.wakamiti.test.util;
 
 
-import es.iti.wakamiti.core.util.TokenParser;
+import java.util.Arrays;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import es.iti.wakamiti.core.util.TokenParser;
 
 
 public class TestTokenParser {

@@ -8,15 +8,59 @@
 package es.iti.wakamiti.core;
 
 
+import static es.iti.wakamiti.api.WakamitiConfiguration.DEFAULT_CONF_FILE;
+import static es.iti.wakamiti.api.WakamitiConfiguration.DRY_RUN;
+import static es.iti.wakamiti.api.WakamitiConfiguration.ID_TAG_PATTERN;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.PREFIX;
+import static es.iti.wakamiti.api.WakamitiConfiguration.REPORT_SOURCE;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
+import static es.iti.wakamiti.api.WakamitiConfiguration.WORKING_DIR;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+
 import es.iti.commons.jext.ExtensionManager;
-import es.iti.wakamiti.api.*;
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.Hinter;
+import es.iti.wakamiti.api.Resource;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiContributors;
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.event.EventDispatcher;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.extensions.PlanTransformer;
 import es.iti.wakamiti.api.extensions.Reporter;
 import es.iti.wakamiti.api.extensions.ResourceType;
-import es.iti.wakamiti.api.plan.*;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeBuilder;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.PathUtil;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableFunction;
@@ -24,22 +68,6 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.backend.DefaultBackendFactory;
 import es.iti.wakamiti.core.runner.PlanRunner;
 import es.iti.wakamiti.core.util.TagFilter;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.slf4j.Logger;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
 
 
 /**

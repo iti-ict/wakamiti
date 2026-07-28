@@ -13,7 +13,6 @@ import static java.util.stream.Collectors.joining;
 import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
 import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
 import es.iti.wakamiti.core.gherkin.parser.Step;
-import es.iti.wakamiti.core.gherkin.parser.*;
 
 public class Snippets {
 

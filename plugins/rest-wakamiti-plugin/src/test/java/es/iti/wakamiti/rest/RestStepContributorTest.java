@@ -8,47 +8,10 @@
 package es.iti.wakamiti.rest;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.JsonUtils;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.util.XmlUtils;
-import es.iti.wakamiti.api.util.http.oauth.GrantType;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
-import io.restassured.RestAssured;
-import org.apache.xmlbeans.XmlObject;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockserver.configuration.Configuration;
-import org.mockserver.integration.ClientAndServer;
-import org.mockserver.logging.MockServerLogger;
-import org.mockserver.matchers.Times;
-import org.mockserver.model.*;
-import org.mockserver.socket.tls.KeyStoreFactory;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.MalformedURLException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.time.Duration;
-import java.util.Base64;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static es.iti.wakamiti.rest.TestUtil.*;
+import static es.iti.wakamiti.rest.TestUtil.attached;
+import static es.iti.wakamiti.rest.TestUtil.file;
+import static es.iti.wakamiti.rest.TestUtil.json;
+import static es.iti.wakamiti.rest.TestUtil.map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
@@ -62,6 +25,52 @@ import static org.mockserver.model.NottableString.not;
 import static org.mockserver.model.Parameter.param;
 import static org.mockserver.model.ParameterBody.params;
 import static org.mockserver.model.RegexBody.regex;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.time.Duration;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.xmlbeans.XmlObject;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockserver.configuration.Configuration;
+import org.mockserver.integration.ClientAndServer;
+import org.mockserver.logging.MockServerLogger;
+import org.mockserver.matchers.Times;
+import org.mockserver.model.Delay;
+import org.mockserver.model.HttpRequest;
+import org.mockserver.model.HttpResponse;
+import org.mockserver.model.MediaType;
+import org.mockserver.model.Not;
+import org.mockserver.socket.tls.KeyStoreFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.JsonUtils;
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import es.iti.wakamiti.api.util.XmlUtils;
+import es.iti.wakamiti.api.util.http.oauth.GrantType;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
+import io.restassured.RestAssured;
 
 
 @RunWith(MockitoJUnitRunner.class)

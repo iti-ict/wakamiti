@@ -8,14 +8,14 @@
 package es.iti.wakamiti.core.datatypes;
 
 
-import es.iti.wakamiti.api.util.ThrowableFunction;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Locale;
+
+import es.iti.wakamiti.api.util.ThrowableFunction;
 
 
 /**

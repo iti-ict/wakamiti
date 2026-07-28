@@ -8,10 +8,10 @@
 package es.iti.wakamiti.azure.api.model;
 
 
+import java.nio.file.Path;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.nio.file.Path;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)

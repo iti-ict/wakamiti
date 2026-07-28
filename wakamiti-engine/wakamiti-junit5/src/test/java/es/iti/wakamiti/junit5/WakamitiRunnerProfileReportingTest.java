@@ -8,6 +8,9 @@
 package es.iti.wakamiti.junit5;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.launcher.EngineFilter;
@@ -17,10 +20,6 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
-
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class WakamitiRunnerProfileReportingTest {

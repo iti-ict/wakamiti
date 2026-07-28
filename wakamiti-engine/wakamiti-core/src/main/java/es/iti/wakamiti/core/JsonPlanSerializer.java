@@ -8,16 +8,16 @@
 package es.iti.wakamiti.core;
 
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.PlanSerializer;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 
 
 /**

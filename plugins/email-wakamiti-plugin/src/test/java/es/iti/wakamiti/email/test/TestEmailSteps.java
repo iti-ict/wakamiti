@@ -8,6 +8,15 @@
 package es.iti.wakamiti.email.test;
 
 
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.awaitility.Awaitility;
+import org.awaitility.Durations;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
@@ -16,19 +25,11 @@ import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.extensions.StepContributor;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import es.iti.wakamiti.email.EmailConfigContributor;
-import es.iti.wakamiti.email.EmailHelper;
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
-import org.awaitility.Awaitility;
-import org.awaitility.Durations;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-
-import java.time.Duration;
-import java.util.concurrent.atomic.AtomicBoolean;
+import es.iti.wakamiti.email.EmailConfigContributor;
+import es.iti.wakamiti.email.EmailHelper;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 
 
 @RunWith(WakamitiJUnitRunner.class)

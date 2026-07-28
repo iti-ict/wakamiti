@@ -8,14 +8,15 @@
 package es.iti.wakamiti.maven;
 
 
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import org.apache.maven.plugin.logging.Log;
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.maven.plugin.logging.Log;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 /**

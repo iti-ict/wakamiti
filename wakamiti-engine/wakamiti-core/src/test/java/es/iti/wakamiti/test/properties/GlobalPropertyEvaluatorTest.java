@@ -8,16 +8,17 @@
 package es.iti.wakamiti.test.properties;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.extensions.PropertyEvaluator;
-import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
 
 
 public class GlobalPropertyEvaluatorTest {

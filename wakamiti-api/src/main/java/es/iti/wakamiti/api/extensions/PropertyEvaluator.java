@@ -8,10 +8,6 @@
 package es.iti.wakamiti.api.extensions;
 
 
-import es.iti.commons.jext.ExtensionPoint;
-import es.iti.commons.jext.LoadStrategy;
-import es.iti.wakamiti.api.WakamitiAPI;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,6 +15,10 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import es.iti.commons.jext.ExtensionPoint;
+import es.iti.commons.jext.LoadStrategy;
+import es.iti.wakamiti.api.WakamitiAPI;
 
 
 /**

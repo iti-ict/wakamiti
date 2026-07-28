@@ -10,6 +10,7 @@ package es.iti.wakamiti.azure.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+
 public class Attachment {
 
     @JsonProperty

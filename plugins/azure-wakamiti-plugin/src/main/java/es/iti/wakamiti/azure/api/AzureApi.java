@@ -8,41 +8,71 @@
 package es.iti.wakamiti.azure.api;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.jayway.jsonpath.TypeRef;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.api.model.*;
-import es.iti.wakamiti.azure.api.model.query.Query;
-import es.iti.wakamiti.azure.api.model.query.WorkItemsQuery;
-import es.iti.wakamiti.azure.internal.Util;
-import es.iti.wakamiti.azure.internal.WakamitiAzureException;
-import org.apache.commons.collections4.ListUtils;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.api.util.JsonUtils.read;
+import static es.iti.wakamiti.api.util.JsonUtils.readStringValue;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static es.iti.wakamiti.azure.api.model.query.Field.AREA_PATH;
+import static es.iti.wakamiti.azure.api.model.query.Field.DESCRIPTION;
+import static es.iti.wakamiti.azure.api.model.query.Field.ITERATION_PATH;
+import static es.iti.wakamiti.azure.api.model.query.Field.TAGS;
+import static es.iti.wakamiti.azure.api.model.query.Field.TEAM_PROJECT;
+import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
+import static es.iti.wakamiti.azure.api.model.query.Field.WORK_ITEM_TYPE;
+import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
+import static es.iti.wakamiti.azure.internal.Util.path;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.JsonUtils.*;
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static es.iti.wakamiti.api.util.StringUtils.format;
-import static es.iti.wakamiti.azure.api.model.query.Field.*;
-import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
-import static es.iti.wakamiti.azure.internal.Util.path;
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.*;
+import org.apache.commons.collections4.ListUtils;
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.jsonpath.TypeRef;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.azure.api.model.Attachment;
+import es.iti.wakamiti.azure.api.model.PointAssignment;
+import es.iti.wakamiti.azure.api.model.Settings;
+import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestPlan;
+import es.iti.wakamiti.azure.api.model.TestResult;
+import es.iti.wakamiti.azure.api.model.TestRun;
+import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.api.model.TestSuiteTree;
+import es.iti.wakamiti.azure.api.model.WorkItem;
+import es.iti.wakamiti.azure.api.model.WorkItemOp;
+import es.iti.wakamiti.azure.api.model.query.Query;
+import es.iti.wakamiti.azure.api.model.query.WorkItemsQuery;
+import es.iti.wakamiti.azure.internal.Util;
+import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 
 
 public class AzureApi extends BaseApi<AzureApi> {

@@ -8,11 +8,12 @@
 package es.iti.wakamiti.rest.helpers;
 
 
-import io.restassured.http.ContentType;
+import org.junit.ComparisonFailure;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.rest.ContentTypeHelper;
 import es.iti.wakamiti.rest.MatchMode;
-import org.junit.ComparisonFailure;
+import io.restassured.http.ContentType;
 
 
 /**

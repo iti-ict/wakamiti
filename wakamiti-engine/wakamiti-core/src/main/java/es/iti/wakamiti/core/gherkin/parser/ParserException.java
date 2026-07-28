@@ -11,7 +11,6 @@ package es.iti.wakamiti.core.gherkin.parser;
 import java.util.Collections;
 import java.util.List;
 
-import es.iti.wakamiti.core.gherkin.parser.Location;
 import es.iti.wakamiti.core.gherkin.parser.internal.StringUtils;
 import es.iti.wakamiti.core.gherkin.parser.internal.Token;
 

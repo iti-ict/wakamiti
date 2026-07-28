@@ -8,29 +8,37 @@
 package es.iti.wakamiti.azure;
 
 
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.api.BaseApi;
 import es.iti.wakamiti.azure.api.AzureApi;
-import es.iti.wakamiti.azure.api.model.*;
+import es.iti.wakamiti.azure.api.BaseApi;
+import es.iti.wakamiti.azure.api.model.PointAssignment;
+import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestPlan;
+import es.iti.wakamiti.azure.api.model.TestResult;
+import es.iti.wakamiti.azure.api.model.TestRun;
+import es.iti.wakamiti.azure.api.model.TestSuite;
 import es.iti.wakamiti.azure.internal.Mapper;
 import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
-import org.slf4j.Logger;
-
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
 @Extension(

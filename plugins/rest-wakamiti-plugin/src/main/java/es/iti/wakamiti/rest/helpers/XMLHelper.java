@@ -8,6 +8,12 @@
 package es.iti.wakamiti.rest.helpers;
 
 
+import static es.iti.wakamiti.api.util.XmlUtils.xml;
+import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
+
+import org.apache.xmlbeans.XmlObject;
+import org.hamcrest.MatcherAssert;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.util.MatcherAssertion;
@@ -20,16 +26,8 @@ import io.restassured.path.xml.mapping.XmlPathObjectDeserializer;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.apache.xmlbeans.XmlObject;
-import org.hamcrest.MatcherAssert;
-
-import static es.iti.wakamiti.api.util.XmlUtils.xml;
-import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
 
 
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es
- */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-xml-helper",

@@ -8,18 +8,16 @@
 package es.iti.wakamiti.fileuploader;
 
 
+import static com.jcraft.jsch.ChannelSftp.SSH_FX_NO_SUCH_FILE;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Vector;
-
-import static com.jcraft.jsch.ChannelSftp.SSH_FX_NO_SUCH_FILE;
 
 
 public class SFTPTransmitter implements FTPTransmitter {

@@ -8,16 +8,16 @@
 package es.iti.wakamiti.xray;
 
 
+import java.net.URL;
+import java.util.HashSet;
+import java.util.function.Consumer;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.xray.model.TestPlan;
-
-import java.net.URL;
-import java.util.HashSet;
-import java.util.function.Consumer;
 
 
 @Extension(

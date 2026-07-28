@@ -8,20 +8,9 @@
 package es.iti.wakamiti.jmeter;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
-import es.iti.wakamiti.api.extensions.ConfigContributor;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.PathUtil;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.Configurer;
-import org.hamcrest.Matchers;
-import us.abstracta.jmeter.javadsl.core.configs.DslCsvDataSet;
-import us.abstracta.jmeter.javadsl.core.listeners.GraphiteBackendListener;
-import us.abstracta.jmeter.javadsl.core.listeners.InfluxDbBackendListener;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.htmlReporter;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.jtlWriter;
+import static us.abstracta.jmeter.javadsl.JmeterDsl.resultsTreeVisualizer;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -29,7 +18,21 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Optional;
 
-import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
+import org.hamcrest.Matchers;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
+import us.abstracta.jmeter.javadsl.core.configs.DslCsvDataSet;
+import us.abstracta.jmeter.javadsl.core.listeners.GraphiteBackendListener;
+import us.abstracta.jmeter.javadsl.core.listeners.InfluxDbBackendListener;
 
 
 /**

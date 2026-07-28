@@ -8,6 +8,18 @@
 package es.iti.wakamiti.test.properties;
 
 
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.apache.xmlbeans.XmlObject;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiException;
@@ -16,18 +28,6 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.XmlUtils;
 import es.iti.wakamiti.core.properties.StepPropertyEvaluator;
-import org.apache.xmlbeans.XmlObject;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 public class StepPropertyEvaluatorTest {

@@ -8,14 +8,15 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import slf4jansi.AnsiLogger;
-
 import static es.iti.wakamiti.api.WakamitiConfiguration.LOGS_ANSI_ENABLED;
 import static es.iti.wakamiti.api.WakamitiConfiguration.LOGS_ANSI_STYLES;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import slf4jansi.AnsiLogger;
 
 
 /**

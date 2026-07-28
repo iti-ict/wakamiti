@@ -8,12 +8,9 @@
 package es.iti.wakamiti.jmeter.datatypes;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.jmeter.Metric;
-import org.junit.Test;
-import us.abstracta.jmeter.javadsl.core.stats.CountMetricSummary;
-import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;
-import us.abstracta.jmeter.javadsl.core.stats.TimeMetricSummary;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -21,9 +18,13 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.jmeter.Metric;
+import us.abstracta.jmeter.javadsl.core.stats.CountMetricSummary;
+import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;
+import us.abstracta.jmeter.javadsl.core.stats.TimeMetricSummary;
 
 
 @SuppressWarnings("unchecked")

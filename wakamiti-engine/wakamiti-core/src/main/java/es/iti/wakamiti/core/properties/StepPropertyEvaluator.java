@@ -8,6 +8,15 @@
 package es.iti.wakamiti.core.properties;
 
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.xmlbeans.XmlObject;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
@@ -16,11 +25,6 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.XmlUtils;
 import es.iti.wakamiti.core.backend.RunnableBackend;
-import org.apache.xmlbeans.XmlObject;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**

@@ -8,14 +8,15 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
-import org.slf4j.helpers.MessageFormatter;
+import static es.iti.wakamiti.database.DatabaseHelper.unquotedRegex;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.database.DatabaseHelper.unquotedRegex;
+import org.slf4j.Logger;
+import org.slf4j.helpers.MessageFormatter;
+
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 /**

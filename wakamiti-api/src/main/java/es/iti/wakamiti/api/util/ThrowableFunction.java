@@ -8,9 +8,9 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-
 import java.util.function.Function;
+
+import es.iti.wakamiti.api.WakamitiException;
 
 
 /**

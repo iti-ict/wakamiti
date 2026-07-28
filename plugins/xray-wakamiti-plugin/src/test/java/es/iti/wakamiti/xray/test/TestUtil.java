@@ -8,15 +8,15 @@
 package es.iti.wakamiti.xray.test;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.Test;
+
 import es.iti.wakamiti.xray.internal.Util;
 import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.TestCase;
-import org.junit.Test;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TestUtil {

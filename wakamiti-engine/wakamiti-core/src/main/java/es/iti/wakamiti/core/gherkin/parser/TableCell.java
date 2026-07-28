@@ -8,10 +8,6 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
-import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.Node;
-
-
 public class TableCell extends Node {
 
     private final String value;

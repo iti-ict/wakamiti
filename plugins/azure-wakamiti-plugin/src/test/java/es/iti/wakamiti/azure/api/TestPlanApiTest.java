@@ -8,10 +8,31 @@
 package es.iti.wakamiti.azure.api;
 
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.api.model.*;
-import es.iti.wakamiti.azure.internal.WakamitiAzureException;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static es.iti.wakamiti.azure.api.model.query.Field.TAGS;
+import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.JsonBody.json;
+import static org.mockserver.model.RegexBody.regex;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,25 +46,13 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.time.ZoneId;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static es.iti.wakamiti.api.util.StringUtils.format;
-import static es.iti.wakamiti.azure.api.model.query.Field.TAGS;
-import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.JsonBody.json;
-import static org.mockserver.model.RegexBody.regex;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.azure.api.model.Settings;
+import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestPlan;
+import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 
 
 public class TestPlanApiTest {

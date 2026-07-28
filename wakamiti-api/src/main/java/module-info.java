@@ -7,7 +7,17 @@
  */
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.extensions.*;
+import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.extensions.DataTypeContributor;
+import es.iti.wakamiti.api.extensions.EventObserver;
+import es.iti.wakamiti.api.extensions.LoaderContributor;
+import es.iti.wakamiti.api.extensions.PlanBuilder;
+import es.iti.wakamiti.api.extensions.PlanTransformer;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
+import es.iti.wakamiti.api.extensions.Reporter;
+import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.api.extensions.StepContributor;
+
 
 module es.iti.wakamiti.api {
 
