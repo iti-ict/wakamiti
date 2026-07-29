@@ -32,6 +32,7 @@ import es.iti.wakamiti.core.gherkin.parser.Step;
 
 public class SymbolCollector {
 
+    private static final int MAX_SYMBOL_LENGTH = 20;
     private final GherkinDocumentAssessor assessor;
 
     public SymbolCollector(

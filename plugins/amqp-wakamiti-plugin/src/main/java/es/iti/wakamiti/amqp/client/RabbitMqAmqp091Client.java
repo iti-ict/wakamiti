@@ -223,7 +223,7 @@ public class RabbitMqAmqp091Client implements AmqpClient {
     /**
      * Minimal immutable holder for queue declaration flags.
      */
-    private static class QueueConfig {
+    private static final class QueueConfig {
 
         private final boolean durable;
         private final boolean exclusive;

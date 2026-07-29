@@ -15,6 +15,8 @@ import org.junit.Test;
 
 public class TestExtensionVersion {
 
+    private static final int EXPECTED_MINOR_VERSION = 5;
+
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidVersion1() {
         new ExtensionVersion("1.2.4");
@@ -29,7 +31,7 @@ public class TestExtensionVersion {
     public void testIsCompatible() {
         ExtensionVersion v1_5 = new ExtensionVersion("1.5");
         assertThat(v1_5.major()).isEqualTo(1);
-        assertThat(v1_5.minor()).isEqualTo(5);
+        assertThat(v1_5.minor()).isEqualTo(EXPECTED_MINOR_VERSION);
         assertThat(v1_5).hasToString("1.5");
         ExtensionVersion v2_1 = new ExtensionVersion("2.1");
         ExtensionVersion v2_5 = new ExtensionVersion("2.5");

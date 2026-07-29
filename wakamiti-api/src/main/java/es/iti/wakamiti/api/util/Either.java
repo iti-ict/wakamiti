@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @param <T> The type of the primary value.
  * @param <U> The type of the fallback value.
  */
-public class Either<T, U> {
+public final class Either<T, U> {
 
     private final Optional<T> value;
     private final U fallback;

@@ -44,7 +44,8 @@ public class GherkinDocumentAssessor {
     private static final Logger LOGGER = LoggerFactory.getLogger("document.synchronization");
     private static final String DOTS = "---------------------------";
     private static final GherkinParser DEFAULT_PARSER = new GherkinParser();
-    private static final Wakamiti wakamiti = Wakamiti.instance();
+    private static final Wakamiti WAKAMITI = Wakamiti.instance();
+    private static final int DEFAULT_MAX_SUGGESTIONS = 20;
 
     private final String uri;
     private final GherkinParser parser;
@@ -55,7 +56,7 @@ public class GherkinDocumentAssessor {
     Configuration workspaceConfiguration;
     Configuration documentConfiguration;
     Configuration effectiveConfiguration;
-    int maxSuggestions = 20;
+    int maxSuggestions = DEFAULT_MAX_SUGGESTIONS;
     Hinter hinter;
     GherkinDocumentMap documentMap;
     DocumentAdditionalInfo additionalInfo;

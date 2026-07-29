@@ -33,7 +33,7 @@ import es.iti.wakamiti.database.exception.SQLRuntimeException;
  *
  * @param <T> The type of the result retrieved by the SELECT statement
  */
-public class Select<T> extends Sentence<Statement> {
+public final class Select<T> extends Sentence<Statement> {
 
     private final ResultSet resultset;
     private final Function<ResultSet, Optional<T>> mapper;

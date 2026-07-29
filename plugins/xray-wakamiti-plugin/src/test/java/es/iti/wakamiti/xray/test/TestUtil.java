@@ -36,7 +36,7 @@ public class TestUtil {
 
         List<TestCase> result = tests.stream()
                 .filter(Util.distinctByKey(testCase -> testCase.getJira().getSummary()))
-                .collect(Collectors.toList());
+                .toList();
 
         assertThat(result).hasSize(2);
     }

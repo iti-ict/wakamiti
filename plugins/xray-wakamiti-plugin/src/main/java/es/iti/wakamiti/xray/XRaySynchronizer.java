@@ -249,7 +249,7 @@ public class XRaySynchronizer implements EventObserver {
         List<String> remoteTestsSummaries = testPlan.getTestCases().stream()
                 .map(TestCase::getJira).map(JiraIssue::getSummary)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         List<TestCase> newTests = tests.stream().filter(t ->
                         !remoteTestsSummaries.contains(t.getJira().getSummary())
@@ -314,9 +314,9 @@ public class XRaySynchronizer implements EventObserver {
     private List<TestSet> createTestSets(
             List<TestCase> tests
     ) {
-        List<TestSet> testSets = tests.stream().map(TestCase::getTestSetList).flatMap(List::stream).collect(Collectors.toList());
+        List<TestSet> testSets = tests.stream().map(TestCase::getTestSetList).flatMap(List::stream).toList();
         List<TestSet> remoteTestSets = xRayApi.getTestSets();
-        List<String> remoteTestSetsSummary = remoteTestSets.stream().map(TestSet::getJira).map(JiraIssue::getSummary).collect(Collectors.toList());
+        List<String> remoteTestSetsSummary = remoteTestSets.stream().map(TestSet::getJira).map(JiraIssue::getSummary).toList();
         List<TestSet> newTestSets = testSets.stream()
                 .filter(s -> !remoteTestSetsSummary.contains(s.getJira().getSummary()))
                 .filter(Util.distinctByKey(xRayTestSet -> xRayTestSet.getJira().getSummary()))

@@ -73,11 +73,11 @@ class CompletionContextMap {
         for (Comment comment : node.getComments()) {
             put(comment.getLocation(), node, Section.COMMENT);
         }
-        if (node instanceof Feature) {
-            ((Feature)node).getChildren().forEach(this::buildContextMap);
+        if (node instanceof Feature feature) {
+            feature.getChildren().forEach(this::buildContextMap);
         }
-        if (node instanceof ScenarioDefinition) {
-            for (Step step : ((ScenarioDefinition)node).getSteps()) {
+        if (node instanceof ScenarioDefinition scenario) {
+            for (Step step : scenario.getSteps()) {
                 put(step.getLocation(), node, Section.STEP);
             }
         }

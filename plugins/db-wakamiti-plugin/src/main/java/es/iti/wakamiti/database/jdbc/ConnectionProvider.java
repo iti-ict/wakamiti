@@ -27,7 +27,7 @@ import es.iti.wakamiti.database.ConnectionParameters;
 public class ConnectionProvider implements AutoCloseable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(ConnectionProvider.class);
-    private static final ConnectionManager connectionManager = WakamitiAPI.instance().extensionManager()
+    private static final ConnectionManager CONNECTION_MANAGER = WakamitiAPI.instance().extensionManager()
             .getExtension(ConnectionManager.class)
             .orElseThrow(() -> new WakamitiException("Cannot find a connection manager"));
     private final ConnectionParameters parameters;
@@ -62,16 +62,16 @@ public class ConnectionProvider implements AutoCloseable {
     public Connection get() {
         try {
             if (connection == null) {
-                connection = connectionManager.obtainConnection(parameters);
+                connection = CONNECTION_MANAGER.obtainConnection(parameters);
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(
                             "Using database connection of type {} provided by {contributor}",
                             connection.getClass().getSimpleName(),
-                            connectionManager.info()
+                            CONNECTION_MANAGER.info()
                     );
                 }
             } else {
-                connection = connectionManager.refreshConnection(connection, parameters);
+                connection = CONNECTION_MANAGER.refreshConnection(connection, parameters);
             }
             return connection;
         } catch (SQLException e) {
@@ -103,7 +103,7 @@ public class ConnectionProvider implements AutoCloseable {
     public void close() {
         try {
             if (connection != null && !connection.isClosed()) {
-                connectionManager.releaseConnection(connection);
+                CONNECTION_MANAGER.releaseConnection(connection);
             }
         } catch (SQLException e) {
             throw new WakamitiException("Connection closure has failed", e);

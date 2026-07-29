@@ -67,7 +67,7 @@ import groovy.xml.slurpersupport.NodeChildren;
  * It also includes a method for reading string values from an XmlObject based on an XPath expression.</p>
  *
  */
-public class XmlUtils {
+public final class XmlUtils {
 
     private static final XmlMapper MAPPER = XmlMapper.builder()
             .addModule(new JavaTimeModule())

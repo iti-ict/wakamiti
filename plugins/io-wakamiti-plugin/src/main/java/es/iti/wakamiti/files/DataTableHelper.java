@@ -21,9 +21,9 @@ import es.iti.wakamiti.api.plan.DataTable;
 
 public class DataTableHelper {
 
-    public static String FROM_POSITION_COLUMN = "from";
-    public static String TO_POSITION_COLUMN = "to";
-    public static String VALUE_COLUMN = "value";
+    public static final String FROM_POSITION_COLUMN = "from";
+    public static final String TO_POSITION_COLUMN = "to";
+    public static final String VALUE_COLUMN = "value";
 
     private DataTable dataTable;
     private List<String> columns;
@@ -99,6 +99,7 @@ public class DataTableHelper {
                 o[getColumnIndex(FROM_POSITION_COLUMN)] + o[getColumnIndex(TO_POSITION_COLUMN)]));
     }
 
+    @Override
     public String toString() {
         return new StringBuilder(getClass().getSimpleName()).append("(\n")
                 .append("\t").append(columns).append("\n")

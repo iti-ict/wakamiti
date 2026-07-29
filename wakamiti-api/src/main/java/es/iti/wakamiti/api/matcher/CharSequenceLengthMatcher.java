@@ -69,8 +69,6 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
     }
 
     @Override
-    public void describeMismatchSafely(CharSequence item, Description mismatchDescription) {
-        mismatchDescription.appendText("was length \"").appendText(item == null ? null : String.valueOf(item.length())).appendText("\"");
     public void describeMismatchSafely(
             CharSequence item,
             Description mismatchDescription

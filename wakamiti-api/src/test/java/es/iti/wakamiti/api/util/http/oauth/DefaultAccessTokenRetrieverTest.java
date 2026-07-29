@@ -46,7 +46,7 @@ public class DefaultAccessTokenRetrieverTest {
     private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("https://localhost:{0,number,#}", PORT);
 
-    private static final ClientAndServer client = startClientAndServer(PORT);
+    private static final ClientAndServer CLIENT = startClientAndServer(PORT);
 
     @BeforeClass
     public static void setup() {
@@ -58,12 +58,12 @@ public class DefaultAccessTokenRetrieverTest {
 
     @AfterClass
     public static void shutdown() {
-        client.close();
+        CLIENT.close();
     }
 
     @After
     public void tearDown() {
-        client.reset();
+        CLIENT.reset();
     }
 
     @Test
@@ -363,7 +363,7 @@ public class DefaultAccessTokenRetrieverTest {
             HttpRequest expected,
             HttpResponse response
     ) {
-        client.when(expected, Times.once()).respond(response);
+        CLIENT.when(expected, Times.once()).respond(response);
     }
 
 }

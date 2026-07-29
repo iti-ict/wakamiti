@@ -25,6 +25,7 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
 
 public final class FutureUtil {
 
+    private static final long POLLING_INTERVAL_MILLIS = 1000L;
     private static final Logger LOGGER = LoggerFactory.getLogger(FutureUtil.class);
 
     private static Executor executor = Executors.newCachedThreadPool();
@@ -77,7 +78,7 @@ public final class FutureUtil {
         executor.execute(() -> {
             while (!future.isDone()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(POLLING_INTERVAL_MILLIS);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     LOGGER.error(e.toString(), e);

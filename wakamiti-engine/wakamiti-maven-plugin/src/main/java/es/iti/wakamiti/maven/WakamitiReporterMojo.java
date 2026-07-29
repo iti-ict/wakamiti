@@ -31,13 +31,13 @@ import es.iti.wakamiti.core.Wakamiti;
 public class WakamitiReporterMojo extends AbstractMojo implements WakamitiConfigurable {
 
     @Parameter
-    public Map<String, String> properties = new LinkedHashMap<>();
+    Map<String, String> properties = new LinkedHashMap<>();
 
     @Parameter
-    public List<String> configurationFiles = new LinkedList<>();
+    List<String> configurationFiles = new LinkedList<>();
 
     @Parameter
-    public boolean testFailureIgnore;
+    boolean testFailureIgnore;
 
     /**
      * The current build session instance.
@@ -58,7 +58,7 @@ public class WakamitiReporterMojo extends AbstractMojo implements WakamitiConfig
             Wakamiti.instance().generateReports(configuration);
         } catch (Throwable e) {
             getLog().error(e);
-            if (!testFailureIgnore)
+            if (!testFailureIgnore) {
                 throw new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
             }
         }

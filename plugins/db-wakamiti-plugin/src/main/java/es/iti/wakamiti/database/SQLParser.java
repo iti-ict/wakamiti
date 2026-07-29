@@ -405,8 +405,8 @@ public class SQLParser {
             Expression expression
     ) {
         EqualsTo exp = new EqualsTo();
-        if (expression instanceof StringValue && isDateOrDateTime(((StringValue) expression).getValue())) {
-            expression = dateCast(((StringValue) expression).getValue());
+        if (expression instanceof StringValue value && isDateOrDateTime(value.getValue())) {
+            expression = dateCast(value.getValue());
         }
         exp.setLeftExpression(autoTrim && expression instanceof StringValue ? trim(column) : column);
         exp.setRightExpression(expression);

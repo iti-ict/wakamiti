@@ -32,7 +32,7 @@ import es.iti.wakamiti.core.util.StringDistance;
  */
 public class StepHinter implements Hinter {
 
-
+    private static final int DEFAULT_MAX_SUGGESTIONS = 5;
     private final List<RunnableStep> runnableSteps;
     private final List<String> properties;
     private final RunnableStepResolver stepResolver;

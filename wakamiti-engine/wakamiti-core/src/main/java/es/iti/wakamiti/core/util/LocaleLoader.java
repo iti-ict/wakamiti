@@ -18,7 +18,7 @@ import java.util.Locale;
  * <p>This class is designed to work with language strings that follow the BCP
  * 47-language tag format.
  */
-public class LocaleLoader {
+public final class LocaleLoader {
 
     private LocaleLoader() {
         // avoid instantiation
@@ -44,19 +44,12 @@ public class LocaleLoader {
             return Locale.ENGLISH;
         }
         String[] segments = language.split("[-_]");
-        switch (segments.length) {
-        case 1:
-            locale = new Locale(segments[0]);
-            break;
-        case 2:
-            locale = new Locale(segments[0], segments[1]);
-            break;
-        case 3:
-            locale = new Locale(segments[0], segments[1], segments[2]);
-            break;
-        default:
-            throw new IllegalArgumentException("Malformed language name :" + language);
-        }
+        locale = switch (segments.length) {
+            case 1 -> new Locale(segments[0]);
+            case 2 -> new Locale(segments[0], segments[1]);
+            case 3 -> new Locale(segments[0], segments[1], segments[2]);
+            default -> throw new IllegalArgumentException("Malformed language name :" + language);
+        };
         return locale;
     }
 

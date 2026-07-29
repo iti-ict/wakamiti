@@ -41,7 +41,7 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class MariaDatabaseTest {
 
-    public static final MariaDBContainer<?> container = new MariaDBContainer<>("mariadb:10.3.6")
+    public static final MariaDBContainer<?> CONTAINER = new MariaDBContainer<>("mariadb:10.3.6")
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
@@ -54,15 +54,15 @@ public class MariaDatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println(message("\rContainer [MariaDBContainer] started with [url={}, username={}, password={}]",
-                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
     }
 
     @AfterClass
     public static void shutdown() {
-        container.stop();
-        container.close();
+        CONTAINER.stop();
+        CONTAINER.close();
     }
 
 }

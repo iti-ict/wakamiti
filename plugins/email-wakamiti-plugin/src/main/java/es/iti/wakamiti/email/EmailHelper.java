@@ -48,7 +48,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 public class EmailHelper {
 
     private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
-    private static final Logger logger = WakamitiLogger.forClass(EmailStepContributor.class);
+    private static final Logger LOGGER = WakamitiLogger.forClass(EmailStepContributor.class);
     private Session session;
     private Store store;
     private final Map<String, Folder> folders = new HashMap<>();
@@ -85,8 +85,9 @@ public class EmailHelper {
             Map<String, byte[]> attachments = new HashMap<>();
             for (int i = 0; i < multipart.getCount() && attachments.size() < maxAttachments; i++) {
                 BodyPart bodyPart = multipart.getBodyPart(i);
-                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) && bodyPart instanceof MimeBodyPart) {
-                    attachments.put(bodyPart.getFileName(), readBytes(((MimeBodyPart) bodyPart)));
+                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())
+                        && bodyPart instanceof MimeBodyPart mimeBodyPart) {
+                    attachments.put(bodyPart.getFileName(), readBytes(mimeBodyPart));
                 }
             }
             return attachments;
@@ -121,8 +122,8 @@ public class EmailHelper {
             try {
                 entry.getValue().close(true);
             } catch (MessagingException e) {
-                logger.error("Cannot close email folder {} : {}", entry.getKey(), e.getMessage());
-                logger.debug("", e);
+                LOGGER.error("Cannot close email folder {} : {}", entry.getKey(), e.getMessage());
+                LOGGER.debug("", e);
             }
         }
         folders.clear();
@@ -211,8 +212,7 @@ public class EmailHelper {
             Message message
     ) {
         try {
-            if (message.getContent() instanceof Multipart) {
-                Multipart multipart = (Multipart) message.getContent();
+            if (message.getContent() instanceof Multipart multipart) {
                 return findAttachments(multipart, Integer.MAX_VALUE);
             } else {
                 return Map.of();
@@ -226,8 +226,7 @@ public class EmailHelper {
             Message message
     ) {
         try {
-            if (message.getContent() instanceof Multipart) {
-                Multipart multipart = (Multipart) message.getContent();
+            if (message.getContent() instanceof Multipart multipart) {
                 Iterator<Map.Entry<String, byte[]>> iterator = findAttachments(multipart, 1).entrySet().iterator();
                 if (iterator.hasNext()) {
                     return iterator.next();
@@ -244,12 +243,11 @@ public class EmailHelper {
     ) {
         try {
             Object content = message.getContent();
-            if (content instanceof String) {
-                return (String) content;
+            if (content instanceof String string) {
+                return string;
             }
-            if (message.getContent() instanceof Multipart) {
+            if (message.getContent() instanceof Multipart multipart) {
                 StringBuilder body = new StringBuilder();
-                Multipart multipart = (Multipart) message.getContent();
                 for (int i = 0; i < multipart.getCount(); i++) {
                     BodyPart bodyPart = multipart.getBodyPart(i);
                     if (bodyPart.getDisposition() == null) {

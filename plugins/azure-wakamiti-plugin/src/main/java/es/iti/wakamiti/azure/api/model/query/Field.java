@@ -8,7 +8,7 @@
 package es.iti.wakamiti.azure.api.model.query;
 
 
-public class Field {
+public final class Field {
 
     public static final String ID = "System.Id";
     public static final String TITLE = "System.Title";

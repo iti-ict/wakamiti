@@ -15,7 +15,6 @@ import es.iti.wakamiti.core.gherkin.parser.internal.StringUtils;
 import es.iti.wakamiti.core.gherkin.parser.internal.Token;
 
 
-@SuppressWarnings("serial")
 public class ParserException extends RuntimeException {
 
     private final transient es.iti.wakamiti.core.gherkin.parser.Location location;
@@ -70,10 +69,10 @@ public class ParserException extends RuntimeException {
 
     public static class UnexpectedTokenException extends ParserException {
 
-        public String stateComment;
+        private String stateComment;
 
-        public final transient Token receivedToken;
-        public final transient List<String> expectedTokenTypes;
+        private final transient Token receivedToken;
+        private final transient List<String> expectedTokenTypes;
 
         public UnexpectedTokenException(
                 Token receivedToken,
@@ -106,8 +105,9 @@ public class ParserException extends RuntimeException {
     }
 
     public static class UnexpectedEOFException extends ParserException {
-        public final String stateComment;
-        public final transient List<String> expectedTokenTypes;
+
+        private final String stateComment;
+        private final transient List<String> expectedTokenTypes;
 
         public UnexpectedEOFException(
                 Token receivedToken,

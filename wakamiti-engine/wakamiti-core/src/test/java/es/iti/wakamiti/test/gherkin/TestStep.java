@@ -80,7 +80,7 @@ public class TestStep {
                 .descendants()
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
                 .filter(node -> node.result().filter(it -> it == Result.FAILED).isEmpty())
-                .collect(Collectors.toList());
+                .toList();
 
         for (PlanNode testCase : testCases) {
             String testCaseSerial = serializer.serialize(new PlanNodeSnapshot(testCase).withoutChildren());

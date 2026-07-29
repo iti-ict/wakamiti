@@ -56,7 +56,7 @@ import es.iti.wakamiti.api.util.ResourceLoader;
 
 public class TestUtil {
 
-    private static final XmlMapper xmlMapper = XmlMapper.builder().defaultUseWrapper(false)
+    private static final XmlMapper XML_MAPPER = XmlMapper.builder().defaultUseWrapper(false)
             .configure(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE, true)
             .build();
 
@@ -95,7 +95,7 @@ public class TestUtil {
             Map<?, ?> map
     ) {
         try {
-            return xmlMapper.writeValueAsString(map);
+            return XML_MAPPER.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -105,7 +105,7 @@ public class TestUtil {
             List<?> list
     ) {
         try {
-            return xmlMapper.writeValueAsString(list);
+            return XML_MAPPER.writeValueAsString(list);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -118,8 +118,8 @@ public class TestUtil {
         try {
             SimpleModule m = new SimpleModule("module", new Version(1, 0, 0, null, null, null));
             m.addDeserializer(Map.class, new CustomDeserializer());
-            xmlMapper.registerModule(m);
-            return xmlMapper.readValue(string, type);
+            XML_MAPPER.registerModule(m);
+            return XML_MAPPER.readValue(string, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -199,7 +199,7 @@ public class TestUtil {
                         map.get(mimeType).add(stringToMap.get(mimeType).apply(read(file)));
                     }
 
-                    for (MediaType mimeType : map.keySet().stream().filter(filter).collect(Collectors.toList())) {
+                    for (MediaType mimeType : map.keySet().stream().filter(filter).toList()) {
                         if (!stringToMap.containsKey(mimeType)) {
                             throw new IllegalStateException("Mime type unexpected: " + mimeType);
                         }

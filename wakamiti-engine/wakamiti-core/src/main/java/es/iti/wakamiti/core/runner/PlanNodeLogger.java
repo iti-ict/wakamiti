@@ -29,6 +29,8 @@ import es.iti.wakamiti.api.plan.Result;
  */
 public class PlanNodeLogger {
 
+    private static final int HEADING_PADDING = 4;
+    private static final float MILLIS_PER_SECOND = 1000f;
     private final boolean showStepSource;
     private final boolean showElapsedTime;
     private final Logger logger;
@@ -117,14 +119,14 @@ public class PlanNodeLogger {
                 name.add(node.keyword());
             }
             name.add(node.name());
-            logger.info("{highlight}", "-".repeat(name.length() + 4));
+            logger.info("{highlight}", "-".repeat(name.length() + HEADING_PADDING));
             logger.info(
                     "{highlight} (Test Case {}/{})",
                     "| " + name + " |",
                     currentTestCaseNumber,
                     totalNumberTestCases
             );
-            logger.info("{highlight}", "-".repeat(name.length() + 4));
+            logger.info("{highlight}", "-".repeat(name.length() + HEADING_PADDING));
         }
     }
 
@@ -194,7 +196,7 @@ public class PlanNodeLogger {
         args.add(step.name());
         if (showElapsedTime) {
             String duration = (execution.result().orElse(null) == Result.SKIPPED ? ""
-                    : "(" + (execution.duration().map(Duration::toMillis).orElse(0L) / 1000f) + ")");
+                    : "(" + (execution.duration().map(Duration::toMillis).orElse(0L) / MILLIS_PER_SECOND) + ")");
             args.add(duration);
         }
         args.add(execution.error().map(Throwable::getLocalizedMessage).orElse(""));

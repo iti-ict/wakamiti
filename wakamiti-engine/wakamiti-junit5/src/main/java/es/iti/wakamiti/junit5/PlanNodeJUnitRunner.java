@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -111,7 +112,7 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
 
     @Override
     protected List<PlanNodeRunner> createChildren() {
-        List<PlanNode> childNodes = getNode().children().collect(Collectors.toList());
+        List<PlanNode> childNodes = getNode().children().toList();
         return IntStream.range(0, childNodes.size())
                 .mapToObj(index -> {
                     PlanNode child = childNodes.get(index);

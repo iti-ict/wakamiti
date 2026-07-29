@@ -75,7 +75,7 @@ public class DurationProvider extends AbstractProvider {
     public static List<String> getAllExpressions(
             Locale locale
     ) {
-        ResourceBundle bundle = resourceLoader.resourceBundle(DURATIONS_RESOURCE, locale);
+        ResourceBundle bundle = RESOURCE_LOADER.resourceBundle(DURATIONS_RESOURCE, locale);
         return bundle.keySet().stream()
                 .map(bundle::getString)
                 .collect(Collectors.toList());

@@ -23,8 +23,9 @@ import es.iti.wakamiti.api.plan.PlanNode;
 /**
  * Utility class for working with paths and replacing placeholders.
  */
-public class PathUtil {
+public final class PathUtil {
 
+    private static final int HEX_RADIX = 16;
     private static final DateTimeFormatter YEAR_4 = DateTimeFormatter.ofPattern("yyyy", Locale.ENGLISH);
     private static final DateTimeFormatter YEAR_2 = DateTimeFormatter.ofPattern("yy", Locale.ENGLISH);
     private static final DateTimeFormatter MONTH = DateTimeFormatter.ofPattern("MM", Locale.ENGLISH);
@@ -107,7 +108,7 @@ public class PathUtil {
     ) {
         return Pattern.compile("%(\\d{2})").matcher(input).replaceAll(m -> {
             String hex = m.group(1);
-            return String.valueOf((char) Integer.parseInt(hex, 16));
+            return String.valueOf((char) Integer.parseInt(hex, HEX_RADIX));
         });
     }
 

@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 
 public class MavenTransferListener implements TransferListener {
 
-
+    private static final long BYTES_PER_KILOBYTE = 1000L;
     private final Logger logger;
     private final List<String> succededTransfers = new ArrayList<>();
     private final List<String> failedTransfers = new ArrayList<>();
@@ -128,7 +128,10 @@ public class MavenTransferListener implements TransferListener {
             TransferEvent event
     ) {
         long size = event.getResource().getContentLength();
-        return String.format("%7s",size > 1000L ? size / 1000L + " Kb" : size + " bytes");
+        return String.format(
+                "%7s",
+                size > BYTES_PER_KILOBYTE ? size / BYTES_PER_KILOBYTE + " Kb" : size + " bytes"
+        );
     }
 
     private String repository(

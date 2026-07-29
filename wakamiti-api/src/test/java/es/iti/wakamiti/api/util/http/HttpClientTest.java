@@ -47,7 +47,7 @@ public class HttpClientTest {
     private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT.toString());
 
-    private static final ClientAndServer server = startClientAndServer(PORT);
+    private static final ClientAndServer SERVER = startClientAndServer(PORT);
 
     private TestApi abstractClient;
 
@@ -61,13 +61,13 @@ public class HttpClientTest {
 
     @AfterClass
     public static void shutdown() {
-        server.close();
+        SERVER.close();
     }
 
     @Before
     public void beforeEach() throws MalformedURLException {
         abstractClient = new TestApi(new URL(BASE_URL));
-        server.reset();
+        SERVER.reset();
     }
 
     @Test
@@ -451,7 +451,7 @@ public class HttpClientTest {
             HttpResponse response,
             Times times
     ) {
-        server.when(expected, times).respond(response);
+        SERVER.when(expected, times).respond(response);
     }
 
     private String basic(

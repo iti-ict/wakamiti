@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 
 public class FilesHelperTest {
 
-    private static final Logger log = LoggerFactory.getLogger( "es.iti.wakamiti.test");
+    private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.test");
     private static final long TIMEOUT = 3;
 
     private final FilesHelper helper = new FilesHelper();
@@ -53,7 +53,7 @@ public class FilesHelperTest {
         new Thread(backgroundAction).start();
         helper.waitForFile(file, StandardWatchEventKinds.ENTRY_CREATE, TIMEOUT);
         long result = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
-        log.debug("Result: {} seconds", result);
+        LOGGER.debug("Result: {} seconds", result);
 
         // check
         Assert.assertEquals(TimeUnit.MILLISECONDS.toSeconds(expectedMillis), result);
@@ -79,7 +79,7 @@ public class FilesHelperTest {
         new Thread(backgroundAction).start();
         helper.waitForFile(file, StandardWatchEventKinds.ENTRY_CREATE, TIMEOUT);
         long result = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
-        log.debug("Result: {} seconds", result);
+        LOGGER.debug("Result: {} seconds", result);
 
         // check
         Assert.assertEquals(TimeUnit.MILLISECONDS.toSeconds(expectedMillis), result);
@@ -106,7 +106,7 @@ public class FilesHelperTest {
         new Thread(backgroundAction).start();
         helper.waitForFile(file, StandardWatchEventKinds.ENTRY_DELETE, TIMEOUT);
         long result = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
-        log.debug("Result: {} seconds", result);
+        LOGGER.debug("Result: {} seconds", result);
 
         // check
         Assert.assertEquals(TimeUnit.MILLISECONDS.toSeconds(expectedMillis), result);
@@ -133,7 +133,7 @@ public class FilesHelperTest {
         new Thread(backgroundAction).start();
         helper.waitForFile(file, StandardWatchEventKinds.ENTRY_DELETE, TIMEOUT);
         long result = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
-        log.debug("Result: {} seconds", result);
+        LOGGER.debug("Result: {} seconds", result);
 
         // check
         Assert.assertEquals(TimeUnit.MILLISECONDS.toSeconds(expectedMillis), result);
@@ -160,7 +160,7 @@ public class FilesHelperTest {
         new Thread(backgroundAction).start();
         helper.waitForFile(file, StandardWatchEventKinds.ENTRY_MODIFY, TIMEOUT);
         long result = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
-        log.debug("Result: {} seconds", result);
+        LOGGER.debug("Result: {} seconds", result);
 
         // check
         Assert.assertEquals(TimeUnit.MILLISECONDS.toSeconds(expectedMillis), result);
@@ -187,7 +187,7 @@ public class FilesHelperTest {
         new Thread(backgroundAction).start();
         helper.waitForFile(file, StandardWatchEventKinds.ENTRY_MODIFY, TIMEOUT);
         long result = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start);
-        log.debug("Result: {} seconds", result);
+        LOGGER.debug("Result: {} seconds", result);
 
         // check
         Assert.assertEquals(TimeUnit.MILLISECONDS.toSeconds(expectedMillis), result);

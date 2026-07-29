@@ -16,7 +16,7 @@ import org.apache.maven.plugin.AbstractMojoExecutionException;
 /**
  * Utility class to store and retrieve the result of plugin execution.
  */
-public class MojoResult {
+public final class MojoResult {
 
     private static AbstractMojoExecutionException error;
 

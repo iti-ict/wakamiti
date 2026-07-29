@@ -117,10 +117,7 @@ public final class DatabaseHelper {
                         }
                         row[c - 1] = DATE_FORMATTER.format(timestamp1.toLocalDateTime());
                         break;
-                    case TIMESTAMP:
-                    case TIME:
-                    case TIME_WITH_TIMEZONE:
-                    case TIMESTAMP_WITH_TIMEZONE:
+                    case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE:
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);
@@ -173,10 +170,7 @@ public final class DatabaseHelper {
                         }
                         row.put(column, DATE_FORMATTER.format(timestamp1.toLocalDateTime()));
                         break;
-                    case TIMESTAMP:
-                    case TIME:
-                    case TIME_WITH_TIMEZONE:
-                    case TIMESTAMP_WITH_TIMEZONE:
+                    case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE:
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);

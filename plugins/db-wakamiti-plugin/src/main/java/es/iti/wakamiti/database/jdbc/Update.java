@@ -23,7 +23,7 @@ import es.iti.wakamiti.database.exception.SQLRuntimeException;
  * Represents a database update operation, used to execute SQL statements
  * that modify data in a database.
  */
-public class Update extends Sentence<PreparedStatement> {
+public final class Update extends Sentence<PreparedStatement> {
 
     private Update(
             String sql,

@@ -24,12 +24,12 @@ public class CountStepsMethod implements TemplateMethodModelEx {
     public Object exec(
             List args
     ) {
-        if (args.size() < 1 || !(args.get(0) instanceof StringModel)
-                || !(((StringModel) args.get(0)).getWrappedObject() instanceof PlanNodeSnapshot)) {
+        if (args.isEmpty() || !(args.get(0) instanceof StringModel model)
+                || !(model.getWrappedObject() instanceof PlanNodeSnapshot)) {
             throw new WakamitiException("Argument must be a PlanNodeSnapshot");
         }
-        return args.size() == 1 ? countSteps((PlanNodeSnapshot) ((StringModel) args.get(0)).getWrappedObject())
-                : countSteps((PlanNodeSnapshot) ((StringModel) args.get(0)).getWrappedObject(), args.get(1).toString());
+        return args.size() == 1 ? countSteps((PlanNodeSnapshot) model.getWrappedObject())
+                : countSteps((PlanNodeSnapshot) model.getWrappedObject(), args.get(1).toString());
     }
 
     private long countSteps(

@@ -50,7 +50,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenFeatureWithSuccess() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance(null)
-                .mapTests(plan).collect(Collectors.toList());
+                .mapTests(plan).toList();
         logResult(tests);
 
         assertThat(tests)
@@ -64,7 +64,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenFeatureAndSourceBasedWithSuccess() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance("features")
-                .mapTests(plan).collect(Collectors.toList());
+                .mapTests(plan).toList();
         logResult(tests);
 
         assertThat(tests)
@@ -88,7 +88,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenFeatureAndSourceBasedAndAzureSuite() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance("features")
-                .mapTests(planSuite).collect(Collectors.toList());
+                .mapTests(planSuite).toList();
         logResult(tests);
 
         assertThat(tests)
@@ -105,7 +105,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenScenario() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance(null)
-                .mapTests(plan).collect(Collectors.toList());
+                .mapTests(plan).toList();
         logResult(tests);
 
         assertThat(tests)
@@ -124,7 +124,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenScenarioAndSourceBased() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance("features")
-                .mapTests(plan).collect(Collectors.toList());
+                .mapTests(plan).toList();
         logResult(tests);
 
         assertThat(tests)
@@ -153,7 +153,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenScenarioAndSourceBasedAndAzureSuite() {
         List<TestCase> tests = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance("features")
-                .mapTests(planSuite).collect(Collectors.toList());
+                .mapTests(planSuite).toList();
         logResult(tests);
 
         assertThat(tests)

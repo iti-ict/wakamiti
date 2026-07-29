@@ -58,7 +58,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code false}
      */
     @Parameter(defaultValue = "false")
-    public boolean skipTests;
+    boolean skipTests;
 
     /**
      * Use project dependencies.
@@ -73,7 +73,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code false}
      */
     @Parameter(defaultValue = "false")
-    public boolean includeProjectDependencies;
+    boolean includeProjectDependencies;
 
     /**
      * Sets wakamiti properties as {@link Map}.
@@ -88,7 +88,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * }</pre></blockquote>
      */
     @Parameter
-    public Map<String, String> properties = new LinkedHashMap<>();
+    Map<String, String> properties = new LinkedHashMap<>();
 
     /**
      * Sets wakamiti configuration files.
@@ -101,7 +101,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * }</pre></blockquote>
      */
     @Parameter
-    public List<String> configurationFiles = new LinkedList<>();
+    List<String> configurationFiles = new LinkedList<>();
 
     /**
      * Sets wakamiti log level.
@@ -117,7 +117,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code info}
      */
     @Parameter(defaultValue = "info")
-    public String logLevel;
+    String logLevel;
 
     /**
      * Set this to {@code true} to ignore a failure during testing. Its use is
@@ -133,7 +133,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code false}
      */
     @Parameter(property = "maven.test.failure.ignore", defaultValue = "false")
-    public boolean testFailureIgnore;
+    boolean testFailureIgnore;
 
     /**
      * The current build session instance.

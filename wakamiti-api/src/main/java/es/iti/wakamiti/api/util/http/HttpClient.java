@@ -73,6 +73,8 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
      * A default number of maximum retries on both types <b>on-response</b> and <b>on-throwable</b>
      */
     private static final int DEFAULT_MAX_ATTEMPTS = 5;
+    private static final int THREADS_PER_PROCESSOR = 10;
+    private static final int SERVER_ERROR_STATUS = 500;
 
     /**
      * When a retry on-response exceeded, then throw an exception by default.
@@ -113,7 +115,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
     }
 
     private static ExecutorService executor() {
-        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 10);
+        return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * THREADS_PER_PROCESSOR);
     }
 
     public SELF postCall(
@@ -425,7 +427,7 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                     return response;
                 })
                 .thenApply(response -> {
-                    if (response.statusCode() >= 500) {
+                    if (response.statusCode() >= SERVER_ERROR_STATUS) {
                         return attemptRetry(response, null);
                     } else {
                         return CompletableFuture.completedFuture(response);

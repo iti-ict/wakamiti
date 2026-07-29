@@ -14,8 +14,11 @@ import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
 import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
 import es.iti.wakamiti.core.gherkin.parser.Step;
 
-public class Snippets {
 
+public final class Snippets {
+
+    private Snippets() {
+    }
 
     public static String implementationScenarioSnippet(
             String id,

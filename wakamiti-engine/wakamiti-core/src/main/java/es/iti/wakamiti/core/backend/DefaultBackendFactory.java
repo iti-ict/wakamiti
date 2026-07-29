@@ -422,9 +422,9 @@ public class DefaultBackendFactory implements BackendFactory {
                 Object newStepContributor = classLoader.loadClass(nonRegisteredContributorClass)
                         .getConstructor()
                         .newInstance();
-                if (newStepContributor instanceof StepContributor) {
+                if (newStepContributor instanceof StepContributor contributor) {
                     contributors.configure(newStepContributor, configuration);
-                    nonRegisteredContributors.add((StepContributor) newStepContributor);
+                    nonRegisteredContributors.add(contributor);
                 } else {
                     LOGGER.warn(
                             "Class {} does not implement {}",
@@ -475,9 +475,9 @@ public class DefaultBackendFactory implements BackendFactory {
             Object stepProvider,
             WakamitiDataTypeRegistry typeRegistry
     ) {
-        String stepProviderName = (stepProvider instanceof Contributor) ?
-                ((Contributor) stepProvider).info() :
-                stepProvider.getClass().getCanonicalName();
+        String stepProviderName = (stepProvider instanceof Contributor contributor)
+                ? contributor.info()
+                : stepProvider.getClass().getCanonicalName();
 
         for (Method method : stepProvider.getClass().getMethods()) {
             if (method.isAnnotationPresent(Step.class)) {

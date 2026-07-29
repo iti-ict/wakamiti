@@ -84,6 +84,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     public static final String GHERKIN_TYPE_STEP = "step";
     public static final String GHERKIN_FEATURE_NAME = "featureName";
     private static final SecureRandom RANDOM = new SecureRandom();
+    private static final int ALPHABET_SIZE = 26;
+    private static final int ID_SUFFIX_LENGTH = 5;
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
     private Pattern idTagPattern;
@@ -187,15 +189,15 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         String language = feature.getLanguage();
         PlanNodeBuilder node = newFeatureNode(feature, language, location);
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
-            if (abstractScenario instanceof Scenario) {
-                var child = createScenario(feature, (Scenario) abstractScenario, location, node);
+            if (abstractScenario instanceof Scenario scenario) {
+                var child = createScenario(feature, scenario, location, node);
                 if (scenarioFilter.test(child) || includeFiltered) {
                     node.addChild(child);
                 }
-            } else if (abstractScenario instanceof ScenarioOutline) {
+            } else if (abstractScenario instanceof ScenarioOutline scenarioOutline) {
                 var child = createScenarioOutline(
                         feature,
-                        (ScenarioOutline) abstractScenario,
+                        scenarioOutline,
                         location,
                         node
                 );
@@ -466,8 +468,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     ) {
         Background background = null;
         if (!feature.getChildren().isEmpty()
-                && feature.getChildren().get(0) instanceof Background) {
-            background = (Background) feature.getChildren().get(0);
+                && feature.getChildren().get(0) instanceof Background bg) {
+            background = bg;
         }
         return Optional.ofNullable(background);
     }
@@ -522,15 +524,15 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     ) {
         PlanNodeBuilder node = newStepNode(step, location, language, parentNode);
         if (step.getArgument() != null) {
-            if (step.getArgument() instanceof es.iti.wakamiti.core.gherkin.parser.DataTable) {
+            if (step.getArgument() instanceof es.iti.wakamiti.core.gherkin.parser.DataTable dataTable) {
                 node.setData(
-                        new DataTable(toArray((es.iti.wakamiti.core.gherkin.parser.DataTable) step.getArgument()))
+                        new DataTable(toArray(dataTable))
                 );
-            } else if (step.getArgument() instanceof DocString) {
+            } else if (step.getArgument() instanceof DocString docString) {
                 node.setData(
                         new Document(
-                                ((DocString) step.getArgument()).getContent(),
-                                ((DocString) step.getArgument()).getContentType()
+                                docString.getContent(),
+                                docString.getContentType()
                         )
                 );
             }
@@ -745,7 +747,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             }
         }
         if (idTag == null) {
-            idTag = "#" + (char) (RANDOM.nextInt(26) + 'a') + UUID.randomUUID().toString().substring(0, 5);
+            idTag = "#" + (char) (RANDOM.nextInt(ALPHABET_SIZE) + 'a')
+                    + UUID.randomUUID().toString().substring(0, ID_SUFFIX_LENGTH);
         }
         return idTag + suffix;
     }
@@ -777,8 +780,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         if (inheritedProperties != null) {
             properties.putAll(inheritedProperties);
         }
-        if (node instanceof CommentedNode) {
-            for (Comment comment : ((CommentedNode) node).getComments()) {
+        if (node instanceof CommentedNode commentedNode) {
+            for (Comment comment : commentedNode.getComments()) {
                 String text = comment.getText().strip();
                 if (text.startsWith("#") && text.contains(":")) {
                     String[] parts = text.split(":", 2);

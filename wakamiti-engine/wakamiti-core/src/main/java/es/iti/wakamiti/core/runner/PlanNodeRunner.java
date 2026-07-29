@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -193,17 +194,17 @@ public class PlanNodeRunner {
                     testCasePreExecution(node);
                 } catch (WakamitiException e) {
                     results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+                            .toList().stream(); // prevent lazy stream
                 }
             }
             results = Stream.concat(results, runChildren())
-                    .collect(Collectors.toList()).stream(); // prevent lazy stream
+                    .toList().stream(); // prevent lazy stream
             if (!dryRun) {
                 try {
                     testCasePostExecution(node);
                 } catch (WakamitiException e) {
                     results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+                            .toList().stream(); // prevent lazy stream
                 }
             }
             result = aggregatorFinish(results);
@@ -274,7 +275,7 @@ public class PlanNodeRunner {
     }
 
     protected List<PlanNodeRunner> createChildren() {
-        List<PlanNode> childNodes = node.children().collect(Collectors.toList());
+        List<PlanNode> childNodes = node.children().toList();
         return IntStream.range(0, childNodes.size())
                 .mapToObj(index -> new PlanNodeRunner(
                         childNodes.get(index),
@@ -318,7 +319,11 @@ public class PlanNodeRunner {
     }
 
     protected enum State {
-        PREPARED, RUNNING, FINISHED
+
+        PREPARED,
+        RUNNING,
+        FINISHED
+
     }
 
     private static String stableUniqueId(

@@ -35,8 +35,8 @@ public abstract class Query {
     ) {
         this.fields.clear();
         this.fields.addAll(fields.stream()
-                .map(f -> f instanceof Field ? (Field) f : Field.of(f.toString()))
-                .collect(Collectors.toList()));
+                .map(f -> f instanceof Field field ? field : Field.of(f.toString()))
+                .toList());
         return this;
     }
 
@@ -68,9 +68,10 @@ public abstract class Query {
     ) {
         this.orderElements.clear();
         this.orderElements.addAll(elements.stream()
-                        .map(e -> e instanceof OrderElement ? (OrderElement) e
-                                : OrderElement.of(e.toString()))
-                .collect(Collectors.toList()));
+                .map(e -> e instanceof OrderElement orderElement
+                        ? orderElement
+                        : OrderElement.of(e.toString()))
+                .toList());
         return this;
     }
 

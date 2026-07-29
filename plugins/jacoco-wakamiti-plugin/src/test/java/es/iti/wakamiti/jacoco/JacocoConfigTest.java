@@ -37,7 +37,7 @@ public class JacocoConfigTest {
     }
 
     @Test
-    public void defaultConfiguration_has_expected_defaults() {
+    public void defaultConfigurationHasExpectedDefaults() {
         JacocoConfig config = new JacocoConfig();
         Configuration defaults = config.defaultConfiguration();
 
@@ -50,7 +50,7 @@ public class JacocoConfigTest {
     }
 
     @Test
-    public void configure_sets_all_known_properties_and_requires_classes() {
+    public void configureSetsAllKnownPropertiesAndRequiresClasses() {
         JacocoConfig config = new JacocoConfig();
         JacocoReporter reporter = new JacocoReporter();
 
@@ -91,7 +91,7 @@ public class JacocoConfigTest {
     }
 
     @Test
-    public void configure_throws_when_required_classes_missing() {
+    public void configureThrowsWhenRequiredClassesMissing() {
         JacocoConfig config = new JacocoConfig();
         JacocoReporter reporter = new JacocoReporter();
 

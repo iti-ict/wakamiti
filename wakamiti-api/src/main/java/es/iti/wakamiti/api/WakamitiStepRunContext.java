@@ -19,7 +19,7 @@ import es.iti.wakamiti.api.imconfig.Configuration;
  */
 public class WakamitiStepRunContext {
 
-    private static final ThreadLocal<WakamitiStepRunContext> singleton = new ThreadLocal<>();
+    private static final ThreadLocal<WakamitiStepRunContext> SINGLETON = new ThreadLocal<>();
     private final Configuration configuration;
     private final Backend backend;
     private final Locale stepLocale;
@@ -45,7 +45,7 @@ public class WakamitiStepRunContext {
     public static void set(
             WakamitiStepRunContext context
     ) {
-        singleton.set(context);
+        SINGLETON.set(context);
     }
 
     /**
@@ -54,14 +54,14 @@ public class WakamitiStepRunContext {
      * @return The current WakamitiStepRunContext.
      */
     public static WakamitiStepRunContext current() {
-        return singleton.get();
+        return SINGLETON.get();
     }
 
     /**
      * Clears the WakamitiStepRunContext for the current thread.
      */
     public static void clear() {
-        singleton.remove();
+        SINGLETON.remove();
     }
 
     /**

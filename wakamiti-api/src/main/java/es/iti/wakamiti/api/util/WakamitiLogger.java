@@ -23,7 +23,7 @@ import slf4jansi.AnsiLogger;
  * Utility class for configuring and obtaining SLF4J Logger instances
  * with AnsiLogger support.
  */
-public class WakamitiLogger {
+public final class WakamitiLogger {
 
     /**
      * Generates the Wakamiti logo.

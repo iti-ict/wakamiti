@@ -40,7 +40,7 @@ public class ExpressionMatcher {
     private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w++):(\\w+?-?+\\w++)\\}";
     private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+?-?+\\w++)\\}";
 
-    private static final Map<ExpressionMatcher, String> cache = new HashMap<>();
+    private static final Map<ExpressionMatcher, String> CACHE = new HashMap<>();
 
     private final String translatedDefinition;
     private final WakamitiDataTypeRegistry typeRegistry;
@@ -74,7 +74,7 @@ public class ExpressionMatcher {
         ExpressionMatcher matcher = new ExpressionMatcher(
                 translatedDefinition, typeRegistry, locale
         );
-        String regex = cache.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);
+        String regex = CACHE.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);
         return Pattern.compile(regex).matcher(modelStep.mapValueOrFallback(PlanNode::name));
     }
 
@@ -273,11 +273,10 @@ public class ExpressionMatcher {
     public boolean equals(
             Object obj
     ) {
-        if (obj instanceof ExpressionMatcher) {
-            ExpressionMatcher other = (ExpressionMatcher) obj;
-            return other.typeRegistry == this.typeRegistry &&
-                    other.locale.equals(this.locale) &&
-                    other.translatedDefinition.equals(this.translatedDefinition);
+        if (obj instanceof ExpressionMatcher other) {
+            return other.typeRegistry == this.typeRegistry
+                    && other.locale.equals(this.locale)
+                    && other.translatedDefinition.equals(this.translatedDefinition);
         }
         return false;
     }

@@ -36,13 +36,12 @@ import groovy.lang.GroovyShell;
  * <p>This class provides methods for converting JSON strings, InputStreams, and objects into {@link JsonNode}.
  * It also includes a method for reading string values from a JsonNode based on a JSONPath expression.</p>
  */
-public class JsonUtils {
+public final class JsonUtils {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
-            ;
+            .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     private static final Configuration CONFIG = Configuration.builder()
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .mappingProvider(new JacksonMappingProvider(MAPPER))

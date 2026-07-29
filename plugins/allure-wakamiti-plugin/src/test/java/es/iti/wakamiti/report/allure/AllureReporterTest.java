@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -255,7 +256,7 @@ public class AllureReporterTest {
             String targetDir
     ) throws IOException {
         try (Stream<Path> paths = Files.walk(sourceDir)) {
-            for (Path file : paths.filter(Files::isRegularFile).collect(Collectors.toList())) {
+            for (Path file : paths.filter(Files::isRegularFile).toList()) {
                 byte[] content = Files.readAllBytes(file);
                 String targetPath = targetDir + "/" + sourceDir.relativize(file).toString().replace('\\', '/');
                 container.withCopyToContainer(Transferable.of(content), targetPath);

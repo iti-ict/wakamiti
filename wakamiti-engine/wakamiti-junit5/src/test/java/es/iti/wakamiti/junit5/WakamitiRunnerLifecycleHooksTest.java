@@ -47,7 +47,7 @@ public class WakamitiRunnerLifecycleHooksTest {
     public void beforeAndAfterClassHooksAreReportedInsideLifecycleEntries() {
         runPlan(HookAwareRunner.class, new RecordingListener());
 
-        assertThat(HookAwareRunner.hookContexts).containsExactly(
+        assertThat(HookAwareRunner.HOOK_CONTEXTS).containsExactly(
                 "before:beforeClass",
                 "after:afterClass"
         );
@@ -76,25 +76,25 @@ public class WakamitiRunnerLifecycleHooksTest {
     @WakamitiPlan
     public static class HookAwareRunner {
 
-        private static final List<String> hookContexts = new ArrayList<>();
+        private static final List<String> HOOK_CONTEXTS = new ArrayList<>();
 
         @BeforeAll
         public static void beforeClassHook() {
-            hookContexts.add("before:" + currentTestName);
+            HOOK_CONTEXTS.add("before:" + currentTestName);
         }
 
         @AfterAll
         public static void afterClassHook() {
-            hookContexts.add("after:" + currentTestName);
+            HOOK_CONTEXTS.add("after:" + currentTestName);
         }
 
         private static void clearHooks() {
-            hookContexts.clear();
+            HOOK_CONTEXTS.clear();
         }
 
     }
 
-    private static class RecordingListener implements TestExecutionListener {
+    private static final class RecordingListener implements TestExecutionListener {
 
         @Override
         public void executionStarted(

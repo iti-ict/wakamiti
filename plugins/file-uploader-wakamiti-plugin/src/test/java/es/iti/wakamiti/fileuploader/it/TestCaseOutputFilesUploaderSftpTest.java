@@ -56,19 +56,19 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 public class TestCaseOutputFilesUploaderSftpTest {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AbstractFilesUploader.class);
-    private static final MockSftpServer ftpServer = new MockSftpServer(2345);
+    private static final MockSftpServer FTP_SERVER = new MockSftpServer(2345);
 
     @BeforeClass
     public static void setUp() throws IOException {
-        ftpServer.start();
+        FTP_SERVER.start();
     }
 
     @AfterClass
     public static void tearDown() throws IOException {
         if (LOGGER.isDebugEnabled()) {
-            System.out.println(printDirectoryTree(ftpServer.getTmpDir().toFile()));
+            System.out.println(printDirectoryTree(FTP_SERVER.getTmpDir().toFile()));
         }
-        Path resultsPath = ftpServer.getTmpDir().resolve("dira/dirb/");
+        Path resultsPath = FTP_SERVER.getTmpDir().resolve("dira/dirb/");
         File[] dateFiles = resultsPath.toFile().listFiles();
         assertNotNull(dateFiles);
         assertEquals(1, dateFiles.length);
@@ -80,7 +80,7 @@ public class TestCaseOutputFilesUploaderSftpTest {
         assertEquals(2, jsonFiles.length);
         assertEquals("ID-1.json", jsonFiles[0].getName());
         assertEquals("ID-2.json", jsonFiles[1].getName());
-        ftpServer.stop();
+        FTP_SERVER.stop();
         System.out.println("FTP stopped");
     }
 

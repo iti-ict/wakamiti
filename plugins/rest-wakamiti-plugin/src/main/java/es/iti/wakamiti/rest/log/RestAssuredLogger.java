@@ -29,7 +29,7 @@ import io.restassured.specification.FilterableResponseSpecification;
 
 public class RestAssuredLogger implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger( "es.iti.wakamiti.rest");
+    private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.rest");
     private static final String HEADER_NAME_AND_VALUE_SEPARATOR = ": ";
     private static PrintStream printStream;
 
@@ -41,7 +41,7 @@ public class RestAssuredLogger implements Filter {
                 public void println(
                         String x
                 ) {
-                    logger.info(x);
+                    LOGGER.info(x);
                 }
             };
         }

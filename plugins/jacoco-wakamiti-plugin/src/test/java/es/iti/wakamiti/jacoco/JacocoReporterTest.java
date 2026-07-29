@@ -65,7 +65,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void acceptType_recognizes_expected_events_only() {
+    public void acceptTypeRecognizesExpectedEventsOnly() {
         JacocoReporter reporter = new JacocoReporter();
         assertThat(reporter.acceptType(Event.NODE_RUN_FINISHED)).isTrue();
         assertThat(reporter.acceptType(Event.AFTER_WRITE_OUTPUT_FILES)).isTrue();
@@ -77,7 +77,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void eventReceived_does_nothing_when_data_is_null() {
+    public void eventReceivedDoesNothingWhenDataIsNull() {
         assertThatNoException().isThrownBy(() -> LOGGER.info("OK"));
         JacocoReporter reporter = new JacocoReporter();
         // Should not throw on null data
@@ -86,7 +86,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void event_with_test_case_triggers_dump_only_when_no_xml_or_csv() throws Exception {
+    public void eventWithTestCaseTriggersDumpOnlyWhenNoXmlOrCsv() throws Exception {
         // Arrange reporter
         JacocoReporter reporter = new JacocoReporter();
         reporter.setHost("localhost");
@@ -125,7 +125,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void event_with_test_case_and_xml_triggers_execute_single_and_produces_xml() throws Exception {
+    public void eventWithTestCaseAndXmlTriggersExecuteSingleAndProducesXml() throws Exception {
         // Arrange temporary filesystem
         Path out = Files.createTempDirectory("jacoco-out");
         Path xml = Files.createTempDirectory("jacoco-xml");

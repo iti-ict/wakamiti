@@ -26,7 +26,7 @@ public class Oauth2ProviderConfig {
 
     private static final String GRANT_TYPE = "grant_type";
 
-    private static final Map<List<Object>, String> cachedToken = new HashMap<>();
+    private static final Map<List<Object>, String> CACHED_TOKEN = new HashMap<>();
     private final Map<String, String> parameters = new LinkedHashMap<>();
     private boolean cacheAuth;
     private GrantType type;
@@ -35,13 +35,13 @@ public class Oauth2ProviderConfig {
     private String clientSecret;
 
     public Optional<String> findCachedToken() {
-        return Optional.ofNullable(cachedToken.get(getKey())).filter(x -> cacheAuth);
+        return Optional.ofNullable(CACHED_TOKEN.get(getKey())).filter(x -> cacheAuth);
     }
 
-        cachedToken.put(getKey(), token);
     public String storeTokenAndGet(
             String token
     ) {
+        CACHED_TOKEN.put(getKey(), token);
         return token;
     }
 

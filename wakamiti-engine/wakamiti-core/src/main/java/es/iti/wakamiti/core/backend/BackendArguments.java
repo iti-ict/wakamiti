@@ -160,14 +160,15 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
     protected String validateArgument(
             int index
     ) {
+        String message = "(expected %s)";
         String error = null;
         if (argumentMap.get(index).value().equals(Backend.DOCUMENT_ARG)) {
             if (!methodArgTypes[index].equals(Document.class)) {
-                error = "(expected " + Document.class + ")";
+                error = message.replace("%s", Document.class.toString());
             }
         } else if (argumentMap.get(index).value().equals(Backend.DATATABLE_ARG)) {
             if (!methodArgTypes[index].equals(DataTable.class)) {
-                error = "(expected " + DataTable.class + ")";
+                error = message.replace("%s", DataTable.class.toString());
             }
         } else {
             final String typeName = argumentMap.get(index).value();
@@ -176,7 +177,7 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
                 throwWrongStepDefinitionException("Type {} not registered.", typeName);
             }
             if (!type.getJavaType().equals(methodArgTypes[index])) {
-                error = "(expected " + type.getJavaType() + ")";
+                error = message.replace("%s", type.getJavaType().toString());
             }
         }
         return error;

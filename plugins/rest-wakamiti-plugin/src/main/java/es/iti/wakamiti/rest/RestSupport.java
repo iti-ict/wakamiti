@@ -53,6 +53,7 @@ import io.restassured.specification.RequestSpecification;
 
 public class RestSupport {
 
+    private static final int HTTP_OK = 200;
     public static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.rest");
 
 
@@ -147,7 +148,7 @@ public class RestSupport {
                 .formParams(oauth2ProviderConfig.parameters());
         return attachLogger(request)
                 .with().post(oauth2ProviderConfig.url())
-                .then().statusCode(200)
+                .then().statusCode(HTTP_OK)
                 .body(ACCESS_TOKEN, Matchers.notNullValue())
                 .extract().body().jsonPath().getString(ACCESS_TOKEN);
     }
@@ -323,7 +324,7 @@ public class RestSupport {
             String subtype
     ) {
         List<String> subtypes = Stream.of(ContentType.MULTIPART.getContentTypeStrings())
-                .map(contentType -> contentType.split("/")[1]).collect(Collectors.toList());
+                .map(contentType -> contentType.split("/")[1]).toList();
         if (!subtypes.contains(subtype)) {
             throw new WakamitiException("'{}' is not a valid subtype. Possible values: {}", subtype, subtypes);
         }

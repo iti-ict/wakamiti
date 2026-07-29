@@ -19,8 +19,7 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 
 
-
-public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFactory {
+public final class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFactory {
 
     public static final DurationTemplateNumberFormatFactory INSTANCE
             = new DurationTemplateNumberFormatFactory();
@@ -38,7 +37,7 @@ public class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFac
         return new DurationNumberFormat(env.getTemplateNumberFormat(params, locale));
     }
 
-    private static class DurationNumberFormat extends TemplateNumberFormat {
+    private static final class DurationNumberFormat extends TemplateNumberFormat {
 
         private final TemplateNumberFormat innerFormat;
 

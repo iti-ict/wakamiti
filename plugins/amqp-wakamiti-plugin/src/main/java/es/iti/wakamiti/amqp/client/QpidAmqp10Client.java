@@ -44,6 +44,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
  */
 public class QpidAmqp10Client implements AmqpClient {
 
+    private static final int BYTE_BUFFER_SIZE = 4_096;
     private static final Logger LOGGER = WakamitiLogger.forClass(QpidAmqp10Client.class);
 
     private final AmqpConnectionParams connectionParams;
@@ -199,7 +200,7 @@ public class QpidAmqp10Client implements AmqpClient {
             BytesMessage bytesMessage
     ) throws JMSException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[BYTE_BUFFER_SIZE];
         int read = bytesMessage.readBytes(buffer);
         while (read != -1) {
             output.write(buffer, 0, read);

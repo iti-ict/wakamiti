@@ -80,7 +80,7 @@ public class RestStepContributorTest {
     private static final String BASE_URL = String.format("https://localhost:%s", PORT);
     private static final String TOKEN_PATH = "wakamiti/data/token.txt";
 
-    private static final ClientAndServer client = startClientAndServer(PORT);
+    private static final ClientAndServer CLIENT = startClientAndServer(PORT);
 
     private final RestConfigContributor configurator = new RestConfigContributor();
     @Spy
@@ -95,7 +95,7 @@ public class RestStepContributorTest {
 
     @AfterClass
     public static void shutdown() {
-        client.close();
+        CLIENT.close();
     }
 
     @Before
@@ -107,7 +107,7 @@ public class RestStepContributorTest {
                 RestAssured.config().getMultiPartConfig().defaultBoundary("asdf1234")
         );
         keys().clear();
-        client.reset();
+        CLIENT.reset();
     }
 
     /**
@@ -2034,7 +2034,7 @@ public class RestStepContributorTest {
             HttpRequest expected,
             HttpResponse response
     ) {
-        client.when(expected, Times.once()).respond(response);
+        CLIENT.when(expected, Times.once()).respond(response);
     }
 
     private DataTable dataTable(
@@ -2050,7 +2050,7 @@ public class RestStepContributorTest {
 
     @SuppressWarnings("unchecked")
     private Map<List<String>, String> keys() throws NoSuchFieldException, IllegalAccessException {
-        Field field = Oauth2ProviderConfig.class.getDeclaredField("cachedToken");
+        Field field = Oauth2ProviderConfig.class.getDeclaredField("CACHED_TOKEN");
         field.setAccessible(true);
         return ((Map<List<String>, String>) field.get(null));
     }

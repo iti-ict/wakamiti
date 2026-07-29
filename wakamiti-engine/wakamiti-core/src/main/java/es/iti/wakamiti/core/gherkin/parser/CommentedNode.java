@@ -26,6 +26,7 @@ public abstract class CommentedNode extends Node {
         this.comments = comments;
     }
 
+    @Override
     public Location getLocation() {
         return location;
     }

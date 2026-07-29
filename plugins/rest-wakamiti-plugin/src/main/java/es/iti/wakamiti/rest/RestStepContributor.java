@@ -460,7 +460,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     ) throws IOException {
         String ext = Optional.ofNullable(document.getContentType()).orElse("txt");
         ContentType mimeType = ContentType.fromContentType(
-                ResourceLoader.contentTypeFromExtension.get(ext).getMimeType());
+                ResourceLoader.contentTypes().get(ext).getMimeType());
         setAttachedFile(name, mimeType.getContentTypeStrings()[0], document);
     }
 

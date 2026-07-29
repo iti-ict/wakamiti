@@ -30,9 +30,9 @@ public class FilesStepConfigurator implements ConfigContributor<FilesStepContrib
 
     private static final String ENTRY_SEPARATOR = "=";
 
-    public static String FILES_ACCESS_TIMEOUT = "files.timeout";
-    public static String FILES_LINKS = "files.links";
-    public static String FILES_ENABLE_CLEANUP_UPON_COMPLETION = "files.enableCleanupUponCompletion";
+    public static final String FILES_ACCESS_TIMEOUT = "files.timeout";
+    public static final String FILES_LINKS = "files.links";
+    public static final String FILES_ENABLE_CLEANUP_UPON_COMPLETION = "files.enableCleanupUponCompletion";
 
     @Override
     public Configuration defaultConfiguration() {

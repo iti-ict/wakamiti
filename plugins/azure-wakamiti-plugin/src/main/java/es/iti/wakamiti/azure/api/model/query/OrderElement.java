@@ -8,7 +8,7 @@
 package es.iti.wakamiti.azure.api.model.query;
 
 
-public class OrderElement {
+public final class OrderElement {
 
     enum Type {
 

@@ -31,7 +31,7 @@ public class TestExtensionManager {
     public void testGetExtensions() {
         // MyExtensionV2_5 has greater priority than MyExtensionV2_6
         List<MyExtensionPointV2_5> extensions = extensionManager
-                .getExtensions(MyExtensionPointV2_5.class).collect(Collectors.toList());
+                .getExtensions(MyExtensionPointV2_5.class).toList();
         assertThat(extensions).hasSize(2);
         assertThat(extensions.get(0)).isInstanceOf(MyExtensionV2_5.class);
         assertThat(extensions.get(1)).isInstanceOf(MyExtensionV2_6.class);
@@ -42,7 +42,7 @@ public class TestExtensionManager {
         List<MyExtensionPointV2_5> extensions = extensionManager.getExtensionsThatSatisfy(
                 MyExtensionPointV2_5.class,
                 extension -> extension.value().endsWith("_6")
-        ).collect(Collectors.toList());
+        ).toList();
         assertThat(extensions).hasSize(1);
         assertThat(extensions.get(0)).isInstanceOf(MyExtensionV2_6.class);
     }
@@ -52,7 +52,7 @@ public class TestExtensionManager {
         List<MyExtensionPointV2_5> extensions = extensionManager.getExtensionsThatSatisfyMetadata(
                 MyExtensionPointV2_5.class,
                 extension -> extension.extensionPointVersion().equals("2.6")
-        ).collect(Collectors.toList());
+        ).toList();
         assertThat(extensions).hasSize(1);
         assertThat(extensions.get(0)).isInstanceOf(MyExtensionV2_6.class);
     }

@@ -11,6 +11,7 @@ package es.iti.wakamiti.core.util;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import es.iti.wakamiti.api.util.Pair;
 
@@ -20,7 +21,7 @@ import es.iti.wakamiti.api.util.Pair;
  * It includes a method to find closer strings from a collection based on
  * a reference string.
  */
-public class StringDistance {
+public final class StringDistance {
 
     private StringDistance() {
         // avoid instantiation

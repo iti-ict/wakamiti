@@ -20,7 +20,7 @@ import org.apache.http.entity.ContentType;
  * Utility class for working with {@link ContentType} objects.
  * Provides methods to retrieve content types by their field names.
  */
-public class ContentTypeUtil {
+public final class ContentTypeUtil {
 
     private static final Map<String, ContentType> CONTENT_TYPE_MAP = new HashMap<>();
 

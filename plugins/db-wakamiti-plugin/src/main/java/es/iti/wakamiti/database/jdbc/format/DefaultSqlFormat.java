@@ -30,6 +30,7 @@ import es.iti.wakamiti.database.jdbc.WakamitiTimestamp;
 
 public class DefaultSqlFormat implements SqlFormat {
 
+    @Override
     public Object formatValue(
             String value,
             JDBCType type

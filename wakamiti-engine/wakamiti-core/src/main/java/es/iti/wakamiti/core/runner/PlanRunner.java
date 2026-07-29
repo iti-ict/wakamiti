@@ -11,6 +11,7 @@ package es.iti.wakamiti.core.runner;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
@@ -27,7 +28,7 @@ import es.iti.wakamiti.core.Wakamiti;
 
 public class PlanRunner {
 
-    private static final ConfigurationFactory confBuilder = ConfigurationFactory.instance();
+    private static final ConfigurationFactory CONF_BUILDER = ConfigurationFactory.instance();
     private static final Logger LOGGER = Wakamiti.LOGGER;
 
     private final Wakamiti wakamiti;
@@ -116,7 +117,7 @@ public class PlanRunner {
         BackendFactory backendFactory = wakamiti.newBackendFactory();
         return plan.children().map(feature -> {
             Configuration childConfiguration = configuration.append(
-                    confBuilder.fromMap(feature.properties())
+                    CONF_BUILDER.fromMap(feature.properties())
             );
             return new PlanNodeRunner(feature, childConfiguration, backendFactory, planNodeLogger, dryRun);
         }).collect(Collectors.toList());

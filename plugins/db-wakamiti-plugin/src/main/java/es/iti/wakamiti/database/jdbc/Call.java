@@ -28,7 +28,7 @@ import es.iti.wakamiti.database.exception.SQLRuntimeException;
  *
  * @param <T> The type of the result returned by the call
  */
-public class Call<T> extends Sentence<PreparedStatement> {
+public final class Call<T> extends Sentence<PreparedStatement> {
 
     private final Function<ResultSet, Optional<T>> mapper;
     private final List<List<T>> resultSets = new LinkedList<>();

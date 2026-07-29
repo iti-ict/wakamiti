@@ -8,7 +8,7 @@
 package es.iti.wakamiti.core.maven;
 
 
-public class MavenFetcherProperties {
+public final class MavenFetcherProperties {
 
     private MavenFetcherProperties() {
     }

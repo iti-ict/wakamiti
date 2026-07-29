@@ -70,7 +70,7 @@ public class TestFailureStep {
                 .descendants()
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
                 .filter(node -> node.result().filter(it -> it == Result.FAILED).isPresent())
-                .collect(Collectors.toList());
+                .toList();
 
         for (PlanNode testCase : testCases) {
             String testCaseSerial = serializer.serialize(new PlanNodeSnapshot(testCase).withoutChildren());

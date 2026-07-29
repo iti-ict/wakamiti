@@ -269,7 +269,7 @@ public class MavenArtifactFetcher implements DependencySelector {
         }
     }
 
-    private static class ExclusionComparator implements Comparator<Exclusion> {
+    private static final class ExclusionComparator implements Comparator<Exclusion> {
 
         public int compare(
                 Exclusion e1,

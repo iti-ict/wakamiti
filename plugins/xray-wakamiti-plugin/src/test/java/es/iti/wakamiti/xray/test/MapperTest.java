@@ -46,7 +46,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenFeatureWithSuccess() {
         List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_FEATURE).instance(null)
-                .map(plan).collect(Collectors.toList());
+                .map(plan).toList();
 
         assertThat(tests)
                 .isNotNull()
@@ -59,7 +59,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenFeatureAndSourceBasedWithSuccess() {
         List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_FEATURE).instance("features")
-                .map(plan).collect(Collectors.toList());
+                .map(plan).toList();
 
         assertThat(tests)
                 .isNotNull()
@@ -72,7 +72,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenScenario() {
         List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_SCENARIO).instance(null)
-                .map(plan).collect(Collectors.toList());
+                .map(plan).toList();
 
         assertThat(tests.get(0)).hasFieldOrProperty("jira.summary");
         assertThat(tests.get(1)).hasFieldOrProperty("jira.summary");
@@ -82,7 +82,7 @@ public class MapperTest {
     @Test
     public void testMapTestsWhenScenarioAndSourceBased() {
         List<TestCase> tests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_SCENARIO).instance("features")
-                .map(plan).collect(Collectors.toList());
+                .map(plan).toList();
 
         assertThat(tests.get(0)).hasFieldOrProperty("jira.summary");
         assertThat(tests.get(1)).hasFieldOrProperty("jira.summary");

@@ -53,7 +53,7 @@ public class TestPlanApiTest {
     private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", String.valueOf(PORT));
 
-    private static final ClientAndServer mock = startClientAndServer(PORT);
+    private static final ClientAndServer MOCK = startClientAndServer(PORT);
 
     @BeforeClass
     public static void beforeEach() {
@@ -62,7 +62,7 @@ public class TestPlanApiTest {
 
     @AfterClass
     public static void shutdown() {
-        mock.close();
+        MOCK.close();
     }
 
     @Test
@@ -81,7 +81,7 @@ public class TestPlanApiTest {
         XRayApi xRayApi = new XRayApi(new URL(BASE_URL), "clientId", "clientSecret", "WAK", LOGGER);
         assertThat(xRayApi).isNotNull();
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -118,7 +118,7 @@ public class TestPlanApiTest {
 
         xRayApi.createTestCases(List.of(testCase), "");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -152,7 +152,7 @@ public class TestPlanApiTest {
         assertThat(testPlan).isNotNull();
         assertThat(testPlan.getJira().getSummary()).isEqualTo("Test Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class TestPlanApiTest {
         assertThat(testExecution).isNotNull();
         assertThat(testExecution.getJira().getSummary()).isEqualTo("Test Execution Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -227,7 +227,7 @@ public class TestPlanApiTest {
 
         assertThat(testSets.get(0).getJira().getSummary()).isEqualTo("Test Set Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -262,7 +262,7 @@ public class TestPlanApiTest {
 
         assertThat(testCase.get().getJira().getSummary()).isEqualTo("Test Case Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -299,7 +299,7 @@ public class TestPlanApiTest {
 
         assertThat(testPlans.get(0).getJira().getSummary()).isEqualTo("Test Plan Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -336,7 +336,7 @@ public class TestPlanApiTest {
 
         assertThat(testSets.get(0).getJira().getSummary()).isEqualTo("Test Set Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -385,7 +385,7 @@ public class TestPlanApiTest {
 
         xRayApi.updateTestRunStatus(List.of(testCase));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -419,7 +419,7 @@ public class TestPlanApiTest {
 
         xRayApi.addTestsToPlan(List.of("10070"), testPlan);
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -463,7 +463,7 @@ public class TestPlanApiTest {
 
         xRayApi.addTestsToSets(List.of(testCase), List.of(testSet));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -497,7 +497,7 @@ public class TestPlanApiTest {
 
         xRayApi.addTestExecutionsToTestPlan("12345", testPlan);
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -526,7 +526,7 @@ public class TestPlanApiTest {
 
         jiraApi.updateTestCases(List.of(new Pair<>(testCase, testCase)));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -547,14 +547,14 @@ public class TestPlanApiTest {
 
         jiraApi.addAttachment("10070", Files.createTempFile("temp", ""));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     private Optional<HttpRequest> mockServer(
             HttpRequest expected,
             HttpResponse response
     ) {
-        mock.when(expected, Times.once()).respond(response);
+        MOCK.when(expected, Times.once()).respond(response);
         return Optional.of(expected);
     }
 

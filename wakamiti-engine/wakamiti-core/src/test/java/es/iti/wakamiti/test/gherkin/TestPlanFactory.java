@@ -135,22 +135,22 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void test1_simpleScenario() throws IOException, JSONException, ConfigurationException {
+    public void test1SimpleScenario() throws IOException, JSONException, ConfigurationException {
         assertFilePlan("test1_simpleScenario", 1);
     }
 
     @Test
-    public void test2_scenarioOutline() throws IOException, JSONException, ConfigurationException {
+    public void test2ScenarioOutline() throws IOException, JSONException, ConfigurationException {
         assertFilePlan("test2_scenarioOutline", 3);
     }
 
     @Test
-    public void test3_background() throws IOException, JSONException, ConfigurationException {
+    public void test3Background() throws IOException, JSONException, ConfigurationException {
         assertFilePlan("test3_background", 3);
     }
 
     @Test
-    public void test4_tagExpression() throws IOException, JSONException, ConfigurationException {
+    public void test4TagExpression() throws IOException, JSONException, ConfigurationException {
         assertFilePlan(
                 "src/test/resources/features/test4_tagExpression.feature",
                 "src/test/resources/features/test4_tagExpression_plan.json",
@@ -160,7 +160,7 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void test5_includeFilteredTestCases() throws IOException, JSONException, ConfigurationException {
+    public void test5IncludeFilteredTestCases() throws IOException, JSONException, ConfigurationException {
         Properties properties = new Properties();
         properties.put(WakamitiConfiguration.INCLUDE_FILTERED_TEST_CASES, "true");
         assertPlan(
@@ -173,7 +173,7 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void test6_propertySubstitution() throws IOException, JSONException, ConfigurationException {
+    public void test6PropertySubstitution() throws IOException, JSONException, ConfigurationException {
         Properties properties = new Properties();
         properties.put("number.a", "8.02");
         properties.put("number.b", "9");
@@ -331,7 +331,7 @@ public class TestPlanFactory {
         leading.append("  ").append(node.nodeType()).append("  >> ").append(node.displayName());
         string.append(
                 String.format(
-                        "%-100s %-40s %s\n",
+                        "%-100s %-40s %s%n",
                         leading,
                         node.tags().isEmpty() ? "" : node.tags().stream().sorted().map(s -> "#" + s).collect(Collectors.joining(" ")),
                         node.properties().isEmpty() ? "" : node.properties()

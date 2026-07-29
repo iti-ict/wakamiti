@@ -30,7 +30,7 @@ public abstract class AbstractProvider {
 
     protected static final String VALUE_GROUP = "x";
     protected static final String VALUE_WILDCARD = "~x~";
-    protected static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+    protected static final ResourceLoader RESOURCE_LOADER = WakamitiAPI.instance().resourceLoader();
 
     private final String resource;
     private final Map<Locale, ResourceBundle> bundles = new HashMap<>();
@@ -53,7 +53,7 @@ public abstract class AbstractProvider {
     ) {
         return bundles.computeIfAbsent(
                 locale,
-                bundleLocale -> resourceLoader.resourceBundle(resource, bundleLocale)
+                bundleLocale -> RESOURCE_LOADER.resourceBundle(resource, bundleLocale)
         );
     }
 

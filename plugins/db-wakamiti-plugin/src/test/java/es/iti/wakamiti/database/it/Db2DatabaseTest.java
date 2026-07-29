@@ -41,7 +41,7 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class Db2DatabaseTest {
 
-    public static final Db2Container container = new Db2Container("ibmcom/db2:11.5.8.0")
+    public static final Db2Container CONTAINER = new Db2Container("ibmcom/db2:11.5.8.0")
             .withPrivilegedMode(true)
             .acceptLicense()
             .withEnv("ENABLE_ORACLE_COMPATIBILITY", "true")
@@ -59,15 +59,15 @@ public class Db2DatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println(message("\rContainer [Db2Container] started with [url={}, username={}, password={}]",
-                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
     }
 
     @AfterClass
     public static void shutdown() {
-        container.stop();
-        container.close();
+        CONTAINER.stop();
+        CONTAINER.close();
     }
 
 }

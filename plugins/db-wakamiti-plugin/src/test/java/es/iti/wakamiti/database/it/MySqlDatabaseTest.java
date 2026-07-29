@@ -41,7 +41,7 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class MySqlDatabaseTest {
 
-    public static final MySQLContainer<?> container = new MySQLContainer<>("mysql:5.7.34")
+    public static final MySQLContainer<?> CONTAINER = new MySQLContainer<>("mysql:5.7.34")
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
@@ -54,15 +54,15 @@ public class MySqlDatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println(message("\rContainer [MySQLContainer] started with [url={}, username={}, password={}]",
-                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
     }
 
     @AfterClass
     public static void shutdown() {
-        container.stop();
-        container.close();
+        CONTAINER.stop();
+        CONTAINER.close();
     }
 
 }

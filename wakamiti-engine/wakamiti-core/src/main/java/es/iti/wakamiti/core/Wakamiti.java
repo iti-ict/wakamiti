@@ -76,15 +76,15 @@ import es.iti.wakamiti.core.util.TagFilter;
  * execution, and report generation.
  * This class uses contributors and extensions for extensibility.
  */
-public class Wakamiti {
+public final class Wakamiti {
 
     public static final Logger LOGGER = WakamitiLogger.forClass(Wakamiti.class);
-    private static final AtomicBoolean instantiated = new AtomicBoolean();
-    private static final ResourceLoader resourceLoader = new ResourceLoader();
-    private static final WakamitiContributors contributors = new WakamitiContributors();
-    private static final PlanSerializer planSerializer = new JsonPlanSerializer();
-    private static final EventDispatcher eventDispatcher = new EventDispatcher();
-    private static final WakamitiFetcher artifactFetcher = new WakamitiFetcher();
+    private static final AtomicBoolean INSTANTIATED = new AtomicBoolean();
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
+    private static final WakamitiContributors CONTRIBUTORS = new WakamitiContributors();
+    private static final PlanSerializer PLAN_SERIALIZER = new JsonPlanSerializer();
+    private static final EventDispatcher EVENT_DISPATCHER = new EventDispatcher();
+    private static final WakamitiFetcher ARTIFACT_FETCHER = new WakamitiFetcher();
 
     private static final String IMPORTANT = "{important}";
 
@@ -95,7 +95,7 @@ public class Wakamiti {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info("{logo}", WakamitiLogger.logo());
         }
-        contributors.eventObservers().forEach(eventDispatcher::addObserver);
+        CONTRIBUTORS.eventObservers().forEach(EVENT_DISPATCHER::addObserver);
     }
 
     /**
@@ -104,7 +104,7 @@ public class Wakamiti {
      * @return The Wakamiti instance.
      */
     public static Wakamiti instance() {
-        if (!instantiated.getAndSet(true)) {
+        if (!INSTANTIATED.getAndSet(true)) {
             instance = new Wakamiti();
         }
         return instance;
@@ -116,7 +116,7 @@ public class Wakamiti {
      * @return The ResourceLoader instance.
      */
     public static ResourceLoader resourceLoader() {
-        return resourceLoader;
+        return RESOURCE_LOADER;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Wakamiti {
      * @return The WakamitiContributors instance.
      */
     public static WakamitiContributors contributors() {
-        return contributors;
+        return CONTRIBUTORS;
     }
 
     /**
@@ -134,7 +134,7 @@ public class Wakamiti {
      * @return The plan serializer.
      */
     public static PlanSerializer planSerializer() {
-        return planSerializer;
+        return PLAN_SERIALIZER;
     }
 
     /**
@@ -143,7 +143,7 @@ public class Wakamiti {
      * @return The extension manager.
      */
     public static ExtensionManager extensionManager() {
-        return contributors.extensionManager();
+        return CONTRIBUTORS.extensionManager();
     }
 
     /**
@@ -152,7 +152,7 @@ public class Wakamiti {
      * @return The artifact fetcher.
      */
     public static WakamitiFetcher artifactFetcher() {
-        return artifactFetcher;
+        return ARTIFACT_FETCHER;
     }
 
     /**
@@ -200,7 +200,7 @@ public class Wakamiti {
     ) {
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
 
-        resourceLoader.setWorkingDir(workingDir(configuration));
+        RESOURCE_LOADER.setWorkingDir(workingDir(configuration));
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
@@ -246,7 +246,7 @@ public class Wakamiti {
     public PlanNode createPlanFromWorkspace(
             Configuration configuration
     ) {
-        resourceLoader.setWorkingDir(workingDir(configuration));
+        RESOURCE_LOADER.setWorkingDir(workingDir(configuration));
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
@@ -281,7 +281,7 @@ public class Wakamiti {
             InputStream inputStream
     ) {
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
-        resourceLoader.setWorkingDir(workingDir(configuration));
+        RESOURCE_LOADER.setWorkingDir(workingDir(configuration));
         String resourceTypeName = configuration.get(RESOURCE_TYPES, String.class)
                 .orElseThrow(() -> new WakamitiException("No resource types configured\nConfiguration was:\n{}", configuration));
         Optional<PlanNode> plan = createPlanForResourceType(
@@ -300,7 +300,7 @@ public class Wakamiti {
     private Stream<? extends Class<?>> loadClasses(
             List<String> discoveryPaths
     ) {
-        return contributors.allLoaderContributors()
+        return CONTRIBUTORS.allLoaderContributors()
                 .flatMap(c -> c.load(discoveryPaths));
     }
 
@@ -333,7 +333,7 @@ public class Wakamiti {
             Function<ResourceType<?>, List<Resource<?>>> resourceSupplier,
             Configuration configuration
     ) {
-        var resourceType = contributors.resourceTypeByName(resourceTypeName);
+        var resourceType = CONTRIBUTORS.resourceTypeByName(resourceTypeName);
         if (!resourceType.isPresent()) {
             LOGGER.warn(
                     "Resource type {resourceType} is not provided by any contributor",
@@ -354,7 +354,7 @@ public class Wakamiti {
             return Optional.empty();
         }
 
-        var planBuilder = contributors.createPlanBuilderFor(resourceType.get(), configuration);
+        var planBuilder = CONTRIBUTORS.createPlanBuilderFor(resourceType.get(), configuration);
         if (planBuilder.isEmpty()) {
             LOGGER.warn(
                     "No plan builder suitable for resource type {resourceType} has been found",
@@ -365,8 +365,8 @@ public class Wakamiti {
 
         PlanNodeBuilder planNodeBuilder = planBuilder.get().createPlan(resources);
 
-        List<PlanTransformer> planTransformers = contributors.planTransformers()
-                .collect(Collectors.toList());
+        List<PlanTransformer> planTransformers = CONTRIBUTORS.planTransformers()
+                .toList();
         for (var planTransformer : planTransformers) {
             planNodeBuilder = planTransformer.transform(planNodeBuilder, configuration);
         }
@@ -404,7 +404,7 @@ public class Wakamiti {
      * @return The event dispatcher instance.
      */
     public EventDispatcher getEventDispatcher() {
-        return eventDispatcher;
+        return EVENT_DISPATCHER;
     }
 
     /**
@@ -416,7 +416,7 @@ public class Wakamiti {
             Configuration configuration
     ) {
         getEventDispatcher().observers()
-                .forEach(observer -> contributors.configure(observer, configuration));
+                .forEach(observer -> CONTRIBUTORS.configure(observer, configuration));
     }
 
     /**
@@ -481,7 +481,7 @@ public class Wakamiti {
      * @return A new {@link BackendFactory} instance.
      */
     public BackendFactory newBackendFactory() {
-        return new DefaultBackendFactory(contributors);
+        return new DefaultBackendFactory(CONTRIBUTORS);
     }
 
     /**
@@ -497,7 +497,7 @@ public class Wakamiti {
     ) {
         List<String> toHide = configuration.getList(WakamitiConfiguration.PROPERTIES_HIDDEN, String.class)
                 .stream().map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
-                .collect(Collectors.toList());
+                .toList();
         plan.resolveProperties(e -> toHide.stream().noneMatch(h -> e.getKey().trim().matches(h)));
 
         if (!configuration
@@ -533,7 +533,7 @@ public class Wakamiti {
             Configuration configuration
     ) throws IOException {
         String outputPath = configuration.get(WakamitiConfiguration.OUTPUT_FILE_PATH, String.class).orElseThrow();
-        Path path = resourceLoader.absolutePath(
+        Path path = RESOURCE_LOADER.absolutePath(
                 PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
         );
         Path parentPath = path.getParent();
@@ -554,7 +554,7 @@ public class Wakamiti {
             Configuration configuration
     ) throws IOException {
         String outputPath = configuration.get(OUTPUT_FILE_PER_TEST_CASE_PATH, String.class).orElseThrow();
-        Path path = resourceLoader.absolutePath(
+        Path path = RESOURCE_LOADER.absolutePath(
                 PathUtil.replacePlaceholders(Paths.get(outputPath), plan)
         );
         Files.createDirectories(path);
@@ -562,7 +562,7 @@ public class Wakamiti {
         List<PlanNode> testCases = plan
                 .descendants()
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
-                .collect(Collectors.toList());
+                .toList();
 
         for (PlanNode testCase : testCases) {
             String testCaseId = Objects.requireNonNull(testCase.id(), "test case have no id");
@@ -591,7 +591,7 @@ public class Wakamiti {
                     REPORT_SOURCE
             );
         }
-        generateReports(configuration, resourceLoader.absolutePath(Path.of(reportSource)));
+        generateReports(configuration, RESOURCE_LOADER.absolutePath(Path.of(reportSource)));
     }
 
     /**
@@ -605,7 +605,7 @@ public class Wakamiti {
             Configuration configuration,
             Path reportSource
     ) {
-        List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
+        List<Reporter> reporters = CONTRIBUTORS.reporters().toList();
         if (reporters.isEmpty()) {
             return;
         }
@@ -656,7 +656,7 @@ public class Wakamiti {
             Configuration configuration,
             PlanNodeSnapshot[] plans
     ) {
-        List<Reporter> reporters = contributors.reporters().collect(Collectors.toList());
+        List<Reporter> reporters = CONTRIBUTORS.reporters().toList();
         if (reporters.isEmpty()) {
             return;
         }
@@ -671,7 +671,7 @@ public class Wakamiti {
                             reporter.info()
                     );
                 }
-                contributors.configure(reporter, configuration).report(rootNode);
+                CONTRIBUTORS.configure(reporter, configuration).report(rootNode);
             } catch (Exception e) {
                 LOGGER.error(
                         "{error} {contributor} : {error}",

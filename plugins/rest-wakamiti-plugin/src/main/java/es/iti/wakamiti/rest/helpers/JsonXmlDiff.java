@@ -252,10 +252,10 @@ public class JsonXmlDiff {
 
         var missingExpectedFields = expectedFields.stream()
                 .filter(Predicate.not(actualFields::contains))
-                .collect(Collectors.toList());
+                .toList();
         var nonExpectedActualFields = actualFields.stream()
                 .filter(Predicate.not(expectedFields::contains))
-                .collect(Collectors.toList());
+                .toList();
 
         if (!missingExpectedFields.isEmpty()) {
             errors.add(

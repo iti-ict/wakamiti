@@ -35,7 +35,7 @@ public class ResourceLoaderTest {
             List<Resource<?>> discoveredResources = new ResourceLoader()
                     .discoverResources(path, txtFilter, IOUtils::toString)
                     .stream().sorted(Comparator.comparing(Resource::absolutePath))
-                    .collect(Collectors.toList());
+                    .toList();
 
             assertEquals(3, discoveredResources.size());
 

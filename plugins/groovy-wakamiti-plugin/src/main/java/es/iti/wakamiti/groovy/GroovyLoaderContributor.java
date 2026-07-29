@@ -55,7 +55,7 @@ public class GroovyLoaderContributor implements LoaderContributor {
                 .map(Paths::get)
                 .flatMap(this::listFiles)
                 .filter(file -> file.toFile().getName().toLowerCase().endsWith(".groovy"))
-                .collect(Collectors.toList());
+                .toList();
 
         if (groovyPaths.isEmpty()) {
             LOGGER.debug("No groovy classes to load");
@@ -115,7 +115,7 @@ public class GroovyLoaderContributor implements LoaderContributor {
             Path dir
     ) throws IOException {
         try (var stream = Files.list(dir)) {
-            return stream.collect(Collectors.toList()).stream();
+            return stream.toList().stream();
         }
     }
 

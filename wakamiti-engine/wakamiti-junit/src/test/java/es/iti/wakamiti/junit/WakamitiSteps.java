@@ -49,7 +49,7 @@ import es.iti.wakamiti.api.util.ResourceLoader;
 public class WakamitiSteps implements StepContributor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.test");
-    private static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+    private static final ResourceLoader RESOURCE_LOADER = WakamitiAPI.instance().resourceLoader();
 
     private int value1;
     private float value2;
@@ -353,7 +353,7 @@ public class WakamitiSteps implements StepContributor {
     ) {
         LOGGER.info("This file is: {}", file);
         assert file != null : "File is null";
-        String content = resourceLoader.readFileAsString(file);
+        String content = RESOURCE_LOADER.readFileAsString(file);
         assert Objects.equals(content, document.getContent()) : "File is " + content;
         return content;
     }

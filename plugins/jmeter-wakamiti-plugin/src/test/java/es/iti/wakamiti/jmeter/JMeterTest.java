@@ -44,19 +44,17 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class JMeterTest {
 
-    public static final ClientAndServer client = startClientAndServer(8888);
-
+    public static final ClientAndServer CLIENT = startClientAndServer(8888);
 
     @BeforeClass
     public static void setupServer() throws IOException {
         ConfigurationProperties.logLevel("OFF");
-        prepare(client, "wakamiti/server", media -> true);
+        prepare(CLIENT, "wakamiti/server", media -> true);
     }
-
 
     @AfterClass
     public static void teardownServer() {
-        client.close();
+        CLIENT.close();
     }
 
 }

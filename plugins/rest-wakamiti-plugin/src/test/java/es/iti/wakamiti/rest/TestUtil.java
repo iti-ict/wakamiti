@@ -58,7 +58,7 @@ import io.restassured.RestAssured;
 
 public class TestUtil {
 
-    private static final XmlMapper xmlMapper = XmlMapper.builder().defaultUseWrapper(false)
+    private static final XmlMapper XML_MAPPER = XmlMapper.builder().defaultUseWrapper(false)
             .configure(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE, true)
             .build();
 
@@ -97,7 +97,7 @@ public class TestUtil {
             Map<?, ?> map
     ) {
         try {
-            return xmlMapper.writeValueAsString(map);
+            return XML_MAPPER.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -107,7 +107,7 @@ public class TestUtil {
             List<?> list
     ) {
         try {
-            return xmlMapper.writeValueAsString(list);
+            return XML_MAPPER.writeValueAsString(list);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -120,8 +120,8 @@ public class TestUtil {
         try {
             SimpleModule m = new SimpleModule("module", new Version(1, 0, 0, null, null, null));
             m.addDeserializer(Map.class, new CustomDeserializer());
-            xmlMapper.registerModule(m);
-            return xmlMapper.readValue(string, type);
+            XML_MAPPER.registerModule(m);
+            return XML_MAPPER.readValue(string, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -237,11 +237,11 @@ public class TestUtil {
             Predicate<MediaType> filter
     ) throws IOException {
         List<Expectation> expectations = new LinkedList<>();
-        Map<MediaType, Function<List<Map<String, Object>>, String>> list_to_string = Map.of(
+        Map<MediaType, Function<List<Map<String, Object>>, String>> listToString = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
                 MediaType.APPLICATION_XML, TestUtil::xml
         );
-        Map<MediaType, Function<String, Map<String, Object>>> string_to_map = Map.of(
+        Map<MediaType, Function<String, Map<String, Object>>> stringToMap = Map.of(
                 MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
                 }),
                 MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
@@ -268,7 +268,7 @@ public class TestUtil {
                         if (!map.containsKey(mimeType)) {
                             map.put(mimeType, new LinkedList<>());
                         }
-                        map.get(mimeType).add(string_to_map.get(mimeType).apply(read(file)));
+                        map.get(mimeType).add(stringToMap.get(mimeType).apply(read(file)));
                     }
 
                     for (MediaType mimeType : map.keySet().stream().filter(filter).toList()) {
@@ -282,7 +282,7 @@ public class TestUtil {
                                         response()
                                                 .withStatusCode(HttpStatusCode.OK_200.code())
                                                 .withContentType(mimeType)
-                                                .withBody(list_to_string.get(mimeType).apply(map.get(mimeType)))
+                                                .withBody(listToString.get(mimeType).apply(map.get(mimeType)))
                                 )
                         );
                     }
@@ -319,7 +319,7 @@ public class TestUtil {
                             )
                     );
 
-                    Map<String, Object> json = string_to_map.get(mimeType).apply(body);
+                    Map<String, Object> json = stringToMap.get(mimeType).apply(body);
 
                     for (String key : json.keySet()) {
                         Object current = json.get(key);
@@ -335,7 +335,7 @@ public class TestUtil {
                                             response()
                                                     .withStatusCode(HttpStatusCode.OK_200.code())
                                                     .withContentType(mimeType)
-                                                    .withBody(list_to_string.get(mimeType).apply((List<Map<String, Object>>) current))
+                                                    .withBody(listToString.get(mimeType).apply((List<Map<String, Object>>) current))
                                     )
                             );
                         }
@@ -375,7 +375,7 @@ public class TestUtil {
             JsonToken token;
             while ((token = parser.nextToken()) != null && token != JsonToken.END_OBJECT) {
                 if (token == JsonToken.FIELD_NAME) {
-                    String name = parser.getCurrentName();
+                    String name = parser.currentName();
                     token = parser.nextToken();
 
                     if (token == JsonToken.VALUE_STRING) {

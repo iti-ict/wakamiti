@@ -30,7 +30,10 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
  * <p>This class contains the main method for launching Wakamiti. It parses command-line arguments,
  * initializes the logger, fetches and updates classpath, and runs the WakamitiRunner.</p>
  */
-public class WakamitiLauncher {
+public final class WakamitiLauncher {
+
+    private WakamitiLauncher() {
+    }
 
     private static Logger logger;
 

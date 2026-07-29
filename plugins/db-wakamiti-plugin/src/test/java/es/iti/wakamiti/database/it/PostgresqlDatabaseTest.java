@@ -41,7 +41,7 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class PostgresqlDatabaseTest {
 
-    public static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:9.6.12")
+    public static final PostgreSQLContainer<?> CONTAINER = new PostgreSQLContainer<>("postgres:9.6.12")
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
@@ -54,15 +54,15 @@ public class PostgresqlDatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println(message("\rContainer [PostgreSQLContainer] started with [url={}, username={}, password={}]",
-                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
     }
 
     @AfterClass
     public static void shutdown() {
-        container.stop();
-        container.close();
+        CONTAINER.stop();
+        CONTAINER.close();
     }
 
 }

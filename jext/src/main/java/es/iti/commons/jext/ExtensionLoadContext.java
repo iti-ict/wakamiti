@@ -19,7 +19,7 @@ import java.util.function.Predicate;
  *
  * @param <T> the type of the extensions to be loaded
  */
-public class ExtensionLoadContext<T> {
+public final class ExtensionLoadContext<T> {
 
     private final Class<T> extensionPoint;
     private final ExtensionPoint extensionPointData;
@@ -44,7 +44,9 @@ public class ExtensionLoadContext<T> {
      *
      * @param extensionPoint the class of the extension point
      */
-    public static <T> ExtensionLoadContext<T> all(Class<T> extensionPoint) {
+    public static <T> ExtensionLoadContext<T> all(
+            Class<T> extensionPoint
+    ) {
         return new ExtensionLoadContext<>(extensionPoint, dataOf(extensionPoint), selectAll());
     }
 

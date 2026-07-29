@@ -30,7 +30,7 @@ import es.iti.wakamiti.jmeter.Metric;
 public abstract class AbstractMetricProvider extends AbstractProvider {
 
     public static final String RESOURCE = "iti_wakamiti-metric";
-    protected static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+    protected static final ResourceLoader RESOURCE_LOADER = WakamitiAPI.instance().resourceLoader();
 
     protected AbstractMetricProvider() {
         super(RESOURCE);
@@ -47,7 +47,7 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
             Locale locale,
             String prefix
     ) {
-        ResourceBundle bundle = resourceLoader.resourceBundle(RESOURCE, locale);
+        ResourceBundle bundle = RESOURCE_LOADER.resourceBundle(RESOURCE, locale);
         return bundle.keySet().stream()
                 .filter(key -> key.startsWith(prefix))
                 .map(bundle::getString)

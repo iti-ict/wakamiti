@@ -31,14 +31,14 @@ public class TestWakamitiDateTypeISO {
     private static final WakamitiDataType<LocalDateTime> DATETIME_TYPE = new WakamitiDateDataType<>(
             "datetime", LocalDateTime.class);
 
-    private static final List<Locale> testLocales = Arrays.asList(
+    private static final List<Locale> TEST_LOCALES = Arrays.asList(
             Locale.CANADA, Locale.CHINESE, Locale.ENGLISH, Locale.JAPANESE, Locale.FRENCH, Locale.GERMAN, Locale.forLanguageTag("es")
     );
 
     @Test
     public void testISODate() {
         // ISO date should be accepted by any locale
-        for (Locale locale : testLocales) {
+        for (Locale locale : TEST_LOCALES) {
             Assertions.assertThat(DATE_TYPE.matcher(locale, "2018-05-30").matches()).isTrue();
             Assertions.assertThat(DATE_TYPE.parse(locale, "2018-05-30"))
                     .isEqualTo(LocalDate.of(2018, 5, 30));
@@ -48,7 +48,7 @@ public class TestWakamitiDateTypeISO {
     @Test
     public void testISOTime() {
         // ISO time should be accepted by any locale
-        for (Locale locale : testLocales) {
+        for (Locale locale : TEST_LOCALES) {
             Assertions.assertThat(TIME_TYPE.matcher(locale, "17:35").matches()).isTrue();
             Assertions.assertThat(TIME_TYPE.parse(locale, "17:35")).isEqualTo(LocalTime.of(17, 35));
             Assertions.assertThat(TIME_TYPE.matcher(locale, "17:35:29").matches()).isTrue();
@@ -63,7 +63,7 @@ public class TestWakamitiDateTypeISO {
     @Test
     public void testISODateTime() {
         // ISO time should be accepted by any locale
-        for (Locale locale : testLocales) {
+        for (Locale locale : TEST_LOCALES) {
             Assertions.assertThat(DATETIME_TYPE.matcher(locale, "2018-05-30T17:35").matches())
                     .isTrue();
             Assertions.assertThat(DATETIME_TYPE.parse(locale, "2018-05-30T17:35"))

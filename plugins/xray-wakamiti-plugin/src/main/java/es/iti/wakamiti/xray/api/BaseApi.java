@@ -43,6 +43,10 @@ public class BaseApi {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String ACCEPT_HEADER = "Accept";
+    private static final long CONNECT_TIMEOUT_SECONDS = 20L;
+    private static final int BOUNDARY_SUFFIX_LENGTH = 16;
+    private static final int HTTP_CLIENT_ERROR_STATUS = 400;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final URL baseURL;
     private final String authorization;
@@ -61,7 +65,7 @@ public class BaseApi {
         this.httpClient = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.NORMAL)
-                .connectTimeout(Duration.ofSeconds(20))
+                .connectTimeout(Duration.ofSeconds(CONNECT_TIMEOUT_SECONDS))
                 .build();
     }
 
@@ -77,15 +81,15 @@ public class BaseApi {
         this.httpClient = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.NORMAL)
-                .connectTimeout(Duration.ofSeconds(20))
+                .connectTimeout(Duration.ofSeconds(CONNECT_TIMEOUT_SECONDS))
                 .build();
 
         String payload = toJSON(Map.of("client_id", clientId, "client_secret", clientSecret));
         String response = send(authRequest(authURL, payload), payload);
         this.authorization = "Bearer " + extract(response, "$");
-
     }
 
+    @SuppressWarnings("unchecked")
     protected <T> T extractList(
             String json,
             String path,
@@ -102,8 +106,7 @@ public class BaseApi {
     ) {
         Object object = validatePath(json, path, errorMessage);
         String extracted;
-        if (object instanceof List<?>) {
-            List<?> list = (List<?>) object;
+        if (object instanceof List<?> list) {
             if (list.isEmpty()) {
                 throw new NoSuchElementException(errorMessage);
             }
@@ -139,7 +142,7 @@ public class BaseApi {
             String uri
     ) {
         try {
-            return mapper.readTree(send(request("GET", uri), ""));
+            return MAPPER.readTree(send(request("GET", uri), ""));
         } catch (JsonProcessingException e) {
             throw new WakamitiXRayException(e.getMessage());
         }
@@ -150,7 +153,7 @@ public class BaseApi {
             String payload
     ) {
         try {
-            return mapper.readTree(post(uri, payload, APPLICATION_JSON));
+            return MAPPER.readTree(post(uri, payload, APPLICATION_JSON));
         } catch (JsonProcessingException e) {
             throw new WakamitiXRayException(e.getMessage());
         }
@@ -161,7 +164,7 @@ public class BaseApi {
             String payload
     ) {
         try {
-            return mapper.readTree(put(uri, payload, APPLICATION_JSON));
+            return MAPPER.readTree(put(uri, payload, APPLICATION_JSON));
         } catch (JsonProcessingException e) {
             throw new WakamitiXRayException(e.getMessage());
         }
@@ -237,7 +240,7 @@ public class BaseApi {
             File file
     ) {
         String boundary = "----WebKitFormBoundary"
-                + UUID.randomUUID().toString().substring(0, 16);
+                + UUID.randomUUID().toString().substring(0, BOUNDARY_SUFFIX_LENGTH);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         try {
@@ -285,7 +288,7 @@ public class BaseApi {
             if (logger.isTraceEnabled()) {
                 logger.trace("HTTP response => {} {}", response.statusCode(), response.body());
             }
-            if (response.statusCode() >= 400) {
+            if (response.statusCode() >= HTTP_CLIENT_ERROR_STATUS) {
                 throw new WakamitiException("The HTTP returned a non-OK response");
             }
             return response.body();

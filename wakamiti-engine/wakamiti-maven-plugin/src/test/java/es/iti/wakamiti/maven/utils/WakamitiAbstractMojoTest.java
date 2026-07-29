@@ -46,7 +46,7 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
         Field instance = Wakamiti.class.getDeclaredField("instance");
         instance.setAccessible(true);
         instance.set(null, wakamiti);
-        Field instantiated = Wakamiti.class.getDeclaredField("instantiated");
+        Field instantiated = Wakamiti.class.getDeclaredField("INSTANTIATED");
         instantiated.setAccessible(true);
         ((AtomicBoolean) instantiated.get(null)).set(true);
     }

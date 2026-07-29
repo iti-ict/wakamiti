@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
@@ -74,6 +75,7 @@ import slf4jansi.AnsiLogger;
  */
 public class MavenFetcher {
 
+    private static final int DEFAULT_PROXY_PORT = 8080;
     static {
         AnsiLogger.addStyle("repository", "yellow,bold");
         AnsiLogger.addStyle("artifact", "green,bold");
@@ -320,7 +322,7 @@ public class MavenFetcher {
             // should never reach this point, URL was checked when set
             throw new MavenFetchException(e);
         }
-        int port = url.getPort() < 0 ? 8080 : url.getPort();
+        int port = url.getPort() < 0 ? DEFAULT_PROXY_PORT : url.getPort();
         Authentication authentication = null;
         if (proxyUsername != null) {
             authentication = new AuthenticationBuilder()

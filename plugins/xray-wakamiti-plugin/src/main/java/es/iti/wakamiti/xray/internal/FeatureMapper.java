@@ -19,6 +19,7 @@ public class FeatureMapper extends Mapper {
         super(suiteBase);
     }
 
+    @Override
     public String type() {
         return XRaySynchronizer.GHERKIN_TYPE_FEATURE;
     }

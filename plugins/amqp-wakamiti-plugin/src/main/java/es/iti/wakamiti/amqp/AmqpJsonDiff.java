@@ -159,10 +159,9 @@ class AmqpJsonDiff {
 
         for (int i = 0; i < expectedFields.size(); i++) {
             String expectedField = expectedFields.get(i);
-            if (matchMode == MatchMode.STRICT) {
-                if (actualFields.size() <= i || !expectedField.equals(actualFields.get(i))) {
-                    return false;
-                }
+            if (matchMode == MatchMode.STRICT
+                    && (actualFields.size() <= i || !expectedField.equals(actualFields.get(i)))) {
+                return false;
             }
             if (!compareJsonNode(matchMode, expectedNode.get(expectedField), actualNode.get(expectedField))) {
                 return false;

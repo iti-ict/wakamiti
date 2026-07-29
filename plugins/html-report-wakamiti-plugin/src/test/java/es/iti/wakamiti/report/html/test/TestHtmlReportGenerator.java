@@ -37,10 +37,10 @@ import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
 public class TestHtmlReportGenerator {
 
     private static Document xml;
-    private static Document xml_2;
-    private static Document xml_3;
-    private static Document xml_noExecution;
-    private static String html_2;
+    private static Document xml2;
+    private static Document xml3;
+    private static Document xmlNoExecution;
+    private static String html2;
     private static String templateSource;
     private static String scriptSource;
 
@@ -51,10 +51,10 @@ public class TestHtmlReportGenerator {
                 "htmlReport.title", "Test Report Title",
                 "htmlReport.extra_info.value1", "Extra info 1",
                 "htmlReport.extra_info.value2", "Extra info 2");
-        xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
-        xml_3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
-        xml_noExecution = load("wakamiti_noExecution", "htmlReport.output", "target/wakamiti_noExecution.html");
-        html_2 = Files.readString(Path.of("target/wakamiti_2.html"));
+        xml2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
+        xml3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
+        xmlNoExecution = load("wakamiti_noExecution", "htmlReport.output", "target/wakamiti_noExecution.html");
+        html2 = Files.readString(Path.of("target/wakamiti_2.html"));
         templateSource = Files.readString(Path.of("src/main/resources/report.ftl"));
         scriptSource = Files.readString(Path.of("src/main/resources/lib/global.js"));
     }
@@ -90,9 +90,9 @@ public class TestHtmlReportGenerator {
         assertThat(xml)
                 .valueByXPath(elem + "/text()").isEqualTo("Test Report Title");
 
-        assertThat(xml_2)
+        assertThat(xml2)
                 .valueByXPath(elem + "/@title").isEqualTo("Test Plan B");
-        assertThat(xml_2)
+        assertThat(xml2)
                 .valueByXPath(elem + "/text()").isEqualTo("Test Plan B");
     }
 
@@ -151,10 +151,10 @@ public class TestHtmlReportGenerator {
                 .nodesByXPath("//*[text()='Extra info 2']")
                 .exist();
 
-        assertThat(xml_2)
+        assertThat(xml2)
                 .nodesByXPath("//*[text()='Extra info 1']")
                 .doNotExist();
-        assertThat(xml_2)
+        assertThat(xml2)
                 .nodesByXPath("//*[text()='Extra info 2']")
                 .doNotExist();
     }
@@ -182,7 +182,7 @@ public class TestHtmlReportGenerator {
                 .contains("data-action=\"toggle-response-format\"")
                 .contains(">{ }</button>")
                 .contains("class=\"step--response\"");
-        org.assertj.core.api.Assertions.assertThat(html_2)
+        org.assertj.core.api.Assertions.assertThat(html2)
                 .contains("class=\"step--response\"");
     }
 

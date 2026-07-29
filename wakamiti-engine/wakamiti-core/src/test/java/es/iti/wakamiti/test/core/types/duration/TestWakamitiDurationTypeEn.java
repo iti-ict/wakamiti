@@ -25,7 +25,7 @@ import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationType;
 @SuppressWarnings("unchecked")
 public class TestWakamitiDurationTypeEn {
 
-    private static final Locale locale = Locale.ENGLISH;
+    private static final Locale LOCALE = Locale.ENGLISH;
 
     @Test
     public void testDurations() {
@@ -54,7 +54,7 @@ public class TestWakamitiDurationTypeEn {
         exp.put("-2 days", Duration.ofDays(2));
 
         for (Map.Entry<String, Duration> e : exp.entrySet()) {
-            Duration duration = type.parse(locale, e.getKey());
+            Duration duration = type.parse(LOCALE, e.getKey());
             assertThat(duration).as("null assertion for: " + e.getKey()).isNotNull();
             assertThat(duration)
                     .as("failed match for: " + e.getKey() + " with " + e.getValue())

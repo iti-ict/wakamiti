@@ -16,8 +16,10 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 
+public final class StringUtils {
 
-public class StringUtils {
+    private StringUtils() {
+    }
 
     /**
      * Replaces the text values, formatted {@code {parameter}}, from the parameter map values.
@@ -33,7 +35,7 @@ public class StringUtils {
     ) throws NoSuchFieldException {
         Pattern pattern = Pattern.compile("\\{(\\w+?)}");
         List<String> missing = pattern.matcher(message).results().map(r -> r.group(1)).distinct()
-                .filter(r -> !parameters.containsKey(r)).collect(Collectors.toList());
+                .filter(r -> !parameters.containsKey(r)).toList();
         if (!missing.isEmpty()) {
             throw new NoSuchFieldException("Missing parameters " + missing);
         }

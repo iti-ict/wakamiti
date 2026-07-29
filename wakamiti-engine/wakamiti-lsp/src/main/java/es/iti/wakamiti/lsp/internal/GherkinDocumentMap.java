@@ -29,14 +29,14 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
  */
 public class GherkinDocumentMap {
 
-    private static final List<String> propertiesRequiringParsing = List.of(
+    private static final List<String> PROPERTIES_REQUIRING_PARSING = List.of(
             WakamitiConfiguration.LANGUAGE,
             WakamitiConfiguration.DATA_FORMAT_LANGUAGE,
             WakamitiConfiguration.MODULES
     );
-    private static final Pattern propertyPattern = Pattern.compile("\\s*+#*+\\s*+(\\S++)\\s*+:\\s*+(\\S++)\\s*+");
-    private static final Pattern tagPattern = Pattern.compile("(\\s*+@\\w++\\s*+)*+");
-    private static final GherkinDialectProvider dialectProvider = new GherkinDialectProvider();
+    private static final Pattern PROPERTY_PATTERN = Pattern.compile("\\s*+#*+\\s*+(\\S++)\\s*+:\\s*+(\\S++)\\s*+");
+    private static final Pattern TAG_PATTERN = Pattern.compile("(\\s*+@\\w++\\s*+)*+");
+    private static final GherkinDialectProvider DIALECT_PROVIDER = new GherkinDialectProvider();
 
     private Locale locale;
     private GherkinDialect dialect;
@@ -93,12 +93,12 @@ public class GherkinDocumentMap {
         String stripLineContent = rawLine.strip();
         boolean isProperty = stripLineContent.startsWith("#");
         if (isProperty) {
-            var matcher = propertyPattern.matcher(stripLineContent);
-            if (matcher.matches() && propertiesRequiringParsing.contains(matcher.group(1))) {
+            var matcher = PROPERTY_PATTERN.matcher(stripLineContent);
+            if (matcher.matches() && PROPERTIES_REQUIRING_PARSING.contains(matcher.group(1))) {
                 requireParsing = true;
             }
         } else {
-        	boolean isTag = tagPattern.matcher(stripLineContent).matches();
+            boolean isTag = TAG_PATTERN.matcher(stripLineContent).matches();
             if (isTag) {
                 requireParsing = true;
             } else {
@@ -167,8 +167,10 @@ public class GherkinDocumentMap {
         return !detectKeyword(lineNumber, stripLineContent, keywordSets).isEmpty();
     }
 
-
-    public boolean isStep(int lineNumber, String stripLineContent) {
+    public boolean isStep(
+            int lineNumber,
+            String stripLineContent
+    ) {
         TextRange keywordRange = detectKeyword(
                 lineNumber,
                 stripLineContent,
@@ -276,8 +278,8 @@ public class GherkinDocumentMap {
         String strippedLineContent = lines.get(lineNumber).stripLeading();
         boolean isProperty = strippedLineContent.startsWith("#");
         if (isProperty) {
-            var matcher = propertyPattern.matcher(strippedLineContent);
-            if (matcher.matches() && propertiesRequiringParsing.contains(matcher.group(1))) {
+            var matcher = PROPERTY_PATTERN.matcher(strippedLineContent);
+            if (matcher.matches() && PROPERTIES_REQUIRING_PARSING.contains(matcher.group(1))) {
                 requireParsing = true;
             }
         } else {

@@ -16,7 +16,10 @@ import java.nio.file.Paths;
 /**
  * Utility class for handling JAR files in the context of WakamitiLauncher.
  */
-public class JarUtil {
+public final class JarUtil {
+
+    private JarUtil() {
+    }
 
     /**
      * Retrieves the folder containing the JAR file from which WakamitiLauncher is executed.

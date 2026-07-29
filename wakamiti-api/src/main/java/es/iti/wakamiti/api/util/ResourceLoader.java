@@ -62,7 +62,7 @@ public class ResourceLoader {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(ResourceLoader.class);
     private static final int BUFFER_SIZE = 2048;
-    public static Map<String, ContentType> contentTypeFromExtension = ConfigurationFactory.instance()
+    private static final Map<String, ContentType> CONTENT_TYPE_FROM_EXTENSION = ConfigurationFactory.instance()
             .fromResource("mime-types.properties", ResourceLoader.class.getClassLoader())
             .asMap().entrySet().stream()
             .collect(Collectors.toMap(Map.Entry::getKey, e -> ContentType.create(e.getValue())));
@@ -85,8 +85,12 @@ public class ResourceLoader {
     ) {
         return Optional.of(file.getName())
                 .map(FilenameUtils::getExtension)
-                .map(ResourceLoader.contentTypeFromExtension::get)
+                .map(CONTENT_TYPE_FROM_EXTENSION::get)
                 .orElse(ContentType.DEFAULT_BINARY);
+    }
+
+    public static Map<String, ContentType> contentTypes() {
+        return CONTENT_TYPE_FROM_EXTENSION;
     }
 
     /**
@@ -698,6 +702,7 @@ public class ResourceLoader {
      * @param <T> The type of the parsed content.
      */
     public interface Parser<T> {
+
         T parse(
                 InputStream stream,
                 Charset charset

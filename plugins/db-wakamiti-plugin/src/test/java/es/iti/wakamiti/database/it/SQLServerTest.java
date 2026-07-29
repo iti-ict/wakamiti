@@ -48,7 +48,7 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class SQLServerTest {
 
-    public static final MSSQLServerContainer<?> container = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2017-CU12")
+    public static final MSSQLServerContainer<?> CONTAINER = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2017-CU12")
             .acceptLicense()
 //            .withDatabaseName("test")
 //            .withUsername("user")
@@ -62,12 +62,12 @@ public class SQLServerTest {
     @BeforeClass
     public static void setUp() throws IOException {
         System.out.println("Creating container. Please, be patient... ");
-        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println(message("\rContainer [MSSQLServerContainer] started with [url={}, username={}, password={}]",
-                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
-        String url = container.getJdbcUrl();
-        String user = container.getUsername();
-        String password = container.getPassword();
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
+        String url = CONTAINER.getJdbcUrl();
+        String user = CONTAINER.getUsername();
+        String password = CONTAINER.getPassword();
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(new DriverManagerDataSource(url, user, password));
         File schemaFile = new File(SQLServerTest.class.getResource("/wakamiti/db/triggers.sql").getFile());
@@ -79,8 +79,8 @@ public class SQLServerTest {
 
     @AfterClass
     public static void shutdown() {
-        container.stop();
-        container.close();
+        CONTAINER.stop();
+        CONTAINER.close();
     }
 
 }

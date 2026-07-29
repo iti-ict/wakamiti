@@ -68,8 +68,8 @@ public class DocumentDiagnosticHelper {
     private void collectDiagnosticsFromError(
             List<Diagnostic> diagnostics
     ) {
-        if (assessor.parsingError instanceof ParserException) {
-            collectDiagnosticsFromParserException((ParserException)assessor.parsingError, diagnostics);
+        if (assessor.parsingError instanceof ParserException ex) {
+            collectDiagnosticsFromParserException(ex, diagnostics);
         } else {
             Range errorRange = new Range(
                     new Position(0, 0),
@@ -186,9 +186,9 @@ public class DocumentDiagnosticHelper {
             ParserException parsingError,
             List<Diagnostic> results
     ) {
-        if (parsingError instanceof CompositeParserException) {
-            for (ParserException e : ((CompositeParserException)parsingError).getErrors()) {
-                collectDiagnosticsFromParserException(e,results);
+        if (parsingError instanceof CompositeParserException ex) {
+            for (ParserException e : ex.getErrors()) {
+                collectDiagnosticsFromParserException(e, results);
             }
         } else {
             int lineNumber = parsingError.getLocation().getLine();

@@ -41,6 +41,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
     protected static final String PROJECT = "project";
 
     private static final String CONTINUATION_HEADER = "x-ms-continuationtoken";
+    protected static final int HTTP_CLIENT_ERROR_STATUS = 400;
 
     /**
      * Constructs a new instance of the API client with the specified base URL.
@@ -52,7 +53,7 @@ public abstract class BaseApi<SELF extends HttpClient<SELF>> extends HttpClient<
     ) {
         super(baseUrl);
         postCall(response -> {
-            if (response.statusCode() >= 400) {
+            if (response.statusCode() >= HTTP_CLIENT_ERROR_STATUS) {
                 throw new WakamitiException("The Azure API returned a non-OK response");
             }
         });

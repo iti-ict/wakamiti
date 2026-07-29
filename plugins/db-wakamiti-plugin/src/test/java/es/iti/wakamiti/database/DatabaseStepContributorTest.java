@@ -369,7 +369,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"2", "Ester", "Colero", "true", "2000-02-01", null}
@@ -400,7 +400,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"2", "Ester", "Colero", null, "2000-02-01", "2024-07-22 13:00:00.000"}
@@ -432,7 +432,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"2", "Ester", "Colero", "true", "2000-02-01", null},
@@ -491,7 +491,7 @@ public class DatabaseStepContributorTest {
                 .isEqualTo("true");
 
         try (Select<String[]> select = db.select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).doesNotContain(
                     new String[]{"2", "Ester", "Colero", "true", "2000-02-01"},
@@ -570,7 +570,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -599,7 +599,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -629,7 +629,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -703,7 +703,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -730,7 +730,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -777,7 +777,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -804,7 +804,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -875,7 +875,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"1", "Rosa", "Melano", "false", "1980-12-25", "2024-07-22 12:34:56.000"},
@@ -883,7 +883,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Valencia", "39.469906", "-0.376288"},
@@ -891,7 +891,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client_city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactlyInAnyOrder(
                     new String[]{"1", "1"},
@@ -928,7 +928,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -936,7 +936,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Valencia", "39.469906", "-0.376288"}
@@ -944,7 +944,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client_city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "1"}
@@ -1018,7 +1018,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM other").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"47"}

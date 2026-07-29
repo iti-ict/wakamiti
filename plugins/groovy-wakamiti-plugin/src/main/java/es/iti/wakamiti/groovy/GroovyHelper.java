@@ -17,9 +17,12 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 
-public class GroovyHelper {
+public final class GroovyHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.groovy");
+
+    private GroovyHelper() {
+    }
 
     public static Object executeScript(
             String script

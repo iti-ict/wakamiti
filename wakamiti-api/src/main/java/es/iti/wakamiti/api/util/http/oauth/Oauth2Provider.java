@@ -33,6 +33,7 @@ import es.iti.wakamiti.api.util.JsonUtils;
 
 public final class Oauth2Provider {
 
+    private static final int CLIENT_ERROR_STATUS = 400;
     public static final String ACCESS_TOKEN = "access_token";
 
     private final Oauth2ProviderConfig oauth2ProviderConfig = new Oauth2ProviderConfig();
@@ -73,7 +74,7 @@ public final class Oauth2Provider {
 
     }
 
-    private static class DefaultAccessTokenRetriever implements AccessTokenRetriever {
+    private static final class DefaultAccessTokenRetriever implements AccessTokenRetriever {
 
         public String get(
                 Oauth2ProviderConfig config
@@ -95,7 +96,7 @@ public final class Oauth2Provider {
                 CloseableHttpResponse response = httpClient.execute(request);
                 int status = response.getStatusLine().getStatusCode();
                 String body = EntityUtils.toString(response.getEntity());
-                if (status >= 400) {
+                if (status >= CLIENT_ERROR_STATUS) {
                     throw new IllegalStateException(status + (isBlank(body) ? "" : ". " + body));
                 }
                 String token = JsonUtils.readStringValue(json(body), ACCESS_TOKEN);

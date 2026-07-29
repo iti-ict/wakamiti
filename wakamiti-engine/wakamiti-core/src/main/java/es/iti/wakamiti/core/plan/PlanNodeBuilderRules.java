@@ -30,7 +30,10 @@ import es.iti.wakamiti.api.plan.PlanNodeBuilder;
  * and actions when building a test plan using {@link PlanNodeBuilder}.
  *
  */
-public class PlanNodeBuilderRules {
+public final class PlanNodeBuilderRules {
+
+    private PlanNodeBuilderRules() {
+    }
 
     /**
      * Creates a new {@link Consumer} that performs a binary
@@ -769,7 +772,7 @@ public class PlanNodeBuilderRules {
      * Implementation of a rule that performs a binary action
      * on two {@link PlanNodeBuilder} instances.
      */
-    public static class PlanNodeBuilderRuleBiConsumer extends PlanNodeBuilderRuleConsumer {
+    public static final class PlanNodeBuilderRuleBiConsumer extends PlanNodeBuilderRuleConsumer {
 
         protected final Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> rightNodeGetter;
 

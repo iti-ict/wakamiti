@@ -509,7 +509,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                             .ifPresent(d -> ops.add(workItemOp(WorkItemOp.Operation.ADD, DESCRIPTION, d)));
                     newRequest()
                             .postCall(response -> response.body()
-                                    .filter(x -> response.statusCode() < 400)
+                                    .filter(x -> response.statusCode() < HTTP_CLIENT_ERROR_STATUS)
                                     .orElseThrow(() -> new WakamitiAzureException("Cannot create test case '{}'. ",
                                             t.identifier())))
                             .pathParam("type", settings().testCaseType())

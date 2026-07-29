@@ -24,12 +24,12 @@ import es.iti.wakamiti.core.gherkin.parser.ParserException;
 
 public class TestParser {
 
-    private static final ClassLoader classLoader = TestParser.class.getClassLoader();
+    private static final ClassLoader CLASS_LOADER = TestParser.class.getClassLoader();
 
     @Test
     public void testParser() throws IOException {
         try (var reader = new InputStreamReader(
-                Objects.requireNonNull(classLoader.getResourceAsStream("parser/gherkinDocument.feature"))
+                Objects.requireNonNull(CLASS_LOADER.getResourceAsStream("parser/gherkinDocument.feature"))
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);
@@ -39,7 +39,7 @@ public class TestParser {
     @Test
     public void testParserExtended() throws IOException {
         try (var reader = new InputStreamReader(
-                Objects.requireNonNull(classLoader.getResourceAsStream("parser/gherkinDocument2.feature"))
+                Objects.requireNonNull(CLASS_LOADER.getResourceAsStream("parser/gherkinDocument2.feature"))
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);
@@ -50,7 +50,7 @@ public class TestParser {
     @Test(expected = ParserException.CompositeParserException.class)
     public void testParserError() throws IOException {
         try (var reader = new InputStreamReader(
-                Objects.requireNonNull(classLoader.getResourceAsStream("parser/gherkinDocument_tag_err.feature"))
+                Objects.requireNonNull(CLASS_LOADER.getResourceAsStream("parser/gherkinDocument_tag_err.feature"))
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);
@@ -60,7 +60,7 @@ public class TestParser {
     @Test(expected = ParserException.CompositeParserException.class)
     public void testParserError2() throws IOException {
         try (var reader = new InputStreamReader(
-                Objects.requireNonNull(classLoader.getResourceAsStream("parser/gherkinDocument_tag_err2.feature"))
+                Objects.requireNonNull(CLASS_LOADER.getResourceAsStream("parser/gherkinDocument_tag_err2.feature"))
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);
@@ -70,7 +70,7 @@ public class TestParser {
     @Test
     public void testParserError3() throws IOException {
         try (var reader = new InputStreamReader(
-                Objects.requireNonNull(classLoader.getResourceAsStream("features/empty.feature"))
+                Objects.requireNonNull(CLASS_LOADER.getResourceAsStream("features/empty.feature"))
         )) {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);

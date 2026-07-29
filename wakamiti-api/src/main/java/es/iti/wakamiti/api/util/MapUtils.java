@@ -17,7 +17,7 @@ import java.util.stream.Collector;
 
 
 @SuppressWarnings({"java:S107"})
-public class MapUtils {
+public final class MapUtils {
 
     private MapUtils() {
     }

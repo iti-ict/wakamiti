@@ -33,7 +33,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
  */
 public class OoxmlDataSet extends MultiDataSet {
 
-    private static final Logger logger = WakamitiLogger.forClass(OoxmlDataSet.class);
+    private static final Logger LOGGER = WakamitiLogger.forClass(OoxmlDataSet.class);
 
     private final File file;
     private final String ignoreSheetRegex;
@@ -81,7 +81,7 @@ public class OoxmlDataSet extends MultiDataSet {
         try {
             this.workbook.close();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

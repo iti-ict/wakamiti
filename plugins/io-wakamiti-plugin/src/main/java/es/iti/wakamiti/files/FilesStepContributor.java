@@ -44,6 +44,7 @@ public class FilesStepContributor implements StepContributor {
 
     private static final Logger LOGGER = WakamitiLogger
             .of(LoggerFactory.getLogger("es.iti.wakamiti.files"));
+    private static final String DIRECTORY = "directory";
 
     private FilesHelper helper = new FilesHelper();
 
@@ -95,7 +96,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException {
         LOGGER.debug(
                 "Moving {} [{}] to file [{}]",
-                src.isFile() ? "file" : "directory",
+                src.isFile() ? "file" : DIRECTORY,
                 src.getAbsolutePath(),
                 dest.getAbsolutePath()
         );
@@ -114,7 +115,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException {
         LOGGER.debug(
                 "Moving {} [{}] to directory [{}]",
-                src.isFile() ? "file" : "directory",
+                src.isFile() ? "file" : DIRECTORY,
                 src.getAbsolutePath(),
                 dest.getAbsolutePath()
         );
@@ -133,7 +134,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException {
         LOGGER.debug(
                 "Copying {} [{}] to file [{}]",
-                src.isFile() ? "file" : "directory",
+                src.isFile() ? "file" : DIRECTORY,
                 src.getAbsolutePath(),
                 dest.getAbsolutePath()
         );
@@ -152,7 +153,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException {
         LOGGER.debug(
                 "Copying {} [{}] to directory [{}]",
-                src.isFile() ? "file" : "directory",
+                src.isFile() ? "file" : DIRECTORY,
                 src.getAbsolutePath(),
                 dest.getAbsolutePath()
         );
@@ -170,7 +171,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException {
         LOGGER.debug(
                 "Deleting {} [{}]",
-                file.isFile() ? "file" : "directory",
+                file.isFile() ? "file" : DIRECTORY,
                 file.getAbsolutePath()
         );
 
@@ -187,7 +188,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException, InterruptedException, TimeoutException {
         LOGGER.debug(
                 "Waiting for {} [{}] deletion",
-                file.isFile() ? "file" : "directory",
+                file.isFile() ? "file" : DIRECTORY,
                 file.getAbsolutePath()
         );
 
@@ -200,7 +201,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException, InterruptedException, TimeoutException {
         LOGGER.debug(
                 "Waiting for {} [{}] creation",
-                file.isFile() ? "file" : "directory",
+                file.isFile() ? "file" : DIRECTORY,
                 file.getAbsolutePath()
         );
 
@@ -213,7 +214,7 @@ public class FilesStepContributor implements StepContributor {
     ) throws IOException, InterruptedException, TimeoutException {
         LOGGER.debug(
                 "Waiting for {} [{}] modification",
-                file.isFile() ? "file" : "directory",
+                file.isFile() ? "file" : DIRECTORY,
                 file.getAbsolutePath()
         );
 
@@ -249,7 +250,7 @@ public class FilesStepContributor implements StepContributor {
             DataTable table
     ) throws IOException {
         DataTableHelper helper = new DataTableHelper(table);
-        String content = FileUtils.readFileToString(file, "UTF-8").trim();
+        String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8).trim();
         for (int row = 0; row < helper.count(); row++) {
             ValueRange range = helper.getRange(row);
             Assertions.assertThat(content.substring((int) range.getMinimum(), (int) range.getMaximum()))

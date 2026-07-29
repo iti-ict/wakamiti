@@ -35,11 +35,11 @@ public class FailedControlMojo extends AbstractMojo {
         Optional<AbstractMojoExecutionException> error = MojoResult.getError();
         if (error.isPresent()) {
             AbstractMojoExecutionException ex = error.get();
-            if (ex instanceof MojoExecutionException) {
-                throw (MojoExecutionException) ex;
+            if (ex instanceof MojoExecutionException meex) {
+                throw meex;
             }
-            if (ex instanceof MojoFailureException) {
-                throw (MojoFailureException) ex;
+            if (ex instanceof MojoFailureException mfe) {
+                throw mfe;
             }
         }
     }

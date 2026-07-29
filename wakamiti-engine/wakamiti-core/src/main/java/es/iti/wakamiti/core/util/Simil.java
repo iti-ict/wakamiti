@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
  */
 public class Simil {
 
+    private static final double PERCENT_SCALE = 100.0;
     private final String upBaseInput;
 
     /**
@@ -141,7 +142,7 @@ public class Simil {
         double percentVal = (compCount * 2);
         percentVal /= (upBaseInput.length() + upInput.length());
 
-        return (int) (Math.round(percentVal * 100.0));
+        return (int) (Math.round(percentVal * PERCENT_SCALE));
     }
 
 }

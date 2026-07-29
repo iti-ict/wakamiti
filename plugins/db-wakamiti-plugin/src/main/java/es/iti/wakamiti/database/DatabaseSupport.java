@@ -83,6 +83,9 @@ public class DatabaseSupport {
     protected static final String GIVEN_WHERE_CLAUSE = "the given WHERE clause";
     protected static final String ERROR_CLOSING_DATASET = "Error closing dataset";
     protected static final double SIMILARITY_THRESHOLD = 0.7;
+    protected static final long DEFAULT_SIMILAR_SEARCH_TIMEOUT_MS = 10_000L;
+    private static final long NANOS_PER_MILLISECOND = 1_000_000L;
+    private static final long MILLIS_PER_SECOND = 1_000L;
     protected static final LevenshteinDistance LEVENSHTEIN_DISTANCE = new LevenshteinDistance();
     protected static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     protected final Map<String, ConnectionProvider> connections = new HashMap<>();
@@ -93,7 +96,7 @@ public class DatabaseSupport {
     protected String csvFormat;
     protected boolean enableCleanupUponCompletion;
     protected boolean healthcheck;
-    protected long similarSearchTimeoutMs = 10_000L;
+    protected long similarSearchTimeoutMs = DEFAULT_SIMILAR_SEARCH_TIMEOUT_MS;
     protected UnaryOperator<Map<String, String>> nullSymbolMapper = map ->
             map.entrySet().stream().collect(MapUtils.toMap(v -> v.equals(nullSymbol) ? null : v));
 
@@ -581,7 +584,7 @@ public class DatabaseSupport {
         }
         long timeoutNanos;
         try {
-            timeoutNanos = Math.multiplyExact(similarSearchTimeoutMs, 1_000_000L);
+            timeoutNanos = Math.multiplyExact(similarSearchTimeoutMs, NANOS_PER_MILLISECOND);
         } catch (ArithmeticException ignored) {
             return Long.MAX_VALUE;
         }
@@ -602,7 +605,7 @@ public class DatabaseSupport {
         if (similarSearchTimeoutMs <= 0) {
             return 0;
         }
-        long seconds = (similarSearchTimeoutMs + 999L) / 1000L;
+        long seconds = (similarSearchTimeoutMs + MILLIS_PER_SECOND - 1L) / MILLIS_PER_SECOND;
         return (int) Math.min(Integer.MAX_VALUE, Math.max(1L, seconds));
     }
 
@@ -1187,7 +1190,8 @@ public class DatabaseSupport {
     /**
      * An adapter class for post-cleanup operations in SQL statements.
      */
-    private class PostCleanUpStatementVisitorAdapter extends net.sf.jsqlparser.statement.StatementVisitorAdapter {
+    private final class PostCleanUpStatementVisitorAdapter
+            extends net.sf.jsqlparser.statement.StatementVisitorAdapter {
 
         private DataSet result;
 

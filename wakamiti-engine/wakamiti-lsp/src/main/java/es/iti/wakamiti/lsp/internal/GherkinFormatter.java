@@ -21,7 +21,10 @@ import java.util.stream.Stream;
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 
 
-public class GherkinFormatter {
+public final class GherkinFormatter {
+
+    private GherkinFormatter() {
+    }
 
     private static final String TRIPLE_QUOTE = "\"\"\"";
     private static final String TRIPLE_BACKQUOTE = "```";

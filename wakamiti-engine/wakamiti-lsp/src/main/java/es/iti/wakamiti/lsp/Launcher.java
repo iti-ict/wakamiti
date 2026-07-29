@@ -18,7 +18,10 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 
 
-public class Launcher {
+public final class Launcher {
+
+    private Launcher() {
+    }
 
     public static void main(
             String[] args

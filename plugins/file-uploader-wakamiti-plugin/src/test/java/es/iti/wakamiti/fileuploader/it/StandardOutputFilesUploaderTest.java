@@ -42,17 +42,17 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class StandardOutputFilesUploaderTest {
 
-    private static final MockFtpServer ftpServer = new MockFtpServer(4321);
+    private static final MockFtpServer FTP_SERVER = new MockFtpServer(4321);
 
     @BeforeClass
     public static void setUp() throws FtpException, IOException {
-        ftpServer.start();
+        FTP_SERVER.start();
     }
 
     @AfterClass
     public static void tearDown() {
-        assertTrue(ftpServer.getTmpDir().resolve("dira/dirb/" + today() + "/wakamiti.json").toFile().exists());
-        ftpServer.stop();
+        assertTrue(FTP_SERVER.getTmpDir().resolve("dira/dirb/" + today() + "/wakamiti.json").toFile().exists());
+        FTP_SERVER.stop();
         System.out.println("FTP stopped");
     }
 

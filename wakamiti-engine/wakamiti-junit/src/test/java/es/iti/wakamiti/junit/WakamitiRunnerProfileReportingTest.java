@@ -56,7 +56,7 @@ public class WakamitiRunnerProfileReportingTest {
 
     }
 
-    private static class RecordingListener extends RunListener {
+    private static final class RecordingListener extends RunListener {
 
         int startedCount;
         int finishedCount;

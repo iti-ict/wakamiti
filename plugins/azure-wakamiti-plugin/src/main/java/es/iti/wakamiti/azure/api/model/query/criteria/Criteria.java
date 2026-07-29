@@ -19,7 +19,7 @@ import es.iti.wakamiti.azure.api.model.query.Field;
 import es.iti.wakamiti.azure.internal.Util;
 
 
-public class Criteria implements Expression {
+public final class Criteria implements Expression {
 
     private static final String NULL = "NULL";
 

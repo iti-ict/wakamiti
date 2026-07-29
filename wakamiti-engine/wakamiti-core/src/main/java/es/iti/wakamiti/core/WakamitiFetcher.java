@@ -118,7 +118,7 @@ public class WakamitiFetcher {
             List<Path> paths = fetchedArtifacts
                     .allArtifacts()
                     .map(FetchedArtifact::path)
-                    .collect(Collectors.toList());
+                    .toList();
 
             updateClasspath(paths);
             return paths;

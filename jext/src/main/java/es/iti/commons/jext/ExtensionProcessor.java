@@ -243,8 +243,7 @@ public class ExtensionProcessor extends AbstractProcessor {
         allExtensions.addAll(entry.getValue());
         resourceFile = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
         write(allExtensions, resourceFile);
-        //log(Kind.WARNING, "Generated service declaration file {}", resourceFile);
-        System.out.println("[jext] :: Generated service declaration file " + resourceFile.getName());
+        log(Kind.NOTE, "Generated service declaration file {}", resourceFile.getName());
     }
 
     private Set<String> read(

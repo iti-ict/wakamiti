@@ -28,6 +28,7 @@ import es.iti.wakamiti.core.util.LocaleLoader;
  */
 public abstract class AbstractBackend implements Backend {
 
+    private static final int DEFAULT_MAX_SUGGESTIONS = 5;
     protected static final Logger LOGGER = Wakamiti.LOGGER;
 
     protected final Configuration configuration;
@@ -96,7 +97,7 @@ public abstract class AbstractBackend implements Backend {
             String invalidStep,
             Locale locale
     ) {
-        int maxSuggestions = 5;
+        int maxSuggestions = DEFAULT_MAX_SUGGESTIONS;
         StringBuilder hint = new StringBuilder(
                 "Perhaps you mean one of the following:\n\t----------\n\t"
         );
