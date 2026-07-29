@@ -26,6 +26,7 @@
 
     <modules>
 
+        <module>wakamiti-checkstyle</module>
         <module>wakamiti-starter</module>
         <module>wakamiti-plugin-starter</module>
         <module>wakamiti-plugin-maven-archetype</module>
@@ -34,7 +35,6 @@
         <module>plugins</module>
         <module>jext</module>
         <module>jext-spring</module>
-        <!--        <module>wakamiti-server-quarkus</module>-->
 
     </modules>
 
