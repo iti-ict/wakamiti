@@ -299,7 +299,7 @@
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <forceLegacyJavacApi>true</forceLegacyJavacApi>
                 </configuration>
             </plugin>
             <!-- Enable/disable the tests (enable by default) -->
