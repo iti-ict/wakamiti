@@ -17,7 +17,6 @@ import org.junit.Test;
 
 public class ConfigurationFactoryDefinitionsTest {
 
-
     private final ConfigurationFactory factory = ConfigurationFactory.instance();
     private final Path definitionPath = Path.of("src", "test", "resources", "definition.yaml");
 

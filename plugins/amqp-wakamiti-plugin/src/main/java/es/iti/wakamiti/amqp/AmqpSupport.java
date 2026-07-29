@@ -52,11 +52,14 @@ public class AmqpSupport {
     private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
     private static final String CONTENT_TYPE = "application/json";
     private static final String DESTINATION_QUEUE_NOT_DEFINED = "Destination queue is not defined";
+
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
     protected final Map<String, List<String>> receivedMessages = new ConcurrentHashMap<>();
+
     protected AmqpConnectionParams connectionParams;
     protected AmqpProtocol protocol = AmqpProtocol.AMQP_1_0;
     protected String destination;
+
     private final AmqpJsonDiff jsonDiff = new AmqpJsonDiff();
     private AmqpClient client;
     private boolean durable;

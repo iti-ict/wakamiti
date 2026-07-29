@@ -22,7 +22,7 @@ public class TestPlan {
     private String projectId;
     private List<TestCase> testCases;
     private TestExecution testExecution;
-    
+
     public TestPlan(
             String issueId,
             JiraIssue jira,

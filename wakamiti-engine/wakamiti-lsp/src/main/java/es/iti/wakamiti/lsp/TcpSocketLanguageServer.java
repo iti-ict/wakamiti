@@ -42,7 +42,6 @@ public class TcpSocketLanguageServer {
         this.baseIndex = baseIndex;
     }
 
-
     public void start() throws IOException {
         serverSocket = new ServerSocket();
         serverSocket.bind(endpoint);
@@ -92,18 +91,15 @@ public class TcpSocketLanguageServer {
         }
     }
 
-
     public int getPort() {
         assertServerRunning();
         return serverSocket.getLocalPort();
     }
 
-
     public InetAddress getAddress() {
         assertServerRunning();
         return serverSocket.getInetAddress();
     }
-
 
     public void close() throws IOException {
         serverSocket.close();

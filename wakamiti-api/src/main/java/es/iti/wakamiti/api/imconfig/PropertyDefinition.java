@@ -35,7 +35,6 @@ public class PropertyDefinition {
         return new PropertyDefinitionBuilder().property(property);
     }
 
-
     private final String property;
     private final String description;
     private final boolean required;
@@ -58,7 +57,6 @@ public class PropertyDefinition {
         this.required = required;
         this.propertyType = type;
     }
-
 
     public String property() {
         return property;

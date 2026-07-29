@@ -38,6 +38,7 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 public class Argument {
 
     private final Map<String, String> evaluations = new LinkedHashMap<>();
+
     private String value;
     private Object evaluated;
     private Function<String, Object> mapper;

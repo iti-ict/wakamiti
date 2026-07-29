@@ -18,6 +18,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import es.iti.wakamiti.api.util.ThrowableFunction;
 

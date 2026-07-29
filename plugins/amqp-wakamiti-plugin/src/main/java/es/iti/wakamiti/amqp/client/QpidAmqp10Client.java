@@ -144,9 +144,11 @@ public class QpidAmqp10Client implements AmqpClient {
             }
             var queue = session().createQueue(queueName);
             MessageConsumer purgeConsumer = session().createConsumer(queue);
+            int purged = 0;
             while (purgeConsumer.receiveNoWait() != null) {
-                // Keep consuming until queue is empty.
+                purged++;
             }
+            LOGGER.debug("Purged {} messages from {}", purged, queueName);
             purgeConsumer.close();
         } catch (JMSException e) {
             throw new WakamitiException(e);

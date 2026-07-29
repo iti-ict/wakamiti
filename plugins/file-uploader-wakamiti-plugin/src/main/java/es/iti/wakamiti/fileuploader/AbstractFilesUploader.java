@@ -37,9 +37,7 @@ public abstract class AbstractFilesUploader implements EventObserver {
     private String remotePath;
     private String protocol;
     private String identity;
-
     private FTPTransmitter transmitter;
-
     private Instant executionInstant;
 
     protected AbstractFilesUploader(

@@ -8,11 +8,15 @@
 package es.iti.wakamiti.core.maven;
 
 
+import java.io.Serial;
+
+
 /**
  * Simple runtime exception that wraps other errors occurred during a fetching operation
  */
 public class MavenFetchException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public MavenFetchException(

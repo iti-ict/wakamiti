@@ -51,7 +51,6 @@ public class GherkinDocumentAssessor {
     private final GherkinParser parser;
     private final Function<Configuration, Hinter> hinterProvider;
 
-
     Configuration globalConfiguration;
     Configuration workspaceConfiguration;
     Configuration documentConfiguration;

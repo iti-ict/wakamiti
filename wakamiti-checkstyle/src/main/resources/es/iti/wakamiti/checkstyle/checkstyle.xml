@@ -55,6 +55,13 @@
         <property name="fileExtensions" value="java" />
     </module>
 
+
+    <module name="SuppressionSingleFilter">
+        <property name="checks" value="Javadoc(Method|Type)"/>
+        <!--[A-Z].* check is for java annotations inside code blocks inside javadocs-->
+        <property name="message" value="^Unknown tag '(apiNode|implNote|[A-Z].*)'.$"/>
+    </module>
+
     <module name="TreeWalker">
 
         <!-- Checks for Javadoc comments. -->
@@ -67,7 +74,9 @@
         </module>
         <module name="JavadocType">
         </module>
-        <module name="JavadocVariable" />
+        <module name="JavadocVariable">
+            <property name="accessModifiers" value="public" />
+        </module>
 
         <!-- Checks for Naming Conventions. -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
@@ -155,7 +164,6 @@
         <!-- Miscellaneous other checks. -->
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="ArrayTypeStyle" />
-        <module name="TodoComment" />
         <module name="UpperEll" />
         <module name="ImportOrder">
             <property name="option" value="top"/>

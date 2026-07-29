@@ -56,12 +56,10 @@ public class RestSupport {
     private static final int HTTP_OK = 200;
     public static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.rest");
 
-
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = WakamitiAPI.instance()
             .extensionManager()
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
-
 
     protected URL baseURL;
     protected String path;

@@ -33,7 +33,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
  * translated step definitions and performing pattern matching on
  * model step names.
  */
-public class ExpressionMatcher {
+public final class ExpressionMatcher {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(ExpressionMatcher.class);
 

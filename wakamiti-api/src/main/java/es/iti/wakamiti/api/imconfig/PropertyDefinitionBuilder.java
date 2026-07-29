@@ -131,7 +131,6 @@ public class PropertyDefinitionBuilder {
         return this;
     }
 
-
     public PropertyDefinition build() {
         Objects.requireNonNull(property);
         Objects.requireNonNull(propertyType);

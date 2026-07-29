@@ -47,14 +47,7 @@ public class StringUtils {
 
     public interface ToString<T> {
 
-        ToString<String> DEFAULT = new ToString<String>() {
-            @Override
-            public String toString(
-                    String o
-            ) {
-                return o;
-            }
-        };
+        ToString<String> DEFAULT = o -> o;
 
         String toString(
                 T o

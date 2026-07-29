@@ -11,14 +11,7 @@ package es.iti.wakamiti.core.gherkin.parser.internal;
 public class TokenFormatter {
 
     private static final StringUtils.ToString<GherkinLineSpan> SPAN_TO_STRING =
-            new StringUtils.ToString<>() {
-        @Override
-        public String toString(
-                GherkinLineSpan o
-        ) {
-            return o.column + ":" + o.text;
-        }
-    };
+            o -> o.column + ":" + o.text;
 
     public String formatToken(
             Token token

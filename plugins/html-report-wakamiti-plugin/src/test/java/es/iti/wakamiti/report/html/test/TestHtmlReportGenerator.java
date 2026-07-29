@@ -110,7 +110,7 @@ public class TestHtmlReportGenerator {
                 .valueByXPath(elem + "//li[4]")
                 .isEqualTo("Total duration 2h 24m 8s 410ms");
     }
-
+//
 //    @Test
 //    public void testReportMenuToggles() {
 //        String elem = "//*[contains(@class,\"nav-menu--control\")]";

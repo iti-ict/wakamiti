@@ -49,7 +49,6 @@ class CompletionContextMap {
         return new CompletionContextMap(null);
     }
 
-
     private final Map<Integer, Optional<CompletionContext>> map = new HashMap<>();
 
     public CompletionContextMap(

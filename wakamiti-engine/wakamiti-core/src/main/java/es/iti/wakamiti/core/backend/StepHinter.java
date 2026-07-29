@@ -40,7 +40,6 @@ public class StepHinter implements Hinter {
     private final Locale defaultTextLocale;
     private final Locale defaultDataLocale;
 
-
     public StepHinter(
             List<RunnableStep> runnableSteps,
             Configuration configuration,

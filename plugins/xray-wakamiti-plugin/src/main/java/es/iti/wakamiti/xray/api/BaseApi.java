@@ -40,6 +40,7 @@ import es.iti.wakamiti.xray.internal.WakamitiXRayException;
 public class BaseApi {
 
     public static final String APPLICATION_JSON = "application/json";
+
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String ACCEPT_HEADER = "Accept";

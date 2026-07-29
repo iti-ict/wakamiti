@@ -118,10 +118,7 @@ public class TextRange {
         if (startLine != other.startLine) {
             return false;
         }
-        if (startLinePosition != other.startLinePosition) {
-            return false;
-        }
-        return true;
+        return startLinePosition == other.startLinePosition;
     }
 
     public Range toLspRange() {

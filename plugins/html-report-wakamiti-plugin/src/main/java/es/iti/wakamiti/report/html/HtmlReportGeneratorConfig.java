@@ -31,7 +31,6 @@ public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGe
     public static final String CSS_FILE = PREFIX + ".css";
     public static final String TITLE = PREFIX + ".title";
 
-
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
             CSS_FILE, "",
             OUTPUT_FILE, "wakamiti.html"

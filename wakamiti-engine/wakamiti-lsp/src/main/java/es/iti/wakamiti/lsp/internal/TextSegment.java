@@ -8,7 +8,7 @@
 package es.iti.wakamiti.lsp.internal;
 
 
-public class TextSegment {
+public final class TextSegment {
 
     public static TextSegment of(
             TextRange range,
@@ -17,8 +17,8 @@ public class TextSegment {
         return new TextSegment(range, content);
     }
 
-    private TextRange range;
-    private String content;
+    private final TextRange range;
+    private final String content;
 
     private TextSegment(
             TextRange range,
@@ -72,13 +72,10 @@ public class TextSegment {
             return false;
         }
         if (range == null) {
-            if (other.range != null) {
-                return false;
-            }
-        } else if (!range.equals(other.range)) {
-            return false;
+            return other.range == null;
+        } else {
+            return range.equals(other.range);
         }
-        return true;
     }
 
 }

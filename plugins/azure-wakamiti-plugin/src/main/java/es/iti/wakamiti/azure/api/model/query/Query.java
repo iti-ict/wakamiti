@@ -120,6 +120,7 @@ public abstract class Query {
     }
 
     public enum Mode {
+
         MUST_CONTAIN("MustContain"),
         MAY_CONTAIN("MayContain"),
         DOES_NOT_CONTAIN("DoesNotContain"),

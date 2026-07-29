@@ -54,12 +54,14 @@ public class WorkItemOp {
     }
 
     public enum Operation {
+
         @JsonProperty("add")
         ADD,
         @JsonProperty("remove")
         REMOVE,
         @JsonProperty("replace")
         REPLACE
+
     }
 
 }

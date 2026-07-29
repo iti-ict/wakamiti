@@ -244,7 +244,6 @@ public class XRayApi extends BaseApi {
             JsonNode response = post(API_GRAPHQL, mutation);
 
             return read(response, "$.data.createTestSet.testSet", TestSet.class);
-
         }).collect(Collectors.toList());
     }
 

@@ -51,8 +51,10 @@ public class AzureSynchronizer implements EventObserver {
 
     public static final String GHERKIN_TYPE_FEATURE = "feature";
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
+
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureSynchronizer.class);
     private final Set<String> attachments = new LinkedHashSet<>();
+
     private boolean enabled;
     private URL baseURL;
     private String organization;
@@ -66,7 +68,6 @@ public class AzureSynchronizer implements EventObserver {
     private String configuration;
 
     private AzureApi api;
-
     private TestRun run;
     private List<TestResult> testResults;
 
