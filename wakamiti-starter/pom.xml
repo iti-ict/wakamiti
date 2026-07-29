@@ -61,8 +61,11 @@
         <maven.checkstyle.plugin>3.6.0</maven.checkstyle.plugin>
         <checkstyle.version>12.3.1</checkstyle.version>
         <wakamiti.checkstyle.version>1.0.0-SNAPSHOT</wakamiti.checkstyle.version>
-        <checkstyle.config.folder>${maven.multiModuleProjectDirectory}/config/checkstyle</checkstyle.config.folder>
-        <checkstyle.config.location>${checkstyle.config.folder}/checkstyle.xml</checkstyle.config.location>
+        <checkstyle.config.location>es/iti/wakamiti/checkstyle/checkstyle.xml</checkstyle.config.location>
+        <checkstyle.header.location>es/iti/wakamiti/checkstyle/java.header</checkstyle.header.location>
+        <checkstyle.suppressions.location>
+            es/iti/wakamiti/checkstyle/suppressions.xml
+        </checkstyle.suppressions.location>
         <checkstyle.lineLength>160</checkstyle.lineLength>
         <maven.compiler.release>17</maven.compiler.release>
         <maven.compiler.source>17</maven.compiler.source>
@@ -137,9 +140,10 @@
                         <excludes>**/module-info.java</excludes>
                         <linkXRef>false</linkXRef>
                         <configLocation>${checkstyle.config.location}</configLocation>
+                        <headerLocation>${checkstyle.header.location}</headerLocation>
+                        <suppressionsLocation>${checkstyle.suppressions.location}</suppressionsLocation>
                         <propertyExpansion>
                             checkstyle.lineLength=${checkstyle.lineLength}
-                            checkstyle.config.folder=${checkstyle.config.folder}
                         </propertyExpansion>
                     </configuration>
                     <executions>
