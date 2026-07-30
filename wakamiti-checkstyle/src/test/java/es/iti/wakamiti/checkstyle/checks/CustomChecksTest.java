@@ -10,7 +10,6 @@ package es.iti.wakamiti.checkstyle.checks;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -403,6 +402,32 @@ class CustomChecksTest {
         );
 
         assertEquals(0, violations(valid, PackageImportSpacingCheck.class).size());
+    }
+
+    @Test
+    void singleSpaceBetweenTokensIgnoresTextBlocks() throws Exception {
+        String valid = javaSource(
+                "class Sample {",
+                "",
+                "    String text = \"\"\"",
+                "            line  with  double spaces",
+                "",
+                "            \"\"\";",
+                "",
+                "    int value = 1;",
+                "",
+                "}"
+        );
+        String invalid = javaSource(
+                "class Sample {",
+                "",
+                "    int  value = 1;",
+                "",
+                "}"
+        );
+
+        assertEquals(0, violations(valid, SingleSpaceBetweenTokensCheck.class).size());
+        assertEquals(1, violations(invalid, SingleSpaceBetweenTokensCheck.class).size());
     }
 
     private String javaSource(

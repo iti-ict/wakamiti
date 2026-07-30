@@ -34,8 +34,7 @@ final class AstSupport {
     static boolean isCallableMember(
             DetailAST ast
     ) {
-        return ast != null
-                && TokenUtil.isOfType(
+        return TokenUtil.isOfType(
                 ast,
                 TokenTypes.METHOD_DEF,
                 TokenTypes.CTOR_DEF,
