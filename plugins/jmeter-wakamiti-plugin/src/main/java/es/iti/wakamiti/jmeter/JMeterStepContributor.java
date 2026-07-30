@@ -50,7 +50,7 @@ import us.abstracta.jmeter.javadsl.core.postprocessors.DslJsonExtractor;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jmeter-steps",
-        version = "2.6"
+        version = "2.13"
 )
 @I18nResource("iti_wakamiti_wakamiti-jmeter")
 public class JMeterStepContributor extends JMeterSupport implements StepContributor {

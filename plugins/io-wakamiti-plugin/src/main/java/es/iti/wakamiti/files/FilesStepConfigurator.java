@@ -24,7 +24,7 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "files-step-config",
-        version = "2.6"
+        version = "2.13"
 )
 public class FilesStepConfigurator implements ConfigContributor<FilesStepContributor> {
 

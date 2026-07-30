@@ -27,7 +27,7 @@ import es.iti.wakamiti.xray.model.TestPlan;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "xray-config",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer> {

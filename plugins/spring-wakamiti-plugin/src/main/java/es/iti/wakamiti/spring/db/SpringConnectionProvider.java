@@ -33,7 +33,7 @@ import es.iti.wakamiti.database.ConnectionParameters;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "database-springboot-datasource",
-        version = "1.1",
+        version = "2.13",
         externallyManaged = true, // because Spring bean infrastructure will managed the lifecycle
         overrides = "es.iti.wakamiti.database.DriverConnectionManager"
 )

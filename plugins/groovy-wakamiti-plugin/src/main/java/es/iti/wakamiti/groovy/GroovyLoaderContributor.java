@@ -39,7 +39,7 @@ import groovy.lang.GroovyClassLoader;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "groovy-loader",
-        version = "2.6"
+        version = "2.13"
 )
 public class GroovyLoaderContributor implements LoaderContributor {
 

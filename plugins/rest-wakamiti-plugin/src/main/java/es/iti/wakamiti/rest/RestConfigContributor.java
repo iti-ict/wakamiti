@@ -39,8 +39,12 @@ import io.restassured.config.RestAssuredConfig;
 /**
  * Provides the Rest Config Contributor functionality used by Wakamiti.
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-configurator", version = "2.6",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "rest-configurator",
+        version = "2.13",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
 
     /** Configuration key for the base URL prepended to relative REST request paths. */

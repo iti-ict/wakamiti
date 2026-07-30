@@ -24,7 +24,7 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "appium-config",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class AppiumConfigContributor implements ConfigContributor<AppiumStepContributor> {
@@ -52,7 +52,8 @@ public class AppiumConfigContributor implements ConfigContributor<AppiumStepCont
         configuration.inner(APPIUM_CAPABILITIES).forEach(capabilities::setCapability);
         // if app is passed, transform to absolute path
         configuration.get(APPIUM_CAPABILITIES + ".app", String.class)
-                .map(it -> Path.of(it).toAbsolutePath().toString()).ifPresent(it -> capabilities.setCapability("app", it));
+                .map(it -> Path.of(it).toAbsolutePath().toString())
+                .ifPresent(it -> capabilities.setCapability("app", it));
         contributor.setCapabilities(capabilities);
         configuration.get(APPIUM_URL, String.class).ifPresent(contributor::setAppiumURL);
     }

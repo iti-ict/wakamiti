@@ -44,7 +44,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "io-steps",
-        version = "2.6"
+        version = "2.13"
 )
 @I18nResource("iti_wakamiti_wakamiti-files")
 public class FilesStepContributor implements StepContributor {

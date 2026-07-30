@@ -45,7 +45,7 @@ import us.abstracta.jmeter.javadsl.core.listeners.InfluxDbBackendListener;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jmeter-config",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class JMeterConfigContributor implements ConfigContributor<JMeterStepContributor> {

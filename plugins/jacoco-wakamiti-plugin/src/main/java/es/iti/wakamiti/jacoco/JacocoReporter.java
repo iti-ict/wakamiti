@@ -56,7 +56,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jacoco-reporter",
-        version = "2.6",
+        version = "2.13",
         priority = Extension.NORMAL_PRIORITY + 1
 )
 public class JacocoReporter implements EventObserver {

@@ -52,7 +52,7 @@ import es.iti.wakamiti.database.jdbc.Database;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "database-steps",
-        version = "2.6"
+        version = "2.13"
 )
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {

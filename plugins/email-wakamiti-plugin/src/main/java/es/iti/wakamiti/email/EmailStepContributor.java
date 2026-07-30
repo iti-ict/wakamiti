@@ -44,7 +44,7 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "email-steps",
-        version = "2.6"
+        version = "2.13"
 )
 @I18nResource("iti_wakamiti_wakamiti-email")
 public class EmailStepContributor implements StepContributor {

@@ -22,7 +22,7 @@ import es.iti.commons.jext.Extension;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "database-driver-connection",
-        version = "2.6"
+        version = "2.13"
 )
 public class DriverConnectionManager implements ConnectionManager {
 

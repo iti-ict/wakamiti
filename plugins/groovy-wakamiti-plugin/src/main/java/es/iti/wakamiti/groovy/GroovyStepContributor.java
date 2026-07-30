@@ -22,7 +22,7 @@ import es.iti.wakamiti.api.plan.Document;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "groovy-steps",
-        version = "2.6"
+        version = "2.13"
 )
 public class GroovyStepContributor implements StepContributor {
 

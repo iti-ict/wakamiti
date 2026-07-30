@@ -22,7 +22,7 @@ import io.restassured.http.ContentType;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-text-helper",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
 )
 public class TextHelper implements ContentTypeHelper {

@@ -27,7 +27,7 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "amqp-config",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class AmqpConfigContributor implements ConfigContributor<AmqpStepContributor> {

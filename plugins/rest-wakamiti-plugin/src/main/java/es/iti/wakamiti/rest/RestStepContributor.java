@@ -51,7 +51,11 @@ import io.restassured.specification.RequestSpecification;
  * @see RestSupport
  * @see StepContributor
  */
-@Extension(provider = "es.iti.wakamiti", name = "rest-steps", version = "2.7")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "rest-steps",
+        version = "2.13"
+)
 @I18nResource("iti_wakamiti_wakamiti-rest")
 public class RestStepContributor extends RestSupport implements StepContributor {
 

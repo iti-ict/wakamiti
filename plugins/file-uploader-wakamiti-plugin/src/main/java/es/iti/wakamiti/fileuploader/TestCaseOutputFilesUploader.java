@@ -19,7 +19,7 @@ import es.iti.wakamiti.api.extensions.EventObserver;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "test-case-output-files-uploader",
-        version = "2.6"
+        version = "2.13"
 )
 public class TestCaseOutputFilesUploader extends AbstractFilesUploader implements EventObserver {
 

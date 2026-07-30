@@ -30,7 +30,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "appium-steps",
-        version = "2.6"
+        version = "2.13"
 )
 @I18nResource("iti_wakamiti_wakamiti-appium")
 public class AppiumStepContributor implements StepContributor {

@@ -41,7 +41,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "modbus",
-        version = "2.7"
+        version = "2.13"
 )
 @I18nResource("es_iti_wakamiti_modbus")
 public class ModbusStepContributor implements StepContributor {

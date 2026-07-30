@@ -55,7 +55,11 @@ import freemarker.template.TemplateExceptionHandler;
 /**
  * Provides the Html Report Generator functionality used by Wakamiti.
  */
-@Extension(provider = "es.iti.wakamiti", name = "html-report", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "html-report",
+        version = "2.13"
+)
 public class HtmlReportGenerator implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(HtmlReportGenerator.class);

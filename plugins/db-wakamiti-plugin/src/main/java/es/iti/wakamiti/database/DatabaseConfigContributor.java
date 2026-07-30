@@ -25,7 +25,7 @@ import slf4jansi.AnsiLogger;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "database-step-config",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class DatabaseConfigContributor implements ConfigContributor<DatabaseStepContributor> {

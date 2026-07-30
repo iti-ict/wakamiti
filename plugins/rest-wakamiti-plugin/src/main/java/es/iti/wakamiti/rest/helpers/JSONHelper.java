@@ -30,7 +30,7 @@ import io.restassured.response.ValidatableResponse;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-json-helper",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
 )
 public class JSONHelper implements ContentTypeHelper {

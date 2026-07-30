@@ -47,7 +47,7 @@ import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "azure-reporter",
-        version = "2.7",
+        version = "2.13",
         priority = Extension.NORMAL_PRIORITY * 2
 )
 public class AzureSynchronizer implements EventObserver {

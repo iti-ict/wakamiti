@@ -25,7 +25,7 @@ import es.iti.wakamiti.api.util.PathUtil;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jacoco-config",
-        version = "2.6"
+        version = "2.13"
 )
 public class JacocoConfig implements ConfigContributor<JacocoReporter> {
 

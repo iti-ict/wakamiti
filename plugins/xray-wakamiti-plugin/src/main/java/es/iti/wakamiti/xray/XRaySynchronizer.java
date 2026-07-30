@@ -48,7 +48,7 @@ import es.iti.wakamiti.xray.model.TestSet;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "xray-reporter",
-        version = "2.6",
+        version = "2.13",
         priority = Extension.NORMAL_PRIORITY * 2
 )
 public class XRaySynchronizer implements EventObserver {

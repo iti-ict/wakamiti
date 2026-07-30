@@ -29,7 +29,7 @@ import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "groovy-property-resolver",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.api.extensions.PropertyEvaluator"
 )
 public class GroovyPropertyEvaluator extends PropertyEvaluator {

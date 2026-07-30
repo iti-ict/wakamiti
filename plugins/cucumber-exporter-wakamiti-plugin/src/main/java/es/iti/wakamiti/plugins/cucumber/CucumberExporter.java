@@ -42,7 +42,7 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
  */
 @Extension(
         name = "cucumber-exporter",
-        version = "2.6"
+        version = "2.13"
 )
 public class CucumberExporter implements Reporter {
 
