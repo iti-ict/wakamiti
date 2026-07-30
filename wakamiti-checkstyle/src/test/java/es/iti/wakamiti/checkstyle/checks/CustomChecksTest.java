@@ -430,6 +430,23 @@ class CustomChecksTest {
         assertEquals(1, violations(invalid, SingleSpaceBetweenTokensCheck.class).size());
     }
 
+    @Test
+    void singleSpaceBetweenTokensResumesScanningAfterIgnoredContent() throws Exception {
+        String source = javaSource(
+                "class Sample {",
+                "",
+                "    String text = \"two  spaces\";  int first = 1;",
+                "    int second = 2; /* two  spaces */  int third = 3;",
+                "    String block = \"\"\"",
+                "            two  spaces",
+                "            \"\"\";  int fourth = 4;",
+                "",
+                "}"
+        );
+
+        assertEquals(3, violations(source, SingleSpaceBetweenTokensCheck.class).size());
+    }
+
     private String javaSource(
             String... lines
     ) {

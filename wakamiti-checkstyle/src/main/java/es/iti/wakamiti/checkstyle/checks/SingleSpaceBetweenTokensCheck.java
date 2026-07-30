@@ -33,8 +33,7 @@ public class SingleSpaceBetweenTokensCheck extends AbstractCheck {
             TokenTypes.RECORD_DEF
     };
 
-    private boolean insideBlockComment;
-    private boolean insideTextBlock;
+    private ScanMode scanMode;
 
     @Override
     public int[] getDefaultTokens() {
@@ -55,8 +54,7 @@ public class SingleSpaceBetweenTokensCheck extends AbstractCheck {
     public void beginTree(
             DetailAST root
     ) {
-        insideBlockComment = false;
-        insideTextBlock = false;
+        scanMode = ScanMode.CODE;
     }
 
     @Override
@@ -76,69 +74,91 @@ public class SingleSpaceBetweenTokensCheck extends AbstractCheck {
         int index = 0;
         boolean hasTokenBefore = false;
         while (index < line.length()) {
-            if (insideTextBlock) {
-                int closingDelimiter = line.indexOf("\"\"\"", index);
-                if (closingDelimiter < 0) {
-                    return;
-                }
-                insideTextBlock = false;
-                index = closingDelimiter + 3;
-                hasTokenBefore = true;
-                continue;
-            }
-
-            if (insideBlockComment) {
-                int commentEnd = line.indexOf("*/", index);
-                if (commentEnd < 0) {
-                    return;
-                }
-                insideBlockComment = false;
-                index = commentEnd + 2;
-                hasTokenBefore = true;
-                continue;
-            }
-
-            if (line.startsWith("//", index)) {
-                return;
-            }
-            if (line.startsWith("/*", index)) {
-                insideBlockComment = true;
-                index += 2;
-                continue;
-            }
-            if (line.startsWith("\"\"\"", index)) {
-                insideTextBlock = true;
-                index += 3;
-                hasTokenBefore = true;
-                continue;
-            }
-
-            char character = line.charAt(index);
-            if (character == '"') {
-                index = endOfQuotedLiteral(line, index, '"');
-                hasTokenBefore = true;
-            } else if (character == '\'') {
-                index = endOfQuotedLiteral(line, index, '\'');
-                hasTokenBefore = true;
-            } else if (character == ' ') {
-                int spaceStart = index;
-                while (index < line.length() && line.charAt(index) == ' ') {
-                    index++;
-                }
-                if (
-                        index - spaceStart > 1
-                                && hasTokenBefore
-                                && hasTokenAfter(line, index)
-                ) {
-                    log(lineNumber, spaceStart + 1, MSG_SINGLE_SPACE_BETWEEN_TOKENS);
-                }
-            } else {
-                if (!Character.isWhitespace(character)) {
-                    hasTokenBefore = true;
-                }
-                index++;
-            }
+            ScanPosition position = scanNext(
+                    line,
+                    index,
+                    lineNumber,
+                    hasTokenBefore
+            );
+            index = position.index();
+            hasTokenBefore = position.hasTokenBefore();
         }
+    }
+
+    private ScanPosition scanNext(
+            String line,
+            int index,
+            int lineNumber,
+            boolean hasTokenBefore
+    ) {
+        if (scanMode != ScanMode.CODE) {
+            return scanDelimitedContent(line, index);
+        }
+        if (line.startsWith("//", index)) {
+            return new ScanPosition(line.length(), hasTokenBefore);
+        }
+        if (line.startsWith("/*", index)) {
+            scanMode = ScanMode.BLOCK_COMMENT;
+            return new ScanPosition(index + 2, hasTokenBefore);
+        }
+        if (line.startsWith("\"\"\"", index)) {
+            scanMode = ScanMode.TEXT_BLOCK;
+            return new ScanPosition(index + 3, true);
+        }
+        return scanCodeCharacter(line, index, lineNumber, hasTokenBefore);
+    }
+
+    private ScanPosition scanDelimitedContent(
+            String line,
+            int index
+    ) {
+        int closingDelimiter = line.indexOf(scanMode.closingDelimiter(), index);
+        if (closingDelimiter < 0) {
+            return new ScanPosition(line.length(), true);
+        }
+        int nextIndex = closingDelimiter + scanMode.closingDelimiter().length();
+        scanMode = ScanMode.CODE;
+        return new ScanPosition(nextIndex, true);
+    }
+
+    private ScanPosition scanCodeCharacter(
+            String line,
+            int index,
+            int lineNumber,
+            boolean hasTokenBefore
+    ) {
+        char character = line.charAt(index);
+        return switch (character) {
+            case '"', '\'' -> new ScanPosition(
+                        endOfQuotedLiteral(line, index, character),
+                        true
+                );
+            case ' ' -> scanSpaces(line, index, lineNumber, hasTokenBefore);
+            default -> new ScanPosition(
+                        index + 1,
+                        hasTokenBefore || !Character.isWhitespace(character)
+                );
+        };
+    }
+
+    private ScanPosition scanSpaces(
+            String line,
+            int spaceStart,
+            int lineNumber,
+            boolean hasTokenBefore
+    ) {
+        int spaceEnd = spaceStart;
+        while (spaceEnd < line.length() && line.charAt(spaceEnd) == ' ') {
+            spaceEnd++;
+        }
+        if (
+                spaceEnd - spaceStart > 1
+                        && hasTokenBefore
+                        && hasTokenAfter(line, spaceEnd)
+        ) {
+            log(lineNumber, spaceStart + 1, MSG_SINGLE_SPACE_BETWEEN_TOKENS);
+        }
+        return new ScanPosition(spaceEnd, hasTokenBefore);
     }
 
     private int endOfQuotedLiteral(
@@ -174,6 +194,33 @@ public class SingleSpaceBetweenTokensCheck extends AbstractCheck {
             index++;
         }
         return false;
+    }
+
+    private enum ScanMode {
+
+        CODE(""),
+        BLOCK_COMMENT("*/"),
+        TEXT_BLOCK("\"\"\"");
+
+        private final String closingDelimiter;
+
+        ScanMode(
+                String closingDelimiter
+        ) {
+            this.closingDelimiter = closingDelimiter;
+        }
+
+        private String closingDelimiter() {
+            return closingDelimiter;
+        }
+
+    }
+
+    private record ScanPosition(
+            int index,
+            boolean hasTokenBefore
+    ) {
+
     }
 
 }

@@ -179,29 +179,32 @@ public final class GherkinFormatter {
     private static int[] analyzeMarginLevels(
             Type[] lineTypes
     ) {
-        int lastLineNumber = lineTypes.length - 1;
         int[] level = new int[lineTypes.length];
-        Type type = null;
-
-        for (int lineNumber = lastLineNumber; lineNumber >= 0; lineNumber--) {
-            type = lineTypes[lineNumber];
-            if (type.isKeyword) {
-                level[lineNumber] = type.level;
-            } else if (type.lookupDirection == 1) {
-                var nextKeywordType = nextKeywordType(lineTypes, lineNumber);
-                if (nextKeywordType != null) {
-                    level[lineNumber] = nextKeywordType.level;
-                }
-            } else if (type.lookupDirection == -1) {
-                var previousKeywordType = previousKeywordType(lineTypes, lineNumber);
-                if (previousKeywordType != null) {
-                    level[lineNumber] = previousKeywordType.level;
-                }
-            } else {
-                level[lineNumber] = type.level;
-            }
+        for (int lineNumber = lineTypes.length - 1; lineNumber >= 0; lineNumber--) {
+            level[lineNumber] = marginLevel(lineTypes, lineNumber);
         }
         return level;
+    }
+
+    private static int marginLevel(
+            Type[] lineTypes,
+            int lineNumber
+    ) {
+        Type type = lineTypes[lineNumber];
+        if (type.isKeyword) {
+            return type.level;
+        }
+        return switch (type.lookupDirection) {
+            case 1 -> levelOf(nextKeywordType(lineTypes, lineNumber));
+            case -1 -> levelOf(previousKeywordType(lineTypes, lineNumber));
+            default -> type.level;
+        };
+    }
+
+    private static int levelOf(
+            Type type
+    ) {
+        return type == null ? 0 : type.level;
     }
 
     private static Type nextKeywordType(
@@ -237,44 +240,126 @@ public final class GherkinFormatter {
     ) {
         var document = documentMap.document();
         Type[] lineType = new Type[document.numberOfLines()];
-        Type type = null;
         Type previousType = null;
 
         for (int lineNumber = 0; lineNumber < document.numberOfLines(); lineNumber++) {
-            previousType = type;
             String line = document.extractLine(lineNumber).stripLeading();
-            if (line.isBlank()) {
-                type = Type.EMPTY;
-            } else if (line.startsWith("#")) {
-                type = Type.COMMENT;
-            } else if (line.startsWith("@")) {
-                type = Type.TAG;
-            } else if (previousType == Type.STEP && line.startsWith("|")) {
-                type = Type.TABLE_HEADER;
-            } else if (previousType == Type.TABLE_HEADER && line.startsWith("|")) {
-                type = Type.TABLE_ROW;
-            } else if (previousType == Type.TABLE_ROW && line.startsWith("|")) {
-                type = Type.TABLE_ROW;
-            } else if (previousType == Type.STEP && (line.startsWith(TRIPLE_QUOTE) || line.startsWith(TRIPLE_BACKQUOTE))) {
-                type = Type.DOCUMENT_START;
-            } else if (previousType == Type.DOCUMENT_CONTENT && (line.startsWith(TRIPLE_QUOTE) || line.startsWith(TRIPLE_BACKQUOTE))) {
-                type = Type.DOCUMENT_END;
-            } else if (previousType == Type.DOCUMENT_CONTENT && !(line.startsWith(TRIPLE_QUOTE) || line.startsWith(TRIPLE_BACKQUOTE))) {
-                type = Type.DOCUMENT_CONTENT;
-            } else if (previousType == Type.DOCUMENT_START) {
-                type = Type.DOCUMENT_CONTENT;
-            } else if (documentMap.hasKeyword(lineNumber, line, GherkinDialect::getFeatureKeywords)) {
-                type = Type.FEATURE;
-            } else if (documentMap.hasKeyword(lineNumber, line, GherkinDialect::getFeatureContentKeywords)) {
-                type = Type.FEATURE_CONTENT;
-            } else if (documentMap.hasKeyword(lineNumber, line, GherkinDialect::getStepKeywords)) {
-                type = Type.STEP;
-            } else {
-                type = Type.DESCRIPTION;
-            }
+            Type type = classifyLine(documentMap, lineNumber, line, previousType);
             lineType[lineNumber] = type;
+            previousType = type;
         }
         return lineType;
+    }
+
+    private static Type classifyLine(
+            GherkinDocumentMap documentMap,
+            int lineNumber,
+            String line,
+            Type previousType
+    ) {
+        Type type = basicLineType(line);
+        if (type == null) {
+            type = contextualLineType(line, previousType);
+        }
+        if (type == null) {
+            type = keywordLineType(documentMap, lineNumber, line);
+        }
+        return type;
+    }
+
+    private static Type basicLineType(
+            String line
+    ) {
+        if (line.isBlank()) {
+            return Type.EMPTY;
+        }
+        if (line.startsWith("#")) {
+            return Type.COMMENT;
+        }
+        if (line.startsWith("@")) {
+            return Type.TAG;
+        }
+        return null;
+    }
+
+    private static Type contextualLineType(
+            String line,
+            Type previousType
+    ) {
+        Type tableType = tableLineType(line, previousType);
+        return tableType == null
+                ? documentLineType(line, previousType)
+                : tableType;
+    }
+
+    private static Type tableLineType(
+            String line,
+            Type previousType
+    ) {
+        if (!line.startsWith("|")) {
+            return null;
+        }
+        if (previousType == Type.STEP) {
+            return Type.TABLE_HEADER;
+        }
+        if (previousType == Type.TABLE_HEADER || previousType == Type.TABLE_ROW) {
+            return Type.TABLE_ROW;
+        }
+        return null;
+    }
+
+    private static Type documentLineType(
+            String line,
+            Type previousType
+    ) {
+        if (previousType == Type.STEP && isDocumentDelimiter(line)) {
+            return Type.DOCUMENT_START;
+        }
+        if (previousType == Type.DOCUMENT_CONTENT) {
+            return isDocumentDelimiter(line)
+                    ? Type.DOCUMENT_END
+                    : Type.DOCUMENT_CONTENT;
+        }
+        if (previousType == Type.DOCUMENT_START) {
+            return Type.DOCUMENT_CONTENT;
+        }
+        return null;
+    }
+
+    private static boolean isDocumentDelimiter(
+            String line
+    ) {
+        return line.startsWith(TRIPLE_QUOTE)
+                || line.startsWith(TRIPLE_BACKQUOTE);
+    }
+
+    private static Type keywordLineType(
+            GherkinDocumentMap documentMap,
+            int lineNumber,
+            String line
+    ) {
+        if (documentMap.hasKeyword(
+                lineNumber,
+                line,
+                GherkinDialect::getFeatureKeywords
+        )) {
+            return Type.FEATURE;
+        }
+        if (documentMap.hasKeyword(
+                lineNumber,
+                line,
+                GherkinDialect::getFeatureContentKeywords
+        )) {
+            return Type.FEATURE_CONTENT;
+        }
+        if (documentMap.hasKeyword(
+                lineNumber,
+                line,
+                GherkinDialect::getStepKeywords
+        )) {
+            return Type.STEP;
+        }
+        return Type.DESCRIPTION;
     }
 
     private static String padding(

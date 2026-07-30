@@ -315,7 +315,9 @@ public class GherkinWorkspace {
     ) {
         var document = document(uri);
         int numberOfLines = document.documentMap.document().numberOfLines();
-        int lastPosition = document.documentMap.document().extractLine(numberOfLines - 1).length();
+        int lastPosition = numberOfLines == 0
+                ? 0
+                : document.documentMap.document().extractLine(numberOfLines - 1).length();
         Range range = new Range(new Position(0, 0), new Position(numberOfLines, lastPosition));
         String formatted = GherkinFormatter.format(document.documentMap, tabSize);
         return new Pair<>(range, formatted);

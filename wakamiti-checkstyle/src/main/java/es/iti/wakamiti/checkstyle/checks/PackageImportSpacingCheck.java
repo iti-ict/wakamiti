@@ -59,6 +59,14 @@ public class PackageImportSpacingCheck extends AbstractCheck {
     public void finishTree(
             DetailAST root
     ) {
+        SourceSections sections = sourceSections(root);
+        validatePackageImportSpacing(sections);
+        validateImportTypeSpacing(sections);
+    }
+
+    private SourceSections sourceSections(
+            DetailAST root
+    ) {
         DetailAST packageDefinition = null;
         DetailAST firstImport = null;
         DetailAST lastImport = null;
@@ -70,42 +78,58 @@ public class PackageImportSpacingCheck extends AbstractCheck {
                 child = child.getNextSibling()
         ) {
             int type = child.getType();
-            if (type == TokenTypes.PACKAGE_DEF) {
-                packageDefinition = child;
-            } else if (
-                    type == TokenTypes.IMPORT
-                            || type == TokenTypes.STATIC_IMPORT
-            ) {
-                if (firstImport == null) {
-                    firstImport = child;
-                }
-                lastImport = child;
-            } else if (firstType == null && AstSupport.isTypeDefinition(child)) {
-                firstType = child;
+            switch (type) {
+                case TokenTypes.PACKAGE_DEF:
+                    packageDefinition = child;
+                    break;
+                case TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT:
+                    if (firstImport == null) {
+                        firstImport = child;
+                    }
+                    lastImport = child;
+                    break;
+                default:
+                    if (firstType == null && AstSupport.isTypeDefinition(child)) {
+                        firstType = child;
+                    }
+                    break;
             }
         }
+        return new SourceSections(
+                packageDefinition,
+                firstImport,
+                lastImport,
+                firstType
+        );
+    }
 
+    private void validatePackageImportSpacing(
+            SourceSections sections
+    ) {
         if (
-                packageDefinition != null
-                        && firstImport != null
+                sections.packageDefinition() != null
+                        && sections.firstImport() != null
                         && !hasExactlyTwoBlankLines(
-                        AstSupport.maximumLine(packageDefinition),
-                        AstSupport.minimumCodeLine(firstImport)
+                        AstSupport.maximumLine(sections.packageDefinition()),
+                        AstSupport.minimumCodeLine(sections.firstImport())
                 )
         ) {
-            log(firstImport, MSG_PACKAGE_IMPORTS);
+            log(sections.firstImport(), MSG_PACKAGE_IMPORTS);
         }
+    }
 
-        if (lastImport != null && firstType != null) {
-            int typeStartLine = typeStartIncludingJavadoc(firstType);
-            if (
-                    !hasExactlyTwoBlankLines(
-                            AstSupport.maximumLine(lastImport),
-                            typeStartLine
-                    )
-            ) {
-                log(firstType, MSG_IMPORTS_TYPE);
-            }
+    private void validateImportTypeSpacing(
+            SourceSections sections
+    ) {
+        if (
+                sections.lastImport() != null
+                        && sections.firstType() != null
+                        && !hasExactlyTwoBlankLines(
+                        AstSupport.maximumLine(sections.lastImport()),
+                        typeStartIncludingJavadoc(sections.firstType())
+                )
+        ) {
+            log(sections.firstType(), MSG_IMPORTS_TYPE);
         }
     }
 
@@ -114,22 +138,27 @@ public class PackageImportSpacingCheck extends AbstractCheck {
     ) {
         int result = AstSupport.minimumCodeLine(typeDefinition);
         int previousLineIndex = result - 2;
-        if (
-                previousLineIndex >= 0
-                        && getLine(previousLineIndex).stripTrailing().endsWith("*/")
-        ) {
-            for (int index = previousLineIndex; index >= 0; index--) {
-                String line = getLine(index).stripLeading();
-                if (line.startsWith("/**")) {
-                    result = index + 1;
-                    break;
-                }
-                if (line.startsWith("/*")) {
-                    break;
-                }
+        if (previousLineIndex < 0
+                || !getLine(previousLineIndex).stripTrailing().endsWith("*/")) {
+            return result;
+        }
+        return javadocStartLine(previousLineIndex, result);
+    }
+
+    private int javadocStartLine(
+            int previousLineIndex,
+            int defaultLine
+    ) {
+        for (int index = previousLineIndex; index >= 0; index--) {
+            String line = getLine(index).stripLeading();
+            if (line.startsWith("/**")) {
+                return index + 1;
+            }
+            if (line.startsWith("/*")) {
+                return defaultLine;
             }
         }
-        return result;
+        return defaultLine;
     }
 
     private boolean hasExactlyTwoBlankLines(
@@ -150,6 +179,15 @@ public class PackageImportSpacingCheck extends AbstractCheck {
             }
         }
         return blankLines == 2;
+    }
+
+    private record SourceSections(
+            DetailAST packageDefinition,
+            DetailAST firstImport,
+            DetailAST lastImport,
+            DetailAST firstType
+    ) {
+
     }
 
 }

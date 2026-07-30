@@ -27,12 +27,14 @@ public class TokenFormatterBuilder implements Parser.Builder<String> {
     public void startRule(
             Parser.RuleType ruleType
     ) {
+        // nothing to do
     }
 
     @Override
     public void endRule(
             Parser.RuleType ruleType
     ) {
+        // nothing to do
     }
 
     @Override
@@ -42,6 +44,7 @@ public class TokenFormatterBuilder implements Parser.Builder<String> {
 
     @Override
     public void reset() {
+        // nothing to do
     }
 
 }

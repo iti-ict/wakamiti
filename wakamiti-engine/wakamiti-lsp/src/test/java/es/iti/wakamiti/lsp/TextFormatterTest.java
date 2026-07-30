@@ -13,9 +13,10 @@ import org.junit.Test;
 
 import es.iti.wakamiti.lsp.internal.GherkinDocumentMap;
 import es.iti.wakamiti.lsp.internal.GherkinFormatter;
+import es.iti.wakamiti.lsp.internal.GherkinWorkspace;
 
 
-public class TextFormatter {
+public class TextFormatterTest {
 
     @Test
     public void testFormatter() {
@@ -103,6 +104,15 @@ public class TextFormatter {
                         + "        | 3  | Pepe       | Perez                 |\n"
                         + "        Cuando se consulta el usuario\n"
                         + "");
+    }
+
+    @Test
+    public void testEmptyDocumentFormatting() {
+        String uri = "file:///empty.feature";
+        GherkinWorkspace workspace = new GherkinWorkspace(0);
+        workspace.addGherkinWithoutDiagnostics(uri, "");
+
+        Assertions.assertThat(workspace.format(uri, 4).value()).isEmpty();
     }
 
 }
