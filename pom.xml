@@ -28,10 +28,10 @@
         <module>wakamiti-checkstyle</module>
         <module>wakamiti-starter</module>
         <module>wakamiti-plugin-starter</module>
-        <module>wakamiti-plugin-maven-archetype</module>
         <module>wakamiti-api</module>
         <module>wakamiti-engine</module>
         <module>plugins</module>
+        <module>wakamiti-plugin-maven-archetype</module>
         <module>jext</module>
         <module>jext-spring</module>
 
