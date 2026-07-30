@@ -38,6 +38,7 @@
         <module name="es.iti.wakamiti.checkstyle.checks.CallableSeparationCheck" />
         <module name="es.iti.wakamiti.checkstyle.checks.DeclarationParametersPerLineCheck" />
         <module name="GenericWhitespace" />
+        <module name="SingleSpaceSeparator" />
         <module name="NoWhitespaceAfter">
             <property name="tokens"
                       value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS" />
@@ -89,9 +90,6 @@
         <module name="ParameterName" />
         <module name="StaticVariableName" />
         <module name="TypeName" />
-
-        <!-- Following interprets the header file as regular expressions. -->
-        <!-- <module name="RegexpHeader"/> -->
 
         <!-- Checks for imports -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
