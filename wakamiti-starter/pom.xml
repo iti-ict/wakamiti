@@ -382,11 +382,11 @@
 
         <!-- enable checkstyle only for modules that contain Java sources -->
         <profile>
-            <id>checkstyle-with-sources</id>
+            <id>checkstyle</id>
             <activation>
-                <property>
-                    <name>!checkstyle.skip</name>
-                </property>
+                <file>
+                    <missing>.skip-checkstyle</missing>
+                </file>
             </activation>
             <build>
                 <plugins>
