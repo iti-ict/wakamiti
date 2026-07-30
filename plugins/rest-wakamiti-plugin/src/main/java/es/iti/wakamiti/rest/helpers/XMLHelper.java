@@ -1,10 +1,18 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.rest.helpers;
 
+
+import static es.iti.wakamiti.api.util.XmlUtils.xml;
+import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
+
+import org.apache.xmlbeans.XmlObject;
+import org.hamcrest.MatcherAssert;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -18,15 +26,11 @@ import io.restassured.path.xml.mapping.XmlPathObjectDeserializer;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.apache.xmlbeans.XmlObject;
-import org.hamcrest.MatcherAssert;
-
-import static es.iti.wakamiti.api.util.XmlUtils.xml;
-import static io.restassured.matcher.RestAssuredMatchers.matchesXsd;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * Provides assertions and XML object deserialization support for REST
+ * responses.
  */
 @Extension(
         provider = "es.iti.wakamiti",
@@ -46,7 +50,11 @@ public class XMLHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
+    public void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    ) {
         diff.assertContent(expected, actual, matchMode);
     }
 
@@ -71,7 +79,10 @@ public class XMLHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContentSchema(String expectedSchema, String content) {
+    public void assertContentSchema(
+            String expectedSchema,
+            String content
+    ) {
         MatcherAssert.assertThat(content, matchesXsd(expectedSchema));
     }
 
@@ -79,8 +90,12 @@ public class XMLHelper implements ContentTypeHelper {
     static class XmlPathXmlObjectDeserializer implements XmlPathObjectDeserializer {
 
         @Override
-        public XmlObject deserialize(ObjectDeserializationContext ctx) {
+        public XmlObject deserialize(
+                ObjectDeserializationContext ctx
+        ) {
             return xml(ctx.getDataToDeserialize().asString());
         }
+
     }
+
 }

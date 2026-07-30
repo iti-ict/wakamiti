@@ -1,11 +1,18 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
+
+import static org.awaitility.Awaitility.await;
+
+import java.io.File;
+import java.net.URI;
+import java.time.Duration;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
@@ -14,12 +21,6 @@ import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.Document;
-
-import java.io.File;
-import java.net.URI;
-import java.time.Duration;
-
-import static org.awaitility.Awaitility.await;
 
 
 /**
@@ -42,7 +43,6 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
 
     private static final AmqpProtocol DEFAULT_PROTOCOL = AmqpProtocol.AMQP_1_0;
 
-
     /**
      * Executes deferred cleanup operations registered during scenario execution.
      */
@@ -61,7 +61,6 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
         closeClient();
     }
 
-
     /**
      * Registers a queue purge operation that will run at teardown.
      *
@@ -69,7 +68,7 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      */
     @Step(
             value = "amqp.define.cleanup.purge.queue",
-            args = { "word" }
+            args = {"word"}
     )
     public void setCleanupQueue(
             String queue
@@ -77,17 +76,16 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
         cleanUpOperations.add(() -> purgeQueue(queue));
     }
 
-
     /**
      * Defines broker URL and credentials.
      *
-     * @param url broker URI
+     * @param url      broker URI
      * @param username broker username (optional)
      * @param password broker password (optional)
      */
     @Step(
             value = "amqp.define.connection.parameters",
-            args = { "url:text", "username:text", "password:text" }
+            args = {"url:text", "username:text", "password:text"}
     )
     public void defineConnectionParameters(
             String url,
@@ -102,7 +100,6 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
         closeClient();
     }
 
-
     /**
      * Defines protocol to use for future operations.
      *
@@ -110,10 +107,10 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      */
     @Step(
             value = "amqp.define.connection.protocol",
-            args = { "protocol:word" }
+            args = {"protocol:word"}
     )
     public void defineProtocol(
-        String protocol
+            String protocol
     ) {
         try {
             this.protocol = AmqpProtocol.parseOrDefault(protocol, DEFAULT_PROTOCOL);
@@ -123,7 +120,6 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
         closeClient();
     }
 
-
     /**
      * Sets destination queue used by assertion steps and subscribes to it.
      *
@@ -131,7 +127,7 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      */
     @Step(
             value = "amqp.define.destination.queue",
-            args = { "word" }
+            args = {"word"}
     )
     public void defineDestinationQueue(
             String queueName
@@ -140,16 +136,15 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
         consumeQueue(queueName);
     }
 
-
     /**
      * Sends inline JSON document content to queue.
      *
      * @param queueName target queue
-     * @param document inline JSON document
+     * @param document  inline JSON document
      */
     @Step(
             value = "amqp.send.json.from.string",
-            args = { "word" }
+            args = {"word"}
     )
     public void sendJSONFromString(
             String queueName,
@@ -158,16 +153,15 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
         sendTextMessageToQueue(queueName, document.getContent());
     }
 
-
     /**
      * Sends JSON content loaded from file.
      *
      * @param queueName target queue
-     * @param file JSON file
+     * @param file      JSON file
      */
     @Step(
             value = "amqp.send.json.from.file",
-            args = { "queue:word", "file:file" }
+            args = {"queue:word", "file:file"}
     )
     public void sendJSONFromFile(
             String queueName,
@@ -184,14 +178,13 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      */
     @Step(
             value = "amqp.purge.queue",
-            args = { "word" }
+            args = {"word"}
     )
     public void purgeQueueStep(
             String queueName
     ) {
         purgeQueue(queueName);
     }
-
 
     /**
      * Adds a deterministic delay in a scenario.
@@ -206,16 +199,15 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
                 .pollDelay(duration).until(() -> true);
     }
 
-
     /**
      * Validates that a JSON message appears within timeout.
      *
      * @param duration timeout window
-     * @param json expected JSON payload
+     * @param json     expected JSON payload
      */
     @Step(
             value = "amqp.check.received.json.from.string",
-            args = { "duration:duration" }
+            args = {"duration:duration"}
     )
     public void checkReceivedJSONFromString(
             Duration duration,
@@ -224,16 +216,15 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
         checkMessageExistsInReceived(json.getContent(), duration);
     }
 
-
     /**
      * Validates that expected JSON from file appears within timeout.
      *
      * @param duration timeout window
-     * @param file file containing expected JSON payload
+     * @param file     file containing expected JSON payload
      */
     @Step(
             value = "amqp.check.received.json.from.file",
-            args = { "duration:duration", "file:file" }
+            args = {"duration:duration", "file:file"}
     )
     public void checkReceivedJSONFromFile(
             Duration duration,
@@ -247,11 +238,11 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      * Validates that a JSON message appears within timeout ignoring element order.
      *
      * @param duration timeout window
-     * @param json expected JSON payload
+     * @param json     expected JSON payload
      */
     @Step(
             value = "amqp.check.received.json.from.string.any-order",
-            args = { "duration:duration" }
+            args = {"duration:duration"}
     )
     public void checkReceivedJSONFromStringAnyOrder(
             Duration duration,
@@ -264,11 +255,11 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      * Validates that expected JSON from file appears within timeout ignoring order.
      *
      * @param duration timeout window
-     * @param file file containing expected JSON payload
+     * @param file     file containing expected JSON payload
      */
     @Step(
             value = "amqp.check.received.json.from.file.any-order",
-            args = { "duration:duration", "file:file" }
+            args = {"duration:duration", "file:file"}
     )
     public void checkReceivedJSONFromFileAnyOrder(
             Duration duration,
@@ -282,11 +273,11 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      * Validates that a JSON fragment appears within timeout in a received message.
      *
      * @param duration timeout window
-     * @param json expected partial JSON payload
+     * @param json     expected partial JSON payload
      */
     @Step(
             value = "amqp.check.received.json.loose.from.string",
-            args = { "duration:duration" }
+            args = {"duration:duration"}
     )
     public void checkReceivedJSONLooseFromString(
             Duration duration,
@@ -299,11 +290,11 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      * Validates that expected JSON fragment from file appears within timeout.
      *
      * @param duration timeout window
-     * @param file file containing expected partial JSON payload
+     * @param file     file containing expected partial JSON payload
      */
     @Step(
             value = "amqp.check.received.json.loose.from.file",
-            args = { "duration:duration", "file:file" }
+            args = {"duration:duration", "file:file"}
     )
     public void checkReceivedJSONLooseFromFile(
             Duration duration,
@@ -320,7 +311,7 @@ public class AmqpStepContributor extends AmqpSupport implements StepContributor 
      */
     @Step(
             value = "amqp.check.received.none",
-            args = { "duration:duration" }
+            args = {"duration:duration"}
     )
     public void checkNoMessageReceived(
             Duration duration

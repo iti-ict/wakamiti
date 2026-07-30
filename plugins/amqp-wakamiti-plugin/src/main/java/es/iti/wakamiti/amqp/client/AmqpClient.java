@@ -1,9 +1,10 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp.client;
 
 
@@ -22,9 +23,9 @@ public interface AmqpClient extends AutoCloseable {
     /**
      * Declares a queue if required by the protocol/client.
      *
-     * @param queueName queue name
-     * @param durable durable flag
-     * @param exclusive exclusive flag
+     * @param queueName  queue name
+     * @param durable    durable flag
+     * @param exclusive  exclusive flag
      * @param autoDelete auto-delete flag
      */
     void declareQueue(
@@ -38,9 +39,9 @@ public interface AmqpClient extends AutoCloseable {
      * Sends a text payload to a destination queue.
      *
      * @param destination target queue
-     * @param text payload
+     * @param text        payload
      * @param contentType logical content type (stored as property/header when supported)
-     * @param persistent whether message should be persistent
+     * @param persistent  whether message should be persistent
      */
     void sendText(
             String destination,
@@ -53,7 +54,7 @@ public interface AmqpClient extends AutoCloseable {
      * Subscribes asynchronously to a destination queue.
      *
      * @param destination queue name
-     * @param listener callback invoked for each received message body
+     * @param listener    callback invoked for each received message body
      */
     void subscribe(
             String destination,

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,16 +8,22 @@
 package es.iti.wakamiti.api.plan;
 
 
-import es.iti.wakamiti.api.model.TreeNodeBuilder;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import es.iti.wakamiti.api.model.TreeNodeBuilder;
 
 
 /**
  * Builder class for creating instances of {@link PlanNode}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
 
@@ -34,59 +42,139 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     private Object underlyingModel;
     private boolean filtered;
 
-    public PlanNodeBuilder(NodeType nodeType) {
+    /**
+     * Starts a builder for a leaf or initially childless node.
+     *
+     * @param nodeType the semantic role of the node
+     */
+    public PlanNodeBuilder(
+            NodeType nodeType
+    ) {
         this.nodeType = nodeType;
     }
 
-    public PlanNodeBuilder(NodeType nodeType, Collection<PlanNodeBuilder> children) {
+    /**
+     * Starts a builder with an existing collection of child builders.
+     *
+     * @param nodeType the semantic role of the node
+     * @param children child builders in the order they should appear in the
+     *                 resulting plan
+     */
+    public PlanNodeBuilder(
+            NodeType nodeType,
+            Collection<PlanNodeBuilder> children
+    ) {
         super(children);
         this.nodeType = nodeType;
     }
 
+    /**
+     * Returns the source-level name currently assigned to the node.
+     *
+     * @return the configured name, or {@code null}
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Returns the localized Gherkin keyword currently assigned to the node.
+     *
+     * @return the configured keyword, or {@code null}
+     */
     public String keyword() {
         return keyword;
     }
 
+    /**
+     * Returns the source or generated identifier currently assigned.
+     *
+     * @return the configured identifier, or {@code null}
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Returns the configured source language.
+     *
+     * @return the language code, or {@code null}
+     */
     public String language() {
         return language;
     }
 
+    /**
+     * Returns the semantic role selected for the node.
+     *
+     * @return the node type
+     */
     public NodeType nodeType() {
         return nodeType;
     }
 
+    /**
+     * Returns the mutable description accumulated by this builder.
+     *
+     * @return description lines in insertion order
+     */
     public List<String> description() {
         return description;
     }
 
+    /**
+     * Returns the mutable, insertion-ordered set of accumulated tags.
+     *
+     * @return the current tags
+     */
     public Set<String> tags() {
         return tags;
     }
 
+    /**
+     * Returns the configured source location or logical source name.
+     *
+     * @return the source identifier, or {@code null}
+     */
     public String source() {
         return source;
     }
 
+    /**
+     * Returns the mutable property map accumulated by this builder.
+     *
+     * @return the current node-scoped properties
+     */
     public Map<String, String> properties() {
         return properties;
     }
 
+    /**
+     * Returns the template used to produce the display name.
+     *
+     * @return a template supporting the placeholders {@code {id}},
+     * {@code {keyword}}, and {@code {name}}
+     */
     public String displayNamePattern() {
         return displayNamePattern;
     }
 
+    /**
+     * Indicates whether the resulting node will be marked as excluded by a
+     * selection filter.
+     *
+     * @return the current filtered flag
+     */
     public boolean filtered() {
         return filtered;
     }
 
+    /**
+     * Resolves the current display-name template against the builder state.
+     * Unset placeholders resolve to an empty string.
+     *
+     * @return the display label that {@link #build()} will assign
+     */
     public String displayName() {
         String displayName = displayNamePattern;
         displayName = displayName.replace("{id}", id == null ? "" : id);
@@ -95,80 +183,206 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return displayName;
     }
 
+    /**
+     * Returns structured data currently attached to the node.
+     *
+     * @return the data table or document, or an empty optional
+     */
     public Optional<PlanNodeData> data() {
         return Optional.ofNullable(data);
     }
 
+    /**
+     * Returns the parser-specific object from which this builder was derived.
+     * Consumers can use it to retain source metadata not represented by
+     * {@link PlanNode}.
+     *
+     * @return the underlying source model, or {@code null}
+     */
     public Object getUnderlyingModel() {
         return underlyingModel;
     }
 
-    public PlanNodeBuilder setUnderlyingModel(Object gherkinModel) {
+    /**
+     * Associates the builder with its parser-specific source object.
+     *
+     * @param gherkinModel the underlying model, or {@code null}
+     * @return this builder
+     */
+    public PlanNodeBuilder setUnderlyingModel(
+            Object gherkinModel
+    ) {
         this.underlyingModel = gherkinModel;
         return this;
     }
 
-    public PlanNodeBuilder setId(String id) {
+    /**
+     * Assigns the node's source or generated identifier.
+     *
+     * @param id the identifier, or {@code null}
+     * @return this builder
+     */
+    public PlanNodeBuilder setId(
+            String id
+    ) {
         this.id = id;
         return this;
     }
 
-    public PlanNodeBuilder setKeyword(String keyword) {
+    /**
+     * Assigns the localized keyword that introduced the source node.
+     *
+     * @param keyword the keyword, or {@code null} for a synthetic node
+     * @return this builder
+     */
+    public PlanNodeBuilder setKeyword(
+            String keyword
+    ) {
         this.keyword = keyword;
         return this;
     }
 
-    public PlanNodeBuilder setLanguage(String language) {
+    /**
+     * Assigns the language used to parse the source.
+     *
+     * @param language the language code, or {@code null} when not applicable
+     * @return this builder
+     */
+    public PlanNodeBuilder setLanguage(
+            String language
+    ) {
         this.language = language;
         return this;
     }
 
-    public PlanNodeBuilder setName(String name) {
+    /**
+     * Assigns the source-level node name.
+     *
+     * @param name the node name, or {@code null}
+     * @return this builder
+     */
+    public PlanNodeBuilder setName(
+            String name
+    ) {
         this.name = name;
         return this;
     }
 
-    public PlanNodeBuilder setNodeType(NodeType nodeType) {
+    /**
+     * Changes the semantic role assigned to the resulting node.
+     *
+     * @param nodeType the new node type
+     * @return this builder
+     */
+    public PlanNodeBuilder setNodeType(
+            NodeType nodeType
+    ) {
         this.nodeType = nodeType;
         return this;
     }
 
-    public PlanNodeBuilder setDisplayNamePattern(String displayNamePattern) {
+    /**
+     * Sets the template used by {@link #displayName()}.
+     *
+     * @param displayNamePattern a template supporting {@code {id}},
+     *                           {@code {keyword}}, and {@code {name}}
+     * @return this builder
+     */
+    public PlanNodeBuilder setDisplayNamePattern(
+            String displayNamePattern
+    ) {
         this.displayNamePattern = displayNamePattern;
         return this;
     }
 
-    public PlanNodeBuilder setSource(String source) {
+    /**
+     * Records the source location or logical resource name.
+     *
+     * @param source the source identifier, or {@code null}
+     * @return this builder
+     */
+    public PlanNodeBuilder setSource(
+            String source
+    ) {
         this.source = source;
         return this;
     }
 
-    public PlanNodeBuilder addTags(Collection<String> tags) {
+    /**
+     * Adds tags while preserving first-seen order and removing duplicates.
+     *
+     * @param tags tags to merge into the node
+     * @return this builder
+     */
+    public PlanNodeBuilder addTags(
+            Collection<String> tags
+    ) {
         this.tags.addAll(tags);
         return this;
     }
 
-    public PlanNodeBuilder addDescription(Collection<String> description) {
+    /**
+     * Appends source description lines without reordering existing content.
+     *
+     * @param description the lines to append
+     * @return this builder
+     */
+    public PlanNodeBuilder addDescription(
+            Collection<String> description
+    ) {
         this.description.addAll(description);
         return this;
     }
 
-    public PlanNodeBuilder addProperties(Map<String, String> properties) {
+    /**
+     * Merges node-scoped properties, replacing values for duplicate keys.
+     *
+     * @param properties properties to merge
+     * @return this builder
+     */
+    public PlanNodeBuilder addProperties(
+            Map<String, String> properties
+    ) {
         this.properties.putAll(properties);
         return this;
     }
 
-    public PlanNodeBuilder addProperty(String key, String value) {
+    /**
+     * Adds or replaces one node-scoped property.
+     *
+     * @param key   the property key
+     * @param value the property value
+     * @return this builder
+     */
+    public PlanNodeBuilder addProperty(
+            String key,
+            String value
+    ) {
         this.properties.put(key, value);
         return this;
     }
 
-    public PlanNodeBuilder setData(PlanNodeData data) {
+    /**
+     * Attaches structured step data to the node.
+     *
+     * @param data a data table or document, or {@code null} to clear it
+     * @return this builder
+     */
+    public PlanNodeBuilder setData(
+            PlanNodeData data
+    ) {
         this.data = data;
         return this;
     }
 
-    public void filtered(boolean filtered) {
+    /**
+     * Sets whether selection rules excluded the resulting node from execution.
+     *
+     * @param filtered {@code true} to mark the node as filtered out
+     */
+    public void filtered(
+            boolean filtered
+    ) {
         this.filtered = filtered;
     }
 
@@ -178,7 +392,9 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
     }
 
     @Override
-    protected PlanNodeBuilder copy(PlanNodeBuilder copy) {
+    protected PlanNodeBuilder copy(
+            PlanNodeBuilder copy
+    ) {
         copy.setLanguage(this.language);
         copy.setId(this.id);
         copy.setKeyword(this.keyword);
@@ -194,6 +410,16 @@ public class PlanNodeBuilder extends TreeNodeBuilder<PlanNodeBuilder> {
         return copy;
     }
 
+    /**
+     * Recursively creates a plan-node tree from this builder and its children.
+     * <p>
+     * Description, tag, and property collections are exposed through
+     * unmodifiable views in the resulting node. Structured data is retained as
+     * configured.
+     * </p>
+     *
+     * @return a newly built plan node
+     */
     public PlanNode build() {
         PlanNode node = new PlanNode(
                 this.nodeType(),

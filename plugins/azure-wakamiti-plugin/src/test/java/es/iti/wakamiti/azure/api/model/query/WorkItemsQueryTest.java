@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,27 +8,33 @@
 package es.iti.wakamiti.azure.api.model.query;
 
 
-import es.iti.wakamiti.azure.api.model.query.criteria.Criteria;
-import es.iti.wakamiti.azure.api.model.query.criteria.Expression;
-import org.junit.Test;
+import static es.iti.wakamiti.api.util.MapUtils.entry;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.api.util.MapUtils.mapEntries;
+import static es.iti.wakamiti.azure.api.model.query.Field.DESCRIPTION;
+import static es.iti.wakamiti.azure.api.model.query.Field.ID;
+import static es.iti.wakamiti.azure.api.model.query.Field.STATE;
+import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
+import static es.iti.wakamiti.azure.api.model.query.Field.TYPE;
+import static es.iti.wakamiti.azure.api.model.query.OrderElement.asc;
+import static es.iti.wakamiti.azure.api.model.query.OrderElement.desc;
+import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static es.iti.wakamiti.api.util.MapUtils.*;
-import static es.iti.wakamiti.azure.api.model.query.Field.*;
-import static es.iti.wakamiti.azure.api.model.query.OrderElement.asc;
-import static es.iti.wakamiti.azure.api.model.query.OrderElement.desc;
-import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.azure.api.model.query.criteria.Criteria;
+import es.iti.wakamiti.azure.api.model.query.criteria.Expression;
 
 
 public class WorkItemsQueryTest {
 
     @Test
     public void tesQueryWhenSingleWhereWithSuccess() {
-
         Map<String, BiFunction<Criteria, String, Expression>> criterias = mapEntries(
                 entry("= '%s'", Criteria::isEqualsTo),
                 entry("<> '%s'", Criteria::isNotEqualsTo),
@@ -69,9 +77,9 @@ public class WorkItemsQueryTest {
         WorkItemsQuery query = new WorkItemsQuery();
         query.select("System.Id", "System.State")
                 .where(field(TYPE).isEqualsTo("A").and(
-                        field("System.State").isEqualsTo("Y")
-                                .or(field(STATE).isEqualsTo("@project"))
-                ).andEver(field(TITLE).isEqualsTo("Y"))
+                                field("System.State").isEqualsTo("Y")
+                                        .or(field(STATE).isEqualsTo("@project"))
+                        ).andEver(field(TITLE).isEqualsTo("Y"))
                         .orEver(field(DESCRIPTION).isEqualsTo("@project")))
                 .asof("2024-05-03");
 
@@ -110,4 +118,5 @@ public class WorkItemsQueryTest {
                         + "MODE (Recursive)"
         );
     }
+
 }

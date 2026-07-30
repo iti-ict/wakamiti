@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,8 +8,31 @@
 package es.iti.wakamiti.core.backend;
 
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+
 import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.*;
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.Hinter;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiContributors;
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.Step;
@@ -15,21 +40,11 @@ import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.Contributor;
 import es.iti.wakamiti.api.extensions.DataTypeContributor;
 import es.iti.wakamiti.api.extensions.StepContributor;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.slf4j.Logger;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.time.Clock;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -38,8 +53,6 @@ import java.util.stream.Stream;
  * It manages the loading of step contributors and data type contributors to support the creation of runnable steps.
  * The factory supports the creation of both RunnableBackend for executing test cases and NonRunnableBackend
  * for scenarios that don't involve test execution.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class DefaultBackendFactory implements BackendFactory {
 
@@ -48,7 +61,15 @@ public class DefaultBackendFactory implements BackendFactory {
 
     private final WakamitiContributors contributors;
 
-    public DefaultBackendFactory(WakamitiContributors contributors) {
+    /**
+     * Creates a factory backed by the runtime contributor registry.
+     *
+     * @param contributors source of step, data-type, and configuration
+     *                     contributors
+     */
+    public DefaultBackendFactory(
+            WakamitiContributors contributors
+    ) {
         this.contributors = contributors;
     }
 
@@ -63,7 +84,10 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see NonRunnableBackend
      */
     @Override
-    public Backend createBackend(PlanNode testCase, Configuration configuration) {
+    public Backend createBackend(
+            PlanNode testCase,
+            Configuration configuration
+    ) {
         if (testCase.nodeType() != NodeType.TEST_CASE) {
             throw new IllegalArgumentException("Plan node must be of type TEST_CASE");
         }
@@ -85,7 +109,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see NonRunnableBackend
      */
     @Override
-    public Backend createNonRunnableBackend(Configuration configuration) {
+    public Backend createNonRunnableBackend(
+            Configuration configuration
+    ) {
         return doCreateBackend(null, configuration);
     }
 
@@ -98,7 +124,10 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see RunnableBackend
      * @see NonRunnableBackend
      */
-    private Backend doCreateBackend(PlanNode testCase, Configuration configuration) {
+    private Backend doCreateBackend(
+            PlanNode testCase,
+            Configuration configuration
+    ) {
         boolean runnableBackend = (testCase != null);
 
         List<String> restrictedModules = new ArrayList<>(
@@ -148,7 +177,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see SetUp
      * @see ThrowableRunnable
      */
-    private List<ThrowableRunnable> getSetUpOperations(List<StepContributor> stepContributors) {
+    private List<ThrowableRunnable> getSetUpOperations(
+            List<StepContributor> stepContributors
+    ) {
         return loadMethods(stepContributors, SetUp.class, SetUp::order);
     }
 
@@ -160,7 +191,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see TearDown
      * @see ThrowableRunnable
      */
-    private List<ThrowableRunnable> getTearDownOperations(List<StepContributor> stepContributors) {
+    private List<ThrowableRunnable> getTearDownOperations(
+            List<StepContributor> stepContributors
+    ) {
         return loadMethods(stepContributors, TearDown.class, TearDown::order);
     }
 
@@ -180,7 +213,6 @@ public class DefaultBackendFactory implements BackendFactory {
             Configuration configuration,
             boolean allowEmptySteps
     ) {
-
         List<StepContributor> stepContributors = new ArrayList<>();
         if (restrictedModules.isEmpty()) {
             stepContributors.addAll(contributors.createAllStepContributors(configuration));
@@ -243,7 +275,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see WakamitiConfiguration#NON_REGISTERED_STEP_PROVIDERS
      * @see Extension
      */
-    protected void logTipForNoStepContributors(List<String> restrictedModules) {
+    protected void logTipForNoStepContributors(
+            List<String> restrictedModules
+    ) {
         if (restrictedModules.isEmpty()) {
             LOGGER.error(
                     "No step contributors found. You must either declare step modules with "
@@ -321,8 +355,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @see DataTypeContributor
      * @see WakamitiDataTypeRegistry
      */
-    protected WakamitiDataTypeRegistry loadTypes(Stream<DataTypeContributor> contributors) {
-
+    protected WakamitiDataTypeRegistry loadTypes(
+            Stream<DataTypeContributor> contributors
+    ) {
         Map<String, WakamitiDataType<?>> types = new HashMap<>();
         contributors.forEach(contributor -> {
             for (WakamitiDataType<?> type : contributor.contributeTypes()) {
@@ -393,9 +428,9 @@ public class DefaultBackendFactory implements BackendFactory {
                 Object newStepContributor = classLoader.loadClass(nonRegisteredContributorClass)
                         .getConstructor()
                         .newInstance();
-                if (newStepContributor instanceof StepContributor) {
+                if (newStepContributor instanceof StepContributor contributor) {
                     contributors.configure(newStepContributor, configuration);
-                    nonRegisteredContributors.add((StepContributor) newStepContributor);
+                    nonRegisteredContributors.add(contributor);
                 } else {
                     LOGGER.warn(
                             "Class {} does not implement {}",
@@ -446,9 +481,9 @@ public class DefaultBackendFactory implements BackendFactory {
             Object stepProvider,
             WakamitiDataTypeRegistry typeRegistry
     ) {
-        String stepProviderName = (stepProvider instanceof Contributor) ?
-                ((Contributor) stepProvider).info() :
-                stepProvider.getClass().getCanonicalName();
+        String stepProviderName = (stepProvider instanceof Contributor contributor)
+                ? contributor.info()
+                : stepProvider.getClass().getCanonicalName();
 
         for (Method method : stepProvider.getClass().getMethods()) {
             if (method.isAnnotationPresent(Step.class)) {
@@ -536,7 +571,9 @@ public class DefaultBackendFactory implements BackendFactory {
      * @return A Hinter instance for auto-completion suggestions.
      */
     @Override
-    public Hinter createHinter(Configuration configuration) {
+    public Hinter createHinter(
+            Configuration configuration
+    ) {
         List<String> restrictedModules = new ArrayList<>(
                 configuration.getList(WakamitiConfiguration.MODULES, String.class)
         );

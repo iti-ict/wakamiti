@@ -1,16 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.junit5;
 
-
-import es.iti.wakamiti.api.plan.PlanNode;
-import org.junit.platform.engine.TestSource;
-import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
-import org.junit.platform.engine.support.descriptor.FilePosition;
-import org.junit.platform.engine.support.descriptor.FileSource;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -19,6 +15,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.junit.platform.engine.TestSource;
+import org.junit.platform.engine.support.descriptor.ClasspathResourceSource;
+import org.junit.platform.engine.support.descriptor.FilePosition;
+import org.junit.platform.engine.support.descriptor.FileSource;
+
+import es.iti.wakamiti.api.plan.PlanNode;
 
 
 /**
@@ -41,7 +44,10 @@ final class WakamitiTestSources {
         // static utility
     }
 
-    static Optional<TestSource> from(PlanNode node, List<String> resourceRoots) {
+    static Optional<TestSource> from(
+            PlanNode node,
+            List<String> resourceRoots
+    ) {
         String rawSource = node.source();
         if (rawSource == null || rawSource.isBlank()) {
             return Optional.empty();
@@ -70,7 +76,10 @@ final class WakamitiTestSources {
                 : FileSource.from(file, position));
     }
 
-    private static File resolveFile(String location, List<String> resourceRoots) {
+    private static File resolveFile(
+            String location,
+            List<String> resourceRoots
+    ) {
         Path candidate = Path.of(location);
         if (candidate.isAbsolute() && Files.exists(candidate)) {
             return candidate.toFile();
@@ -92,7 +101,9 @@ final class WakamitiTestSources {
         return candidate.toFile();
     }
 
-    private static FilePosition parsePosition(String source) {
+    private static FilePosition parsePosition(
+            String source
+    ) {
         Matcher matcher = POSITION.matcher(source);
         if (matcher.find()) {
             return FilePosition.from(

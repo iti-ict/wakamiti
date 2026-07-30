@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,13 +8,7 @@
 package es.iti.wakamiti.database;
 
 
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -22,7 +18,14 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 public class SimilarSearchTimeoutTest {
@@ -58,7 +61,10 @@ public class SimilarSearchTimeoutTest {
         h2.createStatement().execute("TRUNCATE TABLE no_pk_table");
     }
 
-    private void insertRows(int numRows, String descriptionBase) throws SQLException {
+    private void insertRows(
+            int numRows,
+            String descriptionBase
+    ) throws SQLException {
         h2.setAutoCommit(false);
         try (PreparedStatement ps = h2.prepareStatement(
                 "INSERT INTO perf_table (id, name, description) VALUES (?, ?, ?)")
@@ -68,7 +74,9 @@ public class SimilarSearchTimeoutTest {
                 ps.setString(2, "Name " + i);
                 ps.setString(3, String.format(descriptionBase, i));
                 ps.addBatch();
-                if (i % 1000 == 0) ps.executeBatch();
+                if (i % 1000 == 0) {
+                    ps.executeBatch();
+                }
             }
             ps.executeBatch();
         }
@@ -76,7 +84,10 @@ public class SimilarSearchTimeoutTest {
         h2.setAutoCommit(true);
     }
 
-    private void insertRowsNoPk(int numRows, String descriptionBase) throws SQLException {
+    private void insertRowsNoPk(
+            int numRows,
+            String descriptionBase
+    ) throws SQLException {
         h2.setAutoCommit(false);
         try (PreparedStatement ps = h2.prepareStatement(
                 "INSERT INTO no_pk_table (name, description) VALUES (?, ?)")
@@ -85,7 +96,9 @@ public class SimilarSearchTimeoutTest {
                 ps.setString(1, "NoPk Name " + i);
                 ps.setString(2, String.format(descriptionBase, i));
                 ps.addBatch();
-                if (i % 1000 == 0) ps.executeBatch();
+                if (i % 1000 == 0) {
+                    ps.executeBatch();
+                }
             }
             ps.executeBatch();
         }
@@ -205,7 +218,9 @@ public class SimilarSearchTimeoutTest {
         h2.createStatement().execute(
                 "UPDATE perf_table SET name = 'ZZZ_AFTER_TOKEN_7721', description = 'COMPLETELY_DIFFERENT_PAYLOAD_PK_7721' WHERE id = 2999");
         h2.createStatement().execute(
-                "UPDATE no_pk_table SET name = 'ZZZ_AFTER_TOKEN_7722', description = 'COMPLETELY_DIFFERENT_PAYLOAD_NOPK_7722' WHERE name = 'UNIQUE_BEFORE_TOKEN_QQ2'");
+                "UPDATE no_pk_table SET name = 'ZZZ_AFTER_TOKEN_7722', "
+                        + "description = 'COMPLETELY_DIFFERENT_PAYLOAD_NOPK_7722' WHERE name = 'UNIQUE_BEFORE_TOKEN_QQ2'"
+        );
 
         assertThat(contributor.similarBy(
                 "perf_table",
@@ -218,4 +233,5 @@ public class SimilarSearchTimeoutTest {
                 new Object[]{noPkName, noPkDesc}
         )).isEmpty();
     }
+
 }

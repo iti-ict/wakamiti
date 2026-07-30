@@ -1,20 +1,21 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.iti.wakamiti.api.WakamitiException;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 
 /**
@@ -23,7 +24,6 @@ import java.util.List;
 class AmqpJsonDiff {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
 
     void assertValidExpected(
             String expected
@@ -75,16 +75,12 @@ class AmqpJsonDiff {
             JsonNode expectedNode,
             JsonNode actualNode
     ) {
-        switch (matchMode) {
-            case STRICT:
-                return compareJsonArrayStrict(expectedNode, actualNode);
-            case STRICT_ANY_ORDER:
-                return compareJsonArrayStrictAnyOrder(expectedNode, actualNode);
-            case LOOSE:
-                return compareJsonArrayLoose(expectedNode, actualNode);
-            default:
-                return false;
-        }
+        return switch (matchMode) {
+            case STRICT -> compareJsonArrayStrict(expectedNode, actualNode);
+            case STRICT_ANY_ORDER -> compareJsonArrayStrictAnyOrder(expectedNode, actualNode);
+            case LOOSE -> compareJsonArrayLoose(expectedNode, actualNode);
+            default -> false;
+        };
     }
 
     private boolean compareJsonArrayStrict(
@@ -163,10 +159,9 @@ class AmqpJsonDiff {
 
         for (int i = 0; i < expectedFields.size(); i++) {
             String expectedField = expectedFields.get(i);
-            if (matchMode == MatchMode.STRICT) {
-                if (actualFields.size() <= i || !expectedField.equals(actualFields.get(i))) {
-                    return false;
-                }
+            if (matchMode == MatchMode.STRICT
+                    && (actualFields.size() <= i || !expectedField.equals(actualFields.get(i)))) {
+                return false;
             }
             if (!compareJsonNode(matchMode, expectedNode.get(expectedField), actualNode.get(expectedField))) {
                 return false;
@@ -182,4 +177,5 @@ class AmqpJsonDiff {
         i.forEachRemaining(list::add);
         return list;
     }
+
 }

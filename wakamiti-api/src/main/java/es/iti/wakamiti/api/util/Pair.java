@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,14 +8,13 @@
 package es.iti.wakamiti.api.util;
 
 
+import static es.iti.wakamiti.api.util.MapUtils.entry;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.api.util.MapUtils.entry;
 
 
 /**
@@ -21,14 +22,23 @@ import static es.iti.wakamiti.api.util.MapUtils.entry;
  *
  * @param <T> The type of the key.
  * @param <U> The type of the value.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Pair<T, U> {
 
     private final T key;
     private final U value;
 
-    public Pair(T key, U value) {
+    /**
+     * Creates a pair without imposing nullability constraints on either
+     * component.
+     *
+     * @param key   the first component
+     * @param value the second component
+     */
+    public Pair(
+            T key,
+            U value
+    ) {
         this.key = key;
         this.value = value;
     }
@@ -41,7 +51,9 @@ public class Pair<T, U> {
      * @param function The function to compute the value.
      * @return A Function that computes the value for a given key.
      */
-    public static <T, U> Function<T, Pair<T, U>> computeValue(Function<T, U> function) {
+    public static <T, U> Function<T, Pair<T, U>> computeValue(
+            Function<T, U> function
+    ) {
         return key -> new Pair<>(key, function.apply(key));
     }
 
@@ -68,7 +80,9 @@ public class Pair<T, U> {
      * @param function The function to compute the value.
      * @return A Function that computes a Pair for a given key.
      */
-    public static <T, U> Function<T, Pair<T, U>> compute(Function<T, U> function) {
+    public static <T, U> Function<T, Pair<T, U>> compute(
+            Function<T, U> function
+    ) {
         return first -> new Pair<>(first, function.apply(first));
     }
 
@@ -98,10 +112,17 @@ public class Pair<T, U> {
      * @param map The mapping function.
      * @return A new Pair with mapped key and value.
      */
-    public <R, P> Pair<R, P> map(BiFunction<T, U, Pair<R, P>> map) {
+    public <R, P> Pair<R, P> map(
+            BiFunction<T, U, Pair<R, P>> map
+    ) {
         return map.apply(key, value);
     }
 
+    /**
+     * Adapts this pair to the standard map-entry abstraction.
+     *
+     * @return an entry containing this pair's key and value
+     */
     public Map.Entry<T, U> asEntry() {
         return entry(key, value);
     }
@@ -113,7 +134,9 @@ public class Pair<T, U> {
      * @param map The mapping function.
      * @return A new Pair with mapped key and value.
      */
-    public <R> Pair<R, R> mapEach(Function<Object, R> map) {
+    public <R> Pair<R, R> mapEach(
+            Function<Object, R> map
+    ) {
         R k = map.apply(this.key);
         R v = map.apply(this.value);
         return new Pair<>(k, v);

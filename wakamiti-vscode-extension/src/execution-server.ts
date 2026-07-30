@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -16,7 +18,6 @@ import jwt_decode from "jwt-decode";
 
 var nextTokenExpiration : number | undefined = undefined;
 var token : string | undefined = undefined;
-
 
 
 export function requestAnalyze(): Promise<PlanNodeSnapshot> {
@@ -60,7 +61,6 @@ export function launchExecution(): Promise<Execution> {
 }
 
 
-
 export function retrieveExecutions(): Promise<Execution[]> {
     const { host, port } = getHostAndPort(); 
     return obtainToken(host,port).then( ()=>{ 
@@ -75,8 +75,6 @@ export function retrieveExecution(executionID: string): Promise<Execution> {
         return http.get<Execution>(host,port,`executions/${executionID}`);
     });
 }
-
-
 
 
 function getHostAndPort() {

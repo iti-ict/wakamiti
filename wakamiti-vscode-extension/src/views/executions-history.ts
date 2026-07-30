@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -60,13 +62,10 @@ class DataProvider implements vscode.TreeDataProvider<Execution | PlanNodeSnapsh
 }
 
 
-
-
 function isExecution(object: Execution | PlanNodeSnapshot): boolean {
     const keys = Object.keys(object);
     return keys.includes('executionID') && keys.includes('executionInstant');
 }
-
 
 
 class ExecutionTreeItem extends vscode.TreeItem {
@@ -89,7 +88,6 @@ class ExecutedPlanNodeTreeItem extends PlanNodeTreeItem {
     }
 
 }
-
 
 
 function collapsibleState(node: PlanNodeSnapshot): vscode.TreeItemCollapsibleState {

@@ -1,10 +1,16 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.junit5;
 
+
+import java.lang.reflect.Modifier;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.junit.platform.commons.support.ReflectionSupport;
 import org.junit.platform.engine.EngineDiscoveryRequest;
@@ -20,10 +26,6 @@ import org.junit.platform.engine.discovery.ModuleSelector;
 import org.junit.platform.engine.discovery.PackageSelector;
 import org.junit.platform.engine.discovery.UniqueIdSelector;
 import org.junit.platform.engine.support.descriptor.EngineDescriptor;
-
-import java.lang.reflect.Modifier;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 
 /**
@@ -55,7 +57,10 @@ public class WakamitiTestEngine implements TestEngine {
     }
 
     @Override
-    public TestDescriptor discover(EngineDiscoveryRequest request, UniqueId uniqueId) {
+    public TestDescriptor discover(
+            EngineDiscoveryRequest request,
+            UniqueId uniqueId
+    ) {
         EngineDescriptor engineDescriptor = new EngineDescriptor(uniqueId, "Wakamiti");
 
         request.getSelectorsByType(ClassSelector.class).forEach(selector ->
@@ -83,7 +88,9 @@ public class WakamitiTestEngine implements TestEngine {
     }
 
     @Override
-    public void execute(ExecutionRequest request) {
+    public void execute(
+            ExecutionRequest request
+    ) {
         EngineExecutionListener listener = request.getEngineExecutionListener();
         TestDescriptor root = request.getRootTestDescriptor();
         listener.executionStarted(root);
@@ -109,7 +116,10 @@ public class WakamitiTestEngine implements TestEngine {
         engineDescriptor.addChild(new WakamitiClassDescriptor(classId, candidate));
     }
 
-    private void addByUniqueId(EngineDescriptor engineDescriptor, UniqueId uniqueId) {
+    private void addByUniqueId(
+            EngineDescriptor engineDescriptor,
+            UniqueId uniqueId
+    ) {
         uniqueId.getSegments().stream()
                 .filter(segment -> "class".equals(segment.getType()))
                 .findFirst()
@@ -122,14 +132,18 @@ public class WakamitiTestEngine implements TestEngine {
                 });
     }
 
-    private boolean isPlanClass(Class<?> candidate) {
+    private boolean isPlanClass(
+            Class<?> candidate
+    ) {
         return candidate != null
                 && !Modifier.isAbstract(candidate.getModifiers())
                 && !candidate.isInterface()
                 && candidate.isAnnotationPresent(WakamitiPlan.class);
     }
 
-    private boolean isTopLevelPlanClass(Class<?> candidate) {
+    private boolean isTopLevelPlanClass(
+            Class<?> candidate
+    ) {
         return isPlanClass(candidate)
                 && !candidate.isMemberClass()
                 && !candidate.isLocalClass()

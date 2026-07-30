@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,13 +8,12 @@
 package es.iti.wakamiti.azure.internal;
 
 
-import es.iti.wakamiti.api.plan.NodeType;
+import java.util.stream.Stream;
+
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.azure.AzureSynchronizer;
 import es.iti.wakamiti.azure.api.model.TestSuite;
-
-import java.util.stream.Stream;
 
 
 /**
@@ -29,7 +30,9 @@ public class ScenarioMapper extends Mapper {
      *
      * @param suiteBase the base directory for mapping test suites.
      */
-    public ScenarioMapper(String suiteBase) {
+    public ScenarioMapper(
+            String suiteBase
+    ) {
         super(suiteBase);
     }
 
@@ -44,12 +47,14 @@ public class ScenarioMapper extends Mapper {
      * @return a stream of {@link Pair} objects containing the plan node and associated test suite.
      */
     @Override
-    protected Stream<Pair<PlanNodeSnapshot, TestSuite>> suiteMap(PlanNodeSnapshot target) {
+    protected Stream<Pair<PlanNodeSnapshot, TestSuite>> suiteMap(
+            PlanNodeSnapshot target
+    ) {
         return super.suiteMap(target)
                 .flatMap(p ->
                         p.key().flatten(node -> gherkinType(node).equals(type()))
-                                .map(node -> new Pair<>(node, target.getProperties().containsKey(AZURE_SUITE) ?
-                                        p.value() : new TestSuite().name(p.key().getName()).parent(p.value())))
+                                .map(node -> new Pair<>(node, target.getProperties().containsKey(AZURE_SUITE)
+                                        ? p.value() : new TestSuite().name(p.key().getName()).parent(p.value())))
                 );
     }
 

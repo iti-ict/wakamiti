@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,12 +8,14 @@
 package es.iti.wakamiti.junit5;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import org.junit.jupiter.api.AfterEach;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.engine.TestExecutionResult;
@@ -23,12 +27,10 @@ import org.junit.platform.launcher.TestIdentifier;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 
 
 public class WakamitiRunnerLifecycleHooksTest {
@@ -45,13 +47,16 @@ public class WakamitiRunnerLifecycleHooksTest {
     public void beforeAndAfterClassHooksAreReportedInsideLifecycleEntries() {
         runPlan(HookAwareRunner.class, new RecordingListener());
 
-        assertThat(HookAwareRunner.hookContexts).containsExactly(
+        assertThat(HookAwareRunner.HOOK_CONTEXTS).containsExactly(
                 "before:beforeClass",
                 "after:afterClass"
         );
     }
 
-    private void runPlan(Class<?> planClass, TestExecutionListener listener) {
+    private void runPlan(
+            Class<?> planClass,
+            TestExecutionListener listener
+    ) {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(planClass))
                 .filters(EngineFilter.includeEngines(WakamitiTestEngine.ENGINE_ID))
@@ -71,37 +76,45 @@ public class WakamitiRunnerLifecycleHooksTest {
     @WakamitiPlan
     public static class HookAwareRunner {
 
-        private static final List<String> hookContexts = new ArrayList<>();
+        private static final List<String> HOOK_CONTEXTS = new ArrayList<>();
 
         @BeforeAll
         public static void beforeClassHook() {
-            hookContexts.add("before:" + currentTestName);
+            HOOK_CONTEXTS.add("before:" + currentTestName);
         }
 
         @AfterAll
         public static void afterClassHook() {
-            hookContexts.add("after:" + currentTestName);
+            HOOK_CONTEXTS.add("after:" + currentTestName);
         }
 
         private static void clearHooks() {
-            hookContexts.clear();
+            HOOK_CONTEXTS.clear();
         }
+
     }
 
-    private static class RecordingListener implements TestExecutionListener {
+    private static final class RecordingListener implements TestExecutionListener {
 
         @Override
-        public void executionStarted(TestIdentifier testIdentifier) {
+        public void executionStarted(
+                TestIdentifier testIdentifier
+        ) {
             if (testIdentifier.isTest()) {
                 currentTestName = testIdentifier.getDisplayName();
             }
         }
 
         @Override
-        public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult testExecutionResult) {
+        public void executionFinished(
+                TestIdentifier testIdentifier,
+                TestExecutionResult testExecutionResult
+        ) {
             if (testIdentifier.isTest()) {
                 currentTestName = null;
             }
         }
+
     }
+
 }

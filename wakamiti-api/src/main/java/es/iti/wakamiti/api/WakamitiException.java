@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,22 +8,22 @@
 package es.iti.wakamiti.api;
 
 
-import java.util.Arrays;
-
 import static es.iti.wakamiti.api.util.StringUtils.format;
+
+import java.util.Arrays;
 
 
 /**
  * An exception class specific to Wakamiti, providing additional features for
  * formatting messages and handling throwable.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiException extends RuntimeException {
 
     private static final long serialVersionUID = 3126782976719868151L;
 
-
+    /**
+     * Creates an exception without a message or cause.
+     */
     public WakamitiException() {
         super();
     }
@@ -35,7 +37,10 @@ public class WakamitiException extends RuntimeException {
      *                  {@link #getCause()} method). (A null value is permitted, and
      *                  indicates that the cause is nonexistent or unknown.)
      */
-    public WakamitiException(String message, Throwable throwable) {
+    public WakamitiException(
+            String message,
+            Throwable throwable
+    ) {
         super(message, throwable);
     }
 
@@ -45,7 +50,9 @@ public class WakamitiException extends RuntimeException {
      * @param message The detail message (which is saved for later retrieval by the
      *                {@link #getMessage()} method).
      */
-    public WakamitiException(String message) {
+    public WakamitiException(
+            String message
+    ) {
         super(message);
     }
 
@@ -58,7 +65,10 @@ public class WakamitiException extends RuntimeException {
      *                extra arguments are ignored. The number of arguments is variable
      *                and may be zero.
      */
-    public WakamitiException(String message, Object... args) {
+    public WakamitiException(
+            String message,
+            Object... args
+    ) {
         super(format(message, argsWithoutThrowable(args)), throwable(args));
     }
 
@@ -72,17 +82,21 @@ public class WakamitiException extends RuntimeException {
      *                  {@link #getCause()} method). (A null value is permitted, and
      *                  indicates that the cause is nonexistent or unknown.)
      */
-    public WakamitiException(Throwable throwable) {
+    public WakamitiException(
+            Throwable throwable
+    ) {
         super(throwable.getMessage(), throwable);
     }
 
-
-    protected static Object[] argsWithoutThrowable(Object[] args) {
+    protected static Object[] argsWithoutThrowable(
+            Object[] args
+    ) {
         return throwable(args) == null ? args : Arrays.copyOf(args, args.length - 1);
     }
 
-
-    protected static Throwable throwable(Object... args) {
+    protected static Throwable throwable(
+            Object... args
+    ) {
         if (args == null || args.length == 0) {
             return null;
         }

@@ -1,14 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.core.datatypes;
 
-
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.ThrowableFunction;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +15,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.ThrowableFunction;
+
 
 /**
  * A base class for implementing Wakamiti data types. It provides
@@ -24,7 +26,6 @@ import java.util.regex.Pattern;
  * about the data type.
  *
  * @param <T> The type of the Wakamiti data.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
 
@@ -64,7 +65,10 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      * {@inheritDoc}
      */
     @Override
-    public T parse(Locale locale, String value) {
+    public T parse(
+            Locale locale,
+            String value
+    ) {
         try {
             return parserForLocale(locale).parse(value);
         } catch (final Exception e) {
@@ -92,7 +96,10 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
     }
 
     @Override
-    public Matcher matcher(Locale locale, CharSequence value) {
+    public Matcher matcher(
+            Locale locale,
+            CharSequence value
+    ) {
         try {
             return Pattern.compile(regexForLocale(locale)).matcher(value);
         } catch (final Exception e) {
@@ -106,7 +113,9 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      * {@inheritDoc}
      */
     @Override
-    public String getRegex(Locale locale) {
+    public String getRegex(
+            Locale locale
+    ) {
         return regexForLocale(locale);
     }
 
@@ -114,7 +123,9 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getHints(Locale locale) {
+    public List<String> getHints(
+            Locale locale
+    ) {
         return hintsForLocale(locale);
     }
 
@@ -124,7 +135,9 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      * @param locale The locale for which the type parser is retrieved.
      * @return The type parser.
      */
-    protected TypeParser<T> parserForLocale(Locale locale) {
+    protected TypeParser<T> parserForLocale(
+            Locale locale
+    ) {
         parserByLocale.computeIfAbsent(locale, parserProvider::parser);
         return parserByLocale.get(locale);
     }
@@ -135,7 +148,9 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      * @param locale The locale for which the regular expression is retrieved.
      * @return The regular expression.
      */
-    protected String regexForLocale(Locale locale) {
+    protected String regexForLocale(
+            Locale locale
+    ) {
         regexByLocale.computeIfAbsent(locale, regexProvider::regex);
         return regexByLocale.get(locale);
     }
@@ -146,7 +161,9 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      * @param locale The locale for which hints are retrieved.
      * @return The list of hints.
      */
-    protected List<String> hintsForLocale(Locale locale) {
+    protected List<String> hintsForLocale(
+            Locale locale
+    ) {
         hintsByLocale.computeIfAbsent(locale, hintProvider::hints);
         return hintsByLocale.get(locale);
     }
@@ -165,7 +182,9 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
          * @param <T>      The type of the parsed value.
          * @return The created {@code TypeParser}.
          */
-        static <T> TypeParser<T> from(ThrowableFunction<String, T> function) {
+        static <T> TypeParser<T> from(
+                ThrowableFunction<String, T> function
+        ) {
             return function::apply;
         }
 
@@ -176,7 +195,10 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
          * @return The parsed result.
          * @throws Exception If an error occurs during parsing.
          */
-        T parse(String value) throws Exception;
+        T parse(
+                String value
+        ) throws Exception;
+
     }
 
     /**
@@ -186,7 +208,16 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      */
     public interface LocaleTypeParser<T> {
 
-        TypeParser<T> parser(Locale locale);
+        /**
+         * Creates or selects a value parser for a locale.
+         *
+         * @param locale locale controlling syntax and formatting
+         * @return the parser for values written in that locale
+         */
+        TypeParser<T> parser(
+                Locale locale
+        );
+
     }
 
     /**
@@ -200,7 +231,10 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
          * @param locale The locale for which the regular expression is provided.
          * @return The regular expression.
          */
-        String regex(Locale locale);
+        String regex(
+                Locale locale
+        );
+
     }
 
     /**
@@ -214,7 +248,10 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
          * @param locale The locale for which hints are provided.
          * @return The list of hints.
          */
-        List<String> hints(Locale locale);
+        List<String> hints(
+                Locale locale
+        );
+
     }
 
 }

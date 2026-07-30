@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -17,7 +19,7 @@ public class ConnectionParameters {
     private String driver;
     private String schema;
     private String catalog;
-    private boolean autoTrim = false;
+    private boolean autoTrim;
     private Boolean autoCommit;
 
     /**
@@ -35,7 +37,9 @@ public class ConnectionParameters {
      * @param url The URL
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters url(String url) {
+    public ConnectionParameters url(
+            String url
+    ) {
         this.url = url;
         return this;
     }
@@ -55,7 +59,9 @@ public class ConnectionParameters {
      * @param username The username
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters username(String username) {
+    public ConnectionParameters username(
+            String username
+    ) {
         this.username = username;
         return this;
     }
@@ -75,7 +81,9 @@ public class ConnectionParameters {
      * @param password The password
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters password(String password) {
+    public ConnectionParameters password(
+            String password
+    ) {
         this.password = password;
         return this;
     }
@@ -95,7 +103,9 @@ public class ConnectionParameters {
      * @param driver The driver
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters driver(String driver) {
+    public ConnectionParameters driver(
+            String driver
+    ) {
         this.driver = driver;
         return this;
     }
@@ -115,7 +125,9 @@ public class ConnectionParameters {
      * @param schema The schema
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters schema(String schema) {
+    public ConnectionParameters schema(
+            String schema
+    ) {
         this.schema = schema;
         return this;
     }
@@ -135,7 +147,9 @@ public class ConnectionParameters {
      * @param catalog The catalog
      * @return This ConnectionParameters instance
      */
-    public ConnectionParameters catalog(String catalog) {
+    public ConnectionParameters catalog(
+            String catalog
+    ) {
         this.catalog = catalog;
         return this;
     }
@@ -153,25 +167,47 @@ public class ConnectionParameters {
      * Sets whether to include spaces in comparisons.
      *
      * @param autoTrim {@code true} to enable auto trim, {@code false} otherwise.
+     * @return this connection parameters instance
      */
-    public ConnectionParameters autoTrim(boolean autoTrim) {
+    public ConnectionParameters autoTrim(
+            boolean autoTrim
+    ) {
         this.autoTrim = autoTrim;
         return this;
     }
 
+    /**
+     * Returns the requested JDBC auto-commit mode.
+     *
+     * @return configured value, or {@code null} when the driver default should
+     *         be preserved
+     */
     public Boolean autoCommit() {
         return autoCommit;
     }
 
-    public ConnectionParameters autoCommit(boolean autoCommit) {
+    /**
+     * Sets whether each SQL statement is committed automatically.
+     *
+     * @param autoCommit {@code true} to commit after every statement;
+     *                   {@code false} to require explicit transaction commits
+     * @return this connection-parameter instance
+     */
+    public ConnectionParameters autoCommit(
+            boolean autoCommit
+    ) {
         this.autoCommit = autoCommit;
         return this;
     }
 
     /**
-     * Returns a string representation of the ConnectionParameters.
+     * Returns a string representation of these connection parameters.
+     * <p>
+     * This output includes the raw password value and should therefore not be
+     * logged in untrusted or production environments.
+     * </p>
      *
-     * @return The string representation
+     * @return string representation including configured fields
      */
     @Override
     public String toString() {
@@ -192,4 +228,5 @@ public class ConnectionParameters {
         }
         return builder.toString().replaceAll(separator + "$", "]");
     }
+
 }

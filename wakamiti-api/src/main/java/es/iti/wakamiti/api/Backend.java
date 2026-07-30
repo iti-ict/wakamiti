@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,16 +8,16 @@
 package es.iti.wakamiti.api;
 
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 
 /**
@@ -24,19 +26,21 @@ import java.util.Map;
  * backend to ensure isolation in multi-thread environments.
  * The backend is created by a BackendFactory based on the
  * context information regarding a test case.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface Backend {
 
+    /** Placeholder name used for positional step arguments without an explicit parameter name. */
     String UNNAMED_ARG = "unnamed";
+    /** Parameter name used to bind DocString arguments to step methods. */
     String DOCUMENT_ARG = "document";
+    /** Parameter name used to bind DataTable arguments to step methods. */
     String DATATABLE_ARG = "datatable";
 
     /**
      * Performs set-up operations prior to running any step.
      * Typically, these operations correspond to methods
      * annotated with {@link SetUp} in {@link StepContributor}.
+     * Setup is expected to run once per test-case execution.
      */
     void setUp();
 
@@ -44,6 +48,8 @@ public interface Backend {
      * Performs tear-down operations after running all steps.
      * Typically, these operations correspond to methods
      * annotated with {@link TearDown} in {@link StepContributor}.
+     * Tear-down is expected to run once per test-case execution, even when one
+     * or more steps failed.
      */
     void tearDown();
 
@@ -53,9 +59,11 @@ public interface Backend {
      *
      * @param modelStep The step to be executed.
      * @throws WakamitiException when the given node is not
-     *                           suitable for being executed.
+     *                           suitable for being executed
      */
-    void runStep(PlanNode modelStep);
+    void runStep(
+            PlanNode modelStep
+    );
 
     /**
      * Validates a plan node of type {@link NodeType#STEP} without executing the
@@ -63,10 +71,16 @@ public interface Backend {
      * <p>
      * Implementations that do not provide a specific dry-run behavior will
      * fallback to {@link #runStep(PlanNode)}.
+     * </p>
+     * <p>
+     * Dry-run implementations should still resolve arguments and validate step
+     * bindings so undefined or incompatible steps are reported consistently.
      *
      * @param modelStep The step to be validated.
      */
-    default void dryRunStep(PlanNode modelStep) {
+    default void dryRunStep(
+            PlanNode modelStep
+    ) {
         runStep(modelStep);
     }
 
@@ -80,7 +94,7 @@ public interface Backend {
     /**
      * Gets extra properties to use in the scenario context.
      *
-     * @return The extra properties map.
+     * @return mutable property map scoped to the backend execution
      */
     default Map<String, Object> getExtraProperties() {
         return new LinkedHashMap<>();
@@ -97,7 +111,10 @@ public interface Backend {
      *                          should be included.
      * @return A list with the available steps (empty if none present).
      */
-    List<String> getAvailableSteps(Locale locale, boolean includeVariations);
+    List<String> getAvailableSteps(
+            Locale locale,
+            boolean includeVariations
+    );
 
     /**
      * Given an invalid step, obtain a list of valid suggestions. The
@@ -130,6 +147,9 @@ public interface Backend {
      * @param locale    The language used.
      * @return A message with probable solutions.
      */
-    String getHintFor(String wrongStep, Locale locale);
+    String getHintFor(
+            String wrongStep,
+            Locale locale
+    );
 
 }

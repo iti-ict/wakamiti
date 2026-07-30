@@ -1,12 +1,14 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.plugins.cucumber.test;
 
 
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.core.JsonPlanSerializer;
-import es.iti.wakamiti.plugins.cucumber.CucumberExporter;
-import net.masterthought.cucumber.Configuration;
-import net.masterthought.cucumber.ReportBuilder;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,15 +16,19 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.core.JsonPlanSerializer;
+import es.iti.wakamiti.plugins.cucumber.CucumberExporter;
+import net.masterthought.cucumber.Configuration;
+import net.masterthought.cucumber.ReportBuilder;
 
 
 public class TestCucumberExport {
 
-
     @Test
     public void testCucumberExport() throws IOException {
-
         JsonPlanSerializer serializer = new JsonPlanSerializer();
         PlanNodeSnapshot planOk = serializer.read(Path.of("src/test/resources/wakamiti-ok.json"));
         PlanNodeSnapshot planFailed = serializer.read(Path.of("src/test/resources/wakamiti-failed.json"));

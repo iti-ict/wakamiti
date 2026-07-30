@@ -1,13 +1,28 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.plugins.cucumber;
 
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.Configurer;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "cucumber-exporter-config", version = "2.6",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
+/**
+ * Stores the configuration used by the Cucumber Exporter Config component.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "cucumber-exporter-config",
+        version = "2.6",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class CucumberExporterConfig implements ConfigContributor<CucumberExporter> {
 
     @Override
@@ -18,14 +33,15 @@ public class CucumberExporterConfig implements ConfigContributor<CucumberExporte
         );
     }
 
-
     @Override
     public Configurer<CucumberExporter> configurer() {
         return this::configure;
     }
 
-
-    private void configure(CucumberExporter cucumberExporter, Configuration configuration) {
+    private void configure(
+            CucumberExporter cucumberExporter,
+            Configuration configuration
+    ) {
         configuration.get("cucumberExporter.outputFile", String.class).ifPresent(cucumberExporter::setOutputFile);
         configuration.get("cucumberExporter.multiLevelStrategy", String.class)
                 .map(String::toUpperCase)
@@ -33,6 +49,4 @@ public class CucumberExporterConfig implements ConfigContributor<CucumberExporte
                 .ifPresent(cucumberExporter::setStrategy);
     }
 
-
 }
-

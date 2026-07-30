@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -11,8 +13,6 @@ import java.util.function.UnaryOperator;
 
 /**
  * Represents data associated with a {@link PlanNode}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface PlanNodeData {
 
@@ -29,6 +29,8 @@ public interface PlanNodeData {
      * @param replacer The UnaryOperator to apply to each variable in the data.
      * @return A new instance of PlanNodeData with variables replaced.
      */
-    PlanNodeData copyReplacingVariables(UnaryOperator<String> replacer);
+    PlanNodeData copyReplacingVariables(
+            UnaryOperator<String> replacer
+    );
 
 }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,19 +8,17 @@
 package es.iti.wakamiti.core.plan;
 
 
+import java.util.List;
+
 import es.iti.wakamiti.api.extensions.PlanTransformer;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 import es.iti.wakamiti.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
-import es.iti.wakamiti.api.imconfig.Configuration;
-
-import java.util.List;
 
 
 /**
  * An abstract implementation of the {@link PlanTransformer} interface that applies a set
  * of rules to transform a {@link PlanNodeBuilder}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class RuleBasedPlanTransformer implements PlanTransformer {
 
@@ -28,7 +28,9 @@ public abstract class RuleBasedPlanTransformer implements PlanTransformer {
      * @param configuration The configuration used to create rules.
      * @return A list of {@link PlanNodeBuilderRule} instances.
      */
-    protected abstract List<PlanNodeBuilderRule> createRules(Configuration configuration);
+    protected abstract List<PlanNodeBuilderRule> createRules(
+            Configuration configuration
+    );
 
     /**
      * Transforms a {@link PlanNodeBuilder} using a set of rules defined by the implementation.
@@ -38,10 +40,14 @@ public abstract class RuleBasedPlanTransformer implements PlanTransformer {
      * @return The transformed {@link PlanNodeBuilder}.
      */
     @Override
-    public PlanNodeBuilder transform(PlanNodeBuilder plan, Configuration configuration) {
+    public PlanNodeBuilder transform(
+            PlanNodeBuilder plan,
+            Configuration configuration
+    ) {
         for (PlanNodeBuilderRule rule : createRules(configuration)) {
             rule.apply(plan);
         }
         return plan;
     }
+
 }

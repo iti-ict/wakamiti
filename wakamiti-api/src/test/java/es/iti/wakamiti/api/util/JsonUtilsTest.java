@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,11 @@
 package es.iti.wakamiti.api.util;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.PathNotFoundException;
-import com.jayway.jsonpath.TypeRef;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.api.util.JsonUtils.read;
+import static es.iti.wakamiti.api.util.JsonUtils.readStringValue;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
@@ -25,15 +21,22 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static es.iti.wakamiti.api.util.JsonUtils.*;
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.TypeRef;
 
 
 public class JsonUtilsTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-
     private final String json = "{\"name\":\"Arnold\",\"age\":47}";
     private final String jsonList = "[{\"name\":\"Arnold\",\"age\":47},{\"name\":\"Susan\",\"age\":32}]";
     private final String jsonError = "{\"name:\"Arnold\",\"age\":47}";
@@ -141,7 +144,6 @@ public class JsonUtilsTest {
 
     @Test
     public void testReadWhenClassWithSuccess() throws MalformedURLException {
-
         assertThat(read(json(jsonList), "[1].age", Long.class))
                 .isEqualTo(32L);
 
@@ -156,7 +158,8 @@ public class JsonUtilsTest {
 
     @Test
     public void testReadWhenTypeRefWithSuccess() {
-        assertThat(read(json("{\"date\":\"2010-12-03\"}"), new TypeRef<Map<String, LocalDate>>(){}))
+        assertThat(read(json("{\"date\":\"2010-12-03\"}"), new TypeRef<Map<String, LocalDate>>() {
+        }))
                 .isEqualTo(map("date", LocalDate.parse("2010-12-03")));
     }
 
@@ -172,4 +175,5 @@ public class JsonUtilsTest {
 
         assertThat(readStringValue(obj, "$.body.id")).isNull();
     }
+
 }

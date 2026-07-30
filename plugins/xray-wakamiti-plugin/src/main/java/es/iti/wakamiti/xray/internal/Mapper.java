@@ -1,12 +1,20 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.xray.internal;
 
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.plan.PlanSerializer;
-import es.iti.wakamiti.api.util.MapUtils;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.xray.model.JiraIssue;
-import es.iti.wakamiti.xray.model.TestCase;
-import es.iti.wakamiti.xray.model.TestSet;
+
+import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_FEATURE;
+import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_SCENARIO;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -18,13 +26,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_FEATURE;
-import static es.iti.wakamiti.xray.XRaySynchronizer.GHERKIN_TYPE_SCENARIO;
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.join;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.MapUtils;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.xray.model.JiraIssue;
+import es.iti.wakamiti.xray.model.TestCase;
+import es.iti.wakamiti.xray.model.TestSet;
 
 
+/**
+ * Maps Mapper data between its external and internal representations.
+ */
 public abstract class Mapper {
 
     private static final String TABLE_SEPARATOR = "|";
@@ -34,18 +46,32 @@ public abstract class Mapper {
     private static final String ESCAPED_QUOTATION_MARKS = "\\\"";
     private final String suiteBase;
 
-    protected Mapper(final String suiteBase) {
+    protected Mapper(
+            final String suiteBase
+    ) {
         this.suiteBase = suiteBase;
     }
 
-    public static Instancer ofType(String type) {
+    /**
+     * Selects the mapper that represents tests at the requested Gherkin level.
+     *
+     * @param type supported Gherkin type; currently {@code feature} or
+     *        {@code scenario}
+     * @return a factory capable of creating the corresponding mapper, or
+     *         {@code null} when the type is not supported
+     */
+    public static Instancer ofType(
+            String type
+    ) {
         return MapUtils.<String, Instancer>map(
                 GHERKIN_TYPE_FEATURE, FeatureMapper::new,
                 GHERKIN_TYPE_SCENARIO, ScenarioMapper::new
         ).get(type);
     }
 
-    protected Stream<Pair<PlanNodeSnapshot, TestSet>> suiteMap(PlanNodeSnapshot target) {
+    protected Stream<Pair<PlanNodeSnapshot, TestSet>> suiteMap(
+            PlanNodeSnapshot target
+    ) {
         Path suitePath = Path.of(target.getSource()
                 .replaceAll("(/[^./]+?\\.[^./]+?)?\\[.+?]$", ""));
         if (!isBlank(suiteBase)) {
@@ -59,7 +85,10 @@ public abstract class Mapper {
         return Stream.of(new Pair<>(target, suite));
     }
 
-    protected TestCase caseMap(TestSet suite, PlanNodeSnapshot target) {
+    protected TestCase caseMap(
+            TestSet suite,
+            PlanNodeSnapshot target
+    ) {
         return new TestCase()
                 .issue(new JiraIssue()
                         .summary(target.getName())
@@ -73,7 +102,9 @@ public abstract class Mapper {
                 .testSetList("".equals(suite.getJira().getSummary()) ? Collections.emptyList() : Collections.singletonList(suite));
     }
 
-    private String getDisplayName(PlanNodeSnapshot target) {
+    private String getDisplayName(
+            PlanNodeSnapshot target
+    ) {
         return target.getChildren().stream()
                 .map(planNodeSnapshot -> planNodeSnapshot.getChildren().stream()
                         .map(getComposedDisplayName())
@@ -106,8 +137,20 @@ public abstract class Mapper {
         };
     }
 
-
-    public Stream<TestCase> map(PlanNodeSnapshot plan) {
+    /**
+     * Converts an execution-plan snapshot into Xray Cucumber test definitions.
+     * <p>
+     * Nodes are grouped into test sets according to the concrete mapper strategy.
+     * Each resulting test preserves the local name, description, identifier,
+     * rendered Gherkin steps, data tables and document strings required to create
+     * the equivalent remote Xray test.
+     *
+     * @param plan root of the Wakamiti execution plan to convert
+     * @return a lazy stream of Xray test definitions derived from the plan
+     */
+    public Stream<TestCase> map(
+            PlanNodeSnapshot plan
+    ) {
         return plan
                 .flatten(node -> gherkinType(node).equals(GHERKIN_TYPE_FEATURE))
                 .flatMap(this::suiteMap)
@@ -115,16 +158,39 @@ public abstract class Mapper {
                 .entrySet().stream().flatMap(e ->
                         IntStream.range(0, e.getValue().size()).mapToObj(i -> caseMap(e.getKey(), e.getValue().get(i)))
                 );
-
     }
 
+    /**
+     * Identifies the Gherkin node level handled by this mapper.
+     *
+     * @return the configured Gherkin type, such as {@code feature} or
+     *         {@code scenario}
+     */
     public abstract String type();
 
-    protected String gherkinType(PlanNodeSnapshot node) {
+    protected String gherkinType(
+            PlanNodeSnapshot node
+    ) {
         return Optional.ofNullable(node.getProperties()).map(p -> p.get("gherkinType")).orElse("");
     }
 
+    /**
+     * Factory contract for creating mappers with a caller-selected suite base.
+     */
     public interface Instancer {
-        Mapper instance(String suiteBase);
+
+        /**
+         * Creates a mapper whose generated suite paths are relative to the supplied
+         * base directory.
+         *
+         * @param suiteBase base directory to remove from source paths; a blank value
+         *        preserves the complete source path
+         * @return a mapper configured for that suite base
+         */
+        Mapper instance(
+                String suiteBase
+        );
+
     }
+
 }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,16 @@
 package es.iti.wakamiti.amqp;
 
 
-import es.iti.wakamiti.amqp.client.AmqpClient;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.plan.Document;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -17,12 +25,11 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import org.junit.Test;
+
+import es.iti.wakamiti.amqp.client.AmqpClient;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.plan.Document;
 
 
 public class AmqpStepContributorTest {
@@ -193,15 +200,21 @@ public class AmqpStepContributorTest {
                 contributor.checkReceivedJSONLooseFromString(duration, expectedSubset));
     }
 
-    private static void setClient(AmqpStepContributor steps, AmqpClient client) throws Exception {
+    private static void setClient(
+            AmqpStepContributor steps,
+            AmqpClient client
+    ) throws Exception {
         Field field = AmqpSupport.class.getDeclaredField("client");
         field.setAccessible(true);
         field.set(steps, client);
     }
 
-    private static AmqpClient getClient(AmqpStepContributor steps) throws Exception {
+    private static AmqpClient getClient(
+            AmqpStepContributor steps
+    ) throws Exception {
         Field field = AmqpSupport.class.getDeclaredField("client");
         field.setAccessible(true);
         return (AmqpClient) field.get(steps);
     }
+
 }

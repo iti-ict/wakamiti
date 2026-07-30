@@ -1,0 +1,1 @@
+This module provides the custom checks and cannot run Checkstyle against itself.

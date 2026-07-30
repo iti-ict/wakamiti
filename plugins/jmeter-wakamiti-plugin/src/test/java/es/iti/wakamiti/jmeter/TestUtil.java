@@ -1,5 +1,44 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.jmeter;
 
+
+import static org.mockserver.model.Header.header;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.entity.ContentType;
+import org.codehaus.plexus.util.FileUtils;
+import org.mockserver.client.MockServerClient;
+import org.mockserver.configuration.ConfigurationProperties;
+import org.mockserver.mock.Expectation;
+import org.mockserver.model.HttpStatusCode;
+import org.mockserver.model.MediaType;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,38 +52,17 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import es.iti.wakamiti.api.util.ResourceLoader;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.entity.ContentType;
-import org.codehaus.plexus.util.FileUtils;
-import org.mockserver.client.MockServerClient;
-import org.mockserver.mock.Expectation;
-import org.mockserver.model.HttpStatusCode;
-import org.mockserver.model.MediaType;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.mockserver.model.Header.header;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 public class TestUtil {
 
-    private static final XmlMapper xmlMapper = XmlMapper.builder().defaultUseWrapper(false)
+    private static final XmlMapper XML_MAPPER = XmlMapper.builder().defaultUseWrapper(false)
             .configure(ToXmlGenerator.Feature.UNWRAP_ROOT_OBJECT_NODE, true)
             .build();
 
-    public static String json(Map<?, ?> map) {
+    public static String json(
+            Map<?, ?> map
+    ) {
         try {
             return new ObjectMapper().writeValueAsString(map);
         } catch (JsonProcessingException e) {
@@ -52,7 +70,9 @@ public class TestUtil {
         }
     }
 
-    public static String json(List<?> list) {
+    public static String json(
+            List<?> list
+    ) {
         try {
             return new ObjectMapper().writeValueAsString(list);
         } catch (JsonProcessingException e) {
@@ -60,7 +80,10 @@ public class TestUtil {
         }
     }
 
-    public static <T> T json(String string, TypeReference<T> type) {
+    public static <T> T json(
+            String string,
+            TypeReference<T> type
+    ) {
         try {
             return new ObjectMapper().readValue(string, type);
         } catch (JsonProcessingException e) {
@@ -68,34 +91,43 @@ public class TestUtil {
         }
     }
 
-    public static String xml(Map<?, ?> map) {
+    public static String xml(
+            Map<?, ?> map
+    ) {
         try {
-            return xmlMapper.writeValueAsString(map);
+            return XML_MAPPER.writeValueAsString(map);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static String xml(List<?> list) {
+    public static String xml(
+            List<?> list
+    ) {
         try {
-            return xmlMapper.writeValueAsString(list);
+            return XML_MAPPER.writeValueAsString(list);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static <T> T xml(String string, TypeReference<T> type) {
+    public static <T> T xml(
+            String string,
+            TypeReference<T> type
+    ) {
         try {
             SimpleModule m = new SimpleModule("module", new Version(1, 0, 0, null, null, null));
             m.addDeserializer(Map.class, new CustomDeserializer());
-            xmlMapper.registerModule(m);
-            return xmlMapper.readValue(string, type);
+            XML_MAPPER.registerModule(m);
+            return XML_MAPPER.readValue(string, type);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static File file(String path) {
+    public static File file(
+            String path
+    ) {
         try {
             return new File(TestUtil.class.getClassLoader().getResource(path).toURI());
         } catch (URISyntaxException e) {
@@ -103,7 +135,9 @@ public class TestUtil {
         }
     }
 
-    public static String read(File file) {
+    public static String read(
+            File file
+    ) {
         try {
             return IOUtils.toString(file.toURI(), Charset.defaultCharset());
         } catch (IOException e) {
@@ -111,24 +145,33 @@ public class TestUtil {
         }
     }
 
-    public static void prepare(MockServerClient client, String rootPath, Predicate<MediaType> filter) throws IOException {
+    public static void prepare(
+            MockServerClient client,
+            String rootPath,
+            Predicate<MediaType> filter
+    ) throws IOException {
+        ConfigurationProperties.attemptToProxyIfNoMatchingExpectation(false);
         Expectation[] expectations = prepare(rootPath, filter);
         for (Expectation expectation : expectations) {
             client.when(expectation.getHttpRequest()).respond(expectation.getHttpResponse());
         }
-
     }
 
     @SuppressWarnings("unchecked")
-    public static Expectation[] prepare(String rootPath, Predicate<MediaType> filter) throws IOException {
+    public static Expectation[] prepare(
+            String rootPath,
+            Predicate<MediaType> filter
+    ) throws IOException {
         List<Expectation> expectations = new LinkedList<>();
         Map<MediaType, Function<List<Map<String, Object>>, String>> listToString = Map.of(
                 MediaType.APPLICATION_JSON, TestUtil::json,
                 MediaType.APPLICATION_XML, TestUtil::xml
         );
         Map<MediaType, Function<String, Map<String, Object>>> stringToMap = Map.of(
-                MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {}),
-                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {})
+                MediaType.APPLICATION_JSON, str -> TestUtil.json(str, new TypeReference<>() {
+                }),
+                MediaType.APPLICATION_XML, str -> TestUtil.xml(str, new TypeReference<>() {
+                })
         );
 
         File root = file(rootPath);
@@ -156,7 +199,7 @@ public class TestUtil {
                         map.get(mimeType).add(stringToMap.get(mimeType).apply(read(file)));
                     }
 
-                    for (MediaType mimeType : map.keySet().stream().filter(filter).collect(Collectors.toList())) {
+                    for (MediaType mimeType : map.keySet().stream().filter(filter).toList()) {
                         if (!stringToMap.containsKey(mimeType)) {
                             throw new IllegalStateException("Mime type unexpected: " + mimeType);
                         }
@@ -185,7 +228,9 @@ public class TestUtil {
                             .map(MediaType::parse)
                             .get();
 
-                    if (!filter.test(mimeType)) return;
+                    if (!filter.test(mimeType)) {
+                        return;
+                    }
 
                     String body = read(file);
                     String path = "/" + FileUtils.removeExtension(p.toString()).replace("\\", "/");
@@ -238,8 +283,9 @@ public class TestUtil {
         return expectations.toArray(new Expectation[0]);
     }
 
-
-    private static List<File> listFiles(final File folder) throws IOException {
+    private static List<File> listFiles(
+            final File folder
+    ) throws IOException {
         List<File> files = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(folder.getPath()))) {
             paths.filter(Files::isRegularFile).map(Path::toFile).forEach(files::add);
@@ -252,11 +298,13 @@ public class TestUtil {
     static class CustomDeserializer extends JsonDeserializer<Map<String, ?>> {
 
         @Override
-        public Map<String, ?> deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+        public Map<String, ?> deserialize(
+                JsonParser parser,
+                DeserializationContext context
+        ) throws IOException {
             Map<String, Object> map = new LinkedHashMap<>();
             JsonToken token;
             while ((token = parser.nextToken()) != null && token != JsonToken.END_OBJECT) {
-
                 if (token == JsonToken.FIELD_NAME) {
                     String name = parser.getCurrentName();
                     token = parser.nextToken();
@@ -287,6 +335,7 @@ public class TestUtil {
             }
             return map;
         }
+
     }
 
 }

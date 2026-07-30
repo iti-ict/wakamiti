@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,18 +8,17 @@
 package es.iti.wakamiti.azure;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.internal.Util;
-import org.junit.Test;
-import org.slf4j.Logger;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.time.ZoneId;
 import java.util.TimeZone;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.azure.internal.Util;
 
 
 public class TestUtil {

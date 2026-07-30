@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine and GreenMail, including the Jakarta Mail test integration.
+
+
 ## [1.5.0] - 2024-12-11
 
 ### Changed

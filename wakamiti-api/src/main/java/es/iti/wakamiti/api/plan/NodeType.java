@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -8,8 +10,6 @@ package es.iti.wakamiti.api.plan;
 
 /**
  * Represents different types of plan nodes.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public enum NodeType {
 
@@ -48,7 +48,9 @@ public enum NodeType {
      * @return {@code true} if the node type matches
      * any of the specified types, {@code false} otherwise
      */
-    public boolean isAnyOf(NodeType... nodeTypes) {
+    public boolean isAnyOf(
+            NodeType... nodeTypes
+    ) {
         for (NodeType nodeType : nodeTypes) {
             if (nodeType == this) {
                 return true;
@@ -65,7 +67,9 @@ public enum NodeType {
      * @return {@code true} if the node type does not match
      * any of the specified types, {@code false} otherwise
      */
-    public boolean isNoneOf(NodeType... nodeTypes) {
+    public boolean isNoneOf(
+            NodeType... nodeTypes
+    ) {
         for (NodeType nodeType : nodeTypes) {
             if (nodeType == this) {
                 return false;

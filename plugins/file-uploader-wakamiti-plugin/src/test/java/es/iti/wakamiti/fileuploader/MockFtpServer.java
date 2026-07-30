@@ -1,7 +1,20 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.fileuploader;
 
 
-import es.iti.wakamiti.api.WakamitiException;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.Authority;
@@ -14,12 +27,7 @@ import org.apache.ftpserver.usermanager.PropertiesUserManagerFactory;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
+import es.iti.wakamiti.api.WakamitiException;
 
 
 public class MockFtpServer {
@@ -29,7 +37,9 @@ public class MockFtpServer {
     private final int port;
     private Path tmpDir;
 
-    public MockFtpServer(int port) {
+    public MockFtpServer(
+            int port
+    ) {
         this.port = port;
         ListenerFactory factory = new ListenerFactory();
         factory.setPort(port);
@@ -54,16 +64,13 @@ public class MockFtpServer {
         return this;
     }
 
-
     public int getPort() {
         return port;
     }
 
-
     public void stop() {
         server.stop();
     }
-
 
     public Path getTmpDir() {
         return tmpDir;
@@ -82,21 +89,24 @@ public class MockFtpServer {
         return user;
     }
 
-
     private PasswordEncryptor passwordEncryptor() {
         return new PasswordEncryptor() {
             @Override
-            public String encrypt(String password) {
+            public String encrypt(
+                    String password
+            ) {
                 return password;
             }
 
             @Override
-            public boolean matches(String passwordToCheck, String storedPassword) {
+            public boolean matches(
+                    String passwordToCheck,
+                    String storedPassword
+            ) {
                 return passwordToCheck.equals(storedPassword);
             }
         };
     }
-
 
     private static int findFreePort() {
         try (ServerSocket serverSocket = new ServerSocket(0)) {
@@ -105,6 +115,5 @@ public class MockFtpServer {
             throw new WakamitiException(e);
         }
     }
-
 
 }

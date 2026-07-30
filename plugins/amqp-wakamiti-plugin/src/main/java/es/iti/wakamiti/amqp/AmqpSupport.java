@@ -1,21 +1,15 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
 
-import es.iti.wakamiti.amqp.client.AmqpClient;
-import es.iti.wakamiti.amqp.client.QpidAmqp10Client;
-import es.iti.wakamiti.amqp.client.RabbitMqAmqp091Client;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.awaitility.Durations;
-import org.awaitility.core.ConditionTimeoutException;
-import org.slf4j.Logger;
+import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
+import static org.awaitility.Awaitility.await;
 
 import java.io.File;
 import java.time.Duration;
@@ -27,8 +21,16 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static org.apache.commons.lang3.time.DurationFormatUtils.formatDuration;
-import static org.awaitility.Awaitility.await;
+import org.awaitility.Durations;
+import org.awaitility.core.ConditionTimeoutException;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.amqp.client.AmqpClient;
+import es.iti.wakamiti.amqp.client.QpidAmqp10Client;
+import es.iti.wakamiti.amqp.client.RabbitMqAmqp091Client;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 /**
@@ -50,11 +52,14 @@ public class AmqpSupport {
     private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
     private static final String CONTENT_TYPE = "application/json";
     private static final String DESTINATION_QUEUE_NOT_DEFINED = "Destination queue is not defined";
+
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
     protected final Map<String, List<String>> receivedMessages = new ConcurrentHashMap<>();
+
     protected AmqpConnectionParams connectionParams;
     protected AmqpProtocol protocol = AmqpProtocol.AMQP_1_0;
     protected String destination;
+
     private final AmqpJsonDiff jsonDiff = new AmqpJsonDiff();
     private AmqpClient client;
     private boolean durable;
@@ -62,9 +67,10 @@ public class AmqpSupport {
     private boolean autoDelete;
     private boolean messagePersistent = true;
 
-
     /**
      * Configures queue declaration durable flag.
+     *
+     * @param durable whether queues should be durable
      */
     public void setDurable(
             boolean durable
@@ -74,6 +80,8 @@ public class AmqpSupport {
 
     /**
      * Configures queue declaration exclusive flag.
+     *
+     * @param exclusive whether queues should be exclusive
      */
     public void setExclusive(
             boolean exclusive
@@ -83,6 +91,8 @@ public class AmqpSupport {
 
     /**
      * Configures queue declaration auto-delete flag.
+     *
+     * @param autoDelete whether queues should be deleted automatically
      */
     public void setAutoDelete(
             boolean autoDelete
@@ -92,6 +102,8 @@ public class AmqpSupport {
 
     /**
      * Configures message persistence mode for sends.
+     *
+     * @param messagePersistent whether sent messages should be persistent
      */
     public void setMessagePersistent(
             boolean messagePersistent
@@ -118,7 +130,6 @@ public class AmqpSupport {
         declareQueue(queue);
         client().sendText(queue, text, CONTENT_TYPE, messagePersistent);
     }
-
 
     /**
      * Lazily creates protocol-specific client.
@@ -181,7 +192,6 @@ public class AmqpSupport {
         }
     }
 
-
     /**
      * Starts asynchronous consumption on a queue if not already subscribed.
      */
@@ -189,15 +199,15 @@ public class AmqpSupport {
             String queueName
     ) {
         declareQueue(queueName);
-            client().subscribe(
-                    queueName,
-                    message -> {
-                        receivedMessages.computeIfAbsent(queueName, x -> new CopyOnWriteArrayList<>()).add(message);
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Received AMQP message in queue '{}': {}", queueName, message);
-                        }
+        client().subscribe(
+                queueName,
+                message -> {
+                    receivedMessages.computeIfAbsent(queueName, x -> new CopyOnWriteArrayList<>()).add(message);
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Received AMQP message in queue '{}': {}", queueName, message);
                     }
-            );
+                }
+        );
     }
 
     /**
@@ -210,7 +220,6 @@ public class AmqpSupport {
         client().purgeQueue(queueName);
         receivedMessages.remove(queueName);
     }
-
 
     /**
      * Checks if an exact message exists in current destination queue buffer.
@@ -242,7 +251,6 @@ public class AmqpSupport {
         Objects.requireNonNull(destination, DESTINATION_QUEUE_NOT_DEFINED);
         return !receivedMessages.computeIfAbsent(destination, x -> new CopyOnWriteArrayList<>()).isEmpty();
     }
-
 
     /**
      * Waits until expected message appears or throws assertion timeout error.
@@ -314,4 +322,5 @@ public class AmqpSupport {
             // Expected path: no message was received during timeout.
         }
     }
+
 }

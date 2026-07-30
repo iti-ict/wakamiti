@@ -1,11 +1,14 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.fileuploader;
 
 
-import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
-import org.apache.sshd.server.SshServer;
-import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
-import org.apache.sshd.server.session.ServerSession;
-import org.apache.sshd.sftp.server.SftpSubsystemFactory;
+import static java.util.Collections.singletonList;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -15,7 +18,11 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
+import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
+import org.apache.sshd.server.SshServer;
+import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.session.ServerSession;
+import org.apache.sshd.sftp.server.SftpSubsystemFactory;
 
 
 public class MockSftpServer {
@@ -25,7 +32,9 @@ public class MockSftpServer {
     private FileSystem fileSystem;
     private Path tmpDir;
 
-    public MockSftpServer(int port) {
+    public MockSftpServer(
+            int port
+    ) {
         this.port = port;
     }
 
@@ -51,7 +60,14 @@ public class MockSftpServer {
         return true;
     }
 
-    private boolean authenticator(ServerSession var1, String var2, PublicKey var3, String var4, String var5, List<X509Certificate> var6) {
+    private boolean authenticator(
+            ServerSession var1,
+            String var2,
+            PublicKey var3,
+            String var4,
+            String var5,
+            List<X509Certificate> var6
+    ) {
         return true;
     }
 
@@ -66,6 +82,5 @@ public class MockSftpServer {
     public Path getTmpDir() {
         return tmpDir;
     }
-
 
 }

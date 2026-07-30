@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,31 @@
 package es.iti.wakamiti.azure.api;
 
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.api.model.*;
-import es.iti.wakamiti.azure.internal.WakamitiAzureException;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static es.iti.wakamiti.azure.api.model.query.Field.TAGS;
+import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.join;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.JsonBody.json;
+import static org.mockserver.model.RegexBody.regex;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,45 +46,34 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.text.MessageFormat;
-import java.time.ZoneId;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static es.iti.wakamiti.api.util.StringUtils.format;
-import static es.iti.wakamiti.azure.api.model.query.Field.TAGS;
-import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.join;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.JsonBody.json;
-import static org.mockserver.model.RegexBody.regex;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.azure.api.model.Settings;
+import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestPlan;
+import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 
 
 public class TestPlanApiTest {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(TestPlanApiTest.class);
 
-    private static final Integer PORT = 4321;
-    private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", PORT.toString());
-
-    private static final ClientAndServer mock = startClientAndServer(PORT);
+    private static ClientAndServer mock;
+    private static String baseUrl;
 
     @BeforeClass
-    public static void beforeEach() {
+    public static void beforeAll() {
         ConfigurationProperties.logLevel("TRACE");
+        mock = startClientAndServer();
+        baseUrl = "http://localhost:" + mock.getLocalPort();
     }
 
     @AfterClass
     public static void shutdown() {
-        mock.close();
+        if (mock != null) {
+            mock.close();
+        }
     }
 
     @Test
@@ -110,7 +122,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), "wakamiti")
+        AzureApi client = new AzureApi(new URL(baseUrl), "wakamiti")
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -153,7 +165,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -196,7 +208,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -232,7 +244,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -275,7 +287,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), "wakamiti")
+        AzureApi client = new AzureApi(new URL(baseUrl), "wakamiti")
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -319,7 +331,7 @@ public class TestPlanApiTest {
                         .withBody("{}")
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -329,8 +341,8 @@ public class TestPlanApiTest {
             //check
         } catch (WakamitiAzureException e) {
             requests.forEach(mock::verify);
-            assertThat(e).hasMessage("There is no default configuration available. " + System.lineSeparator() +
-                    "Please try to fix this problem in azure.");
+            assertThat(e).hasMessage("There is no default configuration available. " + System.lineSeparator()
+                    + "Please try to fix this problem in azure.");
             throw e;
         }
     }
@@ -369,7 +381,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), "wakamiti")
+        AzureApi client = new AzureApi(new URL(baseUrl), "wakamiti")
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -379,8 +391,8 @@ public class TestPlanApiTest {
             //check
         } catch (WakamitiAzureException e) {
             requests.forEach(mock::verify);
-            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator() +
-                    "Please try to fix this problem in azure.");
+            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator()
+                    + "Please try to fix this problem in azure.");
             assertThat(e.getCause()).isNotNull().hasMessage("Default test case category");
             throw e;
         }
@@ -411,7 +423,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/configurations/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), "wakamiti")
+        AzureApi client = new AzureApi(new URL(baseUrl), "wakamiti")
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -421,13 +433,12 @@ public class TestPlanApiTest {
             //check
         } catch (Exception e) {
             requests.forEach(mock::verify);
-            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator() +
-                    "Please try to fix this problem in azure.");
+            assertThat(e).hasMessage("There is no test case category available. " + System.lineSeparator()
+                    + "Please try to fix this problem in azure.");
             assertThat(e.getCause()).isNotNull().hasMessage("The Azure API returned a non-OK response");
             throw e;
         }
     }
-
 
     @Test
     public void testGetTestPlanWhenExistsWithSuccess() throws IOException {
@@ -448,7 +459,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/plans/get/single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
@@ -479,7 +490,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/plans/search/multiple.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
@@ -510,11 +521,11 @@ public class TestPlanApiTest {
         ).ifPresent(requests::add);
         mockServer(
                 request().withMethod("POST").withPath("/ST/ACS/_apis/testplan/plans")
-                        .withBody(json("{" +
-                                                "\"name\":\"Wakamiti Test Plan\"," +
-                                                "\"areaPath\":\"ACS\"," +
-                                                "\"iteration\":\"ACS\\\\Iteración 1\"" +
-                                        "}", MatchType.ONLY_MATCHING_FIELDS)
+                        .withBody(json("{"
+                                + "\"name\":\"Wakamiti Test Plan\","
+                                + "\"areaPath\":\"ACS\","
+                                + "\"iteration\":\"ACS\\\\Iteración 1\""
+                                + "}", MatchType.ONLY_MATCHING_FIELDS)
                         ),
                 response()
                         .withStatusCode(200)
@@ -524,16 +535,16 @@ public class TestPlanApiTest {
         mockServer(
                 request().withBody("PATCH").withPath("/ST/ACS/_apis/wit/workitems/56983")
                         .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
-                        .withBody(json("[" +
-                                "{\"op\":\"add\",\"path\":\"/fields/System.Tags\",\"value\":\"wakamiti\"}" +
-                                "]", MatchType.ONLY_MATCHING_FIELDS )),
+                        .withBody(json("["
+                                + "{\"op\":\"add\",\"path\":\"/fields/System.Tags\",\"value\":\"wakamiti\"}"
+                                + "]", MatchType.ONLY_MATCHING_FIELDS)),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody("{}")
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
@@ -564,7 +575,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/plans/search/none.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan testPlan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"));
@@ -610,7 +621,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/suites/tree_list.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
@@ -663,16 +674,16 @@ public class TestPlanApiTest {
                 request()
                         .withMethod("POST")
                         .withPath("/ST/ACS/_apis/testplan/Plans/56983/suites")
-                        .withBody(regex(".*\"name\":\"Feature 1/abc\".+" +
-                                "\"suiteType\":\"staticTestSuite\".+" +
-                                "\"parentSuite\":\\{\"id\":\"56984\".*")),
+                        .withBody(regex(".*\"name\":\"Feature 1/abc\".+"
+                                + "\"suiteType\":\"staticTestSuite\".+"
+                                + "\"parentSuite\":\\{\"id\":\"56984\".*")),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(resource("server/suites/single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
@@ -714,7 +725,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/suites/tree_single.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
@@ -737,7 +748,6 @@ public class TestPlanApiTest {
                 .hasFieldOrPropertyWithValue("name", "Wakamiti Test Plan");
     }
 
-
     @Test
     public void testGetTestCasesWhenExistsWithSuccess() throws IOException {
         // prepare
@@ -755,9 +765,8 @@ public class TestPlanApiTest {
             ).ifPresent(requests::add);
         }
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
-
 
         TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
@@ -850,11 +859,11 @@ public class TestPlanApiTest {
                             .withMethod("POST")
                             .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
                             .withPath("/ST/ACS/_apis/wit/workitems/.+")
-                            .withBody(regex(format(".+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
+                            .withBody(regex(format(".+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
                                     Pattern.quote(t.name()), t.tag()))),
                     response()
                             .withStatusCode(200)
@@ -882,8 +891,7 @@ public class TestPlanApiTest {
             ).ifPresent(requests::add);
         }
 
-
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
         client.settings();
 
@@ -950,9 +958,8 @@ public class TestPlanApiTest {
                         .withBody(resource("server/testcases/list_56985.json"))
         ).ifPresent(requests::add);
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
-
 
         TestSuite root = new TestSuite().id("56984").name("Wakamiti Test Plan");
         TestPlan plan = new TestPlan("Wakamiti Test Plan", Path.of("ACS"), Path.of("ACS/Iteración 1"))
@@ -1032,8 +1039,8 @@ public class TestPlanApiTest {
                             .withMethod("PATCH")
                             .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
                             .withPath(format("/ST/ACS/_apis/wit/workitems/{}", p.key()))
-                            .withBody(regex(format(".+" +
-                                            "\\{\"op\":\"replace\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+",
+                            .withBody(regex(format(".+"
+                                            + "\\{\"op\":\"replace\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+",
                                     Pattern.quote(p.value().name())))),
                     response()
                             .withStatusCode(200)
@@ -1042,7 +1049,7 @@ public class TestPlanApiTest {
             ).ifPresent(requests::add);
         }
 
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -1149,11 +1156,11 @@ public class TestPlanApiTest {
                             .withMethod("POST")
                             .withContentType(MediaType.APPLICATION_JSON_PATCH_JSON)
                             .withPath("/ST/ACS/_apis/wit/workitems/.+")
-                            .withBody(regex(format(".+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+" +
-                                            "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
+                            .withBody(regex(format(".+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Title\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.Tags\",\"value\":\"{}\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.AreaPath\",\"value\":\"ACS\"}.+"
+                                            + "\\{\"op\":\"add\",\"path\":\"/fields/System\\.IterationPath\",\"value\":\"ACS\\\\\\\\Iteración 1\"}.+",
                                     Pattern.quote(p.value().name()), p.value().tag()))),
                     response()
                             .withStatusCode(200)
@@ -1181,8 +1188,7 @@ public class TestPlanApiTest {
             ).ifPresent(requests::add);
         }
 
-
-        AzureApi client = new AzureApi(new URL(BASE_URL), null)
+        AzureApi client = new AzureApi(new URL(baseUrl), null)
                 .organization("ST").projectBase("ACS").version("6.0-preview");
 
         // act
@@ -1225,17 +1231,23 @@ public class TestPlanApiTest {
                 .extracting(t -> t.suite().id()).isEqualTo("56985");
     }
 
-
-    private void logResult(Object o) {
+    private void logResult(
+            Object o
+    ) {
         LOGGER.debug("Result: {}", o);
     }
 
-    private Optional<HttpRequest> mockServer(HttpRequest expected, HttpResponse response) {
+    private Optional<HttpRequest> mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
         mock.when(expected, Times.once()).respond(response);
         return Optional.of(expected);
     }
 
-    private String resource(String resource) throws IOException {
+    private String resource(
+            String resource
+    ) throws IOException {
         return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource));
     }
 

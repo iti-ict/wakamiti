@@ -1,26 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.junit;
 
-
-import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.api.BackendFactory;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.internal.AssumptionViolatedException;
-import org.junit.internal.runners.model.EachTestNotifier;
-import org.junit.runner.Describable;
-import org.junit.runner.Description;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runner.notification.StoppedByUserException;
 
 import java.time.Instant;
 import java.util.List;
@@ -29,6 +15,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.junit.internal.AssumptionViolatedException;
+import org.junit.internal.runners.model.EachTestNotifier;
+import org.junit.runner.Describable;
+import org.junit.runner.Description;
+import org.junit.runner.notification.RunNotifier;
+import org.junit.runner.notification.StoppedByUserException;
+
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
+import es.iti.wakamiti.core.runner.PlanNodeRunner;
 
 
 /**
@@ -43,11 +46,10 @@ import java.util.stream.Stream;
  * in the test report. It supports the execution of child nodes, whether they are
  * test cases or nested test suites, by creating appropriate runner instances for
  * each child.</p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner {
 
+    private final String testClassName;
     private Description description;
     private RunNotifier notifier;
 
@@ -57,9 +59,11 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
             BackendFactory backendFactory,
             Optional<Backend> backend,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
         super(node, configuration, backendFactory, backend, logger, false, nodePath);
+        this.testClassName = testClassName;
     }
 
     PlanNodeJUnitRunner(
@@ -67,9 +71,11 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
             Configuration configuration,
             BackendFactory backendFactory,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
         super(node, configuration, backendFactory, Optional.empty(), logger, false, nodePath);
+        this.testClassName = testClassName;
     }
 
     /**
@@ -83,7 +89,6 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
             description = Description.createSuiteDescription(getNode().displayName(), getUniqueId());
             getChildren().stream().map(WakamitiPlanNodeRunner.class::cast)
                     .forEach(child -> description.addChild(describeChild(child)));
-
         }
         return description;
     }
@@ -92,10 +97,12 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
      * Runs the test suite and notifies the RunNotifier.
      *
      * @param notifier The RunNotifier to notify during the test execution.
-     * @return         The Result of the test suite execution.
+     * @return The Result of the test suite execution.
      */
     @Override
-    public Result run(RunNotifier notifier) {
+    public Result run(
+            RunNotifier notifier
+    ) {
         this.notifier = notifier;
         EachTestNotifier testNotifier = new EachTestNotifier(notifier, this.getDescription());
         testNotifier.fireTestSuiteStarted();
@@ -133,28 +140,30 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
      */
     @Override
     protected List<PlanNodeRunner> createChildren() {
-        List<PlanNode> childNodes = getNode().children().collect(Collectors.toList());
+        List<PlanNode> childNodes = getNode().children().toList();
         return IntStream.range(0, childNodes.size())
                 .mapToObj(index -> {
                     PlanNode child = childNodes.get(index);
                     String childPath = childNodePath(index);
                     return child.nodeType().isAnyOf(target())
                             ? new PlanNodeTargetRunner(
-                                    child,
-                                    configuration(),
-                                    backendFactory(),
-                                    getBackend(),
-                                    getLogger(),
-                                    childPath
-                            )
+                            child,
+                            configuration(),
+                            backendFactory(),
+                            getBackend(),
+                            getLogger(),
+                            childPath,
+                            testClassName
+                    )
                             : new PlanNodeJUnitRunner(
-                                    child,
-                                    configuration(),
-                                    backendFactory(),
-                                    getBackend(),
-                                    getLogger(),
-                                    childPath
-                            );
+                            child,
+                            configuration(),
+                            backendFactory(),
+                            getBackend(),
+                            getLogger(),
+                            childPath,
+                            testClassName
+                    );
                 })
                 .collect(Collectors.toList());
     }
@@ -179,8 +188,14 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
      * @param child The Describable representing a child node.
      * @return The Description object representing the child node.
      */
-    protected Description describeChild(Describable child) {
+    protected Description describeChild(
+            Describable child
+    ) {
         return child.getDescription();
+    }
+
+    protected String testClassName() {
+        return testClassName;
     }
 
 }

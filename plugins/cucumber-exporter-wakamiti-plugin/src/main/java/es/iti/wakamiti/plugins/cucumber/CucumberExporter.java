@@ -1,4 +1,29 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.plugins.cucumber;
+
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,19 +35,18 @@ import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
-
-import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
-@Extension(name = "cucumber-exporter", version = "2.6")
+/**
+ * Provides the Cucumber Exporter functionality used by Wakamiti.
+ */
+@Extension(
+        name = "cucumber-exporter",
+        version = "2.6"
+)
 public class CucumberExporter implements Reporter {
 
+    /** Logger category used for Cucumber export progress and diagnostics. */
     public static final Logger LOGGER = WakamitiLogger.forClass(CucumberExporter.class);
 
     private static final String DOC_STRING = "doc_string";
@@ -52,7 +76,9 @@ public class CucumberExporter implements Reporter {
     private String outputFile = "cucumber-report.json";
     private Strategy strategy = Strategy.INNERSTEPS;
 
-    private static String description(PlanNodeSnapshot node) {
+    private static String description(
+            PlanNodeSnapshot node
+    ) {
         if (node.getDescription() != null && !node.getDescription().isEmpty()) {
             return String.join("\n", node.getDescription());
         } else {
@@ -60,21 +86,43 @@ public class CucumberExporter implements Reporter {
         }
     }
 
-    private static String keyword(PlanNodeSnapshot node) {
+    private static String keyword(
+            PlanNodeSnapshot node
+    ) {
         return (node.getKeyword() == null || node.getKeyword().isEmpty() ? " " : node.getKeyword());
     }
 
-    public void setOutputFile(String outputFile) {
+    /**
+     * Sets the destination of the generated Cucumber JSON report.
+     * <p>
+     * Relative paths are resolved through Wakamiti's resource loader; parent
+     * directories and file permissions must permit writing.
+     *
+     * @param outputFile report path, defaulting to
+     *                   {@code cucumber-report.json}
+     */
+    public void setOutputFile(
+            String outputFile
+    ) {
         this.outputFile = outputFile;
     }
 
-    public void setStrategy(Strategy strategy) {
+    /**
+     * Sets how Wakamiti plan nodes are represented as Cucumber steps.
+     *
+     * @param strategy export strategy controlling whether nested plan nodes are
+     *                 emitted as inner steps
+     */
+    public void setStrategy(
+            Strategy strategy
+    ) {
         this.strategy = strategy;
     }
 
     @Override
-    public void report(PlanNodeSnapshot rootNode) {
-
+    public void report(
+            PlanNodeSnapshot rootNode
+    ) {
         ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
         try (Writer writer = new BufferedWriter(new FileWriter(resourceLoader.absolutePath(new File(outputFile)), charset))) {
             List<Map<String, Object>> features = stream(rootNode)
@@ -85,11 +133,11 @@ public class CucumberExporter implements Reporter {
         } catch (IOException e) {
             LOGGER.error("Error exporting to Cucumber format: {}", e.getMessage(), e);
         }
-
-
     }
 
-    private Map<String, Object> mapFeature(PlanNodeSnapshot feature) {
+    private Map<String, Object> mapFeature(
+            PlanNodeSnapshot feature
+    ) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(URI, feature.getSource());
         map.put(KEYWORD, keyword(feature));
@@ -105,7 +153,9 @@ public class CucumberExporter implements Reporter {
         return map;
     }
 
-    private Map<String, Object> mapScenario(PlanNodeSnapshot scenario) {
+    private Map<String, Object> mapScenario(
+            PlanNodeSnapshot scenario
+    ) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(KEYWORD, keyword(scenario));
         map.put(ID, scenario.getId());
@@ -127,29 +177,21 @@ public class CucumberExporter implements Reporter {
         return map;
     }
 
-    private Map<String, Object> mapStep(PlanNodeSnapshot definitionStep, PlanNodeSnapshot resultStep) {
+    private Map<String, Object> mapStep(
+            PlanNodeSnapshot definitionStep,
+            PlanNodeSnapshot resultStep
+    ) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put(KEYWORD, keyword(definitionStep));
         map.put(NAME, definitionStep.getName());
         Map<String, Object> result = new LinkedHashMap<>();
-        String status;
-        switch (definitionStep.getResult()) {
-            case PASSED:
-                status = "passed";
-                break;
-            case FAILED:
-            case ERROR:
-                status = "failed";
-                break;
-            case SKIPPED:
-                status = "skipped";
-                break;
-            case UNDEFINED:
-                status = "ambiguous";
-                break;
-            default:
-                status = "pending";
-        }
+        String status = switch (definitionStep.getResult()) {
+            case PASSED -> "passed";
+            case FAILED, ERROR -> "failed";
+            case SKIPPED -> "skipped";
+            case UNDEFINED -> "ambiguous";
+            default -> "pending";
+        };
         result.put(STATUS, status);
         result.put(DURATION, definitionStep.getDuration());
         if (resultStep != null) {
@@ -173,7 +215,9 @@ public class CucumberExporter implements Reporter {
         return map;
     }
 
-    private List<Map<String, Object>> mapStepAggregator(PlanNodeSnapshot step) {
+    private List<Map<String, Object>> mapStepAggregator(
+            PlanNodeSnapshot step
+    ) {
         if (strategy == Strategy.INNERSTEPS) {
             return stream(step)
                     .filter(it -> it.getNodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP))
@@ -189,7 +233,9 @@ public class CucumberExporter implements Reporter {
         }
     }
 
-    private List<?> mapTags(PlanNodeSnapshot node) {
+    private List<?> mapTags(
+            PlanNodeSnapshot node
+    ) {
         if (node.getTags() == null || node.getTags().isEmpty()) {
             return null;
         }
@@ -199,19 +245,31 @@ public class CucumberExporter implements Reporter {
                 .collect(Collectors.toList());
     }
 
-    private Stream<PlanNodeSnapshot> stream(PlanNodeSnapshot node) {
+    private Stream<PlanNodeSnapshot> stream(
+            PlanNodeSnapshot node
+    ) {
         return Stream.concat(
                 Stream.of(node),
                 node.getChildren() == null ? Stream.empty() : node.getChildren().stream().flatMap(this::stream)
         );
     }
 
-    private boolean gherkinFeature(PlanNodeSnapshot node) {
+    private boolean gherkinFeature(
+            PlanNodeSnapshot node
+    ) {
         return node.getProperties() != null && "feature".equals(node.getProperties().get("gherkinType"));
     }
 
+    /**
+     * Defines the values supported by Strategy.
+     */
+    public enum Strategy {
 
-    public enum Strategy {INNERSTEPS, OUTERSTEPS}
+        /** Exports nested executable steps as children of their containing step. */
+        INNERSTEPS,
+        /** Exports nested executable steps alongside their containing outer step. */
+        OUTERSTEPS
 
+    }
 
 }

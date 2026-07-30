@@ -1,20 +1,12 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.rest;
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.api.util.MatcherAssertion;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import io.restassured.RestAssured;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,12 +14,30 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.time.Duration;
+
+import org.hamcrest.Matchers;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.util.MatcherAssertion;
+import io.restassured.RestAssured;
+
+
 @RunWith(MockitoJUnitRunner.class)
 public class RestConfigContributorTest {
+
     private final RestConfigContributor configContributor = new RestConfigContributor();
     @Spy
     private RestStepContributor contributor;
-
 
     @Test
     @SuppressWarnings("unchecked")
@@ -81,4 +91,5 @@ public class RestConfigContributorTest {
         Configuration configuration = Configuration.factory().fromPairs("rest.config.multipart.subtype", "other");
         configContributor.configurer().configure(contributor, configuration);
     }
+
 }

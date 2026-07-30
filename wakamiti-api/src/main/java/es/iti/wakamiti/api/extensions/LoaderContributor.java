@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,16 @@
 package es.iti.wakamiti.api.extensions;
 
 
-import es.iti.commons.jext.ExtensionPoint;
-
 import java.util.List;
 import java.util.stream.Stream;
+
+import es.iti.commons.jext.ExtensionPoint;
 
 
 /**
  * This interface allows adding extra class loaders from sources other
  * than java.
  *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @ExtensionPoint
 public interface LoaderContributor extends Contributor {
@@ -28,5 +29,8 @@ public interface LoaderContributor extends Contributor {
      * @param discoveryPaths The paths where search the sources to load
      * @return The loaded classes
      */
-    Stream<? extends Class<?>> load(List<String> discoveryPaths);
+    Stream<? extends Class<?>> load(
+            List<String> discoveryPaths
+    );
+
 }

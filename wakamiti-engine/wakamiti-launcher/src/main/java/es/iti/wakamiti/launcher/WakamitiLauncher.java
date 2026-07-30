@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,20 +8,20 @@
 package es.iti.wakamiti.launcher;
 
 
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.core.generator.features.OpenAIService;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 /**
@@ -27,10 +29,11 @@ import java.util.Optional;
  *
  * <p>This class contains the main method for launching Wakamiti. It parses command-line arguments,
  * initializes the logger, fetches and updates classpath, and runs the WakamitiRunner.</p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-public class WakamitiLauncher {
+public final class WakamitiLauncher {
+
+    private WakamitiLauncher() {
+    }
 
     private static Logger logger;
 
@@ -48,8 +51,9 @@ public class WakamitiLauncher {
      *
      * @param args The command-line arguments.
      */
-    public static void main(final String[] args) {
-
+    public static void main(
+            final String[] args
+    ) {
         CliArguments arguments = new CliArguments();
         try {
             arguments.parse(args);
@@ -74,13 +78,6 @@ public class WakamitiLauncher {
         }
 
         try {
-            if (arguments.isFeatureGeneratorEnabled()) {
-                OpenAIService openAIService = new OpenAIService();
-                FeatureGeneratorRunner featureGeneratorRunner = new FeatureGeneratorRunner(arguments, openAIService);
-                featureGeneratorRunner.run();
-                return;
-            }
-
             new WakamitiLauncherFetcher(arguments).fetchAndUpdateClasspath();
             WakamitiRunner runner = new WakamitiRunner(arguments);
 
@@ -92,8 +89,9 @@ public class WakamitiLauncher {
             }
 
             boolean passed = runner.run();
-            if (!passed)
+            if (!passed) {
                 System.exit(3);
+            }
         } catch (Exception e) {
             logger.error("Error: {}", e.toString());
             if (logger.isDebugEnabled()) {
@@ -103,7 +101,10 @@ public class WakamitiLauncher {
         }
     }
 
-    private static Logger createLogger(Configuration conf, boolean debug) {
+    private static Logger createLogger(
+            Configuration conf,
+            boolean debug
+    ) {
         String loggerName = "es.iti.wakamiti";
         Optional<Level> level = conf.get("level", String.class).map(String::toUpperCase).map(Level::toLevel);
         Optional<String> path = conf.get("path", String.class);

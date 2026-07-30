@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,25 +8,26 @@
 package es.iti.wakamiti.database.jdbc;
 
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.ConnectionManager;
 import es.iti.wakamiti.database.ConnectionParameters;
-import org.slf4j.Logger;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 
 /**
- * Provides JDBC connection management including obtaining, testing, and releasing connections.
+ * Provides Connection services to the surrounding component.
  */
 public class ConnectionProvider implements AutoCloseable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(ConnectionProvider.class);
-    private static final ConnectionManager connectionManager = WakamitiAPI.instance().extensionManager()
+    private static final ConnectionManager CONNECTION_MANAGER = WakamitiAPI.instance().extensionManager()
             .getExtension(ConnectionManager.class)
             .orElseThrow(() -> new WakamitiException("Cannot find a connection manager"));
     private final ConnectionParameters parameters;
@@ -35,7 +38,9 @@ public class ConnectionProvider implements AutoCloseable {
      *
      * @param parameters The connection parameters.
      */
-    public ConnectionProvider(ConnectionParameters parameters) {
+    public ConnectionProvider(
+            ConnectionParameters parameters
+    ) {
         this.parameters = parameters;
     }
 
@@ -57,16 +62,16 @@ public class ConnectionProvider implements AutoCloseable {
     public Connection get() {
         try {
             if (connection == null) {
-                connection = connectionManager.obtainConnection(parameters);
+                connection = CONNECTION_MANAGER.obtainConnection(parameters);
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(
                             "Using database connection of type {} provided by {contributor}",
                             connection.getClass().getSimpleName(),
-                            connectionManager.info()
+                            CONNECTION_MANAGER.info()
                     );
                 }
             } else {
-                connection = connectionManager.refreshConnection(connection, parameters);
+                connection = CONNECTION_MANAGER.refreshConnection(connection, parameters);
             }
             return connection;
         } catch (SQLException e) {
@@ -98,10 +103,11 @@ public class ConnectionProvider implements AutoCloseable {
     public void close() {
         try {
             if (connection != null && !connection.isClosed()) {
-                connectionManager.releaseConnection(connection);
+                CONNECTION_MANAGER.releaseConnection(connection);
             }
         } catch (SQLException e) {
             throw new WakamitiException("Connection closure has failed", e);
         }
     }
+
 }

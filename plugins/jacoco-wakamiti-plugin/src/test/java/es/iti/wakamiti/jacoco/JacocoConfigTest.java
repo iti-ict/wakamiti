@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,21 +8,25 @@
 package es.iti.wakamiti.jacoco;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 public class JacocoConfigTest {
 
-    private static Object getField(Object target, String name) {
+    private static Object getField(
+            Object target,
+            String name
+    ) {
         try {
             Field f = target.getClass().getDeclaredField(name);
             f.setAccessible(true);
@@ -31,7 +37,7 @@ public class JacocoConfigTest {
     }
 
     @Test
-    public void defaultConfiguration_has_expected_defaults() {
+    public void defaultConfigurationHasExpectedDefaults() {
         JacocoConfig config = new JacocoConfig();
         Configuration defaults = config.defaultConfiguration();
 
@@ -44,7 +50,7 @@ public class JacocoConfigTest {
     }
 
     @Test
-    public void configure_sets_all_known_properties_and_requires_classes() {
+    public void configureSetsAllKnownPropertiesAndRequiresClasses() {
         JacocoConfig config = new JacocoConfig();
         JacocoReporter reporter = new JacocoReporter();
 
@@ -85,7 +91,7 @@ public class JacocoConfigTest {
     }
 
     @Test
-    public void configure_throws_when_required_classes_missing() {
+    public void configureThrowsWhenRequiredClassesMissing() {
         JacocoConfig config = new JacocoConfig();
         JacocoReporter reporter = new JacocoReporter();
 
@@ -99,4 +105,5 @@ public class JacocoConfigTest {
                 .isInstanceOf(WakamitiException.class)
                 .hasMessageContaining("Property '" + JacocoConfig.JACOCO_CLASSES + "' is required");
     }
+
 }

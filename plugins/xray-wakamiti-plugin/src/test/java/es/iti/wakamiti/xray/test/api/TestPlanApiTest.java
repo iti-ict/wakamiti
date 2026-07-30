@@ -1,10 +1,28 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.xray.test.api;
 
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.xray.api.JiraApi;
-import es.iti.wakamiti.xray.api.XRayApi;
-import es.iti.wakamiti.xray.model.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.StringBody.subString;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -17,20 +35,16 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.xray.api.JiraApi;
+import es.iti.wakamiti.xray.api.XRayApi;
+import es.iti.wakamiti.xray.model.JiraIssue;
+import es.iti.wakamiti.xray.model.TestCase;
+import es.iti.wakamiti.xray.model.TestExecution;
+import es.iti.wakamiti.xray.model.TestPlan;
+import es.iti.wakamiti.xray.model.TestSet;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.StringBody.subString;
 
 public class TestPlanApiTest {
 
@@ -39,7 +53,7 @@ public class TestPlanApiTest {
     private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("http://localhost:{0}", String.valueOf(PORT));
 
-    private static final ClientAndServer mock = startClientAndServer(PORT);
+    private static final ClientAndServer MOCK = startClientAndServer(PORT);
 
     @BeforeClass
     public static void beforeEach() {
@@ -48,9 +62,8 @@ public class TestPlanApiTest {
 
     @AfterClass
     public static void shutdown() {
-        mock.close();
+        MOCK.close();
     }
-
 
     @Test
     public void testAuthenticationWithSuccess() throws IOException {
@@ -68,8 +81,7 @@ public class TestPlanApiTest {
         XRayApi xRayApi = new XRayApi(new URL(BASE_URL), "clientId", "clientSecret", "WAK", LOGGER);
         assertThat(xRayApi).isNotNull();
 
-        requests.forEach(mock::verify);
-
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -106,7 +118,7 @@ public class TestPlanApiTest {
 
         xRayApi.createTestCases(List.of(testCase), "");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -135,13 +147,12 @@ public class TestPlanApiTest {
         XRayApi xRayApi = new XRayApi(new URL(BASE_URL), "clientId", "clientSecret", "WAK", LOGGER);
         assertThat(xRayApi).isNotNull();
 
-
         TestPlan testPlan = xRayApi.createTestPlan("Test Summary");
 
         assertThat(testPlan).isNotNull();
         assertThat(testPlan.getJira().getSummary()).isEqualTo("Test Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -175,7 +186,7 @@ public class TestPlanApiTest {
         assertThat(testExecution).isNotNull();
         assertThat(testExecution.getJira().getSummary()).isEqualTo("Test Execution Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -216,7 +227,7 @@ public class TestPlanApiTest {
 
         assertThat(testSets.get(0).getJira().getSummary()).isEqualTo("Test Set Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -251,7 +262,7 @@ public class TestPlanApiTest {
 
         assertThat(testCase.get().getJira().getSummary()).isEqualTo("Test Case Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -288,7 +299,7 @@ public class TestPlanApiTest {
 
         assertThat(testPlans.get(0).getJira().getSummary()).isEqualTo("Test Plan Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -325,7 +336,7 @@ public class TestPlanApiTest {
 
         assertThat(testSets.get(0).getJira().getSummary()).isEqualTo("Test Set Summary");
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -374,7 +385,7 @@ public class TestPlanApiTest {
 
         xRayApi.updateTestRunStatus(List.of(testCase));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -408,7 +419,7 @@ public class TestPlanApiTest {
 
         xRayApi.addTestsToPlan(List.of("10070"), testPlan);
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -450,10 +461,9 @@ public class TestPlanApiTest {
                 .gherkin("Gherkin")
                 .testSetList(List.of(testSet));
 
-
         xRayApi.addTestsToSets(List.of(testCase), List.of(testSet));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -487,7 +497,7 @@ public class TestPlanApiTest {
 
         xRayApi.addTestExecutionsToTestPlan("12345", testPlan);
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -503,7 +513,7 @@ public class TestPlanApiTest {
                         .withBody(resource("server/jira/updateIssue.json"))
         ).ifPresent(requests::add);
 
-        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials",  LOGGER);
+        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials", LOGGER);
         assertThat(jiraApi).isNotNull();
 
         TestCase testCase = new TestCase()
@@ -516,7 +526,7 @@ public class TestPlanApiTest {
 
         jiraApi.updateTestCases(List.of(new Pair<>(testCase, testCase)));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
     @Test
@@ -532,20 +542,26 @@ public class TestPlanApiTest {
                         .withBody(resource("server/jira/addAttachment.json"))
         ).ifPresent(requests::add);
 
-        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials",  LOGGER);
+        JiraApi jiraApi = new JiraApi(new URL(BASE_URL), "credentials", LOGGER);
         assertThat(jiraApi).isNotNull();
 
         jiraApi.addAttachment("10070", Files.createTempFile("temp", ""));
 
-        requests.forEach(mock::verify);
+        requests.forEach(MOCK::verify);
     }
 
-    private Optional<HttpRequest> mockServer(HttpRequest expected, HttpResponse response) {
-        mock.when(expected, Times.once()).respond(response);
+    private Optional<HttpRequest> mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
+        MOCK.when(expected, Times.once()).respond(response);
         return Optional.of(expected);
     }
 
-    private String resource(String resource) throws IOException {
+    private String resource(
+            String resource
+    ) throws IOException {
         return IOUtils.toString(getClass().getClassLoader().getResourceAsStream(resource), Charset.defaultCharset());
     }
+
 }

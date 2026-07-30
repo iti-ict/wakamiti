@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,31 +8,35 @@
 package es.iti.wakamiti.core.gherkin;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.extensions.ResourceType;
-import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
-import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.extensions.ResourceType;
+import es.iti.wakamiti.core.gherkin.parser.GherkinDocument;
+import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
+
 
 /**
  * Provides methods to parse Gherkin feature files and
  * determine if a given filename is compatible with the
  * Gherkin resource type.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = GherkinResourceType.NAME,
-        extensionPoint = "es.iti.wakamiti.api.extensions.ResourceType", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = GherkinResourceType.NAME,
+        extensionPoint = "es.iti.wakamiti.api.extensions.ResourceType",
+        version = "2.6"
+)
 public class GherkinResourceType implements ResourceType<GherkinDocument> {
 
+    /** Resource-type name used to select the Gherkin parser and plan builder. */
     public static final String NAME = "gherkin";
 
+    /** Stateless shared instance registered as the Gherkin resource type. */
     public static final GherkinResourceType INSTANCE = new GherkinResourceType();
 
     /**
@@ -53,7 +59,10 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
      * {@inheritDoc}
      */
     @Override
-    public GherkinDocument parse(InputStream stream, Charset charset) throws IOException {
+    public GherkinDocument parse(
+            InputStream stream,
+            Charset charset
+    ) throws IOException {
         try (Reader reader = new InputStreamReader(stream, charset)) {
             return parse(reader);
         }
@@ -63,7 +72,9 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
      * {@inheritDoc}
      */
     @Override
-    public GherkinDocument parse(Reader reader) throws IOException {
+    public GherkinDocument parse(
+            Reader reader
+    ) throws IOException {
         return new GherkinParser().parse(reader);
     }
 
@@ -71,7 +82,9 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
      * {@inheritDoc}
      */
     @Override
-    public boolean acceptsFilename(String filename) {
+    public boolean acceptsFilename(
+            String filename
+    ) {
         return filename.endsWith(".feature") || filename.endsWith(".FEATURE");
     }
 
@@ -82,4 +95,5 @@ public class GherkinResourceType implements ResourceType<GherkinDocument> {
     public String toString() {
         return description();
     }
+
 }

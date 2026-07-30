@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Changed
+- Require Java 17 and use a Java 17 runtime for the Docker image.
+- Upgrade Wakamiti API, Maven Resolver, Cucumber tag expressions, MockServer and the remaining build and runtime dependencies.
+- Build Maven Resolver sessions with the supported supplier API and explicit dependency-resolution policies.
+- Publish the language server with an automatic module name instead of an explicit JPMS descriptor.
+
+### Fixed
+- Use the owning JUnit test class in generated JUnit 4 descriptions.
+- Correct plan creation and test-plan summary logging after the SLF4J 2 upgrade.
+- Keep non-empty JSON plan properties when configuring Jackson serialization.
+
+### Removed
+- Remove the experimental OpenAPI feature generator and its launcher command.
+- Remove the deprecated JUnit 4 runners from `wakamiti-core`; use `wakamiti-junit` instead.
+
 ## [2.12.0] - 2026-06-29
 
 ### Added

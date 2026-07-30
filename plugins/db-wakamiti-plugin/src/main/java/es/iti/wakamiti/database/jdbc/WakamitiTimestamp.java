@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,10 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import java.time.LocalDateTime;
-
 import static es.iti.wakamiti.database.DatabaseHelper.DATE_FORMATTER;
 import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -29,7 +31,10 @@ public class WakamitiTimestamp extends java.sql.Timestamp {
      * @param trunc Truncation preference: {@code true} for date-only, {@code false} for
      *              date-time
      */
-    public WakamitiTimestamp(long time, boolean trunc) {
+    public WakamitiTimestamp(
+            long time,
+            boolean trunc
+    ) {
         super(time);
         this.trunc = trunc;
     }
@@ -43,7 +48,10 @@ public class WakamitiTimestamp extends java.sql.Timestamp {
      *              date-time
      * @return The Timestamp object
      */
-    public static WakamitiTimestamp valueOf(LocalDateTime time, boolean trunc) {
+    public static WakamitiTimestamp valueOf(
+            LocalDateTime time,
+            boolean trunc
+    ) {
         return new WakamitiTimestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
     }
 
@@ -56,7 +64,10 @@ public class WakamitiTimestamp extends java.sql.Timestamp {
      *              date-time
      * @return The Timestamp object
      */
-    public static WakamitiTimestamp valueOf(String time, boolean trunc) {
+    public static WakamitiTimestamp valueOf(
+            String time,
+            boolean trunc
+    ) {
         return new WakamitiTimestamp(java.sql.Timestamp.valueOf(time).getTime(), trunc);
     }
 

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,22 +8,25 @@
 package es.iti.wakamiti.fileuploader.it;
 
 
-import es.iti.wakamiti.fileuploader.MockFtpServer;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
-import org.apache.ftpserver.ftplet.FtpException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static org.junit.Assert.assertTrue;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.fileuploader.MockFtpServer;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 
 
 @AnnotatedConfiguration({
@@ -37,21 +42,22 @@ import static org.junit.Assert.assertTrue;
 @RunWith(WakamitiJUnitRunner.class)
 public class StandardOutputFilesUploaderTest {
 
-    private static final MockFtpServer ftpServer = new MockFtpServer(4321);
+    private static final MockFtpServer FTP_SERVER = new MockFtpServer(4321);
 
     @BeforeClass
     public static void setUp() throws FtpException, IOException {
-        ftpServer.start();
+        FTP_SERVER.start();
     }
 
     @AfterClass
     public static void tearDown() {
-        assertTrue(ftpServer.getTmpDir().resolve("dira/dirb/" + today() + "/wakamiti.json").toFile().exists());
-        ftpServer.stop();
+        assertTrue(FTP_SERVER.getTmpDir().resolve("dira/dirb/" + today() + "/wakamiti.json").toFile().exists());
+        FTP_SERVER.stop();
         System.out.println("FTP stopped");
     }
 
     private static String today() {
         return DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.systemDefault()).format(Instant.now());
     }
+
 }

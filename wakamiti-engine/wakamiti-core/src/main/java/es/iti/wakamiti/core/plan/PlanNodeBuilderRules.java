@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,25 +8,32 @@
 package es.iti.wakamiti.core.plan;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeBuilder;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.LongPredicate;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 
 
 /**
  * Provides a set of rules and predicates for defining conditions
  * and actions when building a test plan using {@link PlanNodeBuilder}.
  *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-public class PlanNodeBuilderRules {
+public final class PlanNodeBuilderRules {
+
+    private PlanNodeBuilderRules() {
+    }
 
     /**
      * Creates a new {@link Consumer} that performs a binary
@@ -67,7 +76,9 @@ public class PlanNodeBuilderRules {
      * rules to every descendant {@code PlanNodeBuilder} matching the
      * specified predicate.
      */
-    public static PlanNodeBuilderRuleConsumer forEachNode(Predicate<PlanNodeBuilder> predicate) {
+    public static PlanNodeBuilderRuleConsumer forEachNode(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return new PlanNodeBuilderRuleConsumer(predicate, x -> {
         }, RuleMethod.ALL);
     }
@@ -83,7 +94,9 @@ public class PlanNodeBuilderRules {
      * rules to the first descendant {@code PlanNodeBuilder} matching
      * the specified predicate.
      */
-    public static PlanNodeBuilderRuleConsumer forFirstNode(Predicate<PlanNodeBuilder> predicate) {
+    public static PlanNodeBuilderRuleConsumer forFirstNode(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return new PlanNodeBuilderRuleConsumer(predicate, x -> {
         }, RuleMethod.FIRST);
     }
@@ -148,8 +161,8 @@ public class PlanNodeBuilderRules {
         return (leftNode, rightNode) -> {
             Optional<PlanNodeBuilder> actualLeftNode = leftNodeGetter.apply(leftNode);
             Optional<PlanNodeBuilder> actualRightNode = rightNodeGetter.apply(rightNode);
-            return actualLeftNode.isPresent() && actualRightNode.isPresent() &&
-                    Objects.equals(method.apply(actualLeftNode.get()), method.apply(actualRightNode.get()));
+            return actualLeftNode.isPresent() && actualRightNode.isPresent()
+                    && Objects.equals(method.apply(actualLeftNode.get()), method.apply(actualRightNode.get()));
         };
     }
 
@@ -232,7 +245,10 @@ public class PlanNodeBuilderRules {
      * @param value The value of the property to check.
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has a property with the specified key and value.
      */
-    public static Predicate<PlanNodeBuilder> withProperty(String key, String value) {
+    public static Predicate<PlanNodeBuilder> withProperty(
+            String key,
+            String value
+    ) {
         return node -> value.equals(node.properties().get(key));
     }
 
@@ -243,7 +259,9 @@ public class PlanNodeBuilderRules {
      * @param tag The tag to check for.
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has the specified tag.
      */
-    public static Predicate<PlanNodeBuilder> withTag(String tag) {
+    public static Predicate<PlanNodeBuilder> withTag(
+            String tag
+    ) {
         return node -> node.tags().contains(tag);
     }
 
@@ -254,7 +272,9 @@ public class PlanNodeBuilderRules {
      * @param type The node type to check for.
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has the specified node type.
      */
-    public static Predicate<PlanNodeBuilder> withType(NodeType type) {
+    public static Predicate<PlanNodeBuilder> withType(
+            NodeType type
+    ) {
         return node -> node.nodeType() == type;
     }
 
@@ -266,7 +286,9 @@ public class PlanNodeBuilderRules {
      * @param types The node types to check for.
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has any of the specified node types.
      */
-    public static Predicate<PlanNodeBuilder> withTypeAnyOf(NodeType... types) {
+    public static Predicate<PlanNodeBuilder> withTypeAnyOf(
+            NodeType... types
+    ) {
         return node -> node.nodeType().isAnyOf(types);
     }
 
@@ -278,7 +300,9 @@ public class PlanNodeBuilderRules {
      * @param types The node types to check for.
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has none of the specified node types.
      */
-    public static Predicate<PlanNodeBuilder> withTypeNoneOf(NodeType... types) {
+    public static Predicate<PlanNodeBuilder> withTypeNoneOf(
+            NodeType... types
+    ) {
         return node -> node.nodeType().isNoneOf(types);
     }
 
@@ -290,7 +314,9 @@ public class PlanNodeBuilderRules {
      * @param predicate The predicate to apply to the parent node.
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has a parent satisfying the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withParent(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withParent(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return node -> node.parent().filter(predicate).isPresent();
     }
 
@@ -313,7 +339,9 @@ public class PlanNodeBuilderRules {
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has at least one child
      * satisfying the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withAnyChild(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withAnyChild(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return withAny(PlanNodeBuilder::children, predicate);
     }
 
@@ -326,7 +354,9 @@ public class PlanNodeBuilderRules {
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has no children
      * satisfying the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withNoneChild(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withNoneChild(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return withNone(PlanNodeBuilder::children, predicate);
     }
 
@@ -339,7 +369,9 @@ public class PlanNodeBuilderRules {
      * @return A {@code Predicate} for testing whether every child of a {@link PlanNodeBuilder}
      * satisfies the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withEveryChild(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withEveryChild(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return withAll(PlanNodeBuilder::children, predicate);
     }
 
@@ -431,7 +463,9 @@ public class PlanNodeBuilderRules {
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has at least one ancestor
      * that satisfies the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withAnyAncestor(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withAnyAncestor(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return withAny(PlanNodeBuilder::ancestors, predicate);
     }
 
@@ -444,7 +478,9 @@ public class PlanNodeBuilderRules {
      * @return A {@code Predicate} for testing whether a {@link PlanNodeBuilder} has no ancestors
      * satisfying the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withNoneAncestor(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withNoneAncestor(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return withNone(PlanNodeBuilder::ancestors, predicate);
     }
 
@@ -489,7 +525,9 @@ public class PlanNodeBuilderRules {
      * @return A {@code Predicate} for testing whether at least one sibling of a {@link PlanNodeBuilder}
      * satisfies the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withAnySibling(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withAnySibling(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return withAny(PlanNodeBuilder::siblings, predicate);
     }
 
@@ -502,7 +540,9 @@ public class PlanNodeBuilderRules {
      * @return A {@code Predicate} for testing whether none of the siblings of a {@link PlanNodeBuilder}
      * satisfy the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> withNoneSibling(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> withNoneSibling(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return withNone(PlanNodeBuilder::siblings, predicate);
     }
 
@@ -548,7 +588,9 @@ public class PlanNodeBuilderRules {
      * @param predicate The predicate representing a condition for any node.
      * @return The provided predicate unchanged.
      */
-    public static Predicate<PlanNodeBuilder> anyNode(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> anyNode(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return predicate;
     }
 
@@ -562,7 +604,9 @@ public class PlanNodeBuilderRules {
      * @param predicate The predicate representing a condition for nodes.
      * @return The negation of the provided predicate.
      */
-    public static Predicate<PlanNodeBuilder> noneNode(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> noneNode(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return predicate.negate();
     }
 
@@ -576,7 +620,9 @@ public class PlanNodeBuilderRules {
      * @param predicate The predicate representing a condition for the parent node.
      * @return A predicate testing whether a node is a child of another node that satisfies the given predicate.
      */
-    public static Predicate<PlanNodeBuilder> childOf(Predicate<PlanNodeBuilder> predicate) {
+    public static Predicate<PlanNodeBuilder> childOf(
+            Predicate<PlanNodeBuilder> predicate
+    ) {
         return node -> node.parent().map(predicate::test).orElse(false);
     }
 
@@ -602,20 +648,27 @@ public class PlanNodeBuilderRules {
     }
 
     private enum RuleMethod {
+
+        /** Apply the rule to every matching node. */
         ALL((list, consumer) -> list.forEach(consumer)),
+        /** Field value. */
         FIRST((list, consumer) -> list.stream().findAny().ifPresent(consumer));
 
         private final BiConsumer<List<PlanNodeBuilder>, Consumer<PlanNodeBuilder>> consumer;
 
-
-        RuleMethod(BiConsumer<List<PlanNodeBuilder>, Consumer<PlanNodeBuilder>> consumer) {
+        RuleMethod(
+                BiConsumer<List<PlanNodeBuilder>, Consumer<PlanNodeBuilder>> consumer
+        ) {
             this.consumer = consumer;
         }
 
-
-        public void apply(List<PlanNodeBuilder> list, Consumer<PlanNodeBuilder> consumer) {
+        public void apply(
+                List<PlanNodeBuilder> list,
+                Consumer<PlanNodeBuilder> consumer
+        ) {
             this.consumer.accept(list, consumer);
         }
+
     }
 
     /**
@@ -624,7 +677,17 @@ public class PlanNodeBuilderRules {
      */
     public interface PlanNodeBuilderRule {
 
-        void apply(PlanNodeBuilder node) throws WakamitiException;
+        /**
+         * Applies this transformation or validation rule to a plan-node
+         * builder.
+         *
+         * @param node node or subtree root to inspect and potentially mutate
+         * @throws WakamitiException when the rule detects an invalid plan
+         */
+        void apply(
+                PlanNodeBuilder node
+        ) throws WakamitiException;
+
     }
 
     /**
@@ -633,10 +696,12 @@ public class PlanNodeBuilderRules {
      */
     public static class PlanNodeBuilderRuleConsumer implements PlanNodeBuilderRule {
 
+        /** Field value. */
         protected final Predicate<PlanNodeBuilder> predicate;
+        /** Field value. */
         protected final Consumer<PlanNodeBuilder> consumer;
+        /** Field value. */
         protected final RuleMethod method;
-
 
         private PlanNodeBuilderRuleConsumer(
                 Predicate<PlanNodeBuilder> predicate,
@@ -654,7 +719,9 @@ public class PlanNodeBuilderRules {
          * @param action The action to perform.
          * @return A new {@code PlanNodeBuilderRuleConsumer} with the specified action.
          */
-        public PlanNodeBuilderRuleConsumer perform(Consumer<PlanNodeBuilder> action) {
+        public PlanNodeBuilderRuleConsumer perform(
+                Consumer<PlanNodeBuilder> action
+        ) {
             return new PlanNodeBuilderRuleConsumer(predicate, action, method);
         }
 
@@ -684,7 +751,9 @@ public class PlanNodeBuilderRules {
          * @param plan The {@code PlanNodeBuilder} to apply the rule to.
          */
         @Override
-        public void apply(PlanNodeBuilder plan) {
+        public void apply(
+                PlanNodeBuilder plan
+        ) {
             List<PlanNodeBuilder> nodes = plan
                     .descendants()
                     .filter(predicate)
@@ -708,16 +777,17 @@ public class PlanNodeBuilderRules {
         ) {
             return new PlanNodeBuilderRuleBiConsumer(predicate, consumer, method, rightNodeGetter);
         }
+
     }
 
     /**
      * Implementation of a rule that performs a binary action
      * on two {@link PlanNodeBuilder} instances.
      */
-    public static class PlanNodeBuilderRuleBiConsumer extends PlanNodeBuilderRuleConsumer {
+    public static final class PlanNodeBuilderRuleBiConsumer extends PlanNodeBuilderRuleConsumer {
 
+        /** Field value. */
         protected final Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> rightNodeGetter;
-
 
         private PlanNodeBuilderRuleBiConsumer(
                 Predicate<PlanNodeBuilder> predicate,

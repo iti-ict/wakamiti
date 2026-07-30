@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -22,7 +24,12 @@ public class MapDataSet extends DataSet {
      * @param values     The two-dimensional array of values.
      * @param nullSymbol The symbol representing {@code null} values.
      */
-    public MapDataSet(String table, String[] columns, Object[][] values, String nullSymbol) {
+    public MapDataSet(
+            String table,
+            String[] columns,
+            Object[][] values,
+            String nullSymbol
+    ) {
         super(table, "map", nullSymbol);
         this.columns = columns;
         this.values = values;
@@ -60,7 +67,9 @@ public class MapDataSet extends DataSet {
      * @return The value of the specified column in the current row.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return nullIfMatchNullSymbol(values[rowNumber][columnIndex]);
     }
 

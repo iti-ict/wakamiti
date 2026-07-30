@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -9,12 +11,26 @@ package es.iti.wakamiti.api.imconfig.types;
 import es.iti.wakamiti.api.imconfig.PropertyType;
 
 
+/**
+ * Provides the Integer Property Type functionality used by Wakamiti.
+ */
 public class IntegerPropertyType implements PropertyType {
 
     private final Long min;
     private final Long max;
 
-    public IntegerPropertyType(Number min, Number max) {
+    /**
+     * Creates an integer validator with optional inclusive bounds.
+     *
+     * @param min the lower bound, or {@code null} for no minimum
+     * @param max the upper bound, or {@code null} for no maximum
+     * @throws IllegalArgumentException if {@code min} is greater than
+     *                                  {@code max}
+     */
+    public IntegerPropertyType(
+            Number min,
+            Number max
+    ) {
         this.min = (min == null ? null : min.longValue());
         this.max = (max == null ? null : max.longValue());
         if (this.min != null && this.max != null && this.min > this.max) {
@@ -30,21 +46,22 @@ public class IntegerPropertyType implements PropertyType {
     @Override
     public String hint() {
         String hint;
-        if (min==null && max==null) {
+        if (min == null && max == null) {
             hint = "Any integer number";
-        } else if (min==null) {
-            hint = "Integer number less than "+max;
-        } else if (max==null) {
-            hint = "Integer number greater than "+min;
+        } else if (min == null) {
+            hint = "Integer number less than " + max;
+        } else if (max == null) {
+            hint = "Integer number greater than " + min;
         } else {
-            hint = "Integer number between "+min+" and "+max;
+            hint = "Integer number between " + min + " and " + max;
         }
         return hint;
     }
 
-
     @Override
-    public boolean accepts(String value) {
+    public boolean accepts(
+            String value
+    ) {
         boolean accepted = true;
         try {
             Long parsedValue = Long.valueOf(value);
@@ -59,4 +76,5 @@ public class IntegerPropertyType implements PropertyType {
             return false;
         }
     }
+
 }

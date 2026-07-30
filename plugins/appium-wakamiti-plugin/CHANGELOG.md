@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Plugin Starter, Appium Java Client, ASM, Netty and Error Prone annotations.
+
+
 ## [2.6.0] - 2024-12-11
 
 ### Changed

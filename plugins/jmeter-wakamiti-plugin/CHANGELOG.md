@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, JMeter Java DSL, Apache JMeter, MockServer and their managed transitive dependencies.
+- Use the standard Apache Tika parser package after the JMeter Java DSL upgrade.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [1.1.0] - 2024-12-11
 
 ### Changed

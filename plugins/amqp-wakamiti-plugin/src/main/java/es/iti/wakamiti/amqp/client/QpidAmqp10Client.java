@@ -1,24 +1,35 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp.client;
 
-
-import es.iti.wakamiti.amqp.AmqpConnectionParams;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import jakarta.jms.*;
-import org.apache.qpid.jms.JmsConnectionFactory;
-import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import jakarta.jms.BytesMessage;
+import jakarta.jms.Connection;
+import jakarta.jms.DeliveryMode;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.MessageProducer;
+import jakarta.jms.Session;
+import jakarta.jms.TextMessage;
+
+import org.apache.qpid.jms.JmsConnectionFactory;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.amqp.AmqpConnectionParams;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 /**
@@ -33,6 +44,7 @@ import java.util.function.Consumer;
  */
 public class QpidAmqp10Client implements AmqpClient {
 
+    private static final int BYTE_BUFFER_SIZE = 4_096;
     private static final Logger LOGGER = WakamitiLogger.forClass(QpidAmqp10Client.class);
 
     private final AmqpConnectionParams connectionParams;
@@ -132,9 +144,11 @@ public class QpidAmqp10Client implements AmqpClient {
             }
             var queue = session().createQueue(queueName);
             MessageConsumer purgeConsumer = session().createConsumer(queue);
+            int purged = 0;
             while (purgeConsumer.receiveNoWait() != null) {
-                // Keep consuming until queue is empty.
+                purged++;
             }
+            LOGGER.debug("Purged {} messages from {}", purged, queueName);
             purgeConsumer.close();
         } catch (JMSException e) {
             throw new WakamitiException(e);
@@ -188,7 +202,7 @@ public class QpidAmqp10Client implements AmqpClient {
             BytesMessage bytesMessage
     ) throws JMSException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[BYTE_BUFFER_SIZE];
         int read = bytesMessage.readBytes(buffer);
         while (read != -1) {
             output.write(buffer, 0, read);
@@ -218,4 +232,5 @@ public class QpidAmqp10Client implements AmqpClient {
             LOGGER.debug(e.toString(), e);
         }
     }
+
 }

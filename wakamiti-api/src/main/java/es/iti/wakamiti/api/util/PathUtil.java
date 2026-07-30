@@ -1,12 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.api.util;
 
-
-import es.iti.wakamiti.api.plan.PlanNode;
 
 import java.nio.file.Path;
 import java.time.Instant;
@@ -17,14 +17,15 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import es.iti.wakamiti.api.plan.PlanNode;
+
 
 /**
  * Utility class for working with paths and replacing placeholders.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-public class PathUtil {
+public final class PathUtil {
 
+    private static final int HEX_RADIX = 16;
     private static final DateTimeFormatter YEAR_4 = DateTimeFormatter.ofPattern("yyyy", Locale.ENGLISH);
     private static final DateTimeFormatter YEAR_2 = DateTimeFormatter.ofPattern("yy", Locale.ENGLISH);
     private static final DateTimeFormatter MONTH = DateTimeFormatter.ofPattern("MM", Locale.ENGLISH);
@@ -37,7 +38,6 @@ public class PathUtil {
     private static final DateTimeFormatter TIME = DateTimeFormatter.ofPattern("HHmmssSSS", Locale.ENGLISH);
 
     private PathUtil() {
-
     }
 
     /**
@@ -47,7 +47,10 @@ public class PathUtil {
      * @param planNode The PlanNode containing information for placeholder replacement.
      * @return The path with replaced placeholders.
      */
-    public static Path replacePlaceholders(Path path, PlanNode planNode) {
+    public static Path replacePlaceholders(
+            Path path,
+            PlanNode planNode
+    ) {
         var instant = planNode.startInstant().orElseGet(Instant::now).atZone(ZoneId.systemDefault());
         var executionID = Objects.requireNonNullElse(planNode.executionID(), "");
         String pathString = replaceTemporalPlaceholders(path.toString(), instant);
@@ -61,15 +64,36 @@ public class PathUtil {
      * @param path The original path with temporal placeholders.
      * @return The path with replaced temporal placeholders.
      */
-    public static Path replaceTemporalPlaceholders(Path path) {
+    public static Path replaceTemporalPlaceholders(
+            Path path
+    ) {
         return replaceTemporalPlaceholders(path, Instant.now());
     }
 
-    public static Path replaceTemporalPlaceholders(Path path, Instant instant) {
+    /**
+     * Replaces temporal placeholders using a specific instant in the
+     * system-default time zone.
+     * <p>
+     * Supported placeholders include {@code %YYYY%}, {@code %YY%},
+     * {@code %MM%}, {@code %DD%}, {@code %hh%}, {@code %mm%},
+     * {@code %ss%}, {@code %sss%}, {@code %DATE%}, and {@code %TIME%}.
+     * </p>
+     *
+     * @param path    path template
+     * @param instant instant used to render every temporal component
+     * @return a path with supported placeholders replaced
+     */
+    public static Path replaceTemporalPlaceholders(
+            Path path,
+            Instant instant
+    ) {
         return Path.of(replaceTemporalPlaceholders(path.toString(), instant.atZone(ZoneId.systemDefault())));
     }
 
-    private static String replaceTemporalPlaceholders(String pathString, ZonedDateTime instant) {
+    private static String replaceTemporalPlaceholders(
+            String pathString,
+            ZonedDateTime instant
+    ) {
         pathString = pathString.replace("%YYYY%", YEAR_4.format(instant));
         pathString = pathString.replace("%YY%", YEAR_2.format(instant));
         pathString = pathString.replace("%MM%", MONTH.format(instant));
@@ -83,17 +107,35 @@ public class PathUtil {
         return pathString;
     }
 
-    public static String encodeURI(String input) {
+    /**
+     * Percent-encodes characters outside the URI reserved and unreserved sets
+     * accepted by this utility.
+     *
+     * @param input text to encode
+     * @return URI-safe text with unsupported characters represented in
+     * uppercase hexadecimal form
+     */
+    public static String encodeURI(
+            String input
+    ) {
         return Pattern.compile("[^;,/?:@&=+$\\w-.!~*'()]").matcher(input).replaceAll(m -> {
             String hex = Integer.toHexString(m.group().toCharArray()[0]).toUpperCase();
             return "%" + (hex.length() == 1 ? '0' + hex : hex);
         });
     }
 
-    public static String decodeURI(String input) {
+    /**
+     * Decodes two-digit numeric percent escapes produced by this utility.
+     *
+     * @param input encoded URI text
+     * @return text with matching percent escapes converted to characters
+     */
+    public static String decodeURI(
+            String input
+    ) {
         return Pattern.compile("%(\\d{2})").matcher(input).replaceAll(m -> {
             String hex = m.group(1);
-            return String.valueOf((char) Integer.parseInt(hex, 16));
+            return String.valueOf((char) Integer.parseInt(hex, HEX_RADIX));
         });
     }
 

@@ -1,12 +1,12 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.xray.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.xray.internal.WakamitiXRayException;
-import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,23 +18,59 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.xray.internal.WakamitiXRayException;
+
+
+/**
+ * Provides access to the Base Api service.
+ */
 public class BaseApi {
 
+    /** Media type used for GraphQL requests and JSON responses. */
     public static final String APPLICATION_JSON = "application/json";
+
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String ACCEPT_HEADER = "Accept";
+    private static final long CONNECT_TIMEOUT_SECONDS = 20L;
+    private static final int BOUNDARY_SUFFIX_LENGTH = 16;
+    private static final int HTTP_CLIENT_ERROR_STATUS = 400;
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private final URL baseURL;
     private final String authorization;
     private final HttpClient httpClient;
     private final Logger logger;
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
-    public BaseApi(URL baseURL, String authorization, Logger logger) {
+    /**
+     * Creates an API client that reuses an authorization value supplied by the caller.
+     * <p>
+     * This variant is intended for services such as Jira, where the caller already
+     * has a complete value for the {@code Authorization} header (for example,
+     * {@code Basic dXNlcjpwYXNzd29yZA==}).
+     *
+     * @param baseURL base URL against which relative endpoint paths are resolved
+     * @param authorization complete value to send in the {@code Authorization} header
+     * @param logger logger used to trace HTTP requests and responses
+     */
+    public BaseApi(
+            URL baseURL,
+            String authorization,
+            Logger logger
+    ) {
         this.baseURL = baseURL;
         this.authorization = authorization;
         this.logger = logger;
@@ -42,36 +78,63 @@ public class BaseApi {
         this.httpClient = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.NORMAL)
-                .connectTimeout(Duration.ofSeconds(20))
+                .connectTimeout(Duration.ofSeconds(CONNECT_TIMEOUT_SECONDS))
                 .build();
     }
 
-    public BaseApi(URL baseURL, String authURL, String clientId, String clientSecret, Logger logger) {
+    /**
+     * Creates an API client and authenticates it with client credentials.
+     * <p>
+     * Construction performs an authentication request immediately. The token
+     * returned by {@code authURL} is retained as a Bearer token for subsequent
+     * requests made by this client.
+     *
+     * @param baseURL base URL against which authentication and API paths are resolved
+     * @param authURL relative authentication endpoint
+     * @param clientId OAuth-style client identifier accepted by the service
+     * @param clientSecret secret paired with {@code clientId}
+     * @param logger logger used to trace authentication and API traffic
+     * @throws es.iti.wakamiti.api.WakamitiException if authentication cannot be
+     *         completed or returns an unsuccessful HTTP response
+     */
+    public BaseApi(
+            URL baseURL,
+            String authURL,
+            String clientId,
+            String clientSecret,
+            Logger logger
+    ) {
         this.logger = logger;
         this.baseURL = baseURL;
         this.httpClient = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
                 .followRedirects(HttpClient.Redirect.NORMAL)
-                .connectTimeout(Duration.ofSeconds(20))
+                .connectTimeout(Duration.ofSeconds(CONNECT_TIMEOUT_SECONDS))
                 .build();
 
         String payload = toJSON(Map.of("client_id", clientId, "client_secret", clientSecret));
         String response = send(authRequest(authURL, payload), payload);
         this.authorization = "Bearer " + extract(response, "$");
-
     }
 
-
-    protected <T> T extractList(String json, String path, String errorMessage) {
+    @SuppressWarnings("unchecked")
+    protected <T> T extractList(
+            String json,
+            String path,
+            String errorMessage
+    ) {
         Object object = validatePath(json, path, errorMessage);
         return (T) object;
     }
 
-    protected String extract(String json, String path, String errorMessage) {
+    protected String extract(
+            String json,
+            String path,
+            String errorMessage
+    ) {
         Object object = validatePath(json, path, errorMessage);
         String extracted;
-        if (object instanceof List<?>) {
-            List<?> list = (List<?>) object;
+        if (object instanceof List<?> list) {
             if (list.isEmpty()) {
                 throw new NoSuchElementException(errorMessage);
             }
@@ -83,7 +146,11 @@ public class BaseApi {
         return extracted;
     }
 
-    private Object validatePath(String json, String path, String errorMessage) {
+    private Object validatePath(
+            String json,
+            String path,
+            String errorMessage
+    ) {
         logger.debug("checking path {}", path);
         Object object = JsonPath.read(json, path);
         if (object == null) {
@@ -92,59 +159,87 @@ public class BaseApi {
         return object;
     }
 
-    protected String extract(String json, String path) {
+    protected String extract(
+            String json,
+            String path
+    ) {
         return extract(json, path, "Cannot extract path " + path + " from response");
     }
 
-
-    protected JsonNode get(String uri) {
+    protected JsonNode get(
+            String uri
+    ) {
         try {
-            return mapper.readTree(send(request("GET", uri), ""));
+            return MAPPER.readTree(send(request("GET", uri), ""));
         } catch (JsonProcessingException e) {
             throw new WakamitiXRayException(e.getMessage());
         }
     }
 
-    protected JsonNode post(String uri, String payload) {
+    protected JsonNode post(
+            String uri,
+            String payload
+    ) {
         try {
-            return mapper.readTree(post(uri, payload, APPLICATION_JSON));
+            return MAPPER.readTree(post(uri, payload, APPLICATION_JSON));
         } catch (JsonProcessingException e) {
             throw new WakamitiXRayException(e.getMessage());
         }
     }
 
-    protected JsonNode put(String uri, String payload) {
+    protected JsonNode put(
+            String uri,
+            String payload
+    ) {
         try {
-            return mapper.readTree(put(uri, payload, APPLICATION_JSON));
+            return MAPPER.readTree(put(uri, payload, APPLICATION_JSON));
         } catch (JsonProcessingException e) {
             throw new WakamitiXRayException(e.getMessage());
         }
     }
 
-
-    protected String patch(String uri, String payload) {
+    protected String patch(
+            String uri,
+            String payload
+    ) {
         return patch(uri, payload, APPLICATION_JSON);
     }
 
-
-    protected void post(String uri, File file) {
+    protected void post(
+            String uri,
+            File file
+    ) {
         send(request(uri, file), "");
     }
 
-    protected String post(String uri, String payload, String contentType) {
+    protected String post(
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return send(request("POST", uri, payload, contentType), payload);
     }
 
-    protected String put(String uri, String payload, String contentType) {
+    protected String put(
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return send(request("PUT", uri, payload, contentType), payload);
     }
 
-
-    protected String patch(String uri, String payload, String contentType) {
+    protected String patch(
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return send(request("PATCH", uri, payload, contentType), payload);
     }
 
-    private HttpRequest request(String method, String uri) {
+    private HttpRequest request(
+            String method,
+            String uri
+    ) {
         return HttpRequest.newBuilder()
                 .method(method, HttpRequest.BodyPublishers.noBody())
                 .uri(url(uri))
@@ -153,7 +248,12 @@ public class BaseApi {
                 .build();
     }
 
-    private HttpRequest request(String method, String uri, String payload, String contentType) {
+    private HttpRequest request(
+            String method,
+            String uri,
+            String payload,
+            String contentType
+    ) {
         return HttpRequest.newBuilder()
                 .method(method, HttpRequest.BodyPublishers.ofString(payload))
                 .uri(url(uri))
@@ -163,8 +263,12 @@ public class BaseApi {
                 .build();
     }
 
-    private HttpRequest request(String uri, File file) {
-        String boundary = "----WebKitFormBoundary" + UUID.randomUUID().toString().substring(0, 16);
+    private HttpRequest request(
+            String uri,
+            File file
+    ) {
+        String boundary = "----WebKitFormBoundary"
+                + UUID.randomUUID().toString().substring(0, BOUNDARY_SUFFIX_LENGTH);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         try {
@@ -183,7 +287,10 @@ public class BaseApi {
                 .build();
     }
 
-    private HttpRequest authRequest(String uri, String payload) {
+    private HttpRequest authRequest(
+            String uri,
+            String payload
+    ) {
         return HttpRequest.newBuilder()
                 .method("POST", HttpRequest.BodyPublishers.ofString(payload))
                 .uri(url(uri))
@@ -191,11 +298,16 @@ public class BaseApi {
                 .build();
     }
 
-    private URI url(String uri) {
+    private URI url(
+            String uri
+    ) {
         return URI.create(baseURL + uri);
     }
 
-    private String send(HttpRequest request, String payload) {
+    private String send(
+            HttpRequest request,
+            String payload
+    ) {
         try {
             if (logger.isTraceEnabled()) {
                 logger.trace("HTTP call => {} {} {} ", request.method(), request.uri(), payload);
@@ -204,7 +316,7 @@ public class BaseApi {
             if (logger.isTraceEnabled()) {
                 logger.trace("HTTP response => {} {}", response.statusCode(), response.body());
             }
-            if (response.statusCode() >= 400) {
+            if (response.statusCode() >= HTTP_CLIENT_ERROR_STATUS) {
                 throw new WakamitiException("The HTTP returned a non-OK response");
             }
             return response.body();
@@ -216,7 +328,9 @@ public class BaseApi {
         }
     }
 
-    protected String toJSON(Object value) {
+    protected String toJSON(
+            Object value
+    ) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(value);
@@ -225,7 +339,9 @@ public class BaseApi {
         }
     }
 
-    protected String valueBy(String... args) {
+    protected String valueBy(
+            String... args
+    ) {
         List<String> criteria = new LinkedList<>();
         for (int i = 0; i < args.length; i += 2) {
             criteria.add("@." + args[i] + "=='" + args[i + 1] + "'");
@@ -233,8 +349,12 @@ public class BaseApi {
         return "$.value[?(" + String.join(" && ", criteria) + ")]";
     }
 
-
-    private static void writeFormData(ByteArrayOutputStream outputStream, String boundary, File file, byte[] fileContent) throws IOException {
+    private static void writeFormData(
+            ByteArrayOutputStream outputStream,
+            String boundary,
+            File file,
+            byte[] fileContent
+    ) throws IOException {
         String fileName = file.getName();
 
         outputStream.write(("--" + boundary + "\r\n").getBytes());
@@ -249,4 +369,5 @@ public class BaseApi {
 
         outputStream.write(("--" + boundary + "--\r\n").getBytes());
     }
+
 }

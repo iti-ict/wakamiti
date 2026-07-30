@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,24 +8,32 @@
 package es.iti.wakamiti.core.backend;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.util.*;
+import es.iti.wakamiti.api.util.Argument;
+import es.iti.wakamiti.api.util.Either;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
-import org.slf4j.Logger;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.regex.Matcher;
 
 
 /**
  * Represents a RunnableStep used in test execution.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class RunnableStep {
 
@@ -36,7 +46,15 @@ public class RunnableStep {
     private final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
     private final String stepProvider;
 
-
+    /**
+     * Creates an executable localized step definition.
+     *
+     * @param definitionFile resource-bundle base name containing translations
+     * @param definitionKey  key of the step expression in that bundle
+     * @param arguments      validated logical-to-Java argument mapping
+     * @param stepExecutor   reflective invocation adapter
+     * @param stepProvider   diagnostic name of the contributing provider
+     */
     public RunnableStep(
             String definitionFile,
             String definitionKey,
@@ -58,7 +76,9 @@ public class RunnableStep {
      * @return The translated definition.
      * @throws WakamitiException If the definition file or key is not found for the given locale.
      */
-    public String getTranslatedDefinition(Locale locale) {
+    public String getTranslatedDefinition(
+            Locale locale
+    ) {
         String translatedDefinition = translatedDefinitions.get(locale);
         if (translatedDefinition == null) {
             ResourceBundle resourceBundle = resourceLoader.resourceBundle(definitionFile, locale);
@@ -112,8 +132,9 @@ public class RunnableStep {
      * @return The result of running the step.
      * @throws WakamitiException If there is an error while running the step.
      */
-    public Object run(Map<String, Argument> invokeArguments) {
-
+    public Object run(
+            Map<String, Argument> invokeArguments
+    ) {
         boolean error = invokeArguments.size() != this.arguments.size();
         // re-arrange argument order
         Object[] argumentArray = new Object[this.arguments.size()];

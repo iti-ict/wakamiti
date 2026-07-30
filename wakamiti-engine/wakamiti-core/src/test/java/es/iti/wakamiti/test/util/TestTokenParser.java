@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,12 +8,13 @@
 package es.iti.wakamiti.test.util;
 
 
-import es.iti.wakamiti.core.util.TokenParser;
+import java.util.Arrays;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.List;
+import es.iti.wakamiti.core.util.TokenParser;
 
 
 public class TestTokenParser {
@@ -28,7 +31,6 @@ public class TestTokenParser {
             "/",
             " "
     );
-
 
     @Test
     public void testTokenParser1() {
@@ -47,7 +49,6 @@ public class TestTokenParser {
         assertNextToken(parser, "yy");
     }
 
-
     @Test
     public void testTokenParser2() {
         TokenParser parser = new TokenParser(
@@ -60,8 +61,10 @@ public class TestTokenParser {
         assertNextToken(parser, "yyyy");
     }
 
-
-    private void assertNextToken(TokenParser parser, String string) {
+    private void assertNextToken(
+            TokenParser parser,
+            String string
+    ) {
         Assertions.assertThat(parser.hasMoreTokens()).isTrue();
         Assertions.assertThat(parser.nextToken()).isEqualTo(string);
     }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,20 +8,22 @@
 package es.iti.wakamiti.maven.utils;
 
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.input.XmlStreamReader;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class ProjectStub extends MavenProjectStub {
 
-    public ProjectStub(File pom) {
+    public ProjectStub(
+            File pom
+    ) {
         final MavenXpp3Reader pomReader = new MavenXpp3Reader();
         Model model;
         try {
@@ -54,4 +58,5 @@ public class ProjectStub extends MavenProjectStub {
     public List<Plugin> getBuildPlugins() {
         return getBuild().getPlugins();
     }
+
 }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -12,6 +14,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+/**
+ * Resolves whether a JUnit 4 test class is enabled for the active profile set.
+ * <p>
+ * Active profiles are read from {@value #PROFILE_PROPERTY} with fallback to
+ * {@value #PROFILE_FALLBACK_PROPERTY}. Strict mode is controlled by
+ * {@value #STRICT_PROPERTY} with fallback to
+ * {@value #STRICT_FALLBACK_PROPERTY}.
+ * </p>
+ */
 final class ProfileSelector {
 
     static final String PROFILE_PROPERTY = "wakamiti.junit.profile";
@@ -19,13 +30,25 @@ final class ProfileSelector {
     static final String STRICT_PROPERTY = "wakamiti.junit.profile.strict";
     static final String STRICT_FALLBACK_PROPERTY = "wakamiti.profile.strict";
 
-
     private ProfileSelector() {
         // static utility
     }
 
-
-    static boolean isEnabled(Class<?> testClass) {
+    /**
+     * Checks whether a profiled test class should run.
+     * <p>
+     * If the class has no {@link Profile} (or it declares no effective values),
+     * execution is allowed unless strict mode is enabled with active profiles.
+     * If the class declares profiles, execution requires at least one match with
+     * active profiles, except in non-strict mode with no active profiles.
+     * </p>
+     *
+     * @param testClass test class to evaluate
+     * @return {@code true} when the class is enabled for execution
+     */
+    static boolean isEnabled(
+            Class<?> testClass
+    ) {
         Set<String> activeProfiles = activeProfiles();
         boolean strictMode = strictMode();
         Profile profile = testClass.getAnnotation(Profile.class);
@@ -42,12 +65,10 @@ final class ProfileSelector {
         return declaredProfiles.stream().anyMatch(activeProfiles::contains);
     }
 
-
     static String activeProfilesDescription() {
         Set<String> profiles = activeProfiles();
         return profiles.isEmpty() ? "<none>" : String.join(",", profiles);
     }
-
 
     private static Set<String> activeProfiles() {
         return normalizeProfiles(firstNonBlank(
@@ -56,7 +77,6 @@ final class ProfileSelector {
         ));
     }
 
-
     private static boolean strictMode() {
         return Boolean.parseBoolean(firstNonBlank(
                 System.getProperty(STRICT_PROPERTY),
@@ -64,8 +84,10 @@ final class ProfileSelector {
         ));
     }
 
-
-    private static String firstNonBlank(String preferred, String fallback) {
+    private static String firstNonBlank(
+            String preferred,
+            String fallback
+    ) {
         if (preferred != null && !preferred.isBlank()) {
             return preferred;
         }
@@ -75,8 +97,9 @@ final class ProfileSelector {
         return "";
     }
 
-
-    private static Set<String> normalizeProfiles(String... rawProfiles) {
+    private static Set<String> normalizeProfiles(
+            String... rawProfiles
+    ) {
         if (rawProfiles == null || rawProfiles.length == 0) {
             return Set.of();
         }

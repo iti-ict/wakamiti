@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,13 +8,7 @@
 package es.iti.wakamiti.core.maven;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -22,14 +18,21 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Properties;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 public class MavenFetcherTest {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(MavenFetcherTest.class);
 
-    private final String mockRepo = Path.of("src","test","resources","mock_maven_repo")
+    private final String mockRepo = Path.of("src", "test", "resources", "mock_maven_repo")
             .toAbsolutePath()
             .toUri()
             .toString();
@@ -45,7 +48,10 @@ public class MavenFetcherTest {
     public void cleanLocalRepo() throws IOException {
         Files.walkFileTree(localRepo, new SimpleFileVisitor<>() {
             @Override
-            public FileVisitResult visitFile(Path path, BasicFileAttributes attrs)
+            public FileVisitResult visitFile(
+                    Path path,
+                    BasicFileAttributes attrs
+            )
                     throws IOException {
                 Files.delete(path);
                 return FileVisitResult.CONTINUE;
@@ -129,12 +135,12 @@ public class MavenFetcherTest {
     @Test
     public void doNotUserDefaultRemoteRepository() {
         Properties withoutDefaultRepo = new Properties();
-        withoutDefaultRepo.setProperty(MavenFetcherProperties.USE_DEFAULT_REMOTE_REPOSITORY,"false");
+        withoutDefaultRepo.setProperty(MavenFetcherProperties.USE_DEFAULT_REMOTE_REPOSITORY, "false");
         var fetcher1 = new MavenFetcher().config(withoutDefaultRepo);
         assertThat(fetcher1.remoteRepositories()).isEmpty();
 
         Properties withDefaultRepo = new Properties();
-        withoutDefaultRepo.setProperty(MavenFetcherProperties.USE_DEFAULT_REMOTE_REPOSITORY,"true");
+        withoutDefaultRepo.setProperty(MavenFetcherProperties.USE_DEFAULT_REMOTE_REPOSITORY, "true");
         var fetcher2 = new MavenFetcher().config(withDefaultRepo);
         assertThat(fetcher2.remoteRepositories()).containsExactly(
                 "maven-central (https://repo.maven.apache.org/maven2, default, releases+snapshots)"
@@ -162,10 +168,10 @@ public class MavenFetcherTest {
     public void malformedPropertiesThrowError() {
         Assertions.assertThatCode(() -> {
             Properties properties = new Properties();
-            properties.setProperty(MavenFetcherProperties.REMOTE_REPOSITORIES,"mock:file://repository");
+            properties.setProperty(MavenFetcherProperties.REMOTE_REPOSITORIES, "mock:file://repository");
             new MavenFetcher().config(properties);
-        }).hasMessage("Invalid value for property 'remoteRepositories' : Invalid repository value 'mock:file://repository' .\n"+
-                "Expected formats are 'id=url' and 'id=url [user:pwd]'");
+        }).hasMessage("Invalid value for property 'remoteRepositories' : Invalid repository value 'mock:file://repository' .\n"
+                + "Expected formats are 'id=url' and 'id=url [user:pwd]'");
     }
 
     @Test
@@ -182,14 +188,14 @@ public class MavenFetcherTest {
         assertThat(result.hasErrors()).isTrue();
         assertThat(result.errors().findAny().map(Exception::getMessage).orElseThrow())
                 .isEqualTo("Could not fetch artifact b-1.0.jar");
-
     }
 
-
-    private Properties properties(String... pairs) {
+    private Properties properties(
+            String... pairs
+    ) {
         Properties properties = new Properties();
-        for (int i = 0; i < pairs.length-1; i+=2) {
-            properties.setProperty(pairs[i],pairs[i+1]);
+        for (int i = 0; i < pairs.length - 1; i += 2) {
+            properties.setProperty(pairs[i], pairs[i + 1]);
         }
         return properties;
     }

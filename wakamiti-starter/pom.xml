@@ -1,4 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -15,7 +19,7 @@
     <artifactId>wakamiti-starter</artifactId>
     <packaging>pom</packaging>
     <!-- This version number refers to the build process defined in this same POM, not the content of the components -->
-    <version>1.2.0</version>
+    <version>1.3.0-SNAPSHOT</version>
 
 
     <name>Wakamiti Starter</name>
@@ -37,9 +41,6 @@
     </scm>
     <developers>
         <developer>
-            <email>linesta@iti.es</email>
-        </developer>
-        <developer>
             <email>mgalbis@iti.es</email>
         </developer>
     </developers>
@@ -54,32 +55,33 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- build versions -->
-        <java.version>11</java.version>
-        <maven.version>3.8.6</maven.version>
-        <maven.resources.version>3.3.0</maven.resources.version>
-        <maven.compiler.version>3.8.0</maven.compiler.version>
-        <maven.compiler.release>11</maven.compiler.release>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.version>3.9.16</maven.version>
+        <maven.compiler.plugin>3.15.0</maven.compiler.plugin>
+        <maven.checkstyle.plugin>3.6.0</maven.checkstyle.plugin>
+        <checkstyle.version>12.3.1</checkstyle.version>
+        <wakamiti.checkstyle.version>1.0.0-SNAPSHOT</wakamiti.checkstyle.version>
+        <checkstyle.config.location>
+            ${maven.multiModuleProjectDirectory}/wakamiti-checkstyle/src/main/resources/es/iti/wakamiti/checkstyle/checkstyle.xml
+        </checkstyle.config.location>
+        <checkstyle.header.location>
+            ${maven.multiModuleProjectDirectory}/wakamiti-checkstyle/src/main/resources/es/iti/wakamiti/checkstyle/java.header
+        </checkstyle.header.location>
+        <checkstyle.suppressions.location>
+            ${maven.multiModuleProjectDirectory}/wakamiti-checkstyle/src/main/resources/es/iti/wakamiti/checkstyle/suppressions.xml
+        </checkstyle.suppressions.location>
+        <checkstyle.lineLength>160</checkstyle.lineLength>
+        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <!-- paths -->
         <maven.repo.local>${user.home}/.m2/repository</maven.repo.local>
-
-        <!-- plugin versions -->
-        <jacoco.version>0.8.11</jacoco.version>
-        <maven.source.plugin.version>3.2.1</maven.source.plugin.version>
-        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
-        <surefire.report.version>2.6</surefire.report.version>
-        <maven.ant.version>1.8</maven.ant.version>
-        <maven.info.reports.version>3.0.0</maven.info.reports.version>
-        <maven.jar.plugin.version>3.0.0</maven.jar.plugin.version>
-        <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
-        <exists-maven-plugin.version>0.11.0</exists-maven-plugin.version>
 
         <!-- sonar cloud -->
         <sonar.organization>iti-ict</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 
-        <jext.version>1.3.0</jext.version>
+        <jext.version>1.4.0-SNAPSHOT</jext.version>
     </properties>
 
 
@@ -89,31 +91,80 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.22.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven.compiler.version}</version>
+                    <version>${maven.compiler.plugin}</version>
                     <configuration>
                         <release>${maven.compiler.release}</release>
                         <verbose>${verbose}</verbose>
                         <compilerArgs>
-                            <arg>-Xlint:all</arg>
+                            <arg>-Xlint:-missing-explicit-ctor</arg>
                         </compilerArgs>
-                        <forceJavacCompilerUse>true</forceJavacCompilerUse>
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>${maven.resources.version}</version>
+                    <version>3.5.0</version>
                     <configuration>
                         <encoding>UTF-8</encoding>
                     </configuration>
+                </plugin>
+                <!-- Check Java code formatting -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven.checkstyle.plugin}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>es.iti.wakamiti</groupId>
+                            <artifactId>wakamiti-checkstyle</artifactId>
+                            <version>${wakamiti.checkstyle.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+                        <consoleOutput>true</consoleOutput>
+                        <failOnViolation>true</failOnViolation>
+                        <failsOnError>false</failsOnError>
+                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        <includeResources>false</includeResources>
+                        <includeTestResources>false</includeTestResources>
+                        <excludeGeneratedSources>true</excludeGeneratedSources>
+                        <excludes>**/module-info.java</excludes>
+                        <linkXRef>false</linkXRef>
+                        <configLocation>${checkstyle.config.location}</configLocation>
+                        <headerLocation>${checkstyle.header.location}</headerLocation>
+                        <suppressionsLocation>${checkstyle.suppressions.location}</suppressionsLocation>
+                        <propertyExpansion>
+                            checkstyle.lineLength=${checkstyle.lineLength}
+                        </propertyExpansion>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>checkstyle</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <!-- dependency convergence enforce -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.6.3</version>
                     <executions>
                         <execution>
                             <id>enforce</id>
@@ -139,19 +190,20 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.18.1</version>
+                    <version>3.5.6</version>
                     <configuration>
                         <argLine>
                             @{surefireJacocoAgent} -XX:+EnableDynamicAgentLoading -Dfile.encoding=UTF-8
                             --add-opens java.base/java.util=ALL-UNNAMED
                             --add-opens java.base/java.lang=ALL-UNNAMED
                         </argLine>
+                        <useModulePath>false</useModulePath>
                     </configuration>
                 </plugin>
-                <!-- Surefire with JaCoCo agent -->
+                <!-- Failsafe with JaCoCo agent -->
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.18.1</version>
+                    <version>3.5.6</version>
                     <executions>
                         <execution>
                             <goals>
@@ -172,13 +224,13 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${jacoco.version}</version>
+                    <version>0.8.15</version>
                 </plugin>
                 <!-- flatten prior install, required since ${revision} is used -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
-                    <version>1.2.7</version>
+                    <version>1.7.3</version>
                     <executions>
                         <execution>
                             <id>flatten</id>
@@ -279,25 +331,14 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- dependency info report -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>dependencies</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- test info report -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.18.1</version>
+                <version>3.5.6</version>
+                <configuration>
+                    <linkXRef>false</linkXRef>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>pre-site</phase>
@@ -317,9 +358,45 @@
     </build>
 
 
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.9.0</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+
 
 
     <profiles>
+
+        <!-- enable checkstyle only for modules that contain Java sources -->
+        <profile>
+            <id>checkstyle</id>
+            <activation>
+                <file>
+                    <missing>.skip-checkstyle</missing>
+                </file>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
         <!-- display available updates -->
         <profile>
@@ -329,7 +406,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>versions-maven-plugin</artifactId>
-                        <version>2.16.0</version>
+                        <version>2.21.0</version>
                         <configuration>
                             <allowMajorUpdates>false</allowMajorUpdates>
                         </configuration>
@@ -359,7 +436,7 @@
                     <plugin>
                         <groupId>org.honton.chas</groupId>
                         <artifactId>exists-maven-plugin</artifactId>
-                        <version>${exists-maven-plugin.version}</version>
+                        <version>0.15.2</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -376,7 +453,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>${maven.source.plugin.version}</version>
+                        <version>3.4.0</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -396,7 +473,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>${maven-javadoc-plugin.version}</version>
+                        <version>3.12.0</version>
                         <configuration>
                             <failOnError>false</failOnError>
                             <failOnWarnings>false</failOnWarnings>
@@ -437,7 +514,7 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>0.8.0</version>
+                        <version>0.11.0</version>
                         <extensions>true</extensions>
                         <configuration>
                             <autoPublish>false</autoPublish>
@@ -465,57 +542,57 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.15.2</version>
+                <version>2.22</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.15.2</version>
+                <version>2.22.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.15.2</version>
+                <version>2.22.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
-                <version>2.15.2</version>
+                <version>2.22.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>2.15.2</version>
+                <version>2.22.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-toml</artifactId>
-                <version>2.15.2</version>
+                <version>2.22.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>2.15.2</version>
+                <version>2.22.1</version>
             </dependency>
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
-                <version>2.9.0</version>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
-                <version>4.0.0</version>
+                <version>4.0.3</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.11.0</version>
+                <version>2.22.0</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.17.0</version>
+                <version>1.22.0</version>
             </dependency>
             <dependency>
                 <groupId>io.github.luiinge</groupId>
@@ -525,59 +602,59 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.14.0</version>
+                <version>3.20.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.11.0</version>
+                <version>1.15.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>
-                <version>2.19.0</version>
+                <version>2.26.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
-                <version>2.19.0</version>
+                <version>2.26.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-slf4j-impl</artifactId>
-                <version>2.19.0</version>
+                <artifactId>log4j-slf4j2-impl</artifactId>
+                <version>2.26.1</version>
             </dependency>
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.24.2</version>
+                <version>3.27.7</version>
             </dependency>
             <dependency>
                 <groupId>org.awaitility</groupId>
                 <artifactId>awaitility</artifactId>
-                <version>4.2.0</version>
+                <version>4.3.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-bom</artifactId>
-                <version>4.0.13</version>
+                <version>5.0.5</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest</artifactId>
-                <version>2.2</version>
+                <version>3.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.36</version>
+                <version>2.0.18</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-simple</artifactId>
-                <version>1.7.36</version>
+                <version>2.0.18</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>
@@ -587,7 +664,7 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.14.12</version>
+                <version>1.18.11</version>
             </dependency>
         </dependencies>
 

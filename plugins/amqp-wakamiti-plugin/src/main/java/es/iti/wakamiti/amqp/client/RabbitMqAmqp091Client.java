@@ -1,11 +1,23 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp.client;
 
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -14,17 +26,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import es.iti.wakamiti.amqp.AmqpConnectionParams;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.concurrent.TimeoutException;
 
 
 /**
@@ -86,9 +87,9 @@ public class RabbitMqAmqp091Client implements AmqpClient {
     ) {
         try {
             AMQP.BasicProperties properties = new AMQP.BasicProperties.Builder()
-                .contentType(contentType)
-                .deliveryMode(persistent ? 2 : 1)
-                .build();
+                    .contentType(contentType)
+                    .deliveryMode(persistent ? 2 : 1)
+                    .build();
             channel().basicPublish("", destination, properties, text.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -111,20 +112,20 @@ public class RabbitMqAmqp091Client implements AmqpClient {
             Channel consumeChannel = connection().createChannel();
             if (queueConfig != null) {
                 consumeChannel.queueDeclare(
-                    destination,
-                    queueConfig.durable,
-                    queueConfig.exclusive,
-                    queueConfig.autoDelete,
-                    null
+                        destination,
+                        queueConfig.durable,
+                        queueConfig.exclusive,
+                        queueConfig.autoDelete,
+                        null
                 );
             }
             consumeChannel.basicConsume(
-                destination,
-                true,
-                (consumerTag, delivery) -> listener.accept(new String(delivery.getBody(), StandardCharsets.UTF_8)),
-                consumerTag -> {
-                    // no-op
-                }
+                    destination,
+                    true,
+                    (consumerTag, delivery) -> listener.accept(new String(delivery.getBody(), StandardCharsets.UTF_8)),
+                    consumerTag -> {
+                        // no-op
+                    }
             );
             consumers.put(destination, consumeChannel);
         } catch (IOException e) {
@@ -185,7 +186,7 @@ public class RabbitMqAmqp091Client implements AmqpClient {
         }
         try {
             connectionFactory.setUri(connectionParams.uri());
-        } catch (URISyntaxException | NoSuchAlgorithmException | KeyManagementException e) {
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new WakamitiException("Invalid AMQP 0-9-1 connection URL: {}", connectionParams.uri(), e);
         }
 
@@ -219,19 +220,25 @@ public class RabbitMqAmqp091Client implements AmqpClient {
         }
     }
 
-
     /**
      * Minimal immutable holder for queue declaration flags.
      */
-    private static class QueueConfig {
+    private static final class QueueConfig {
+
         private final boolean durable;
         private final boolean exclusive;
         private final boolean autoDelete;
 
-        private QueueConfig(boolean durable, boolean exclusive, boolean autoDelete) {
+        private QueueConfig(
+                boolean durable,
+                boolean exclusive,
+                boolean autoDelete
+        ) {
             this.durable = durable;
             this.exclusive = exclusive;
             this.autoDelete = autoDelete;
         }
+
     }
+
 }

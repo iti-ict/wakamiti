@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,19 +8,20 @@
 package es.iti.wakamiti.test.core.types;
 
 
-import es.iti.wakamiti.api.ExpressionMatcher;
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.util.Either;
-import es.iti.wakamiti.core.Wakamiti;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.ExpressionMatcher;
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.util.Either;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 public class TestExpressionMatcher {
@@ -47,7 +50,6 @@ public class TestExpressionMatcher {
         );
     }
 
-
     @Test
     public void testExpressionStep2() {
         assertExpression(
@@ -74,7 +76,6 @@ public class TestExpressionMatcher {
         );
     }
 
-
     @Test
     public void testExpressionStep3() {
         assertExpression(
@@ -87,7 +88,6 @@ public class TestExpressionMatcher {
                 "identificado por '3'"
         );
     }
-
 
     @Test
     public void testExpressionStep4() {
@@ -106,7 +106,6 @@ public class TestExpressionMatcher {
                 "las siguientes cosas se insertan en la tabla de BBDD USER:"
         );
     }
-
 
     @Test
     public void testExpressionStep5() {
@@ -128,8 +127,11 @@ public class TestExpressionMatcher {
         );
     }
 
-
-    private void assertExpression(Locale locale, String expression, String... steps) {
+    private void assertExpression(
+            Locale locale,
+            String expression,
+            String... steps
+    ) {
         for (String step : steps) {
             Matcher matcher = ExpressionMatcher.matcherFor(
                     expression,
@@ -140,7 +142,6 @@ public class TestExpressionMatcher {
             assertTrue("<<" + step + ">> not matching <<" + expression + ">>", matcher.matches());
         }
     }
-
 
     private WakamitiDataTypeRegistry coreTypes() {
         Map<String, WakamitiDataType<?>> types = new HashMap<>();

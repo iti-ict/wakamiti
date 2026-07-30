@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,19 +8,19 @@
 package es.iti.wakamiti.jmeter.dsl;
 
 
-import org.apache.http.entity.ContentType;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
+
+import org.apache.http.entity.ContentType;
 
 
 /**
  * Utility class for working with {@link ContentType} objects.
  * Provides methods to retrieve content types by their field names.
  */
-public class ContentTypeUtil {
+public final class ContentTypeUtil {
 
     private static final Map<String, ContentType> CONTENT_TYPE_MAP = new HashMap<>();
 
@@ -68,7 +70,9 @@ public class ContentTypeUtil {
      * @return The {@link ContentType} object.
      * @throws IllegalArgumentException if the content type name is not found.
      */
-    public static ContentType valueOf(final String contentType) {
+    public static ContentType valueOf(
+            final String contentType
+    ) {
         if (!CONTENT_TYPE_MAP.containsKey(contentType)) {
             throw new IllegalArgumentException("No such content type: " + contentType);
         }

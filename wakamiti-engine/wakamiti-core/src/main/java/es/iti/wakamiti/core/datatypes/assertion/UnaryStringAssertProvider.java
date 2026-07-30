@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,33 +8,47 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
-import es.iti.wakamiti.api.ExpressionMatcher;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+import es.iti.wakamiti.api.ExpressionMatcher;
+
 
 /**
  * A provider for unary string assertions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class UnaryStringAssertProvider extends AbstractAssertProvider {
 
+    /** Resource key for the assertion that accepts only {@code null}. */
     public static final String NULL = "matcher.generic.null";
+    /** Resource key for the assertion that accepts empty text or collections. */
     public static final String EMPTY = "matcher.generic.empty";
+    /** Resource key for the assertion accepting either null or empty values. */
     public static final String NULL_EMPTY = "matcher.generic.null.empty";
 
+    /** Resource key for the assertion rejecting {@code null}. */
     public static final String NOT_NULL = "matcher.generic.not.null";
+    /** Resource key for the assertion rejecting empty text and collections. */
     public static final String NOT_EMPTY = "matcher.generic.not.empty";
+    /** Resource key for the assertion requiring a non-null, non-empty value. */
     public static final String NOT_NULL_EMPTY = "matcher.generic.not.null.empty";
 
     private final Map<String, Supplier<Matcher<?>>> matchers = new LinkedHashMap<>();
 
+    /**
+     * Creates the standard nullability and emptiness assertion set for strings
+     * and collections.
+     */
     public UnaryStringAssertProvider() {
         matchers.put(NULL, Matchers::nullValue);
         matchers.put(EMPTY, () -> Matchers.anyOf(
@@ -58,7 +74,9 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String key : expressions()) {
             translatedExpressions
@@ -71,7 +89,9 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    public LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -81,7 +101,11 @@ public class UnaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    protected Matcher<?> createMatcher(Locale locale, String expression, String value) {
+    protected Matcher<?> createMatcher(
+            Locale locale,
+            String expression,
+            String value
+    ) {
         return matchers.get(expression).get();
     }
 

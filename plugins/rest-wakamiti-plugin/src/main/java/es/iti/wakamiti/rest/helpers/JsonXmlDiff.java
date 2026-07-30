@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,16 +8,9 @@
 package es.iti.wakamiti.rest.helpers;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.github.fge.jackson.JsonNumEquivalence;
-import io.restassured.http.ContentType;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.rest.MatchMode;
-import org.junit.ComparisonFailure;
+import static es.iti.wakamiti.rest.MatchMode.LOOSE;
+import static es.iti.wakamiti.rest.MatchMode.STRICT;
+import static es.iti.wakamiti.rest.MatchMode.STRICT_ANY_ORDER;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,18 +19,37 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.rest.MatchMode.*;
+import org.junit.ComparisonFailure;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.github.fge.jackson.JsonNumEquivalence;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.rest.MatchMode;
+import io.restassured.http.ContentType;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Compares JSON or XML documents and reports the differences between them.
  */
 public class JsonXmlDiff {
 
     private final ObjectMapper mapper;
 
-
-    public JsonXmlDiff(ContentType contentType) {
+    /**
+     * Creates a structural comparator for JSON or XML.
+     *
+     * @param contentType source format parsed by the comparator
+     * @throws IllegalArgumentException if the type is neither
+     *                                  {@link ContentType#JSON} nor
+     *                                  {@link ContentType#XML}
+     */
+    public JsonXmlDiff(
+            ContentType contentType
+    ) {
         if (contentType == ContentType.JSON) {
             this.mapper = new ObjectMapper();
         } else if (contentType == ContentType.XML) {
@@ -46,21 +60,47 @@ public class JsonXmlDiff {
         this.mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
     }
 
-    private static String literalSegmentExpected(String prefix) {
+    private static String literalSegmentExpected(
+            String prefix
+    ) {
         return prefix.isEmpty() ? "root segment expected" : "segment '" + prefix + "' expected";
     }
 
-    private static <T> List<T> asList(Iterator<T> i) {
+    private static <T> List<T> asList(
+            Iterator<T> i
+    ) {
         List<T> list = new ArrayList<>();
         i.forEachRemaining(list::add);
         return list;
     }
 
-    private static String errorSize(JsonNode expectedNode, JsonNode actualNode, String segmentExpected) {
+    private static String errorSize(
+            JsonNode expectedNode,
+            JsonNode actualNode,
+            String segmentExpected
+    ) {
         return segmentExpected + " size: " + expectedNode.size() + ", actual size: " + actualNode.size();
     }
 
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
+    /**
+     * Parses and structurally compares two payloads.
+     * <p>
+     * {@code STRICT} requires identical object-field order, array order and
+     * size. {@code STRICT_ANY_ORDER} retains exact content and size while
+     * ignoring array order. {@code LOOSE} allows additional actual fields and
+     * array elements but still requires every expected value.
+     *
+     * @param expected expected JSON or XML payload
+     * @param actual actual payload in the same format
+     * @param matchMode comparison policy
+     * @throws ComparisonFailure when structural differences are found
+     * @throws WakamitiException when either payload cannot be parsed
+     */
+    public void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    ) {
         try {
             List<String> errors = new ArrayList<>();
             JsonNode expectedJson = mapper.readTree(expected);
@@ -72,7 +112,11 @@ public class JsonXmlDiff {
         }
     }
 
-    private void throwExceptionIfHasErrors(List<String> errors, String expected, String actual)
+    private void throwExceptionIfHasErrors(
+            List<String> errors,
+            String expected,
+            String actual
+    )
             throws ComparisonFailure, JsonProcessingException {
         if (!errors.isEmpty()) {
             var message = errors.stream().collect(Collectors.joining(
@@ -82,7 +126,9 @@ public class JsonXmlDiff {
         }
     }
 
-    private String format(String content) throws JsonProcessingException {
+    private String format(
+            String content
+    ) throws JsonProcessingException {
         return mapper.writeValueAsString(mapper.readTree(content));
     }
 
@@ -125,8 +171,8 @@ public class JsonXmlDiff {
             compareJsonObject(matchMode, expectedNode, actualNode, prefix, errors);
         } else if (expectedNode.isValueNode() && !new JsonNumEquivalence().equivalent(expectedNode, actualNode)) {
             errors.add(
-                    segmentExpected + ": '" + expectedNode.asText() +
-                            "', actual: '" + actualNode.asText() + "'"
+                    segmentExpected + ": '" + expectedNode.asText()
+                            + "', actual: '" + actualNode.asText() + "'"
             );
         }
     }
@@ -225,30 +271,29 @@ public class JsonXmlDiff {
             String prefix,
             List<String> errors
     ) {
-
         String segmentExpected = literalSegmentExpected(prefix);
         var expectedFields = asList(expectedNode.fieldNames());
         var actualFields = asList(actualNode.fieldNames());
 
         var missingExpectedFields = expectedFields.stream()
                 .filter(Predicate.not(actualFields::contains))
-                .collect(Collectors.toList());
+                .toList();
         var nonExpectedActualFields = actualFields.stream()
                 .filter(Predicate.not(expectedFields::contains))
-                .collect(Collectors.toList());
+                .toList();
 
         if (!missingExpectedFields.isEmpty()) {
             errors.add(
-                    segmentExpected + " to have fields " + missingExpectedFields +
-                            ", but they are not present"
+                    segmentExpected + " to have fields " + missingExpectedFields
+                            + ", but they are not present"
             );
             return;
         }
 
         if (!nonExpectedActualFields.isEmpty() && List.of(STRICT, STRICT_ANY_ORDER).contains(matchMode)) {
             errors.add(
-                    segmentExpected + " not to have fields " + nonExpectedActualFields +
-                            ", but they are present"
+                    segmentExpected + " not to have fields " + nonExpectedActualFields
+                            + ", but they are present"
             );
         }
 
@@ -257,8 +302,8 @@ public class JsonXmlDiff {
             String actualFieldInSamePosition = actualFields.get(i);
             if (matchMode == STRICT && !expectedField.equals(actualFieldInSamePosition)) {
                 errors.add(
-                        segmentExpected + " to have field '" + expectedField + "' at position " +
-                                i + " but it was '" + actualFieldInSamePosition + "'"
+                        segmentExpected + " to have field '" + expectedField + "' at position "
+                                + i + " but it was '" + actualFieldInSamePosition + "'"
                 );
                 continue;
             }
@@ -266,8 +311,7 @@ public class JsonXmlDiff {
                     matchMode,
                     expectedNode.get(expectedField),
                     actualNode.get(expectedField),
-                    prefix + (prefix.isEmpty() ? "" : ".") + expectedField, errors)
-            ;
+                    prefix + (prefix.isEmpty() ? "" : ".") + expectedField, errors);
         }
     }
 

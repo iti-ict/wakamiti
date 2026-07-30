@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,27 @@
 package es.iti.wakamiti.database;
 
 
+import java.io.IOException;
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TimeZone;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
+
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.database.dataset.DataSet;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
-
-import java.io.IOException;
-import java.sql.*;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
 
 
 /**
@@ -28,6 +40,7 @@ public final class DatabaseHelper {
      * The date time formatter used for formatting timestamps with milliseconds.
      */
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    /** Formatter for SQL timestamps written as {@code yyyy-MM-dd HH:mm:ss}. */
     public static final DateTimeFormatter DATE_TIME_FORMATTER_2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
@@ -45,7 +58,9 @@ public final class DatabaseHelper {
      * @param str The string to check
      * @return {@code true} if the string is a date or date time, {@code false} otherwise
      */
-    public static boolean isDateOrDateTime(String str) {
+    public static boolean isDateOrDateTime(
+            String str
+    ) {
         return Stream.of(DATE_TIME_FORMATTER, DATE_TIME_FORMATTER_2, DATE_FORMATTER).anyMatch(formatter -> {
             try {
                 formatter.parse(str);
@@ -62,7 +77,9 @@ public final class DatabaseHelper {
      * @param str The string to check
      * @return {@code true} if the string is a date, {@code false} otherwise
      */
-    public static boolean isDate(String str) {
+    public static boolean isDate(
+            String str
+    ) {
         try {
             DATE_FORMATTER.parse(str);
             return true;
@@ -78,7 +95,9 @@ public final class DatabaseHelper {
      * @return The formatted row as an array of strings
      * @throws SQLRuntimeException If an SQL exception occurs
      */
-    public static String[] format(ResultSet rs) {
+    public static String[] format(
+            ResultSet rs
+    ) {
         try {
             ResultSetMetaData metadata = rs.getMetaData();
             String[] row = new String[metadata.getColumnCount()];
@@ -99,10 +118,7 @@ public final class DatabaseHelper {
                         }
                         row[c - 1] = DATE_FORMATTER.format(timestamp1.toLocalDateTime());
                         break;
-                    case TIMESTAMP:
-                    case TIME:
-                    case TIME_WITH_TIMEZONE:
-                    case TIMESTAMP_WITH_TIMEZONE:
+                    case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE:
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);
@@ -131,7 +147,9 @@ public final class DatabaseHelper {
      * @return The formatted row as a map of column names to values
      * @throws SQLRuntimeException If an SQL exception occurs
      */
-    public static Map<String, String> formatToMap(ResultSet rs) {
+    public static Map<String, String> formatToMap(
+            ResultSet rs
+    ) {
         try {
             ResultSetMetaData metadata = rs.getMetaData();
             Map<String, String> row = new LinkedHashMap<>();
@@ -153,10 +171,7 @@ public final class DatabaseHelper {
                         }
                         row.put(column, DATE_FORMATTER.format(timestamp1.toLocalDateTime()));
                         break;
-                    case TIMESTAMP:
-                    case TIME:
-                    case TIME_WITH_TIMEZONE:
-                    case TIMESTAMP_WITH_TIMEZONE:
+                    case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE:
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);
@@ -178,7 +193,10 @@ public final class DatabaseHelper {
         }
     }
 
-    private static String processColumn(Object value, boolean wasNull) {
+    private static String processColumn(
+            Object value,
+            boolean wasNull
+    ) {
         return wasNull ? null : Objects.toString(value);
     }
 
@@ -190,7 +208,9 @@ public final class DatabaseHelper {
      * @param <V> The type of values
      * @return A pair of lists containing keys and values from the map
      */
-    public static <K, V> Pair<List<K>, List<V>> toPair(Map<K, V> map) {
+    public static <K, V> Pair<List<K>, List<V>> toPair(
+            Map<K, V> map
+    ) {
         return new Pair<>(new LinkedList<>(map.keySet()), new LinkedList<>(map.values()));
     }
 
@@ -204,7 +224,10 @@ public final class DatabaseHelper {
      * @return A map containing the keys and values from the arrays
      * @throws WakamitiException If the arrays have different lengths
      */
-    public static <K, V> Map<K, V> toMap(K[] columns, V[] values) {
+    public static <K, V> Map<K, V> toMap(
+            K[] columns,
+            V[] values
+    ) {
         if (columns.length != values.length) {
             throw new WakamitiException("Keys and values must have the same length");
         }
@@ -222,8 +245,12 @@ public final class DatabaseHelper {
      * @param <T>   The type of objects in the array
      * @return An array of strings representing the objects
      */
-    public static <T> String[] toString(T[] array) {
-        return Stream.of(array).map(DatabaseHelper::toString).toArray(String[]::new);
+    public static <T> String[] toString(
+            T[] array
+    ) {
+        return Stream.of(array)
+                .map(DatabaseHelper::toString)
+                .toArray(String[]::new);
     }
 
     /**
@@ -232,7 +259,9 @@ public final class DatabaseHelper {
      * @param o The object to convert
      * @return The string representation of the object, or {@code null} if the object is {@code null}
      */
-    public static String toString(Object o) {
+    public static String toString(
+            Object o
+    ) {
         return o == null ? null : Objects.toString(o);
     }
 
@@ -242,7 +271,9 @@ public final class DatabaseHelper {
      * @param unquoted The unquoted string
      * @return The regular expression for matching the unquoted string
      */
-    public static String unquotedRegex(String unquoted) {
+    public static String unquotedRegex(
+            String unquoted
+    ) {
         return unquoted + "(?=([^']*'[^']*')*[^']*$)";
     }
 
@@ -261,7 +292,18 @@ public final class DatabaseHelper {
         );
     }
 
-    public static List<Map<String, Object>> read(DataSet dataSet) {
+    /**
+     * Materializes all remaining rows of a data set and closes it.
+     * <p>
+     * Column order is retained in each row map. Failure to close the data set
+     * is converted to a {@link WakamitiException}.
+     *
+     * @param dataSet positioned data set to consume from its next row
+     * @return rows represented as column-name/value maps
+     */
+    public static List<Map<String, Object>> read(
+            DataSet dataSet
+    ) {
         List<Map<String, Object>> results = new LinkedList<>();
         while (dataSet.nextRow()) {
             results.add(dataSet.rowAsMap());

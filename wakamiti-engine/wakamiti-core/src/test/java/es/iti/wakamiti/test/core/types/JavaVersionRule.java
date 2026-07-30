@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,12 +8,12 @@
 package es.iti.wakamiti.test.core.types;
 
 
+import java.util.function.IntPredicate;
+
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-
-import java.util.function.IntPredicate;
 
 
 public class JavaVersionRule implements TestRule {
@@ -19,7 +21,9 @@ public class JavaVersionRule implements TestRule {
     private final IntPredicate versionPredicate;
     private final int actualVersion;
 
-    public JavaVersionRule(IntPredicate versionPredicate) {
+    public JavaVersionRule(
+            IntPredicate versionPredicate
+    ) {
         this.versionPredicate = versionPredicate;
         this.actualVersion = getJavaVersion();
     }
@@ -45,7 +49,10 @@ public class JavaVersionRule implements TestRule {
     }
 
     @Override
-    public Statement apply(Statement base, Description description) {
+    public Statement apply(
+            Statement base,
+            Description description
+    ) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -59,6 +66,5 @@ public class JavaVersionRule implements TestRule {
             }
         };
     }
-
 
 }

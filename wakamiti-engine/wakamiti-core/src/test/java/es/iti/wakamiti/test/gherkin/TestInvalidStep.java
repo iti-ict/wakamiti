@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,18 +8,23 @@
 package es.iti.wakamiti.test.gherkin;
 
 
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Test;
+import static es.iti.wakamiti.api.WakamitiConfiguration.DRY_RUN;
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 
 
 public class TestInvalidStep {
@@ -40,7 +47,6 @@ public class TestInvalidStep {
             assertThat(steps[2].result()).contains(Result.UNDEFINED);
             assertThat(steps[3].result()).contains(Result.SKIPPED);
         }
-
     }
 
     @Test

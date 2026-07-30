@@ -1,10 +1,22 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.jmeter.datatypes;
 
+
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.WakamitiAPI;
@@ -14,15 +26,15 @@ import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.jmeter.Metric;
 
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
-
+/**
+ * Provides Abstract Metric services to the surrounding component.
+ */
 public abstract class AbstractMetricProvider extends AbstractProvider {
 
+    /** Base name of the bundles containing localized metric expressions. */
     public static final String RESOURCE = "iti_wakamiti-metric";
-    protected static final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
+    protected static final ResourceLoader RESOURCE_LOADER = WakamitiAPI.instance().resourceLoader();
 
     protected AbstractMetricProvider() {
         super(RESOURCE);
@@ -35,14 +47,16 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
      * @param prefix The prefix used to filter expressions.
      * @return A list of expressions with the specified prefix.
      */
-    public static List<String> getAllExpressions(Locale locale, String prefix) {
-        ResourceBundle bundle = resourceLoader.resourceBundle(RESOURCE, locale);
+    public static List<String> getAllExpressions(
+            Locale locale,
+            String prefix
+    ) {
+        ResourceBundle bundle = RESOURCE_LOADER.resourceBundle(RESOURCE, locale);
         return bundle.keySet().stream()
                 .filter(key -> key.startsWith(prefix))
                 .map(bundle::getString)
                 .collect(Collectors.toList());
     }
-
 
     /**
      * Retrieves a map of translated expressions for a specific locale.
@@ -50,7 +64,9 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
      * @param locale The locale for which the expressions are translated.
      * @return A linked hash map of translated expressions.
      */
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions()) {
             translatedExpressions.put(
@@ -61,7 +77,19 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
         return translatedExpressions;
     }
 
-    public LinkedList<String> regex(Locale locale) {
+    /**
+     * Builds the regular expressions accepted by this metric provider in a
+     * locale.
+     * <p>
+     * Expressions retain provider declaration order because Wakamiti uses that
+     * order while trying datatype alternatives.
+     *
+     * @param locale locale used to load translated expression templates
+     * @return mutable ordered list of normalized regular expressions
+     */
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -74,7 +102,10 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
      * @param expression The expression used to create the metric.
      * @return An optional containing the metric if one is created, or empty otherwise.
      */
-    public Optional<Metric<?>> metricFromExpression(Locale locale, String expression) {
+    public Optional<Metric<?>> metricFromExpression(
+            Locale locale,
+            String expression
+    ) {
         ThrowableFunction<String, Metric<?>> mapper = this::createMetric;
         return fromExpression(locale, expression).map(Pair::key).map(mapper);
     }
@@ -82,9 +113,11 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
     /**
      * Creates a metric for a specific locale, key, and value.
      *
-     * @param key    The key identifying the metric.
+     * @param key The key identifying the metric.
      * @return The created matcher.
      */
-    protected abstract Metric<?> createMetric(String key);
+    protected abstract Metric<?> createMetric(
+            String key
+    );
 
 }

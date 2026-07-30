@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,9 +8,9 @@
 package es.iti.wakamiti.database.dataset;
 
 
-import es.iti.wakamiti.api.plan.DataTable;
-
 import java.io.IOException;
+
+import es.iti.wakamiti.api.plan.DataTable;
 
 
 /**
@@ -26,7 +28,11 @@ public class DataTableDataSet extends DataSet {
      * @param dataTable  The DataTable object.
      * @param nullSymbol The {@code null} symbol.
      */
-    public DataTableDataSet(String table, DataTable dataTable, String nullSymbol) {
+    public DataTableDataSet(
+            String table,
+            DataTable dataTable,
+            String nullSymbol
+    ) {
         super(table, "data table", nullSymbol);
         this.dataTable = dataTable;
         this.columns = new String[dataTable.columns()];
@@ -67,7 +73,9 @@ public class DataTableDataSet extends DataSet {
      * @return The value of the column.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return nullIfMatchNullSymbol(dataTable.value(rowNumber, columnIndex));
     }
 

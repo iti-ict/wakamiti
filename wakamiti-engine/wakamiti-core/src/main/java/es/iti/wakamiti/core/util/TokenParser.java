@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -25,8 +27,6 @@ import java.util.stream.Collectors;
  *
  * <p>Each token can be a literal or match a regular expression, and the order
  * of tokens defines the precedence in case of overlapping matches.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class TokenParser {
 
@@ -35,8 +35,23 @@ public class TokenParser {
     private String remainString;
     private String nextToken;
 
-
-    public TokenParser(String string, List<String> literals, List<String> regex) {
+    /**
+     * Creates a longest-prefix tokenizer.
+     * <p>
+     * At each position every expression and escaped literal is tested; the
+     * longest match wins. Regular expressions are evaluated before literals
+     * when equal-length matches occur.
+     * </p>
+     *
+     * @param string   complete input to tokenize
+     * @param literals literal token values
+     * @param regex    regular expressions describing token prefixes
+     */
+    public TokenParser(
+            String string,
+            List<String> literals,
+            List<String> regex
+    ) {
         this.remainString = string;
         this.tokens = regex.stream().map(TokenParser::regex).collect(Collectors.toList());
         for (String literal : literals) {
@@ -45,11 +60,15 @@ public class TokenParser {
         computeNextToken();
     }
 
-    private static Pattern regex(String regex) {
+    private static Pattern regex(
+            String regex
+    ) {
         return Pattern.compile("(" + regex + ").*");
     }
 
-    private static Pattern literal(String literal) {
+    private static Pattern literal(
+            String literal
+    ) {
         return Pattern.compile("(" + Pattern.quote(literal) + ").*");
     }
 
@@ -82,7 +101,9 @@ public class TokenParser {
         }
     }
 
-    private String computeMaxToken(String string) {
+    private String computeMaxToken(
+            String string
+    ) {
         return tokens.stream()
                 .map(token -> token.matcher(string))
                 .filter(Matcher::matches)

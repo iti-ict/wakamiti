@@ -1,25 +1,23 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
-import org.apache.qpid.server.SystemLauncher;
-import org.apache.qpid.server.configuration.IllegalConfigurationException;
-import org.apache.qpid.server.model.SystemConfig;
-import org.slf4j.Logger;
 
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.slf4j.LoggerFactory.getLogger;
+import org.apache.qpid.server.SystemLauncher;
+import org.apache.qpid.server.configuration.IllegalConfigurationException;
+import org.apache.qpid.server.model.SystemConfig;
+
 
 public class EmbeddedInMemoryQpidBroker {
-
-    public static final Logger logger = getLogger(EmbeddedInMemoryQpidBroker.class);
 
     private static final String DEFAULT_INITIAL_CONFIGURATION_LOCATION = "qpid-embedded-inmemory-configuration.json";
 
@@ -38,7 +36,6 @@ public class EmbeddedInMemoryQpidBroker {
     }
 
     private Map<String, Object> createSystemConfig() throws IllegalConfigurationException {
-
         Map<String, Object> attributes = new HashMap<>();
         URL initialConfigUrl = EmbeddedInMemoryQpidBroker.class.getClassLoader().getResource(DEFAULT_INITIAL_CONFIGURATION_LOCATION);
         if (initialConfigUrl == null) {
@@ -48,5 +45,6 @@ public class EmbeddedInMemoryQpidBroker {
         attributes.put(SystemConfig.INITIAL_CONFIGURATION_LOCATION, initialConfigUrl.toExternalForm());
         attributes.put(SystemConfig.STARTUP_LOGGED_TO_SYSTEM_OUT, true);
         return attributes;
-}
+    }
+
 }

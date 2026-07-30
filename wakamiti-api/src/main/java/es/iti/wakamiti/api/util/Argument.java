@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,12 +8,12 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.extensions.PropertyEvaluator;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 
 
 /**
@@ -32,12 +34,11 @@ import java.util.function.Function;
  * process can be customized by overriding the {@link #doResolve()}
  * and {@link #resolveForEach(String)} methods.
  * </p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class Argument {
 
     private final Map<String, String> evaluations = new LinkedHashMap<>();
+
     private String value;
     private Object evaluated;
     private Function<String, Object> mapper;
@@ -50,7 +51,10 @@ public class Argument {
      * @param mapper The function to map the argument's value.
      * @return An Argument instance with the given value and mapper.
      */
-    public static Argument of(String value, Function<String, Object> mapper) {
+    public static Argument of(
+            String value,
+            Function<String, Object> mapper
+    ) {
         Argument arg = new Argument();
         arg.value = value;
         arg.mapper = mapper;
@@ -87,7 +91,9 @@ public class Argument {
      *              resolved.
      * @return The resolved value with evaluations captured.
      */
-    protected final String resolveForEach(String value) {
+    protected final String resolveForEach(
+            String value
+    ) {
         PropertyEvaluator.Result result = PropertyEvaluator.makeEval(value);
         result.evaluations().forEach(evaluations::putIfAbsent);
         return result.value();
@@ -131,4 +137,5 @@ public class Argument {
     public String toString() {
         return Objects.toString(value);
     }
+
 }

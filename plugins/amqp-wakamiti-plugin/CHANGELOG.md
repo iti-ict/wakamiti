@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, Apache Qpid, RabbitMQ Client, Netty, Guava and the test dependencies.
+- Adapt AMQP 0-9-1 connection setup to the current RabbitMQ Client API.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [2.9.1] - 2024-04-02
 
 ### Fixed

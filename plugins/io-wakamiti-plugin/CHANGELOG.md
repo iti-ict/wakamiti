@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, AssertJ, Hamcrest and JNA.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [2.7.0] - 2024-12-11
 
 ### Changed

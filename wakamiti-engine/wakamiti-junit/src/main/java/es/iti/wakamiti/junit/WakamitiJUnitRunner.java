@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,18 +8,27 @@
 package es.iti.wakamiti.junit;
 
 
-import es.iti.wakamiti.api.BackendFactory;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
-import org.junit.*;
+import static es.iti.wakamiti.api.WakamitiConfiguration.EXECUTION_ID;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.internal.runners.statements.RunBefores;
@@ -29,18 +40,17 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.IntStream;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
 
 
 /**
@@ -57,7 +67,6 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.*;
  * <p>Annotations such as {@link BeforeClass}, {@link AfterClass}, and {@link Test} are not allowed on the
  * test class, as Wakamiti manages its own lifecycle and execution flow.</p>
  *
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
 
@@ -87,7 +96,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @param configurationClass The test class containing the Wakamiti configuration annotations.
      * @throws InitializationError If there is an error initializing the runner.
      */
-    public WakamitiJUnitRunner(Class<?> configurationClass) throws InitializationError {
+    public WakamitiJUnitRunner(
+            Class<?> configurationClass
+    ) throws InitializationError {
         super(configurationClass);
         this.profileEnabled = ProfileSelector.isEnabled(configurationClass);
         if (!profileEnabled) {
@@ -122,7 +133,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @return The Wakamiti configuration for the specified test class.
      * @throws InitializationError If an error occurs during configuration retrieval.
      */
-    private Configuration retrieveConfiguration(Class<?> testedClass) throws InitializationError {
+    private Configuration retrieveConfiguration(
+            Class<?> testedClass
+    ) throws InitializationError {
         try {
             Configuration config = es.iti.wakamiti.core.Wakamiti.defaultConfiguration();
             Optional<String> altDir = Optional.ofNullable(getClass().getClassLoader().getResource("."))
@@ -169,7 +182,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     }
 
     @Override
-    public void run(RunNotifier notifier) {
+    public void run(
+            RunNotifier notifier
+    ) {
         lifecycleNotifier = notifier;
         if (!profileEnabled) {
             notifier.fireTestIgnored(profileSkipDescription());
@@ -192,7 +207,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @return A Description object representing the child node.
      */
     @Override
-    protected Description describeChild(PlanNodeJUnitRunner child) {
+    protected Description describeChild(
+            PlanNodeJUnitRunner child
+    ) {
         return child.getDescription();
     }
 
@@ -205,7 +222,10 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @param notifier The RunNotifier for reporting test execution events.
      */
     @Override
-    protected void runChild(PlanNodeJUnitRunner child, RunNotifier notifier) {
+    protected void runChild(
+            PlanNodeJUnitRunner child,
+            RunNotifier notifier
+    ) {
         child.run(notifier);
     }
 
@@ -218,7 +238,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @param errors The list to which validation errors are added.
      */
     @Override
-    protected void collectInitializationErrors(List<Throwable> errors) {
+    protected void collectInitializationErrors(
+            List<Throwable> errors
+    ) {
         super.collectInitializationErrors(errors);
         validateNoAnnotatedMethod(getTestClass().getJavaClass(), Before.class, errors);
         validateNoAnnotatedMethod(getTestClass().getJavaClass(), After.class, errors);
@@ -244,11 +266,13 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
             String nodePath = String.format("0/%d", index);
             if (treatStepsAsTests) {
                 return new PlanNodeStepJUnitRunner(
-                        node, featureConfiguration, backendFactory, planNodeLogger, nodePath
+                        node, featureConfiguration, backendFactory, planNodeLogger, nodePath,
+                        getTestClass().getName()
                 );
             }
             return new PlanNodeJUnitRunner(
-                    node, featureConfiguration, backendFactory, planNodeLogger, nodePath
+                    node, featureConfiguration, backendFactory, planNodeLogger, nodePath,
+                    getTestClass().getName()
             );
         }).collect(Collectors.toList());
     }
@@ -285,7 +309,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @throws WakamitiException If the method to initialize Wakamiti is not found.
      */
     @Override
-    protected Statement withBeforeClasses(Statement statement) {
+    protected Statement withBeforeClasses(
+            Statement statement
+    ) {
         List<FrameworkMethod> befores = getTestClass().getAnnotatedMethods(BeforeClass.class);
         return new Statement() {
             @Override
@@ -313,7 +339,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
      * @throws WakamitiException If the method to finalize Wakamiti is not found.
      */
     @Override
-    protected Statement withAfterClasses(Statement statement) {
+    protected Statement withAfterClasses(
+            Statement statement
+    ) {
         List<FrameworkMethod> afters = getTestClass().getAnnotatedMethods(AfterClass.class);
         return new Statement() {
             @Override
@@ -403,7 +431,10 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
         wakamiti.generateReports(configuration, snapshot);
     }
 
-    private void runLifecyclePhase(String phaseName, LifecycleAction action) throws Throwable {
+    private void runLifecyclePhase(
+            String phaseName,
+            LifecycleAction action
+    ) throws Throwable {
         if (lifecycleNotifier == null) {
             action.run();
             return;
@@ -423,7 +454,9 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
 
     @FunctionalInterface
     private interface LifecycleAction {
+
         void run() throws Throwable;
+
     }
 
 }

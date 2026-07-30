@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,7 +8,13 @@
 package es.iti.wakamiti.api.util;
 
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 
 /**
@@ -26,14 +34,23 @@ import java.util.*;
  *
  * <p>Instances of this class are typically used to combine resource bundles from
  * different sources, providing a unified interface for resource key lookup.</p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class CompoundResourceBundle extends ResourceBundle {
 
     private final List<ResourceBundle> resourceBundles;
 
-    public CompoundResourceBundle(List<ResourceBundle> resourceBundles) {
+    /**
+     * Creates a bundle that searches delegates in list order.
+     * <p>
+     * The list itself is defensively copied. When multiple bundles define the
+     * same key, the first bundle has precedence.
+     * </p>
+     *
+     * @param resourceBundles bundles to aggregate in lookup-precedence order
+     */
+    public CompoundResourceBundle(
+            List<ResourceBundle> resourceBundles
+    ) {
         this.resourceBundles = new ArrayList<>(resourceBundles);
     }
 
@@ -48,7 +65,9 @@ public class CompoundResourceBundle extends ResourceBundle {
      * @return The value associated with the specified key, or {@code null} if not found.
      */
     @Override
-    protected Object handleGetObject(String key) {
+    protected Object handleGetObject(
+            String key
+    ) {
         for (ResourceBundle resourceBundle : resourceBundles) {
             Object value = resourceBundle.getObject(key);
             if (value != null) {

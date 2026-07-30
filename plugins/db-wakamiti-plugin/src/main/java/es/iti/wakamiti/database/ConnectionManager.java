@@ -1,11 +1,18 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.database;
 
 
-import es.iti.commons.jext.ExtensionPoint;
-import es.iti.wakamiti.api.extensions.Contributor;
-
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import es.iti.commons.jext.ExtensionPoint;
+import es.iti.wakamiti.api.extensions.Contributor;
 
 
 /**
@@ -23,8 +30,9 @@ public interface ConnectionManager extends Contributor {
      * @return a valid connection
      * @throws SQLException when the connection was not successfully retrieved
      */
-    Connection obtainConnection(ConnectionParameters parameters) throws SQLException;
-
+    Connection obtainConnection(
+            ConnectionParameters parameters
+    ) throws SQLException;
 
     /**
      * Release the connection because it is not required anymore.
@@ -32,17 +40,23 @@ public interface ConnectionManager extends Contributor {
      * @param connection The connection to release
      * @throws SQLException when the connection was not successfully retrieved
      */
-    void releaseConnection(Connection connection) throws SQLException;
-
+    void releaseConnection(
+            Connection connection
+    ) throws SQLException;
 
     /**
      * Obtains a valid connection according to an existing connection. If the
      * current connection is closed or invalid, a new one will be retrieved;
      * otherwise, the current connection is returned.
+     * <p>
+     * When a new connection is created, this method does not close the previous
+     * instance. Callers are responsible for releasing stale connections.
+     * </p>
      *
      * @param connection The current connection
+     * @param connectionParameters connection settings used when reconnecting
      * @return a valid connection
-     * @throws SQLException when the connection was not successfully retrieved 
+     * @throws SQLException when the connection was not successfully retrieved
      */
     default Connection refreshConnection(
             Connection connection,

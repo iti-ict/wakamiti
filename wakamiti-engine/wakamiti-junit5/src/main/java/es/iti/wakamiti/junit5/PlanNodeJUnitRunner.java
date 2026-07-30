@@ -1,10 +1,25 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.junit5;
 
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import org.junit.platform.engine.EngineExecutionListener;
+import org.junit.platform.engine.TestDescriptor;
+import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.UniqueId;
 
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
@@ -15,18 +30,6 @@ import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import org.junit.platform.engine.EngineExecutionListener;
-import org.junit.platform.engine.TestDescriptor;
-import org.junit.platform.engine.TestExecutionResult;
-import org.junit.platform.engine.UniqueId;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 
 /**
@@ -60,7 +63,7 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
      * @return The node types that must be represented as leaf tests.
      */
     protected NodeType[] target() {
-        return new NodeType[] {NodeType.TEST_CASE};
+        return new NodeType[]{NodeType.TEST_CASE};
     }
 
     @Override
@@ -80,7 +83,9 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
     }
 
     @Override
-    public Result execute(EngineExecutionListener listener) {
+    public Result execute(
+            EngineExecutionListener listener
+    ) {
         this.listener = listener;
         listener.executionStarted(descriptor());
         Result result;
@@ -107,7 +112,7 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
 
     @Override
     protected List<PlanNodeRunner> createChildren() {
-        List<PlanNode> childNodes = getNode().children().collect(Collectors.toList());
+        List<PlanNode> childNodes = getNode().children().toList();
         return IntStream.range(0, childNodes.size())
                 .mapToObj(index -> {
                     PlanNode child = childNodes.get(index);
@@ -123,7 +128,10 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
                 .collect(Collectors.toList());
     }
 
-    protected PlanNodeRunner newContainerRunner(PlanNode node, String nodePath) {
+    protected PlanNodeRunner newContainerRunner(
+            PlanNode node,
+            String nodePath
+    ) {
         return new PlanNodeJUnitRunner(
                 node, configuration(), backendFactory(), getBackend(), getLogger(), nodePath, classUniqueId, resourceRoots
         );

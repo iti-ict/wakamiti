@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,11 +8,17 @@
 package es.iti.wakamiti.report.html.test;
 
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.report.html.FilteredSnapshot;
-import es.iti.wakamiti.report.html.HtmlReportGenerator;
-import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
+import static org.xmlunit.assertj.XmlAssert.assertThat;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.custommonkey.xmlunit.HTMLDocumentBuilder;
 import org.custommonkey.xmlunit.TolerantSaxDocumentBuilder;
 import org.custommonkey.xmlunit.XMLUnit;
@@ -19,23 +27,20 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.report.html.FilteredSnapshot;
+import es.iti.wakamiti.report.html.HtmlReportGenerator;
+import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
 
-import static org.xmlunit.assertj.XmlAssert.assertThat;
 
 public class TestHtmlReportGenerator {
 
     private static Document xml;
-    private static Document xml_2;
-    private static Document xml_3;
-    private static Document xml_noExecution;
-    private static String html_2;
+    private static Document xml2;
+    private static Document xml3;
+    private static Document xmlNoExecution;
+    private static String html2;
     private static String templateSource;
     private static String scriptSource;
 
@@ -46,15 +51,18 @@ public class TestHtmlReportGenerator {
                 "htmlReport.title", "Test Report Title",
                 "htmlReport.extra_info.value1", "Extra info 1",
                 "htmlReport.extra_info.value2", "Extra info 2");
-        xml_2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
-        xml_3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
-        xml_noExecution = load("wakamiti_noExecution", "htmlReport.output", "target/wakamiti_noExecution.html");
-        html_2 = Files.readString(Path.of("target/wakamiti_2.html"));
+        xml2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
+        xml3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
+        xmlNoExecution = load("wakamiti_noExecution", "htmlReport.output", "target/wakamiti_noExecution.html");
+        html2 = Files.readString(Path.of("target/wakamiti_2.html"));
         templateSource = Files.readString(Path.of("src/main/resources/report.ftl"));
         scriptSource = Files.readString(Path.of("src/main/resources/lib/global.js"));
     }
 
-    private static Document load(String name, String... properties) throws IOException, ParserConfigurationException, SAXException {
+    private static Document load(
+            String name,
+            String... properties
+    ) throws IOException, ParserConfigurationException, SAXException {
         try (Reader reader = Files
                 .newBufferedReader(Paths.get("src/test/resources/" + name + ".json"), StandardCharsets.UTF_8)
         ) {
@@ -82,9 +90,9 @@ public class TestHtmlReportGenerator {
         assertThat(xml)
                 .valueByXPath(elem + "/text()").isEqualTo("Test Report Title");
 
-        assertThat(xml_2)
+        assertThat(xml2)
                 .valueByXPath(elem + "/@title").isEqualTo("Test Plan B");
-        assertThat(xml_2)
+        assertThat(xml2)
                 .valueByXPath(elem + "/text()").isEqualTo("Test Plan B");
     }
 
@@ -102,7 +110,7 @@ public class TestHtmlReportGenerator {
                 .valueByXPath(elem + "//li[4]")
                 .isEqualTo("Total duration 2h 24m 8s 410ms");
     }
-
+//
 //    @Test
 //    public void testReportMenuToggles() {
 //        String elem = "//*[contains(@class,\"nav-menu--control\")]";
@@ -143,10 +151,10 @@ public class TestHtmlReportGenerator {
                 .nodesByXPath("//*[text()='Extra info 2']")
                 .exist();
 
-        assertThat(xml_2)
+        assertThat(xml2)
                 .nodesByXPath("//*[text()='Extra info 1']")
                 .doNotExist();
-        assertThat(xml_2)
+        assertThat(xml2)
                 .nodesByXPath("//*[text()='Extra info 2']")
                 .doNotExist();
     }
@@ -174,11 +182,13 @@ public class TestHtmlReportGenerator {
                 .contains("data-action=\"toggle-response-format\"")
                 .contains(">{ }</button>")
                 .contains("class=\"step--response\"");
-        org.assertj.core.api.Assertions.assertThat(html_2)
+        org.assertj.core.api.Assertions.assertThat(html2)
                 .contains("class=\"step--response\"");
     }
 
-    private String uri(String resource) {
+    private String uri(
+            String resource
+    ) {
         return Path.of("target/" + resource + ".html").toUri().toString();
     }
 

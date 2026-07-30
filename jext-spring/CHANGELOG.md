@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Changed
+- Require Java 17.
+- Upgrade `wakamiti-starter` and Spring Context to 7.0.
+- Publish `iti.commons.jext.spring` as the automatic module name instead of using an explicit JPMS descriptor.
+
+
 ## [2.3.0] - 2024-09-09
 
 ### Changed

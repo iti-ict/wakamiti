@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,22 +8,30 @@
 package es.iti.wakamiti.api.imconfig;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import org.assertj.core.api.Assertions;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.annotation.Annotation;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 
 public class ConfigurationFactoryTest {
@@ -48,6 +58,8 @@ public class ConfigurationFactoryTest {
     private static final String KEY_BIGDECIMALS = "properties.test.key.bigdecimals";
     private static final String KEY_BIGINTEGER = "properties.test.key.biginteger";
     private static final String KEY_BIGINTEGERS = "properties.test.key.bigintegers";
+    private static final String KEY_DATETIME = "properties.test.key.datetime";
+    private static final String KEY_DATETIMES = "properties.test.key.datetimes";
     private static final String KEY_CUSTOM = "custom.property";
 
     private static final String VAL_STRING = "Properties Test String Value";
@@ -83,12 +95,17 @@ public class ConfigurationFactoryTest {
     private static final String VAL_BIGINTEGERS_1 = "123456789";
     private static final String VAL_BIGINTEGERS_2 = "543987532";
     private static final String VAL_BIGINTEGERS_3 = "549874348";
+    private static final String VAL_DATETIME = "2026-07-07 07:41:01";
+    private static final String VAL_DATETIMES_1 = "2026-07-07 07:41:01";
+    private static final String VAL_DATETIMES_2 = "2026-07-08 08:42:02";
+    private static final String VAL_DATETIMES_3 = "2026-07-09 09:43:03";
     private static final String VAL_CUSTOM = "Custom Value";
 
-
+    /** JUnit rule used to set and restore environment variables for each test. */
     @Rule
     public final EnvironmentVariables env = new EnvironmentVariables();
 
+    /** Configuration factory under test, initialized with comma-separated multivalues. */
     private ConfigurationFactory factory;
 
     @Before
@@ -106,11 +123,11 @@ public class ConfigurationFactoryTest {
     @Test
     public void createConfigurationFromSupportedResourceFiles() {
         List<String> resourceFiles = List.of(
+                "test-conf.json",
+                "test-conf.xml",
                 "test-conf.yaml",
                 "test-conf.yml",
-                "test-conf.properties",
-                "test-conf.json",
-                "test-conf.xml"
+                "test-conf.properties"
         );
 
         for (String resourceFile : resourceFiles) {
@@ -285,28 +302,30 @@ public class ConfigurationFactoryTest {
     public void invokingToStringReturnsEveryValuedProperty() throws ConfigurationException {
         Assertions.assertThat(factory.fromAnnotation(ConfAnnotatedProps.class))
                 .hasToString(
-                        "configuration:\n" +
-                                "---------------\n" +
-                                "test.env.key : Test Environment Value\n" +
-                                "properties.test.key.string : Properties Test String Value\n" +
-                                "properties.test.key.strings : [Properties Array Value 1, Properties Array Value 2]\n" +
-                                "properties.test.key.string_number : 0543\n" +
-                                "properties.test.key.bool : true\n" +
-                                "properties.test.key.bools : [true, false, true]\n" +
-                                "properties.test.key.integer : 77\n" +
-                                "properties.test.key.integers : [77, 79, 83]\n" +
-                                "properties.test.key.long : 54353\n" +
-                                "properties.test.key.longs : [54353, 65256, 98432]\n" +
-                                "properties.test.key.float : 6.98\n" +
-                                "properties.test.key.floats : [6.98, 2.23, 1.24]\n" +
-                                "properties.test.key.double : 3.45\n" +
-                                "properties.test.key.doubles : [3.45, 6.76, 9.32]\n" +
-                                "properties.test.key.bigdecimal : 755.87\n" +
-                                "properties.test.key.bigdecimals : [755.87, 876.43, 908.32]\n" +
-                                "properties.test.key.biginteger : 123456789\n" +
-                                "properties.test.key.bigintegers : [123456789, 543987532, 549874348]\n" +
-                                "properties2.test2.key.string : Properties Test String Value\n" +
-                                "---------------"
+                        "configuration:\n"
+                                + "---------------\n"
+                                + "test.env.key : Test Environment Value\n"
+                                + "properties.test.key.string : Properties Test String Value\n"
+                                + "properties.test.key.strings : [Properties Array Value 1, Properties Array Value 2, Properties Array Value 1]\n"
+                                + "properties.test.key.string_number : 0543\n"
+                                + "properties.test.key.bool : true\n"
+                                + "properties.test.key.bools : [true, false, true]\n"
+                                + "properties.test.key.integer : 77\n"
+                                + "properties.test.key.integers : [77, 79, 83, 77]\n"
+                                + "properties.test.key.long : 54353\n"
+                                + "properties.test.key.longs : [54353, 65256, 98432, 54353]\n"
+                                + "properties.test.key.float : 6.98\n"
+                                + "properties.test.key.floats : [6.98, 2.23, 1.24, 6.98]\n"
+                                + "properties.test.key.double : 3.45\n"
+                                + "properties.test.key.doubles : [3.45, 6.76, 9.32, 3.45]\n"
+                                + "properties.test.key.bigdecimal : 755.87\n"
+                                + "properties.test.key.bigdecimals : [755.87, 876.43, 908.32, 755.87]\n"
+                                + "properties.test.key.biginteger : 123456789\n"
+                                + "properties.test.key.bigintegers : [123456789, 543987532, 549874348, 123456789]\n"
+                                + "properties.test.key.datetime : 2026-07-07 07:41:01\n"
+                                + "properties.test.key.datetimes : [2026-07-07 07:41:01, 2026-07-08 08:42:02, 2026-07-09 09:43:03, 2026-07-07 07:41:01]\n"
+                                + "properties2.test2.key.string : Properties Test String Value\n"
+                                + "---------------"
                 );
     }
 
@@ -369,20 +388,29 @@ public class ConfigurationFactoryTest {
         properties.setProperty("property.b", "5");
         properties.setProperty("property.c", "6");
         var conf = factory.fromProperties(properties);
-        assertThat(conf.get("property.a", new TypeReference<List<String>>() {})).isPresent()
+        assertThat(conf.get("property.a", new TypeReference<List<String>>() {
+        })).isPresent()
                 .contains(List.of("1"));
-        assertThat(conf.get("property.a", new TypeReference<Set<String>>() {})).isPresent()
+        assertThat(conf.get("property.a", new TypeReference<Set<String>>() {
+        })).isPresent()
                 .contains(Set.of("1"));
-        assertThat(conf.get("property.a", new TypeReference<String[]>() {})).isPresent()
+        assertThat(conf.get("property.a", new TypeReference<String[]>() {
+        })).isPresent()
                 .contains(new String[]{"1"});
-        assertThat(conf.get("property.a", new TypeReference<Stream<String>>() {})).isPresent();
+        assertThat(conf.get("property.a", new TypeReference<Stream<String>>() {
+        })).isPresent();
         assertThat(conf.get("property", new TypeReference<Map<String, Integer>>() {
         })).isPresent()
                 .contains(Map.of("a", 1, "b", 5, "c", 6));
-        assertThat(conf.get("property", new TypeReference<Map<String, ?>>() {})).isPresent()
+        assertThat(conf.get("property", new TypeReference<Map<String, ?>>() {
+        })).isPresent()
                 .contains(Map.of("a", "1", "b", "5", "c", "6"));
-        assertThat(conf.get("property", new TypeReference<Map>() {})).isPresent()
+        assertThat(conf.get("property", new TypeReference<Map>() {
+        })).isPresent()
                 .contains(Map.of("a", "1", "b", "5", "c", "6"));
+        assertThat(conf.get("property.a", new TypeReference<String>() {
+        })).isPresent()
+                .contains("1");
     }
 
     @Test
@@ -445,14 +473,16 @@ public class ConfigurationFactoryTest {
         );
     }
 
-    private void assertExpectedPropertiesExist(Configuration conf) {
-
+    private void assertExpectedPropertiesExist(
+            Configuration conf
+    ) {
         System.out.println(conf);
 
         Assertions.assertThat(conf.get(KEY_STRING, String.class).get()).contains(VAL_STRING);
         Assertions.assertThat(conf.getList(KEY_STRINGS, String.class)).containsExactlyInAnyOrder(
                 VAL_STRINGS_1,
-                VAL_STRINGS_2
+                VAL_STRINGS_2,
+                VAL_STRINGS_1
         );
         Assertions.assertThat(conf.get(KEY_STRING_NUMBER, String.class)).contains(VAL_STRING_NUMBER);
         Assertions.assertThat(conf.get(KEY_BOOL, Boolean.class)).contains(true);
@@ -460,23 +490,24 @@ public class ConfigurationFactoryTest {
                 .containsExactlyInAnyOrder(true, false, true);
         Assertions.assertThat(conf.get(KEY_INTEGER, Integer.class)).contains(77);
         Assertions.assertThat(conf.getList(KEY_INTEGERS, Integer.class))
-                .containsExactlyInAnyOrder(77, 79, 83);
+                .containsExactlyInAnyOrder(77, 79, 83, 77);
         Assertions.assertThat(conf.get(KEY_LONG, Long.class)).contains(54353L);
         Assertions.assertThat(conf.getList(KEY_LONGS, Long.class))
-                .containsExactlyInAnyOrder(54353L, 65256L, 98432L);
+                .containsExactlyInAnyOrder(54353L, 65256L, 98432L, 54353L);
         Assertions.assertThat(conf.get(KEY_DOUBLE, Double.class)).contains(3.45);
         Assertions.assertThat(conf.getList(KEY_DOUBLES, Double.class))
-                .containsExactlyInAnyOrder(3.45, 6.76, 9.32);
+                .containsExactlyInAnyOrder(3.45, 6.76, 9.32, 3.45);
         Assertions.assertThat(conf.get(KEY_FLOAT, Float.class)).contains(6.98f);
         Assertions.assertThat(conf.getList(KEY_FLOATS, Float.class))
-                .containsExactlyInAnyOrder(6.98f, 2.23f, 1.24f);
+                .containsExactlyInAnyOrder(6.98f, 2.23f, 1.24f, 6.98f);
         Assertions.assertThat(conf.get(KEY_BIGDECIMAL, BigDecimal.class).get())
                 .isEqualByComparingTo(new BigDecimal(VAL_BIGDECIMAL));
         Assertions.assertThat(conf.getList(KEY_BIGDECIMALS, BigDecimal.class))
                 .containsExactlyInAnyOrder(
                         new BigDecimal(VAL_BIGDECIMALS_1),
                         new BigDecimal(VAL_BIGDECIMALS_2),
-                        new BigDecimal(VAL_BIGDECIMALS_3)
+                        new BigDecimal(VAL_BIGDECIMALS_3),
+                        new BigDecimal(VAL_BIGDECIMALS_1)
                 );
         Assertions.assertThat(conf.get(KEY_BIGINTEGER, BigInteger.class).get())
                 .isEqualByComparingTo(new BigInteger(VAL_BIGINTEGER));
@@ -484,67 +515,104 @@ public class ConfigurationFactoryTest {
                 .containsExactlyInAnyOrder(
                         new BigInteger(VAL_BIGINTEGERS_1),
                         new BigInteger(VAL_BIGINTEGERS_2),
-                        new BigInteger(VAL_BIGINTEGERS_3)
+                        new BigInteger(VAL_BIGINTEGERS_3),
+                        new BigInteger(VAL_BIGINTEGERS_1)
+                );
+        Assertions.assertThat(conf.get(KEY_DATETIME, Date.class))
+                .contains(toDate(VAL_DATETIME));
+        Assertions.assertThat(conf.getList(KEY_DATETIMES, Date.class))
+                .containsExactlyInAnyOrder(
+                        toDate(VAL_DATETIMES_1),
+                        toDate(VAL_DATETIMES_2),
+                        toDate(VAL_DATETIMES_3),
+                        toDate(VAL_DATETIMES_1)
                 );
 
         assertNullProperties(conf);
     }
 
-    private void assertNullProperties(Configuration conf) {
+    private Date toDate(
+            String date
+    ) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void assertNullProperties(
+            Configuration conf
+    ) {
         String nonExistingKey = "xxx";
         Assertions.assertThat(conf.get(nonExistingKey, String.class)).isEmpty();
         Assertions.assertThat(conf.getList(nonExistingKey, String.class)).isEmpty();
     }
 
-    private void assertEnvironmentPropertiesExist(Configuration conf) {
+    private void assertEnvironmentPropertiesExist(
+            Configuration conf
+    ) {
         Assertions.assertThat(conf.get(KEY_ENV, String.class)).contains(VAL_ENV);
     }
 
     @AnnotatedConfiguration({
             @Property(key = KEY_ENV, value = VAL_ENV),
             @Property(key = KEY_STRING, value = VAL_STRING),
-            @Property(key = KEY_STRINGS, value = {VAL_STRINGS_1, VAL_STRINGS_2}),
+            @Property(key = KEY_STRINGS, value = {VAL_STRINGS_1, VAL_STRINGS_2, VAL_STRINGS_1}),
             @Property(key = KEY_STRING_NUMBER, value = VAL_STRING_NUMBER),
             @Property(key = KEY_BOOL, value = VAL_BOOL),
             @Property(key = KEY_BOOLS, value = {VAL_BOOLS_1, VAL_BOOLS_2, VAL_BOOLS_3}),
             @Property(key = KEY_INTEGER, value = VAL_INTEGER),
             @Property(key = KEY_INTEGERS, value = {VAL_INTEGERS_1, VAL_INTEGERS_2,
-                    VAL_INTEGERS_3}),
+                    VAL_INTEGERS_3, VAL_INTEGERS_1}),
             @Property(key = KEY_LONG, value = VAL_LONG),
-            @Property(key = KEY_LONGS, value = {VAL_LONGS_1, VAL_LONGS_2, VAL_LONGS_3}),
+            @Property(key = KEY_LONGS, value = {VAL_LONGS_1, VAL_LONGS_2, VAL_LONGS_3, VAL_LONGS_1}),
             @Property(key = KEY_FLOAT, value = VAL_FLOAT),
             @Property(key = KEY_FLOATS, value = {VAL_FLOATS_1, VAL_FLOATS_2,
-                    VAL_FLOATS_3}),
+                    VAL_FLOATS_3, VAL_FLOATS_1}),
             @Property(key = KEY_DOUBLE, value = VAL_DOUBLE),
             @Property(key = KEY_DOUBLES, value = {VAL_DOUBLES_1, VAL_DOUBLES_2,
-                    VAL_DOUBLES_3}),
+                    VAL_DOUBLES_3, VAL_DOUBLES_1}),
             @Property(key = KEY_BIGDECIMAL, value = VAL_BIGDECIMAL),
             @Property(key = KEY_BIGDECIMALS, value = {
                     VAL_BIGDECIMALS_1,
                     VAL_BIGDECIMALS_2,
-                    VAL_BIGDECIMALS_3
+                    VAL_BIGDECIMALS_3,
+                    VAL_BIGDECIMALS_1
             }),
             @Property(key = KEY_BIGINTEGER, value = VAL_BIGINTEGER),
             @Property(key = KEY_BIGINTEGERS, value = {
                     VAL_BIGINTEGERS_1,
                     VAL_BIGINTEGERS_2,
-                    VAL_BIGINTEGERS_3
+                    VAL_BIGINTEGERS_3,
+                    VAL_BIGINTEGERS_1
+            }),
+            @Property(key = KEY_DATETIME, value = VAL_DATETIME),
+            @Property(key = KEY_DATETIMES, value = {
+                    VAL_DATETIMES_1,
+                    VAL_DATETIMES_2,
+                    VAL_DATETIMES_3,
+                    VAL_DATETIMES_1
             }),
             @Property(key = "properties2.test2.key.string", value = VAL_STRING)
     })
     public static class ConfAnnotatedProps {
+
     }
 
     @AnnotatedConfiguration(path = "classpath:test-conf.yaml")
     public static class ConfAnnotatedFile {
+
     }
 
     @AnnotatedConfiguration(path = "src/test/resources/test-conf.yaml")
     public static class ConfAnnotatedRelativeFile {
+
     }
 
     @AnnotatedConfiguration(path = "classpath:test-conf.yaml", pathPrefix = "properties")
     public static class ConfAnnotatedFileWithPrefix {
+
     }
 
     @AnnotatedConfiguration(
@@ -555,12 +623,16 @@ public class ConfigurationFactoryTest {
             }
     )
     public static class ConfAnnotatedFileWithOverrides {
+
     }
 
     public static class ConfNotAnnotated {
+
     }
 
-    private static AnnotatedConfiguration annotationWithPath(String path) {
+    private static AnnotatedConfiguration annotationWithPath(
+            String path
+    ) {
         return new AnnotatedConfiguration() {
             @Override
             public Class<? extends Annotation> annotationType() {

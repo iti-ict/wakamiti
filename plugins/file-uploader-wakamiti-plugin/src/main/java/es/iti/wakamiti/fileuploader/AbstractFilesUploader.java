@@ -1,16 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.fileuploader;
 
-
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.extensions.EventObserver;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,7 +15,22 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.slf4j.Logger;
 
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.extensions.EventObserver;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+
+
+/**
+ * Base {@link EventObserver} for uploading generated Wakamiti output files to
+ * a remote FTP, FTPS or SFTP server.
+ * <p>
+ * Implementations bind the uploader to a specific report-output event type and
+ * category.
+ * </p>
+ */
 public abstract class AbstractFilesUploader implements EventObserver {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AbstractFilesUploader.class);
@@ -34,50 +45,110 @@ public abstract class AbstractFilesUploader implements EventObserver {
     private String remotePath;
     private String protocol;
     private String identity;
-
     private FTPTransmitter transmitter;
-
     private Instant executionInstant;
 
-    protected AbstractFilesUploader(String eventType, String category) {
+    protected AbstractFilesUploader(
+            String eventType,
+            String category
+    ) {
         this.eventType = eventType;
         this.category = category;
     }
 
-    public void setEnabled(boolean enabled) {
+    /**
+     * Enables or disables remote uploads for this output category.
+     *
+     * @param enabled Whether this category uploads files during report events
+     */
+    public void setEnabled(
+            boolean enabled
+    ) {
         this.enabled = enabled;
     }
 
-    public void setHost(String host) {
+    /**
+     * Sets the remote endpoint, optionally including a port as
+     * {@code host:port}.
+     *
+     * @param host FTP, FTPS or SFTP endpoint
+     */
+    public void setHost(
+            String host
+    ) {
         this.host = host;
     }
 
-    public void setUsername(String username) {
+    /**
+     * Sets the username used to authenticate against the remote endpoint.
+     *
+     * @param username Remote account name
+     */
+    public void setUsername(
+            String username
+    ) {
         this.username = username;
     }
 
-    public void setPassword(String password) {
+    /**
+     * Sets the password used to authenticate against the remote endpoint.
+     *
+     * @param password Remote password; mandatory for FTP/FTPS
+     */
+    public void setPassword(
+            String password
+    ) {
         this.password = password;
     }
 
-    public void setRemotePath(String remotePath) {
+    /**
+     * Sets the remote destination directory template.
+     * Temporal placeholders such as {@code %DATE%}, {@code %TIME%} and
+     * {@code %YYYY%} are resolved once per report-output cycle.
+     *
+     * @param remotePath Remote directory template
+     */
+    public void setRemotePath(
+            String remotePath
+    ) {
         this.remotePath = remotePath;
     }
 
-    public void setProtocol(String protocol) {
+    /**
+     * Selects the transport protocol implementation used for uploads.
+     *
+     * @param protocol One of {@code ftp}, {@code ftps} or {@code sftp}
+     */
+    public void setProtocol(
+            String protocol
+    ) {
         this.protocol = protocol;
     }
 
-    public void setIdentity(String identity) {
+    /**
+     * Sets the SSH identity used by SFTP authentication when applicable.
+     *
+     * @param identity Optional SSH private-key path used by SFTP
+     */
+    public void setIdentity(
+            String identity
+    ) {
         this.identity = identity;
     }
 
+    /**
+     * Returns the configuration subsection associated with this uploader type.
+     *
+     * @return Configuration subsection associated with this output category
+     */
     public String category() {
         return this.category;
     }
 
     @Override
-    public void eventReceived(Event event) {
+    public void eventReceived(
+            Event event
+    ) {
         if (!enabled) {
             return;
         }
@@ -94,9 +165,13 @@ public abstract class AbstractFilesUploader implements EventObserver {
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
-
     }
 
+    /**
+     * Reports whether a transmitter exists and its underlying session is open.
+     *
+     * @return {@code true} while connected to the remote server
+     */
     public boolean isConnected() {
         return transmitter != null && transmitter.isConnected();
     }
@@ -127,7 +202,9 @@ public abstract class AbstractFilesUploader implements EventObserver {
         transmitter = null;
     }
 
-    private void uploadFile(Path fileToSend) throws IOException {
+    private void uploadFile(
+            Path fileToSend
+    ) throws IOException {
         Path dirPath = replaceTemporalPlaceholders(remotePath, executionInstant.atZone(ZoneId.systemDefault()));
         Path localFile = WakamitiAPI.instance().resourceLoader().absolutePath(fileToSend);
         LOGGER.info("Uploading file {uri} to {uri}", localFile, host + "/" + dirPath);
@@ -135,14 +212,19 @@ public abstract class AbstractFilesUploader implements EventObserver {
     }
 
     @Override
-    public boolean acceptType(String eventType) {
-        return Event.BEFORE_WRITE_OUTPUT_FILES.equals(eventType) ||
-                Event.AFTER_WRITE_OUTPUT_FILES.equals(eventType) ||
-                this.eventType.equals(eventType);
+    public boolean acceptType(
+            String eventType
+    ) {
+        return Event.BEFORE_WRITE_OUTPUT_FILES.equals(eventType)
+                || Event.AFTER_WRITE_OUTPUT_FILES.equals(eventType)
+                || this.eventType.equals(eventType);
     }
 
-    // TODO: move to wakamiti-api
-    private static Path replaceTemporalPlaceholders(String pathString, ZonedDateTime instant) {
+    // TODO: This helper belongs in wakamiti-api.
+    private static Path replaceTemporalPlaceholders(
+            String pathString,
+            ZonedDateTime instant
+    ) {
         pathString = pathString.replace("%YYYY%", DateTimeFormatter.ofPattern("yyyy").format(instant));
         pathString = pathString.replace("%YY%", DateTimeFormatter.ofPattern("yy").format(instant));
         pathString = pathString.replace("%MM%", DateTimeFormatter.ofPattern("MM").format(instant));
@@ -155,4 +237,5 @@ public abstract class AbstractFilesUploader implements EventObserver {
         pathString = pathString.replace("%TIME%", DateTimeFormatter.ofPattern("HHmmssSSS").format(instant));
         return Path.of(pathString);
     }
+
 }

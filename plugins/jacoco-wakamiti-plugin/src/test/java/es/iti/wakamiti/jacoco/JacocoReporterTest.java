@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,18 +8,19 @@
 package es.iti.wakamiti.jacoco;
 
 
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.apache.commons.io.FileUtils;
-import org.jacoco.core.data.ExecutionDataStore;
-import org.jacoco.core.data.SessionInfoStore;
-import org.jacoco.core.tools.ExecDumpClient;
-import org.jacoco.core.tools.ExecFileLoader;
-import org.junit.After;
-import org.junit.Test;
-import org.slf4j.Logger;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +30,19 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import org.apache.commons.io.FileUtils;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.SessionInfoStore;
+import org.jacoco.core.tools.ExecDumpClient;
+import org.jacoco.core.tools.ExecFileLoader;
+import org.junit.After;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 public class JacocoReporterTest {
@@ -53,7 +65,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void acceptType_recognizes_expected_events_only() {
+    public void acceptTypeRecognizesExpectedEventsOnly() {
         JacocoReporter reporter = new JacocoReporter();
         assertThat(reporter.acceptType(Event.NODE_RUN_FINISHED)).isTrue();
         assertThat(reporter.acceptType(Event.AFTER_WRITE_OUTPUT_FILES)).isTrue();
@@ -65,7 +77,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void eventReceived_does_nothing_when_data_is_null() {
+    public void eventReceivedDoesNothingWhenDataIsNull() {
         assertThatNoException().isThrownBy(() -> LOGGER.info("OK"));
         JacocoReporter reporter = new JacocoReporter();
         // Should not throw on null data
@@ -74,7 +86,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void event_with_test_case_triggers_dump_only_when_no_xml_or_csv() throws Exception {
+    public void eventWithTestCaseTriggersDumpOnlyWhenNoXmlOrCsv() throws Exception {
         // Arrange reporter
         JacocoReporter reporter = new JacocoReporter();
         reporter.setHost("localhost");
@@ -113,7 +125,7 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void event_with_test_case_and_xml_triggers_execute_single_and_produces_xml() throws Exception {
+    public void eventWithTestCaseAndXmlTriggersExecuteSingleAndProducesXml() throws Exception {
         // Arrange temporary filesystem
         Path out = Files.createTempDirectory("jacoco-out");
         Path xml = Files.createTempDirectory("jacoco-xml");
@@ -169,15 +181,23 @@ public class JacocoReporterTest {
         assertThat(Files.exists(producedXml)).isTrue();
     }
 
-    private static void setPrivate(Object target, String field, Object value) throws Exception {
+    private static void setPrivate(
+            Object target,
+            String field,
+            Object value
+    ) throws Exception {
         java.lang.reflect.Field f = target.getClass().getDeclaredField(field);
         f.setAccessible(true);
         f.set(target, value);
     }
 
-    private static Object getPrivate(Object target, String field) throws Exception {
+    private static Object getPrivate(
+            Object target,
+            String field
+    ) throws Exception {
         java.lang.reflect.Field f = target.getClass().getDeclaredField(field);
         f.setAccessible(true);
         return f.get(target);
     }
+
 }

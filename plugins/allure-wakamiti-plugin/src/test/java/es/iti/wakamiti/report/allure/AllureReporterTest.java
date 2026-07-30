@@ -1,24 +1,14 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.report.allure;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.JsonPlanSerializer;
-import org.awaitility.Awaitility;
-import org.junit.AssumptionViolatedException;
-import org.junit.Test;
-import org.testcontainers.DockerClientFactory;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.images.builder.Transferable;
-import org.testcontainers.lifecycle.Startable;
-import org.testcontainers.utility.DockerImageName;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -33,7 +23,25 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.awaitility.Awaitility;
+import org.junit.AssumptionViolatedException;
+import org.junit.Test;
+import org.testcontainers.DockerClientFactory;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.Transferable;
+import org.testcontainers.lifecycle.Startable;
+import org.testcontainers.utility.DockerImageName;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.core.JsonPlanSerializer;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 public class AllureReporterTest {
@@ -248,7 +256,7 @@ public class AllureReporterTest {
             String targetDir
     ) throws IOException {
         try (Stream<Path> paths = Files.walk(sourceDir)) {
-            for (Path file : paths.filter(Files::isRegularFile).collect(Collectors.toList())) {
+            for (Path file : paths.filter(Files::isRegularFile).toList()) {
                 byte[] content = Files.readAllBytes(file);
                 String targetPath = targetDir + "/" + sourceDir.relativize(file).toString().replace('\\', '/');
                 container.withCopyToContainer(Transferable.of(content), targetPath);
@@ -416,4 +424,5 @@ public class AllureReporterTest {
         }
         return false;
     }
+
 }

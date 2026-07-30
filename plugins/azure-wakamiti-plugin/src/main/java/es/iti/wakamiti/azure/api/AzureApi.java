@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,43 +8,76 @@
 package es.iti.wakamiti.azure.api;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.jayway.jsonpath.TypeRef;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.api.model.*;
-import es.iti.wakamiti.azure.api.model.query.Query;
-import es.iti.wakamiti.azure.api.model.query.WorkItemsQuery;
-import es.iti.wakamiti.azure.internal.Util;
-import es.iti.wakamiti.azure.internal.WakamitiAzureException;
-import org.apache.commons.collections4.ListUtils;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.api.util.JsonUtils.read;
+import static es.iti.wakamiti.api.util.JsonUtils.readStringValue;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static es.iti.wakamiti.azure.api.model.query.Field.AREA_PATH;
+import static es.iti.wakamiti.azure.api.model.query.Field.DESCRIPTION;
+import static es.iti.wakamiti.azure.api.model.query.Field.ITERATION_PATH;
+import static es.iti.wakamiti.azure.api.model.query.Field.TAGS;
+import static es.iti.wakamiti.azure.api.model.query.Field.TEAM_PROJECT;
+import static es.iti.wakamiti.azure.api.model.query.Field.TITLE;
+import static es.iti.wakamiti.azure.api.model.query.Field.WORK_ITEM_TYPE;
+import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
+import static es.iti.wakamiti.azure.internal.Util.path;
+import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.equalsIgnoreCase;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.join;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.*;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.JsonUtils.*;
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static es.iti.wakamiti.api.util.StringUtils.format;
-import static es.iti.wakamiti.azure.api.model.query.Field.*;
-import static es.iti.wakamiti.azure.api.model.query.criteria.Criteria.field;
-import static es.iti.wakamiti.azure.internal.Util.path;
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.*;
+import org.apache.commons.collections4.ListUtils;
+import org.slf4j.Logger;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.jayway.jsonpath.TypeRef;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.azure.api.model.Attachment;
+import es.iti.wakamiti.azure.api.model.PointAssignment;
+import es.iti.wakamiti.azure.api.model.Settings;
+import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestPlan;
+import es.iti.wakamiti.azure.api.model.TestResult;
+import es.iti.wakamiti.azure.api.model.TestRun;
+import es.iti.wakamiti.azure.api.model.TestSuite;
+import es.iti.wakamiti.azure.api.model.TestSuiteTree;
+import es.iti.wakamiti.azure.api.model.WorkItem;
+import es.iti.wakamiti.azure.api.model.WorkItemOp;
+import es.iti.wakamiti.azure.api.model.query.Query;
+import es.iti.wakamiti.azure.api.model.query.WorkItemsQuery;
+import es.iti.wakamiti.azure.internal.Util;
+import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 
 
+/**
+ * Provides access to the Azure Api service.
+ */
 public class AzureApi extends BaseApi<AzureApi> {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureApi.class);
@@ -62,10 +97,13 @@ public class AzureApi extends BaseApi<AzureApi> {
      * Constructs an instance of {@code AzureApi} with the specified base URL,
      * tag extractor function, and configuration.
      *
-     * @param baseUrl      The base URL for Azure API requests.
+     * @param baseUrl       The base URL for Azure API requests.
      * @param configuration The name of the test configuration to use.
      */
-    public AzureApi(URL baseUrl, String configuration) {
+    public AzureApi(
+            URL baseUrl,
+            String configuration
+    ) {
         super(baseUrl);
         this.configuration = configuration;
     }
@@ -78,7 +116,11 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param value The value associated with the field.
      * @return A configured WorkItemOp instance with the specified operation, path, and value.
      */
-    private WorkItemOp workItemOp(WorkItemOp.Operation op, String field, String value) {
+    private WorkItemOp workItemOp(
+            WorkItemOp.Operation op,
+            String field,
+            String value
+    ) {
         return new WorkItemOp().op(op).path(format("/fields/{}", field)).value(value);
     }
 
@@ -91,7 +133,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @throws WakamitiAzureException If required, settings cannot be retrieved.
      */
     public Settings settings() {
-        if (settings != null) return settings;
+        if (settings != null) {
+            return settings;
+        }
 
         Settings settings = new Settings();
 
@@ -153,7 +197,8 @@ public class AzureApi extends BaseApi<AzureApi> {
      */
     private String getConfiguration() {
         Stream<JsonNode> req = newRequest().getAllPages(projectBase() + "/testplan/configurations",
-                json -> read(json, VALUE, new TypeRef<>() {}));
+                json -> read(json, VALUE, new TypeRef<>() {
+                }));
 
         Function<JsonNode, String> mapper = json -> read(json, "$.id", String.class);
         if (isNotBlank(configuration)) {
@@ -173,7 +218,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param id The ID of the test plan.
      * @return An {@link Optional} containing the {@link TestPlan}, or empty if not found.
      */
-    private Optional<TestPlan> getTestPlan(String id) {
+    private Optional<TestPlan> getTestPlan(
+            String id
+    ) {
         return newRequest()
                 .pathParam(PLAN_ID, id)
                 .get(projectBase() + "/testplan/plans/{planId}")
@@ -187,7 +234,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @return The created {@link TestPlan}.
      * @throws NoSuchElementException If the response body is empty.
      */
-    private TestPlan createTestPlan(TestPlan plan) {
+    private TestPlan createTestPlan(
+            TestPlan plan
+    ) {
         TestPlan newPlan = newRequest()
                 .body(json(plan).toString())
                 .post(projectBase() + "/testplan/plans")
@@ -212,7 +261,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @return An {@link Optional} containing the test plan ID, or empty if not found.
      * @throws WakamitiAzureException If multiple matching test plans are found.
      */
-    public Optional<String> searchTestPlanId(TestPlan plan) {
+    public Optional<String> searchTestPlanId(
+            TestPlan plan
+    ) {
         Query query = new WorkItemsQuery()
                 .select().where(
                         field(TEAM_PROJECT).isEqualsTo("@project")
@@ -236,19 +287,24 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param plan The {@link TestPlan} to search for.
      * @return An {@link Optional} containing the {@link TestPlan}, or empty if not found.
      */
-    public Optional<TestPlan> searchTestPlan(TestPlan plan) {
+    public Optional<TestPlan> searchTestPlan(
+            TestPlan plan
+    ) {
         return searchTestPlanId(plan).flatMap(this::getTestPlan);
     }
 
     /**
      * Retrieves an existing test plan or creates a new one if it does not exist.
      *
-     * @param plan The {@link TestPlan} to retrieve or create.
+     * @param plan                The {@link TestPlan} to retrieve or create.
      * @param createItemsIfAbsent Whether to create the test plan if it is absent.
      * @return The retrieved or newly created {@link TestPlan}.
      * @throws WakamitiAzureException If the test plan does not exist and creation is not allowed.
      */
-    public TestPlan getTestPlan(TestPlan plan, boolean createItemsIfAbsent) {
+    public TestPlan getTestPlan(
+            TestPlan plan,
+            boolean createItemsIfAbsent
+    ) {
         return searchTestPlan(plan)
                 .orElseGet(() -> {
                     if (createItemsIfAbsent) {
@@ -267,13 +323,16 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param plan The {@link TestPlan} containing the test suites.
      * @return A {@link Stream} of {@link TestSuite} objects.
      */
-    public Stream<TestSuite> searchTestSuites(TestPlan plan) {
+    public Stream<TestSuite> searchTestSuites(
+            TestPlan plan
+    ) {
         return newRequest()
                 .pathParam(PLAN_ID, plan.id())
                 .queryParam("asTreeView", true)
                 .getAllPages(projectBase() + "/testplan/Plans/{planId}/suites",
                         json -> {
-                            List<TestSuiteTree> trees = read(json, VALUE, new TypeRef<>() {});
+                            List<TestSuiteTree> trees = read(json, VALUE, new TypeRef<>() {
+                            });
                             return Util.readTree(trees);
                         });
     }
@@ -281,11 +340,14 @@ public class AzureApi extends BaseApi<AzureApi> {
     /**
      * Creates a list of test suites under the specified test plan.
      *
-     * @param plan The {@link TestPlan} under which to create the test suites.
+     * @param plan   The {@link TestPlan} under which to create the test suites.
      * @param suites The list of {@link TestSuite} objects to create.
      * @return A filtered list of created {@link TestSuite} objects.
      */
-    public List<TestSuite> createTestSuites(TestPlan plan, List<TestSuite> suites) {
+    public List<TestSuite> createTestSuites(
+            TestPlan plan,
+            List<TestSuite> suites
+    ) {
         UnaryOperator<TestSuite> newSuite = suite -> new TestSuite().name(suite.name())
                 .suiteType(TestSuite.Type.STATIC_TEST_SUITE)
                 .parent(isNull(suite.parent()) ? null : new TestSuite().id(suite.parent().id()));
@@ -308,12 +370,16 @@ public class AzureApi extends BaseApi<AzureApi> {
     /**
      * Retrieves existing test suites or creates new ones if they do not exist.
      *
-     * @param plan The {@link TestPlan} containing the test suites.
-     * @param suites The list of {@link TestSuite} objects to retrieve or create.
+     * @param plan                The {@link TestPlan} containing the test suites.
+     * @param suites              The list of {@link TestSuite} objects to retrieve or create.
      * @param createItemsIfAbsent Whether to create test suites if they are absent.
      * @return A list of {@link TestSuite} objects.
      */
-    public List<TestSuite> getTestSuites(TestPlan plan, List<TestSuite> suites, boolean createItemsIfAbsent) {
+    public List<TestSuite> getTestSuites(
+            TestPlan plan,
+            List<TestSuite> suites,
+            boolean createItemsIfAbsent
+    ) {
         List<TestSuite> remoteSuites = searchTestSuites(plan)
                 .flatMap(Util::flatten).distinct()
                 .peek(s -> LOGGER.trace("Remote suite #{} loaded", s.id()))
@@ -334,11 +400,14 @@ public class AzureApi extends BaseApi<AzureApi> {
     /**
      * Searches for test cases in a specific test suite under the given test plan.
      *
-     * @param plan The {@link TestPlan} containing the test cases.
+     * @param plan  The {@link TestPlan} containing the test cases.
      * @param suite The {@link TestSuite} containing the test cases.
      * @return A {@link Stream} of {@link TestCase} objects.
      */
-    public Stream<TestCase> searchTestCases(TestPlan plan, TestSuite suite) {
+    public Stream<TestCase> searchTestCases(
+            TestPlan plan,
+            TestSuite suite
+    ) {
         return newRequest()
                 .pathParam(PLAN_ID, plan.id())
                 .pathParam(SUITE_ID, suite.id())
@@ -346,27 +415,34 @@ public class AzureApi extends BaseApi<AzureApi> {
                 .queryParam("expand", true)
                 .queryParam("witFields", join(List.of(TITLE, TAGS), ","))
                 .getAllPages(projectBase() + "/testplan/Plans/{planId}/Suites/{suiteId}/TestCase",
-                        new TypeRef<List<JsonNode>>() { })
+                        new TypeRef<List<JsonNode>>() {
+                        })
                 .map(json -> {
-                    WorkItem item = read(json, "$.workItem", new TypeRef<>() {});
+                    WorkItem item = read(json, "$.workItem", new TypeRef<>() {
+                    });
                     return new TestCase().id(item.id()).name(item.name()).suite(suite)
                             .tag(item.workItemFields().get(TAGS))
                             .order(Optional.ofNullable(read(json, "$.order", Integer.class)).orElse(0))
-                            .pointAssignments(read(json, "$.pointAssignments", new TypeRef<>() { }));
+                            .pointAssignments(read(json, "$.pointAssignments", new TypeRef<>() {
+                            }));
                 });
     }
 
     /**
      * Retrieves existing test cases or creates new ones if they do not exist.
      *
-     * @param plan The {@link TestPlan} containing the test cases.
-     * @param suites The list of {@link TestSuite} objects containing the test cases.
-     * @param tests The list of {@link TestCase} objects to retrieve or create.
+     * @param plan                The {@link TestPlan} containing the test cases.
+     * @param suites              The list of {@link TestSuite} objects containing the test cases.
+     * @param tests               The list of {@link TestCase} objects to retrieve or create.
      * @param createItemsIfAbsent Whether to create test cases if they are absent.
      * @return A list of {@link TestCase} objects.
      */
-    public List<TestCase> getTestCases(TestPlan plan, List<TestSuite> suites, List<TestCase> tests,
-                                       boolean createItemsIfAbsent) {
+    public List<TestCase> getTestCases(
+            TestPlan plan,
+            List<TestSuite> suites,
+            List<TestCase> tests,
+            boolean createItemsIfAbsent
+    ) {
         List<TestCase> remoteTests = suites.stream().parallel()
                 .flatMap(suite -> searchTestCases(plan, suite))
                 .filter(tests::contains)
@@ -376,8 +452,8 @@ public class AzureApi extends BaseApi<AzureApi> {
                 .filter(t -> !remoteTests.contains(t) || remoteTests.stream()
                         .anyMatch(c -> t.identifier().equals(c.identifier()) && !t.suite().equals(c.suite())))
                 .map(x -> x.suite(suites.stream()
-                        .filter(suite -> x.suite().asPath().endsWith(suite.asPath())).findFirst()
-                        .orElseThrow(() -> new NoSuchElementException("Suite not found: " + x.suite().asPath())))
+                                .filter(suite -> x.suite().asPath().endsWith(suite.asPath())).findFirst()
+                                .orElseThrow(() -> new NoSuchElementException("Suite not found: " + x.suite().asPath())))
                         .id(null))
                 .collect(Collectors.toList());
         List<TestCase> toRemove = remoteTests.stream()
@@ -422,7 +498,10 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param testCases the list of test cases to be created.
      * @return the created test cases, populated with IDs and other metadata.
      */
-    public List<TestCase> createTestCases(TestPlan plan, List<TestCase> testCases) {
+    public List<TestCase> createTestCases(
+            TestPlan plan,
+            List<TestCase> testCases
+    ) {
         testCases.stream().peek(t -> {
                     List<WorkItemOp> ops = new ArrayList<>();
                     ops.add(workItemOp(WorkItemOp.Operation.ADD, TITLE, t.name()));
@@ -433,7 +512,7 @@ public class AzureApi extends BaseApi<AzureApi> {
                             .ifPresent(d -> ops.add(workItemOp(WorkItemOp.Operation.ADD, DESCRIPTION, d)));
                     newRequest()
                             .postCall(response -> response.body()
-                                    .filter(x -> response.statusCode() < 400)
+                                    .filter(x -> response.statusCode() < HTTP_CLIENT_ERROR_STATUS)
                                     .orElseThrow(() -> new WakamitiAzureException("Cannot create test case '{}'. ",
                                             t.identifier())))
                             .pathParam("type", settings().testCaseType())
@@ -481,7 +560,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      *
      * @param testCases a list of test cases.
      */
-    public void removeTestCases(List<TestCase> testCases) {
+    public void removeTestCases(
+            List<TestCase> testCases
+    ) {
         List<CompletableFuture<?>> futures = new LinkedList<>();
         testCases.stream().collect(groupingBy(TestCase::suite, mapping(Function.identity(), toList())))
                 .forEach((suite, tests) -> {
@@ -506,7 +587,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      *                  current test case and its updated version.
      * @return the updated test cases.
      */
-    public List<TestCase> updateTestCases(List<Pair<TestCase, TestCase>> testCases) {
+    public List<TestCase> updateTestCases(
+            List<Pair<TestCase, TestCase>> testCases
+    ) {
         testCases.stream()
                 .filter(p -> p.key().isDifferent(p.value()))
                 .forEach(p -> {
@@ -532,8 +615,11 @@ public class AzureApi extends BaseApi<AzureApi> {
      * Creates a new test run within Azure DevOps.
      *
      * @param run the test run to be created.
+     * @return the created test run
      */
-    public TestRun createRun(TestRun run) {
+    public TestRun createRun(
+            TestRun run
+    ) {
         return newRequest().body(json(run).toString()).post(projectBase() + "/test/runs").body()
                 .map(json -> readStringValue(json, "id"))
                 .map(id -> {
@@ -542,7 +628,6 @@ public class AzureApi extends BaseApi<AzureApi> {
                 })
                 .map(run::id)
                 .orElseThrow(() -> new WakamitiAzureException("Cannot create test run for plan '{}'", run.plan().id()));
-
     }
 
     /**
@@ -550,7 +635,9 @@ public class AzureApi extends BaseApi<AzureApi> {
      *
      * @param run the test run to be updated.
      */
-    public void updateRun(TestRun run) {
+    public void updateRun(
+            TestRun run
+    ) {
         newRequest().body(json(run).toString())
                 .pathParam(RUN_ID, run.id())
                 .patch(projectBase() + "/test/runs/{runId}");
@@ -562,7 +649,10 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param run    the test run to which the files will be attached.
      * @param report a file path representing the report to be attached.
      */
-    public void attachFile(TestRun run, Path report) {
+    public void attachFile(
+            TestRun run,
+            Path report
+    ) {
         try {
             newRequest().body(json(new Attachment()
                             .fileName(report.getFileName().toString())
@@ -579,23 +669,26 @@ public class AzureApi extends BaseApi<AzureApi> {
         }
     }
 
-
     /**
      * Retrieves test results from a specified test run.
      *
-     * @param run the test run for which results are fetched.
+     * @param run   the test run for which results are fetched.
      * @param total the total number of test results expected.
      * @return a stream of test results.
      */
-    public Stream<TestResult> getResults(TestRun run, int total) {
+    public Stream<TestResult> getResults(
+            TestRun run,
+            int total
+    ) {
         int times = (int) Math.ceil((double) total / MAX_RESULTS);
         return IntStream.range(0, times).mapToObj(i ->
-            newRequest().pathParam(RUN_ID, run.id())
-                    .queryParam("$skip", MAX_RESULTS*i)
-                    .get(projectBase() + "/test/Runs/{runId}/results")
-                    .body()
-                    .map(json -> read(json, "$.value", new TypeRef<List<TestResult>>() {}))
-                    .orElseGet(LinkedList::new)
+                newRequest().pathParam(RUN_ID, run.id())
+                        .queryParam("$skip", MAX_RESULTS * i)
+                        .get(projectBase() + "/test/Runs/{runId}/results")
+                        .body()
+                        .map(json -> read(json, "$.value", new TypeRef<List<TestResult>>() {
+                        }))
+                        .orElseGet(LinkedList::new)
         ).flatMap(List::stream);
     }
 
@@ -605,7 +698,10 @@ public class AzureApi extends BaseApi<AzureApi> {
      * @param run     the test run associated with the test results.
      * @param results the list of test results to be updated.
      */
-    public void updateResults(TestRun run, List<TestResult> results) {
+    public void updateResults(
+            TestRun run,
+            List<TestResult> results
+    ) {
         results.forEach(r -> r.startedDate(Util.toZoneId(r.startedDate(), settings().zoneId()))
                 .completedDate(Util.toZoneId(r.completedDate(), settings().zoneId()))
                 .state(TestRun.Status.COMPLETED));

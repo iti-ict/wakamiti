@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,9 +8,35 @@
 package es.iti.wakamiti.database;
 
 
+import static es.iti.wakamiti.database.DatabaseHelper.isDateOrDateTime;
+import static es.iti.wakamiti.database.DatabaseHelper.unquotedRegex;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import es.iti.wakamiti.database.jdbc.DatabaseType;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.*;
+import net.sf.jsqlparser.expression.CastExpression;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
+import net.sf.jsqlparser.expression.DoubleValue;
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.expression.ExpressionVisitorAdapter;
+import net.sf.jsqlparser.expression.Function;
+import net.sf.jsqlparser.expression.HexValue;
+import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.NullValue;
+import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.IsNullExpression;
@@ -21,30 +49,20 @@ import net.sf.jsqlparser.statement.StatementVisitorAdapter;
 import net.sf.jsqlparser.statement.create.table.ColDataType;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
-import net.sf.jsqlparser.statement.select.*;
+import net.sf.jsqlparser.statement.select.AllColumns;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectItem;
+import net.sf.jsqlparser.statement.select.Values;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static es.iti.wakamiti.database.DatabaseHelper.isDateOrDateTime;
-import static es.iti.wakamiti.database.DatabaseHelper.unquotedRegex;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
 /**
  * Provides methods for parsing SQL statements, constructing SQL queries, and generating
  * WHERE clause expressions. It also handles conversions between different data types and
  * formats SQL expressions.
- *
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class SQLParser {
 
@@ -72,17 +90,17 @@ public class SQLParser {
     private static final Map<DatabaseType, java.util.function.Function<String, Expression>> DATE_CAST = Map.of(
             DatabaseType.OTHER, e -> new DateTimeLiteralExpression()
                     .withType(
-                            DatabaseHelper.isDate(e) ?
-                                    DateTimeLiteralExpression.DateTime.DATE :
-                                    DateTimeLiteralExpression.DateTime.TIMESTAMP
+                            DatabaseHelper.isDate(e)
+                                    ? DateTimeLiteralExpression.DateTime.DATE
+                                    : DateTimeLiteralExpression.DateTime.TIMESTAMP
                     )
                     .withValue(new StringValue(e).toString()),
             DatabaseType.SQLSERVER, e -> new CastExpression()
                     .withLeftExpression(new StringValue(e))
                     .withUseCastKeyword(true)
-                    .withType(new ColDataType((DatabaseHelper.isDate(e) ?
-                            DateTimeLiteralExpression.DateTime.DATE :
-                            "DATETIME").toString()))
+                    .withType(new ColDataType((DatabaseHelper.isDate(e)
+                            ? DateTimeLiteralExpression.DateTime.DATE
+                            : "DATETIME").toString()))
     );
 
     private static final Map<DatabaseType, java.util.function.Function<String, String>> FORMAT = Map.of(
@@ -93,7 +111,16 @@ public class SQLParser {
     private final DatabaseType type;
     private final boolean autoTrim;
 
-    public SQLParser(DatabaseType type, boolean autoTrim) {
+    /**
+     * Creates a parser configured for one SQL dialect and comparison policy.
+     *
+     * @param type database dialect used for identifiers and date literals
+     * @param autoTrim whether generated comparisons trim character values
+     */
+    public SQLParser(
+            DatabaseType type,
+            boolean autoTrim
+    ) {
         this.type = type;
         this.autoTrim = autoTrim;
     }
@@ -105,7 +132,9 @@ public class SQLParser {
      * @return A list of parsed SQL statements
      * @throws JSQLParserException If an error occurs during parsing
      */
-    public static List<Statement> parseStatements(String sql) throws JSQLParserException {
+    public static List<Statement> parseStatements(
+            String sql
+    ) throws JSQLParserException {
         return CCJSqlParserUtil.parseStatements(fix(sql));
     }
 
@@ -116,7 +145,9 @@ public class SQLParser {
      * @return The parsed SQL statement
      * @throws JSQLParserException If an error occurs during parsing
      */
-    public static Statement parseStatement(String sql) throws JSQLParserException {
+    public static Statement parseStatement(
+            String sql
+    ) throws JSQLParserException {
         List<Statement> statements = parseStatements(sql);
         if (statements.size() > 1) {
             throw new JSQLParserException("There are more than one sentence");
@@ -131,7 +162,9 @@ public class SQLParser {
      * @return The parsed expression
      * @throws JSQLParserException If an error occurs during parsing
      */
-    public static Expression parseExpression(String expression) throws JSQLParserException {
+    public static Expression parseExpression(
+            String expression
+    ) throws JSQLParserException {
         return CCJSqlParserUtil.parseExpression(fix(expression));
     }
 
@@ -142,7 +175,9 @@ public class SQLParser {
      * @param script The SQL script to fix
      * @return The fixed SQL script
      */
-    private static String fix(String script) {
+    private static String fix(
+            String script
+    ) {
         String regex = "(?i)(YEAR|QUARTER|MONTH|WEEK|DAY|HOUR|MINUTE|SECOND|MICROSECOND)S";
         return script.replaceAll(unquotedRegex(regex), "$1");
     }
@@ -153,7 +188,9 @@ public class SQLParser {
      * @param column The expression representing the column to trim
      * @return The SQL function for trimming whitespace from the column
      */
-    private static Function trimFunction(Expression column) {
+    private static Function trimFunction(
+            Expression column
+    ) {
         Function f = new Function();
         f.setName(TRIM);
         f.setParameters(new ExpressionList<>(column));
@@ -166,8 +203,12 @@ public class SQLParser {
      * @param o The object to convert
      * @return The SQL expression representing the object
      */
-    private Expression toExpression(Object o) {
-        if (o == null) return new NullValue();
+    private Expression toExpression(
+            Object o
+    ) {
+        if (o == null) {
+            return new NullValue();
+        }
         if (o instanceof Number || o instanceof Boolean) {
             return CONVERTER.get(o.getClass()).apply(o);
         } else {
@@ -182,12 +223,16 @@ public class SQLParser {
      * @return An Optional containing the PlainSelect object if the statement type
      * is supported, otherwise an empty Optional
      */
-    public Optional<PlainSelect> toSelect(Statement statement) {
+    public Optional<PlainSelect> toSelect(
+            Statement statement
+    ) {
         AtomicReference<Optional<PlainSelect>> result = new AtomicReference<>(Optional.empty());
 
         statement.accept(new StatementVisitorAdapter() {
             @Override
-            public void visit(Delete delete) {
+            public void visit(
+                    Delete delete
+            ) {
                 Optional<PlainSelect> aux = Optional.of(createSelect(delete.getTable(), delete.getWhere()));
                 if (!isEmpty(delete.getWithItemsList())) {
                     aux = aux.map(s -> s.addWithItemsList(delete.getWithItemsList()).getPlainSelect());
@@ -196,12 +241,16 @@ public class SQLParser {
             }
 
             @Override
-            public void visit(Update update) {
+            public void visit(
+                    Update update
+            ) {
                 result.set(Optional.of(createSelect(update.getTable(), update.getWhere())));
             }
 
             @Override
-            public void visit(Insert insert) {
+            public void visit(
+                    Insert insert
+            ) {
                 result.set(Optional.of(createSelect(insert.getTable(),
                         createWhere(insert.getColumns(), insert.getValues().getExpressions()))));
             }
@@ -215,7 +264,9 @@ public class SQLParser {
      * @param values The array of values to convert
      * @return The Values object containing the expressions representing the values
      */
-    public Values toValues(Object[] values) {
+    public Values toValues(
+            Object[] values
+    ) {
         Values result = new Values();
         List<Expression> expressions = Stream.of(values).map(this::toExpression).collect(Collectors.toList());
         result.addExpressions(expressions);
@@ -228,7 +279,9 @@ public class SQLParser {
      * @param us The UpdateSet object to convert
      * @return The Expression representing the WHERE clause
      */
-    public Expression toWhere(UpdateSet us) {
+    public Expression toWhere(
+            UpdateSet us
+    ) {
         return createWhere(new ArrayList<>(us.getColumns()), us.getValues());
     }
 
@@ -238,11 +291,18 @@ public class SQLParser {
      * @param expression The expression containing the columns to format
      * @param mapper     The function used to format the column names
      */
-    public void formatColumns(Expression expression, UnaryOperator<String> mapper) {
-        if (Objects.isNull(expression)) return;
+    public void formatColumns(
+            Expression expression,
+            UnaryOperator<String> mapper
+    ) {
+        if (Objects.isNull(expression)) {
+            return;
+        }
         expression.accept(new ExpressionVisitorAdapter() {
             @Override
-            public void visit(Column column) {
+            public void visit(
+                    Column column
+            ) {
                 column.setColumnName(mapper.apply(column.getColumnName()));
             }
         });
@@ -255,7 +315,10 @@ public class SQLParser {
      * @param items The select items to include in the select clause
      * @return The PlainSelect object representing the SQL SELECT statement
      */
-    private PlainSelect createSelect(Table table, SelectItem<?>... items) {
+    private PlainSelect createSelect(
+            Table table,
+            SelectItem<?>... items
+    ) {
         return createSelect(table, null, items);
     }
 
@@ -266,7 +329,10 @@ public class SQLParser {
      * @param where The WHERE clause expression
      * @return The PlainSelect object representing the SQL SELECT statement
      */
-    private PlainSelect createSelect(Table table, Expression where) {
+    private PlainSelect createSelect(
+            Table table,
+            Expression where
+    ) {
         return createSelect(table, where, new SelectItem<>(new AllColumns()));
     }
 
@@ -278,11 +344,17 @@ public class SQLParser {
      * @param items The select items to include in the select clause
      * @return The PlainSelect object representing the SQL SELECT statement
      */
-    private PlainSelect createSelect(Table table, Expression where, SelectItem<?>... items) {
+    private PlainSelect createSelect(
+            Table table,
+            Expression where,
+            SelectItem<?>... items
+    ) {
         PlainSelect body = new PlainSelect();
         body.addSelectItems(items);
         body.setFromItem(table);
-        if (where != null) body.setWhere(where);
+        if (where != null) {
+            body.setWhere(where);
+        }
         return body;
     }
 
@@ -293,7 +365,10 @@ public class SQLParser {
      * @param values  The list of values corresponding to the columns
      * @return The WHERE clause expression
      */
-    private Expression createWhere(List<Column> columns, ExpressionList<?> values) {
+    private Expression createWhere(
+            List<Column> columns,
+            ExpressionList<?> values
+    ) {
         List<Expression> result = new LinkedList<>();
         for (int i = 0; i < values.size(); i++) {
             Expression expression = values.get(i);
@@ -314,7 +389,9 @@ public class SQLParser {
      * @param column The column to check for NULL
      * @return The {@code IS NULL} expression
      */
-    private IsNullExpression isNull(Column column) {
+    private IsNullExpression isNull(
+            Column column
+    ) {
         IsNullExpression isNull = new IsNullExpression();
         isNull.setLeftExpression(column);
         return isNull;
@@ -329,10 +406,13 @@ public class SQLParser {
      * @param expression The expression to compare against
      * @return The equality expression
      */
-    private EqualsTo equalsTo(Column column, Expression expression) {
+    private EqualsTo equalsTo(
+            Column column,
+            Expression expression
+    ) {
         EqualsTo exp = new EqualsTo();
-        if (expression instanceof StringValue && isDateOrDateTime(((StringValue) expression).getValue())) {
-            expression = dateCast(((StringValue) expression).getValue());
+        if (expression instanceof StringValue value && isDateOrDateTime(value.getValue())) {
+            expression = dateCast(value.getValue());
         }
         exp.setLeftExpression(autoTrim && expression instanceof StringValue ? trim(column) : column);
         exp.setRightExpression(expression);
@@ -346,7 +426,10 @@ public class SQLParser {
      * @param columns An array of column names to be selected
      * @return The constructed SELECT statement
      */
-    public Select sqlSelectFrom(String table, String[] columns) {
+    public Select sqlSelectFrom(
+            String table,
+            String[] columns
+    ) {
         List<Expression> columnList = Stream.of(columns).map(Column::new)
                 .collect(Collectors.toCollection(LinkedList::new));
         return createSelect(new Table(table), new SelectItem<>(new ExpressionList<>(columnList)));
@@ -358,7 +441,9 @@ public class SQLParser {
      * @param table The name of the table
      * @return The constructed SELECT statement
      */
-    public Select sqlSelectCountFrom(String table) {
+    public Select sqlSelectCountFrom(
+            String table
+    ) {
         Function count = new Function().withName(COUNT).withParameters(new AllColumns());
         return createSelect(new Table(table), new SelectItem<>(count));
     }
@@ -372,7 +457,11 @@ public class SQLParser {
      * @param values  An array of values to match against the specified columns
      * @return The constructed SELECT statement
      */
-    public Select sqlSelectCountFrom(String table, String[] columns, Object[] values) {
+    public Select sqlSelectCountFrom(
+            String table,
+            String[] columns,
+            Object[] values
+    ) {
         Function count = new Function().withName(COUNT).withParameters(new AllColumns());
         List<Column> columnList = Stream.of(columns)
                 .map(Column::new).collect(Collectors.toCollection(LinkedList::new));
@@ -387,7 +476,9 @@ public class SQLParser {
      * @param table The name of the table
      * @return The constructed DELETE statement
      */
-    public Delete toDelete(String table) {
+    public Delete toDelete(
+            String table
+    ) {
         Delete delete = new Delete();
         delete.setTable(new Table(table));
         return delete;
@@ -400,7 +491,10 @@ public class SQLParser {
      * @param values A map representing column-value pairs to be inserted
      * @return The constructed INSERT statement
      */
-    public Insert toInsert(String table, Map<String, Object> values) {
+    public Insert toInsert(
+            String table,
+            Map<String, Object> values
+    ) {
         Insert insert = new Insert();
         insert.setTable(new Table(this.format(table)));
         insert.setColumns(new ExpressionList<>(
@@ -426,7 +520,11 @@ public class SQLParser {
      * @param where The condition for updating records
      * @return The constructed UPDATE statement
      */
-    public Update toUpdate(String table, Map<String, Object> sets, Expression where) {
+    public Update toUpdate(
+            String table,
+            Map<String, Object> sets,
+            Expression where
+    ) {
         Update update = new Update();
         update.setTable(new Table(this.format(table)));
         update.setUpdateSets(new LinkedList<>());
@@ -444,7 +542,10 @@ public class SQLParser {
      * @param where A map representing conditions for deleting records
      * @return The constructed DELETE statement
      */
-    public Delete toDelete(String table, Map<String, Object> where) {
+    public Delete toDelete(
+            String table,
+            Map<String, Object> where
+    ) {
         Delete delete = new Delete();
         delete.setTable(new Table(this.format(table)));
         delete.setWhere(createWhere(where));
@@ -457,7 +558,9 @@ public class SQLParser {
      * @param where A map representing column-value pairs for conditions
      * @return The constructed WHERE clause expression
      */
-    public Expression createWhere(Map<String, Object> where) {
+    public Expression createWhere(
+            Map<String, Object> where
+    ) {
         List<Column> columns = where.keySet().stream()
                 .map(this::format).map(Column::new)
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -472,7 +575,9 @@ public class SQLParser {
      * @param column The column to trim
      * @return The trimmed column function
      */
-    private Function trim(Column column) {
+    private Function trim(
+            Column column
+    ) {
         return Optional.ofNullable(TRIM_FUNCTION.get(type))
                 .orElse(TRIM_FUNCTION.get(DatabaseType.OTHER))
                 .apply(column);
@@ -484,7 +589,9 @@ public class SQLParser {
      * @param expression The expression to cast
      * @return The casted expression
      */
-    private Expression dateCast(String expression) {
+    private Expression dateCast(
+            String expression
+    ) {
         return Optional.ofNullable(DATE_CAST.get(type))
                 .orElse(DATE_CAST.get(DatabaseType.OTHER))
                 .apply(expression);
@@ -496,7 +603,9 @@ public class SQLParser {
      * @param name The name to format
      * @return The formatted name
      */
-    public String format(String name) {
+    public String format(
+            String name
+    ) {
         return Optional.ofNullable(FORMAT.get(type))
                 .orElse(FORMAT.get(DatabaseType.OTHER))
                 .apply(name);
@@ -508,7 +617,9 @@ public class SQLParser {
      * @param str The string to unquote and uppercase
      * @return The unquoted and uppercase string
      */
-    public String unquote(String str) {
+    public String unquote(
+            String str
+    ) {
         return str.replaceAll("^\"|\"$|^`|`$", "").toUpperCase();
     }
 

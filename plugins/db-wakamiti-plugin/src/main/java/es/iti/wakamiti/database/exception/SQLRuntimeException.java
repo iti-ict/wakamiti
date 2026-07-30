@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -19,7 +21,9 @@ public class SQLRuntimeException extends RuntimeException {
      *
      * @param e The cause of the exception.
      */
-    public SQLRuntimeException(Throwable e) {
+    public SQLRuntimeException(
+            Throwable e
+    ) {
         super(e);
     }
 
@@ -28,7 +32,9 @@ public class SQLRuntimeException extends RuntimeException {
      *
      * @param message The detail message.
      */
-    public SQLRuntimeException(String message) {
+    public SQLRuntimeException(
+            String message
+    ) {
         super(message);
     }
 
@@ -38,7 +44,10 @@ public class SQLRuntimeException extends RuntimeException {
      * @param message The detail message format string.
      * @param args    Arguments referenced by the format specifiers in the message string.
      */
-    public SQLRuntimeException(String message, Object... args) {
+    public SQLRuntimeException(
+            String message,
+            Object... args
+    ) {
         super(message(message, args));
     }
 
@@ -48,7 +57,10 @@ public class SQLRuntimeException extends RuntimeException {
      * @param message The detail message.
      * @param e       The cause of the exception.
      */
-    public SQLRuntimeException(String message, Throwable e) {
+    public SQLRuntimeException(
+            String message,
+            Throwable e
+    ) {
         super(message, e);
     }
 

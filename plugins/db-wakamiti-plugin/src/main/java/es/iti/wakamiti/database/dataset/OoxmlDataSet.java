@@ -1,15 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.database.dataset;
 
-
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.apache.poi.ss.usermodel.*;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,13 +17,23 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+
 
 /**
  * Represents a data set extracted from an OOXML (Office Open XML) file.
  */
 public class OoxmlDataSet extends MultiDataSet {
 
-    private static final Logger logger = WakamitiLogger.forClass(OoxmlDataSet.class);
+    private static final Logger LOGGER = WakamitiLogger.forClass(OoxmlDataSet.class);
 
     private final File file;
     private final String ignoreSheetRegex;
@@ -41,7 +48,11 @@ public class OoxmlDataSet extends MultiDataSet {
      * @param nullSymbol       The symbol representing {@code null} values.
      * @throws IOException If an I/O error occurs.
      */
-    public OoxmlDataSet(File file, String ignoreSheetRegex, String nullSymbol) throws IOException {
+    public OoxmlDataSet(
+            File file,
+            String ignoreSheetRegex,
+            String nullSymbol
+    ) throws IOException {
         this.workbook = WorkbookFactory.create(file, null, true);
         this.file = file;
         this.ignoreSheetRegex = ignoreSheetRegex;
@@ -70,7 +81,7 @@ public class OoxmlDataSet extends MultiDataSet {
         try {
             this.workbook.close();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 
@@ -100,7 +111,11 @@ public class OoxmlDataSet extends MultiDataSet {
          * @param file       The OOXML file.
          * @param nullSymbol The symbol representing {@code null} values.
          */
-        public OoxmlSheetDataSet(Sheet sheet, File file, String nullSymbol) {
+        public OoxmlSheetDataSet(
+                Sheet sheet,
+                File file,
+                String nullSymbol
+        ) {
             super(sheet.getSheetName(), "file '" + file + "'", nullSymbol);
             this.rowIterator = sheet.rowIterator();
             this.columns = sheetHeaders(rowIterator.next());
@@ -112,7 +127,9 @@ public class OoxmlDataSet extends MultiDataSet {
          * @param row The row containing headers.
          * @return An array of column headers.
          */
-        private String[] sheetHeaders(Row row) {
+        private String[] sheetHeaders(
+                Row row
+        ) {
             List<String> rawHeaders = new ArrayList<>();
             row.cellIterator().forEachRemaining(cell -> {
                 String header = Optional.ofNullable(cell.getStringCellValue()).map(String::trim).orElse(null);
@@ -158,7 +175,9 @@ public class OoxmlDataSet extends MultiDataSet {
          * @return The value of the column.
          */
         @Override
-        public Object rowValue(int columnIndex) {
+        public Object rowValue(
+                int columnIndex
+        ) {
             Cell cell = currentRow.getCell(columnIndex);
             Object value = null;
             if (cell != null) {
@@ -202,6 +221,7 @@ public class OoxmlDataSet extends MultiDataSet {
                     "Cannot copy data set outside the container multi data set"
             );
         }
+
     }
 
 }

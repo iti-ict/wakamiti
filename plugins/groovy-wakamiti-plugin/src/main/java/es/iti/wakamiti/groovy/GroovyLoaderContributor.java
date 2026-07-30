@@ -1,18 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.groovy;
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import groovy.lang.GroovyClassLoader;
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.extensions.LoaderContributor;
-import groovy.lang.GroovyCodeSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,30 +14,49 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.extensions.LoaderContributor;
+import es.iti.wakamiti.api.util.ThrowableFunction;
+import groovy.lang.GroovyClassLoader;
+
 
 /**
  * This {@link LoaderContributor} allows load groovy sources as Java
  * classes.
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
-@Extension(provider =  "es.iti.wakamiti", name = "groovy-loader", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "groovy-loader",
+        version = "2.6"
+)
 public class GroovyLoaderContributor implements LoaderContributor {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger( "es.iti.wakamiti.groovy");
+    /** Logger category used while discovering and compiling Groovy contributors. */
+    public static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.groovy");
 
     private final GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
 
     @Override
-    public Stream<? extends Class<?>> load(List<String> discoveryPaths) {
+    public Stream<? extends Class<?>> load(
+            List<String> discoveryPaths
+    ) {
         List<Path> groovyPaths = discoveryPaths.stream()
                 .map(Paths::get)
                 .flatMap(this::listFiles)
                 .filter(file -> file.toFile().getName().toLowerCase().endsWith(".groovy"))
-                .collect(Collectors.toList());
+                .toList();
 
         if (groovyPaths.isEmpty()) {
             LOGGER.debug("No groovy classes to load");
@@ -51,7 +64,6 @@ public class GroovyLoaderContributor implements LoaderContributor {
         } else {
             groovyPaths.forEach(path -> LOGGER.debug("Groovy file [{}] found", path.getFileName()));
         }
-
 
         groovyPaths.stream().map(Path::getParent).map(Path::toUri).distinct()
                 .map((ThrowableFunction<URI, URL>) URI::toURL)
@@ -62,8 +74,10 @@ public class GroovyLoaderContributor implements LoaderContributor {
         return loadClasses(groovyPaths).stream();
     }
 
-    private List<Class<?>> loadClasses(List<Path> paths) {
-        List<Class<?>> compiled = new LinkedList<>();;
+    private List<Class<?>> loadClasses(
+            List<Path> paths
+    ) {
+        List<Class<?>> compiled = new LinkedList<>();
         List<Path> pending = new ArrayList<>(paths);
         Map<Path, Exception> failed = new HashMap<>();
 
@@ -85,7 +99,9 @@ public class GroovyLoaderContributor implements LoaderContributor {
         return compiled;
     }
 
-    private Stream<Path> listFiles(Path dir) {
+    private Stream<Path> listFiles(
+            Path dir
+    ) {
         try {
             return Stream.concat(
                     list(dir).filter(Files::isDirectory).flatMap(this::listFiles),
@@ -96,9 +112,11 @@ public class GroovyLoaderContributor implements LoaderContributor {
         }
     }
 
-    private Stream<Path> list(Path dir) throws IOException {
+    private Stream<Path> list(
+            Path dir
+    ) throws IOException {
         try (var stream = Files.list(dir)) {
-            return stream.collect(Collectors.toList()).stream();
+            return stream.toList().stream();
         }
     }
 

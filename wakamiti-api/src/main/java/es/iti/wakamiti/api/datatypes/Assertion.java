@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -12,7 +14,6 @@ package es.iti.wakamiti.api.datatypes;
  * description and describing a failure when the assertion is not satisfied.
  *
  * @param <T> The type of value to which the assertion applies.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface Assertion<T> {
 
@@ -24,7 +25,10 @@ public interface Assertion<T> {
      * @param assertion   The assertion condition to apply.
      * @param <T>         The type parameter for the value and assertion.
      */
-    static <T> void assertThat(T actualValue, Assertion<T> assertion) {
+    static <T> void assertThat(
+            T actualValue,
+            Assertion<T> assertion
+    ) {
         if (!assertion.test(actualValue)) {
             throw new AssertionError(assertion.describeFailure(actualValue));
         }
@@ -36,7 +40,9 @@ public interface Assertion<T> {
      * @param actualValue The value to test the assertion against.
      * @return {@code true} if the assertion is satisfied, {@code false} otherwise.
      */
-    boolean test(Object actualValue);
+    boolean test(
+            Object actualValue
+    );
 
     /**
      * Provides a description of the assertion.
@@ -51,5 +57,8 @@ public interface Assertion<T> {
      * @param actualValue The value that failed the assertion.
      * @return A string describing the failure of the assertion.
      */
-    String describeFailure(Object actualValue);
+    String describeFailure(
+            Object actualValue
+    );
+
 }

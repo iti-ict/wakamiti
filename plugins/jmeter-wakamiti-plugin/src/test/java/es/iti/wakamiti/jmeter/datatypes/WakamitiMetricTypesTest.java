@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,12 +8,9 @@
 package es.iti.wakamiti.jmeter.datatypes;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.jmeter.Metric;
-import org.junit.Test;
-import us.abstracta.jmeter.javadsl.core.stats.CountMetricSummary;
-import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;
-import us.abstracta.jmeter.javadsl.core.stats.TimeMetricSummary;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -19,9 +18,13 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.jmeter.Metric;
+import us.abstracta.jmeter.javadsl.core.stats.CountMetricSummary;
+import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;
+import us.abstracta.jmeter.javadsl.core.stats.TimeMetricSummary;
 
 
 @SuppressWarnings("unchecked")
@@ -187,4 +190,5 @@ public class WakamitiMetricTypesTest {
 
         return summary;
     }
+
 }

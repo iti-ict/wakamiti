@@ -1,9 +1,10 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
 
@@ -24,14 +25,14 @@ public class AmqpConnectionParams {
     /**
      * Creates a new immutable set of connection parameters.
      *
-     * @param uri broker URI
+     * @param uri      broker URI
      * @param username optional username (can be {@code null})
      * @param password optional password (can be {@code null})
      */
     public AmqpConnectionParams(
-        URI uri,
-        String username,
-        String password
+            URI uri,
+            String username,
+            String password
     ) {
         this.uri = uri;
         this.username = username;

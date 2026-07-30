@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,16 +8,14 @@
 package es.iti.wakamiti.test.gherkin;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
 import org.json.JSONException;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -26,13 +26,16 @@ import org.skyscreamer.jsonassert.comparator.DefaultComparator;
 import org.skyscreamer.jsonassert.comparator.JSONComparator;
 import org.slf4j.Logger;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.api.WakamitiConfiguration.STRICT_TEST_CASE_ID;
-import static org.assertj.core.api.Assertions.assertThat;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 
 
 public class TestPlanFactory {
@@ -48,7 +51,6 @@ public class TestPlanFactory {
         assertFilePlan(featureFilename, resultFilename, null, testCases);
     }
 
-
     private void assertFilePlan(
             String featureFilename,
             String resultFilename,
@@ -58,7 +60,6 @@ public class TestPlanFactory {
         assertPlan(featureFilename, resultFilename, tagExpression, testCases, new Properties());
     }
 
-
     private void assertPathPlan(
             String featurePath,
             String resultFilename,
@@ -67,7 +68,6 @@ public class TestPlanFactory {
     ) throws IOException, JSONException, ConfigurationException {
         assertPlan(featurePath, resultFilename, tagExpression, testCases, new Properties());
     }
-
 
     private void assertPlan(
             String path,
@@ -135,22 +135,22 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void test1_simpleScenario() throws IOException, JSONException, ConfigurationException {
+    public void test1SimpleScenario() throws IOException, JSONException, ConfigurationException {
         assertFilePlan("test1_simpleScenario", 1);
     }
 
     @Test
-    public void test2_scenarioOutline() throws IOException, JSONException, ConfigurationException {
+    public void test2ScenarioOutline() throws IOException, JSONException, ConfigurationException {
         assertFilePlan("test2_scenarioOutline", 3);
     }
 
     @Test
-    public void test3_background() throws IOException, JSONException, ConfigurationException {
+    public void test3Background() throws IOException, JSONException, ConfigurationException {
         assertFilePlan("test3_background", 3);
     }
 
     @Test
-    public void test4_tagExpression() throws IOException, JSONException, ConfigurationException {
+    public void test4TagExpression() throws IOException, JSONException, ConfigurationException {
         assertFilePlan(
                 "src/test/resources/features/test4_tagExpression.feature",
                 "src/test/resources/features/test4_tagExpression_plan.json",
@@ -160,7 +160,7 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void test5_includeFilteredTestCases() throws IOException, JSONException, ConfigurationException {
+    public void test5IncludeFilteredTestCases() throws IOException, JSONException, ConfigurationException {
         Properties properties = new Properties();
         properties.put(WakamitiConfiguration.INCLUDE_FILTERED_TEST_CASES, "true");
         assertPlan(
@@ -173,7 +173,7 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void test6_propertySubstitution() throws IOException, JSONException, ConfigurationException {
+    public void test6PropertySubstitution() throws IOException, JSONException, ConfigurationException {
         Properties properties = new Properties();
         properties.put("number.a", "8.02");
         properties.put("number.b", "9");
@@ -321,15 +321,17 @@ public class TestPlanFactory {
         }
     }
 
-    private StringBuilder printPlan(PlanNode node, StringBuilder string, int level) {
+    private StringBuilder printPlan(
+            PlanNode node,
+            StringBuilder string,
+            int level
+    ) {
         StringBuilder leading = new StringBuilder();
-        for (int i = 0; i < level; i++) {
-            leading.append("--");
-        }
+        leading.append("--".repeat(Math.max(0, level)));
         leading.append("  ").append(node.nodeType()).append("  >> ").append(node.displayName());
         string.append(
                 String.format(
-                        "%-100s %-40s %s\n",
+                        "%-100s %-40s %s%n",
                         leading,
                         node.tags().isEmpty() ? "" : node.tags().stream().sorted().map(s -> "#" + s).collect(Collectors.joining(" ")),
                         node.properties().isEmpty() ? "" : node.properties()

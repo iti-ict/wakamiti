@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,28 +8,31 @@
 package es.iti.wakamiti.core.backend;
 
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import es.iti.wakamiti.api.Hinter;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.core.util.StringDistance;
 import es.iti.wakamiti.api.imconfig.Configuration;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
+import es.iti.wakamiti.core.util.StringDistance;
 
 
 /**
  * Provides suggestions and information related to available steps and properties for Wakamiti.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class StepHinter implements Hinter {
 
-
+    private static final int DEFAULT_MAX_SUGGESTIONS = 5;
     private final List<RunnableStep> runnableSteps;
     private final List<String> properties;
     private final RunnableStepResolver stepResolver;
@@ -35,7 +40,15 @@ public class StepHinter implements Hinter {
     private final Locale defaultTextLocale;
     private final Locale defaultDataLocale;
 
-
+    /**
+     * Creates a completion engine for localized step definitions.
+     *
+     * @param runnableSteps available definitions to use as hint candidates
+     * @param configuration configuration supplying known properties and
+     *                      default text/data locales
+     * @param stepResolver  resolver used to identify partially matching steps
+     * @param typeRegistry  data types used to suggest expression values
+     */
     public StepHinter(
             List<RunnableStep> runnableSteps,
             Configuration configuration,
@@ -49,13 +62,11 @@ public class StepHinter implements Hinter {
         this.defaultTextLocale =
                 configuration.get(WakamitiConfiguration.LANGUAGE, String.class)
                         .map(Locale::forLanguageTag)
-                        .orElse(Locale.ENGLISH)
-        ;
+                        .orElse(Locale.ENGLISH);
         this.defaultDataLocale =
                 configuration.get(WakamitiConfiguration.DATA_FORMAT_LANGUAGE, String.class)
                         .map(Locale::forLanguageTag)
-                        .orElse(this.defaultTextLocale)
-        ;
+                        .orElse(this.defaultTextLocale);
     }
 
     /**
@@ -86,7 +97,9 @@ public class StepHinter implements Hinter {
      * {@inheritDoc}
      */
     @Override
-    public boolean isValidStep(String step) {
+    public boolean isValidStep(
+            String step
+    ) {
         return isValidStep(step, defaultTextLocale, defaultDataLocale);
     }
 
@@ -94,7 +107,9 @@ public class StepHinter implements Hinter {
      * {@inheritDoc}
      */
     @Override
-    public String getStepProviderByDefinition(String step) {
+    public String getStepProviderByDefinition(
+            String step
+    ) {
         return getStepProviderByDefinition(step, defaultTextLocale);
     }
 
@@ -118,7 +133,9 @@ public class StepHinter implements Hinter {
      * @param includeVariations If true, includes variations; otherwise, returns only unique steps.
      * @return List of available steps.
      */
-    public List<String> getAvailableSteps(boolean includeVariations) {
+    public List<String> getAvailableSteps(
+            boolean includeVariations
+    ) {
         return getHintsForInvalidStep("", -1, includeVariations);
     }
 
@@ -130,7 +147,11 @@ public class StepHinter implements Hinter {
      * @param dataLocale  The data locale.
      * @return True if the step is valid, false otherwise.
      */
-    public boolean isValidStep(String stepLiteral, Locale textLocale, Locale dataLocale) {
+    public boolean isValidStep(
+            String stepLiteral,
+            Locale textLocale,
+            Locale dataLocale
+    ) {
         try {
             return stepResolver.locateRunnableStep(stepLiteral, textLocale, dataLocale, this) != null;
         } catch (UndefinedStepException e) {
@@ -145,7 +166,10 @@ public class StepHinter implements Hinter {
      * @param textLocale The text locale.
      * @return The step provider.
      */
-    public String getStepProviderByDefinition(String step, Locale textLocale) {
+    public String getStepProviderByDefinition(
+            String step,
+            Locale textLocale
+    ) {
         return stepResolver
                 .obtainRunnableStepByDefinition(step, textLocale)
                 .map(RunnableStep::getProvider)
@@ -195,8 +219,12 @@ public class StepHinter implements Hinter {
      * @param dataLocale  The data locale.
      * @return The hint for the invalid step.
      */
-    public String getHintFor(String invalidStep, Locale textLocale, Locale dataLocale) {
-        int maxSuggestions = 5;
+    public String getHintFor(
+            String invalidStep,
+            Locale textLocale,
+            Locale dataLocale
+    ) {
+        int maxSuggestions = DEFAULT_MAX_SUGGESTIONS;
         StringBuilder hint = new StringBuilder(
                 "Perhaps you mean one of the following:\n\t----------\n\t"
         );
@@ -213,7 +241,6 @@ public class StepHinter implements Hinter {
         }
         return hint.toString();
     }
-
 
     /**
      * Populates a list of step hints with variations based on WakamitiDataType hints.

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -14,14 +16,23 @@ import java.util.stream.Stream;
 /**
  * Registry for Wakamiti data types, allowing retrieval and
  * querying of data types.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiDataTypeRegistry {
 
     private final Map<String, WakamitiDataType<?>> types;
 
-    public WakamitiDataTypeRegistry(Map<String, WakamitiDataType<?>> types) {
+    /**
+     * Creates a registry backed by a name-to-type map.
+     * <p>
+     * The map is retained rather than copied, allowing its owner to control
+     * whether registrations remain mutable.
+     * </p>
+     *
+     * @param types registered types indexed by their expression names
+     */
+    public WakamitiDataTypeRegistry(
+            Map<String, WakamitiDataType<?>> types
+    ) {
         this.types = types;
     }
 
@@ -33,7 +44,9 @@ public class WakamitiDataTypeRegistry {
      * @return The Wakamiti data type corresponding to the
      * specified name.
      */
-    public WakamitiDataType<?> getType(String name) {
+    public WakamitiDataType<?> getType(
+            String name
+    ) {
         return types.get(name);
     }
 
@@ -56,7 +69,9 @@ public class WakamitiDataTypeRegistry {
      * @return A stream of Wakamiti data types associated with the
      * specified Java type.
      */
-    public Stream<WakamitiDataType<?>> findTypesForJavaType(Class<?> javaType) {
+    public Stream<WakamitiDataType<?>> findTypesForJavaType(
+            Class<?> javaType
+    ) {
         return this.types.values().stream()
                 .filter(type -> type.getJavaType().equals(javaType));
     }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -12,8 +14,6 @@ import java.util.List;
 /**
  * This interface provides utility methods to offer completion suggestions
  * about a test plan.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface Hinter {
 
@@ -44,7 +44,9 @@ public interface Hinter {
      * @param stepLiteral The literal representation of the step.
      * @return {@code true} if the step is valid, {@code false} otherwise.
      */
-    boolean isValidStep(String stepLiteral);
+    boolean isValidStep(
+            String stepLiteral
+    );
 
     /**
      * Get hints for an invalid step.
@@ -68,6 +70,8 @@ public interface Hinter {
      * @param stepDefinition The definition of the step.
      * @return The step provider associated with the step definition.
      */
-    String getStepProviderByDefinition(String stepDefinition);
+    String getStepProviderByDefinition(
+            String stepDefinition
+    );
 
 }

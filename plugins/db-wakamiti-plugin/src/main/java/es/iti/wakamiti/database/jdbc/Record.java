@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,9 +8,9 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import groovy.transform.Generated;
-
 import java.util.Arrays;
+
+import groovy.transform.Generated;
 
 
 /**
@@ -28,7 +30,10 @@ public class Record {
      * @param data  The array of data retrieved from the query
      * @param score The score indicating the similarity of the data with predefined criteria
      */
-    public Record(String[] data, double score) {
+    public Record(
+            String[] data,
+            double score
+    ) {
         this.data = data;
         this.score = score;
     }

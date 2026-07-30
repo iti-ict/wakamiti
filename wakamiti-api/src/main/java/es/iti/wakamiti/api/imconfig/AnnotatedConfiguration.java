@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -16,10 +18,14 @@ import java.lang.annotation.Target;
  * This annotation allows classes to be used as a data source for a configuration
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface AnnotatedConfiguration {
 
-    /** Pairs of [key,value] that defines the configuration */
+    /**
+     * Pairs of [key,value] that defines the configuration
+      *
+      * @return the resulting value
+     */
     Property[] value() default {};
 
     /**
@@ -35,6 +41,8 @@ public @interface AnnotatedConfiguration {
      *     <li>{@code src/test/resources/wakamiti.yaml}</li>
      *     <li>{@code file:/opt/wakamiti/wakamiti.yaml}</li>
      * </ul>
+      *
+      * @return the resulting value
      */
     String path() default "";
 
@@ -42,6 +50,8 @@ public @interface AnnotatedConfiguration {
      * Optional prefix to apply over the external file loaded via {@link #path()}.
      * <p>
      * If set, only the inner section is imported (equivalent to {@link Configuration#inner(String)}).
+      *
+      * @return the resulting value
      */
     String pathPrefix() default "";
 

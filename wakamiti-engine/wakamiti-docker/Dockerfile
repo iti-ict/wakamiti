@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 LABEL maintainer="mgalbis@iti.es"
 
 # Wakamiti runtime distribution filename.

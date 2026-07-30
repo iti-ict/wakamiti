@@ -1,14 +1,23 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
 // http://rosettacode.org/wiki/String_length#Java
+
+/**
+ * Provides the Symbol Counter functionality used by Wakamiti.
+ */
 public class SymbolCounter {
-    public static int countSymbols(String string) {
+
+    public static int countSymbols(
+            String string
+    ) {
         return string.codePointCount(0, string.length());
     }
+
 }

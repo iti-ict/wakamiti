@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,19 +8,17 @@
 package es.iti.commons.jext;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.ServiceConfigurationError;
 import java.util.ServiceLoader;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
  * An internal implementation of the {@link ExtensionLoader} interface used for loading
  * extensions. This loader delegates the loading process to {@link ServiceLoader}.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 class InternalExtensionLoader implements ExtensionLoader {
 
@@ -33,7 +33,10 @@ class InternalExtensionLoader implements ExtensionLoader {
      * @return An Iterable of loaded extensions or an empty list in case of an error
      */
     @Override
-    public <T> Iterable<T> load(Class<T> type, ClassLoader loader) {
+    public <T> Iterable<T> load(
+            Class<T> type,
+            ClassLoader loader
+    ) {
         try {
             // dynamically declaration of 'use' directive, otherwise it will cause an error
             InternalExtensionLoader.class.getModule().addUses(type);

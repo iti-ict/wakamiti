@@ -1,11 +1,9 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
- */
-
-/**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
  */
 package es.iti.wakamiti.spring.rest;
 
@@ -13,41 +11,44 @@ package es.iti.wakamiti.spring.rest;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import es.iti.wakamiti.spring.db.SpringConnectionProvider;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import es.iti.wakamiti.api.imconfig.Configurer;
-import es.iti.wakamiti.api.util.WakamitiLogger;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.Configurer;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.rest.RestStepContributor;
+import es.iti.wakamiti.spring.db.SpringConnectionProvider;
 
 
-
+/**
+ * Provides the Spring Local Port Configurer functionality used by Wakamiti.
+ */
 @Extension(
-    provider =  "es.iti.wakamiti",
-    name = "rest-configurator-springboot",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor",
-    externallyManaged = true,
-    priority = Integer.MAX_VALUE // to ensure it will executed last
+        provider = "es.iti.wakamiti",
+        name = "rest-configurator-springboot",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor",
+        externallyManaged = true,
+        priority = Integer.MAX_VALUE // to ensure it will executed last
 )
 @Component
 @ConditionalOnProperty(SpringLocalPortConfigurer.USE_SPRING_LOCAL_SERVER_PORT)
 public class SpringLocalPortConfigurer implements ConfigContributor<RestStepContributor> {
 
+    /** Logger used while configuring the local server port. */
     private static final Logger LOGGER = WakamitiLogger.forClass(SpringLocalPortConfigurer.class);
+    /** Property that enables local server-port discovery. */
     public static final String USE_SPRING_LOCAL_SERVER_PORT = "wakamiti.rest.useSpringLocalServerPort";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
-        USE_SPRING_LOCAL_SERVER_PORT, "false",
-        SpringConnectionProvider.USE_SPRING_DATASOURCE, "false"
+            USE_SPRING_LOCAL_SERVER_PORT, "false",
+            SpringConnectionProvider.USE_SPRING_DATASOURCE, "false"
     );
 
     @Autowired
@@ -59,7 +60,9 @@ public class SpringLocalPortConfigurer implements ConfigContributor<RestStepCont
     }
 
     @Override
-    public boolean accepts(Object contributor) {
+    public boolean accepts(
+            Object contributor
+    ) {
         return RestStepContributor.class.isAssignableFrom(contributor.getClass());
     }
 
@@ -68,7 +71,10 @@ public class SpringLocalPortConfigurer implements ConfigContributor<RestStepCont
         return this::configure;
     }
 
-    private void configure(RestStepContributor contributor, Configuration configuration) {
+    private void configure(
+            RestStepContributor contributor,
+            Configuration configuration
+    ) {
         try {
             String localServerPort = environment.getProperty("local.server.port");
             URL baseURL = new URL("http://localhost:" + localServerPort);

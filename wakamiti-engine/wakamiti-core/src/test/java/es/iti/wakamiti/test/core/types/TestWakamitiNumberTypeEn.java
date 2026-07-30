@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,21 +8,21 @@
 package es.iti.wakamiti.test.core.types;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
-import org.junit.Assert;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.util.Locale;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Assert;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 
 
 public class TestWakamitiNumberTypeEn {
 
     private static final Locale LOCALE = Locale.ENGLISH;
-
 
     @Test
     public void testAttempParseWithWrongValue() {
@@ -36,7 +38,6 @@ public class TestWakamitiNumberTypeEn {
         }
     }
 
-
     @Test
     public void testInteger() {
         final WakamitiNumberDataType<Integer> type = WakamitiNumberDataType
@@ -48,7 +49,6 @@ public class TestWakamitiNumberTypeEn {
         assertThat(type.matcher(LOCALE, "12,345.54").matches()).isFalse();
         assertThat(type.matcher(LOCALE, "xxxxx").matches()).isFalse();
     }
-
 
     @Test
     public void testBigDecimal() {

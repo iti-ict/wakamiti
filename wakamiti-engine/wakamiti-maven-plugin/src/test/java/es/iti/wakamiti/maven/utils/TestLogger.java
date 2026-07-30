@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -21,17 +23,24 @@ public class TestLogger implements Log {
     }
 
     @Override
-    public void debug(CharSequence charSequence) {
+    public void debug(
+            CharSequence charSequence
+    ) {
         LOGGER.debug(charSequence.toString());
     }
 
     @Override
-    public void debug(CharSequence charSequence, Throwable throwable) {
+    public void debug(
+            CharSequence charSequence,
+            Throwable throwable
+    ) {
         LOGGER.debug(charSequence.toString(), throwable);
     }
 
     @Override
-    public void debug(Throwable throwable) {
+    public void debug(
+            Throwable throwable
+    ) {
         LOGGER.debug("", throwable);
     }
 
@@ -41,17 +50,24 @@ public class TestLogger implements Log {
     }
 
     @Override
-    public void info(CharSequence charSequence) {
+    public void info(
+            CharSequence charSequence
+    ) {
         LOGGER.info(charSequence.toString());
     }
 
     @Override
-    public void info(CharSequence charSequence, Throwable throwable) {
+    public void info(
+            CharSequence charSequence,
+            Throwable throwable
+    ) {
         LOGGER.info(charSequence.toString(), throwable);
     }
 
     @Override
-    public void info(Throwable throwable) {
+    public void info(
+            Throwable throwable
+    ) {
         LOGGER.info("", throwable);
     }
 
@@ -61,17 +77,24 @@ public class TestLogger implements Log {
     }
 
     @Override
-    public void warn(CharSequence charSequence) {
+    public void warn(
+            CharSequence charSequence
+    ) {
         LOGGER.warn(charSequence.toString());
     }
 
     @Override
-    public void warn(CharSequence charSequence, Throwable throwable) {
+    public void warn(
+            CharSequence charSequence,
+            Throwable throwable
+    ) {
         LOGGER.warn(charSequence.toString(), throwable);
     }
 
     @Override
-    public void warn(Throwable throwable) {
+    public void warn(
+            Throwable throwable
+    ) {
         LOGGER.warn("", throwable);
     }
 
@@ -81,17 +104,25 @@ public class TestLogger implements Log {
     }
 
     @Override
-    public void error(CharSequence charSequence) {
+    public void error(
+            CharSequence charSequence
+    ) {
         LOGGER.error(charSequence.toString());
     }
 
     @Override
-    public void error(CharSequence charSequence, Throwable throwable) {
+    public void error(
+            CharSequence charSequence,
+            Throwable throwable
+    ) {
         LOGGER.error(charSequence.toString(), throwable);
     }
 
     @Override
-    public void error(Throwable throwable) {
+    public void error(
+            Throwable throwable
+    ) {
         LOGGER.error("", throwable);
     }
+
 }

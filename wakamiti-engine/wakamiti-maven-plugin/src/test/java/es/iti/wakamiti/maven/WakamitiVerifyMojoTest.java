@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,12 @@
 package es.iti.wakamiti.maven;
 
 
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.maven.utils.ProjectStub;
-import es.iti.wakamiti.maven.utils.WakamitiAbstractMojoTest;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -24,9 +21,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.maven.utils.ProjectStub;
+import es.iti.wakamiti.maven.utils.WakamitiAbstractMojoTest;
 
 
 public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
@@ -51,7 +57,6 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
                 });
         when(wakamiti.executePlan(any(), any())).thenReturn(plan);
     }
-
 
     //Test
     public void testWhenDefaultWithSuccess() throws Exception {
