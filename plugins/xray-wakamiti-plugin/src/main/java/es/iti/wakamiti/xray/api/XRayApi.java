@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.jayway.jsonpath.TypeRef;
+import es.iti.wakamiti.xray.internal.WakamitiXRayException;
 import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.TestCase;
 import es.iti.wakamiti.xray.model.TestExecution;
@@ -396,7 +397,15 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, mutation);
 
-        return read(response, "$.data.createTestExecution.testExecution", TestExecution.class);
+        TestExecution testExecution = read(
+                response,
+                "$.data.createTestExecution.testExecution",
+                TestExecution.class
+        );
+        return Optional.ofNullable(testExecution)
+                .orElseThrow(() -> new WakamitiXRayException(
+                        "XRay did not return the created Test Execution."
+                ));
     }
 
     /**

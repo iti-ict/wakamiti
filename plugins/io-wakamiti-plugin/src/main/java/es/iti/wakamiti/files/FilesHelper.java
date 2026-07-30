@@ -40,6 +40,11 @@ public class FilesHelper {
     private static final Logger LOGGER = WakamitiLogger
             .of(LoggerFactory.getLogger("es.iti.wakamiti.files"));
     private static final String TMP_PREFIX = "wakamiti";
+    private static final Path TMP_DIRECTORY = Path.of(
+            System.getProperty("user.home"),
+            ".wakamiti",
+            "tmp"
+    );
 
     private final Deque<Runnable> cleanUpOperations = new LinkedList<>();
 
@@ -176,6 +181,21 @@ public class FilesHelper {
         return WakamitiAPI.instance().resourceLoader();
     }
 
+    private static File createTemporaryFile() throws IOException {
+        return Files.createTempFile(
+                Files.createDirectories(TMP_DIRECTORY),
+                TMP_PREFIX,
+                null
+        ).toFile();
+    }
+
+    private static File createTemporaryDirectory() throws IOException {
+        return Files.createTempDirectory(
+                Files.createDirectories(TMP_DIRECTORY),
+                TMP_PREFIX
+        ).toFile();
+    }
+
     /**
      * Waits for a named entry event in the file's parent directory.
      *
@@ -254,7 +274,7 @@ public class FilesHelper {
         }
 
         File p = getFirstExistingParent(target);
-        File tmp = File.createTempFile(TMP_PREFIX, null);
+        File tmp = createTemporaryFile();
         FilesHelper.copyFile(source, tmp);
 
         FilesHelper.moveFile(source, target);
@@ -291,7 +311,7 @@ public class FilesHelper {
         File p = getFirstExistingParent(target);
 
         if (source.isDirectory()) {
-            File tmp = Files.createTempDirectory(TMP_PREFIX).toFile();
+            File tmp = createTemporaryDirectory();
             FilesHelper.copyDirectory(source, tmp);
 
             if (target.exists()) {
@@ -308,7 +328,7 @@ public class FilesHelper {
                 FilesHelper.copyDirectory(tmp, source);
             });
         } else {
-            File tmp = File.createTempFile(TMP_PREFIX, null);
+            File tmp = createTemporaryFile();
             FilesHelper.copyFile(source, tmp);
 
             FilesHelper.moveFileToDirectory(source, target);
@@ -389,14 +409,14 @@ public class FilesHelper {
         }
 
         if (file.isDirectory()) {
-            File tmp = Files.createTempDirectory(TMP_PREFIX).toFile();
+            File tmp = createTemporaryDirectory();
             FilesHelper.copyDirectory(file, tmp);
 
             FilesHelper.deleteDirectory(file);
 
             cleanUpOperations.addFirst(() -> FilesHelper.copyDirectory(tmp, file));
         } else {
-            File tmp = File.createTempFile(TMP_PREFIX, null);
+            File tmp = createTemporaryFile();
             FilesHelper.copyFile(file, tmp);
 
             Files.delete(file.toPath());

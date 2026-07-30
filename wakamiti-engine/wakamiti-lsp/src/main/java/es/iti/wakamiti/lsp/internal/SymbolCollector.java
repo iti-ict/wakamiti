@@ -140,7 +140,7 @@ public class SymbolCollector {
         symbol.setKind(SymbolKind.Method);
         symbol.setSelectionRange(nameRange(current.getLocation(), current.getKeyword()));
         if (current.getArgument() == null) {
-            symbol.setRange(lineOf(current.getLocation().getLine() - 1));
+            symbol.setRange(lineOf(zeroBasedLine(current.getLocation())));
             symbol.setChildren(List.of());
         } else {
             symbol.setRange(rangeUntilNext(current, next, upperRange));
@@ -187,8 +187,11 @@ public class SymbolCollector {
             Range upperRange
     ) {
         return new Range(
-                new Position(start.getLocation().getLine() - 1, 0),
-                end.map(it -> new Position(it.getLocation().getLine() - 2, 0)).orElse(upperRange.getEnd())
+                new Position(zeroBasedLine(start.getLocation()), 0),
+                end.map(it -> new Position(
+                        Math.max(0, zeroBasedLine(it.getLocation()) - 1),
+                        0
+                )).orElse(upperRange.getEnd())
         );
     }
 
@@ -197,7 +200,7 @@ public class SymbolCollector {
             Range upperRange
     ) {
         return new Range(
-                new Position(location.getLine() - 1, 0),
+                new Position(zeroBasedLine(location), 0),
                 upperRange.getEnd()
         );
     }
@@ -207,9 +210,15 @@ public class SymbolCollector {
             String keyword
     ) {
         return assessor.documentMap.lineRangeWithoutKeyword(
-                location.getLine() - 1,
+                zeroBasedLine(location),
                 keyword
         ).toLspRange();
+    }
+
+    private static int zeroBasedLine(
+            Location location
+    ) {
+        return Math.max(0, location.getLine() - 1);
     }
 
     private <T> T current(

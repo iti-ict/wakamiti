@@ -8,6 +8,8 @@
 package es.iti.commons.jext.spring;
 
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -27,7 +29,8 @@ import org.springframework.stereotype.Component;
 public class ApplicationContextProvider implements ApplicationContextAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationContextProvider.class);
-    private static ApplicationContext applicationContext;
+    private static final AtomicReference<ApplicationContext> APPLICATION_CONTEXT =
+            new AtomicReference<>();
 
     /**
      * Returns the currently stored application context.
@@ -36,7 +39,7 @@ public class ApplicationContextProvider implements ApplicationContextAware {
      *         {@link #setApplicationContext(ApplicationContext)} yet
      */
     public static ApplicationContext applicationContext() {
-        return applicationContext;
+        return APPLICATION_CONTEXT.get();
     }
 
     /**
@@ -45,7 +48,7 @@ public class ApplicationContextProvider implements ApplicationContextAware {
      * @return {@code true} when a context has been assigned
      */
     public static boolean hasContext() {
-        return ApplicationContextProvider.applicationContext != null;
+        return APPLICATION_CONTEXT.get() != null;
     }
 
     /**
@@ -58,7 +61,7 @@ public class ApplicationContextProvider implements ApplicationContextAware {
             ApplicationContext applicationContext
     ) {
         LOGGER.debug("Spring ApplicationContext set in jExt Spring");
-        ApplicationContextProvider.applicationContext = applicationContext;
+        APPLICATION_CONTEXT.set(applicationContext);
     }
 
 }

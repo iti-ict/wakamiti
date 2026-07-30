@@ -56,7 +56,7 @@ public class GherkinDocumentAssessor {
 
     Configuration globalConfiguration;
     Configuration workspaceConfiguration;
-    Configuration documentConfiguration;
+    Configuration documentConfig;
     Configuration effectiveConfiguration;
     int maxSuggestions = DEFAULT_MAX_SUGGESTIONS;
     Hinter hinter;
@@ -229,22 +229,22 @@ public class GherkinDocumentAssessor {
     ) {
         if (!document.isBlank()) {
             try {
-                this.documentConfiguration = extractDocumentConfiguration(document);
+                this.documentConfig = extractDocumentConfiguration(document);
                 this.parsingError = null;
             } catch (Exception e) {
-                this.documentConfiguration = Configuration.factory().empty();
+                this.documentConfig = Configuration.factory().empty();
                 this.parsingError = e;
                 this.parsedDocument = null;
             }
         } else {
-            this.documentConfiguration = Configuration.factory().empty();
+            this.documentConfig = Configuration.factory().empty();
             this.parsingError = null;
             this.parsedDocument = null;
         }
 
         this.effectiveConfiguration = globalConfiguration
                 .append(workspaceConfiguration)
-                .append(documentConfiguration);
+                .append(documentConfig);
 
         this.documentMap = new GherkinDocumentMap(document);
 
@@ -373,14 +373,6 @@ public class GherkinDocumentAssessor {
      */
     public String content() {
         return documentMap.document().rawText();
-    }
-
-    Configuration globalConfiguration() {
-        return this.globalConfiguration;
-    }
-
-    Configuration documentConfiguration() {
-        return this.documentConfiguration;
     }
 
     /**

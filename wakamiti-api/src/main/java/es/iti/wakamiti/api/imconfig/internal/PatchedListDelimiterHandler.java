@@ -130,7 +130,7 @@ public class PatchedListDelimiterHandler extends DefaultListDelimiterHandler {
      * @param dejaVu  identity-based set of recursive containers currently being traversed
      * @return flattened collection of values
      */
-    private Collection<?> flatten(
+    private static Collection<?> flatten(
             final ListDelimiterHandler handler,
             final Object value,
             final int limit,
@@ -177,7 +177,7 @@ public class PatchedListDelimiterHandler extends DefaultListDelimiterHandler {
      * @param limit    maximum number of elements to produce
      * @param dejaVue  identity-based set of recursive containers currently being traversed
      */
-    private void flattenIterator(
+    private static void flattenIterator(
             final ListDelimiterHandler handler,
             final Collection<Object> target,
             final Iterator<?> iterator,
@@ -194,7 +194,7 @@ public class PatchedListDelimiterHandler extends DefaultListDelimiterHandler {
         }
     }
 
-    private boolean isRecursiveContainer(
+    private static boolean isRecursiveContainer(
             final Object value
     ) {
         return value instanceof Iterator

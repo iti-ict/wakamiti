@@ -51,7 +51,7 @@ public class TextDocument {
     ) {
         int start = start(lineNumber);
         int end = start(lineNumber + 1);
-        if (lineNumber < endOfLines.length) {
+        if (lineNumber >= 0 && lineNumber < endOfLines.length) {
             end--;
         }
         return rawDocument.substring(start, end);
@@ -224,10 +224,13 @@ public class TextDocument {
     private int start(
             int line
     ) {
+        if (line <= 0) {
+            return 0;
+        }
         if (line > endOfLines.length) {
             return rawDocument.length();
         }
-        return line == 0 ? 0 : endOfLines[line - 1] + 1;
+        return endOfLines[line - 1] + 1;
     }
 
     private static int[] locateEndOfLines(

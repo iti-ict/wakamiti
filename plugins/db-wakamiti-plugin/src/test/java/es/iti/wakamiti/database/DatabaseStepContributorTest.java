@@ -1287,43 +1287,6 @@ public class DatabaseStepContributorTest {
     }
 
     @Test(expected = WakamitiException.class)
-    public void testAssertRowExistsByOneColumnWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        createContext(config);
-        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-
-        try {
-            // Act
-            contributor.assertRowExistsByOneColumn("second_name", "Melano", "client");
-
-            // Check
-        } catch (AssertionError e) {
-            Database db = Database.from(contributor.connection());
-            String table = db.table("client");
-            assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator()
-                                    + "Expecting actual:" + System.lineSeparator()
-                                    + "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator()
-                                    + "to contain exactly (and in same order):" + System.lineSeparator()
-                                    + "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator()
-                                    + "but some elements were not found:" + System.lineSeparator()
-                                    + "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator()
-                                    + "and others were not expected:" + System.lineSeparator()
-                                    + "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
-                            db.column(table, "second_name"));
-            throw new WakamitiException();
-        }
-    }
-
-    @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByOneColumnWhenNotExistWithClosestRecord() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(

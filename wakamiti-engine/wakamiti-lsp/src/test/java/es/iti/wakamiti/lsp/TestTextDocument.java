@@ -31,6 +31,7 @@ public class TestTextDocument {
     @Test
     public void testLine() {
         var document = document();
+        assertThat(document.extractLine(-1)).isEmpty();
         assertThat(document.extractLine(0)).isEqualTo("line0");
         assertThat(document.extractLine(1)).isEqualTo("line1");
         assertThat(document.extractLine(2)).isEqualTo("line2");

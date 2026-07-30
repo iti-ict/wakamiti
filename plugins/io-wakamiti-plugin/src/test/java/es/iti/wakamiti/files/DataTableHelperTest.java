@@ -10,6 +10,7 @@ package es.iti.wakamiti.files;
 
 import java.time.temporal.ValueRange;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,10 @@ public class DataTableHelperTest {
         // act
         DataTableHelper helper = new DataTableHelper(dataTable);
         log.debug("Result: {}", helper);
+
+        // assert
+        Assert.assertEquals(3, helper.count());
+        Assert.assertEquals("aaa", helper.getExpectedValue(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,6 +87,9 @@ public class DataTableHelperTest {
         // act
         ValueRange result = helper.getRange(0);
         log.debug("Result: {}", result);
+
+        // assert
+        Assert.assertEquals(ValueRange.of(6, 7), result);
     }
 
     @Test(expected = IllegalArgumentException.class)
