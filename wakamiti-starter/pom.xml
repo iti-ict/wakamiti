@@ -384,9 +384,6 @@
         <profile>
             <id>checkstyle-with-sources</id>
             <activation>
-                <file>
-                    <exists>src</exists>
-                </file>
                 <property>
                     <name>!checkstyle.skip</name>
                 </property>
