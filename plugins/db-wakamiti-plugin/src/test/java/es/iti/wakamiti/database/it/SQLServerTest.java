@@ -48,7 +48,7 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class SQLServerTest {
 
-    public static final MSSQLServerContainer<?> CONTAINER = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2017-CU12")
+    public static final MSSQLServerContainer<?> CONTAINER = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2025-latest")
             .acceptLicense()
 //            .withDatabaseName("test")
 //            .withUsername("user")
