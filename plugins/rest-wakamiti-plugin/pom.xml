@@ -172,7 +172,7 @@
                         <executions>
                             <execution>
                                 <id>test</id>
-                                <phase>integration-test</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
@@ -203,7 +203,7 @@
                             </execution>
                             <execution>
                                 <id>stop</id>
-                                <phase>post-integration-test</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>stop</goal>
                                 </goals>
