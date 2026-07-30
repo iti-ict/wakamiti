@@ -14,10 +14,20 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.GsmCallActions;
 
 
+/**
+ * Provides the Android Driver Helper functionality used by Wakamiti.
+ */
 public class AndroidDriverHelper extends DriverHelper {
 
     private final AndroidDriver androidDriver;
 
+    /**
+     * Creates an Android-specific helper around an active Appium session.
+     *
+     * @param driver Android driver used for elements, gestures and GSM
+     *               emulation
+     * @param logger logger receiving shell-command diagnostics
+     */
     public AndroidDriverHelper(
             AndroidDriver driver,
             Logger logger

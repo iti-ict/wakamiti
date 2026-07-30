@@ -21,7 +21,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface AnnotatedConfiguration {
 
-    /** Pairs of [key,value] that defines the configuration */
+    /**
+     * Pairs of [key,value] that defines the configuration
+      *
+      * @return the resulting value
+     */
     Property[] value() default {};
 
     /**
@@ -37,6 +41,8 @@ public @interface AnnotatedConfiguration {
      *     <li>{@code src/test/resources/wakamiti.yaml}</li>
      *     <li>{@code file:/opt/wakamiti/wakamiti.yaml}</li>
      * </ul>
+      *
+      * @return the resulting value
      */
     String path() default "";
 
@@ -44,6 +50,8 @@ public @interface AnnotatedConfiguration {
      * Optional prefix to apply over the external file loaded via {@link #path()}.
      * <p>
      * If set, only the inner section is imported (equivalent to {@link Configuration#inner(String)}).
+      *
+      * @return the resulting value
      */
     String pathPrefix() default "";
 

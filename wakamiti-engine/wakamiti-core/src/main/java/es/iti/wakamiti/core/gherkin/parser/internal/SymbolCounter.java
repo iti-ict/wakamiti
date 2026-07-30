@@ -8,6 +8,10 @@
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
 // http://rosettacode.org/wiki/String_length#Java
+
+/**
+ * Provides the Symbol Counter functionality used by Wakamiti.
+ */
 public class SymbolCounter {
 
     public static int countSymbols(

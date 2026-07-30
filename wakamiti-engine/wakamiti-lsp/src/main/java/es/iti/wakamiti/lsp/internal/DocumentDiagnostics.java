@@ -13,11 +13,20 @@ import java.util.List;
 import org.eclipse.lsp4j.Diagnostic;
 
 
+/**
+ * Provides the Document Diagnostics functionality used by Wakamiti.
+ */
 public class DocumentDiagnostics {
 
     private String uri;
     private List<Diagnostic> diagnostics;
 
+    /**
+     * Groups diagnostics for one document publication.
+     *
+     * @param uri         document URI
+     * @param diagnostics diagnostics to publish
+     */
     public DocumentDiagnostics(
             String uri,
             List<Diagnostic> diagnostics
@@ -26,10 +35,16 @@ public class DocumentDiagnostics {
         this.diagnostics = diagnostics;
     }
 
+    /**
+     * @return the diagnosed document URI
+     */
     public String uri() {
         return uri;
     }
 
+    /**
+     * @return diagnostics associated with the document
+     */
     public List<Diagnostic> diagnostics() {
         return diagnostics;
     }

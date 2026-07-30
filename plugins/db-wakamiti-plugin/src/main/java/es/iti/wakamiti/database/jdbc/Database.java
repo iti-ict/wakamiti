@@ -357,6 +357,14 @@ public final class Database {
         }
     }
 
+    /**
+     * Returns the live JDBC connection backing this database facade.
+     * <p>
+     * The connection remains owned by this database; callers must not close it
+     * independently.
+     *
+     * @return active JDBC connection
+     */
     public Connection connection() {
         return connection.get();
     }

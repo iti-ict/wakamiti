@@ -38,6 +38,9 @@ import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 
 
+/**
+ * Provides the Email Step Contributor functionality used by Wakamiti.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "email-steps",
@@ -64,42 +67,64 @@ public class EmailStepContributor implements StepContributor {
         return helper;
     }
 
+    /**
+     * @param storeProtocol JavaMail store protocol, for example {@code imaps}
+     */
     public void setStoreProtocol(
             String storeProtocol
     ) {
         this.storeProtocol = storeProtocol;
     }
 
+    /**
+     * @param host incoming-mail server host
+     */
     public void setHost(
             String host
     ) {
         this.host = host;
     }
 
+    /**
+     * @param port explicit incoming-mail port, or {@code null} for the protocol default
+     */
     public void setPort(
             Integer port
     ) {
         this.port = port;
     }
 
+    /**
+     * @param address mailbox address/login
+     */
     public void setAddress(
             String address
     ) {
         this.address = address;
     }
 
+    /**
+     * @param password mailbox password
+     */
     public void setPassword(
             String password
     ) {
         this.password = password;
     }
 
+    /**
+     * @param folder mailbox folder used by subsequent steps
+     */
     public void setFolder(
             String folder
     ) {
         this.folder = folder;
     }
 
+    /**
+     * Applies deferred sender/subject cleanup rules and closes the mail session.
+     * Matching messages are marked deleted and expunged as the folder closes.
+     */
     @TearDown
     public void close() {
         try {
@@ -117,6 +142,13 @@ public class EmailStepContributor implements StepContributor {
         }
     }
 
+    /**
+     * Defines the incoming-mail endpoint used for lazy connection.
+     *
+     * @param host mail-server host
+     * @param port store port
+     * @param protocol JavaMail store protocol
+     */
     @Step(value = "email.define.host", args = {"host:text", "port:int", "protocol:word"})
     public void defineHost(
             String host,
@@ -128,6 +160,12 @@ public class EmailStepContributor implements StepContributor {
         this.storeProtocol = protocol;
     }
 
+    /**
+     * Defines mailbox credentials used when the connection is first needed.
+     *
+     * @param address mailbox address/login
+     * @param password mailbox password
+     */
     @Step(value = "email.define.login", args = {"address:text", "password:text"})
     public void defineLogin(
             String address,
@@ -137,6 +175,7 @@ public class EmailStepContributor implements StepContributor {
         this.password = password;
     }
 
+    /** @param folder mailbox folder used by subsequent search and assertion steps */
     @Step(value = "email.define.folder")
     public void defineFolder(
             String folder
@@ -144,6 +183,12 @@ public class EmailStepContributor implements StepContributor {
         this.folder = folder;
     }
 
+    /**
+     * Applies an assertion to the number of messages without the {@code SEEN}
+     * flag in the selected folder.
+     *
+     * @param assertion condition applied to the unread count
+     */
     @Step(value = "email.assert.unread.messages", args = {"integer-assertion"})
     public void assertUnreadMessages(
             Assertion<Integer> assertion
@@ -151,6 +196,11 @@ public class EmailStepContributor implements StepContributor {
         Assertion.assertThat(helper().getUnreadMessages(folder), assertion);
     }
 
+    /**
+     * Waits for a new message and makes it the subject of later assertions.
+     *
+     * @param duration maximum time to wait
+     */
     @Step(value = "email.assert.incoming.message", args = {"duration:duration"})
     public void assertIncomingMessage(
             Duration duration
@@ -158,6 +208,9 @@ public class EmailStepContributor implements StepContributor {
         this.incomingMessage = helper().waitForIncomingMessage(folder, duration);
     }
 
+    /**
+     * @param assertion condition applied to the selected message subject
+     */
     @Step(value = "email.assert.subject", args = "text-assertion")
     public void assertSubject(
             Assertion<String> assertion
@@ -165,6 +218,9 @@ public class EmailStepContributor implements StepContributor {
         assertMessage(Message::getSubject, assertion);
     }
 
+    /**
+     * @param assertion condition applied to the first sender address
+     */
     @Step(value = "email.assert.sender", args = "text-assertion")
     public void assertSender(
             Assertion<String> assertion
@@ -172,6 +228,11 @@ public class EmailStepContributor implements StepContributor {
         assertMessage(message -> message.getFrom()[0].toString(), assertion);
     }
 
+    /**
+     * Requires the extracted message body to equal document content exactly.
+     *
+     * @param body expected body text
+     */
     @Step("email.assert.body")
     public void assertBody(
             Document body
@@ -179,6 +240,11 @@ public class EmailStepContributor implements StepContributor {
         assertMessage(message -> helper().getBody(message), Matchers.equalTo(body.getContent()));
     }
 
+    /**
+     * Requires the extracted message body to contain document content.
+     *
+     * @param body expected body fragment
+     */
     @Step("email.assert.body.partially")
     public void assertBodyPartially(
             Document body
@@ -186,6 +252,11 @@ public class EmailStepContributor implements StepContributor {
         assertMessage(message -> helper().getBody(message), Matchers.containsString(body.getContent()));
     }
 
+    /**
+     * Requires the extracted body to equal a text file's decoded content.
+     *
+     * @param file expected text file resolved by Wakamiti
+     */
     @Step("email.assert.body.file")
     public void assertBodyFile(
             File file
@@ -193,6 +264,11 @@ public class EmailStepContributor implements StepContributor {
         assertMessage(message -> helper().getBody(message), Matchers.equalTo(readFile(file)));
     }
 
+    /**
+     * Requires the extracted body to contain a text file's decoded content.
+     *
+     * @param file file containing the expected body fragment
+     */
     @Step("email.assert.body.file.partially")
     public void assertBodyFilePartially(
             File file
@@ -200,6 +276,9 @@ public class EmailStepContributor implements StepContributor {
         assertMessage(message -> helper().getBody(message), Matchers.containsString(readFile(file)));
     }
 
+    /**
+     * @param assertion condition applied to the MIME attachment count
+     */
     @Step(value = "email.assert.attachment.number", args = "integer-assertion")
     public void assertAttachmentNumber(
             Assertion<Integer> assertion
@@ -207,6 +286,12 @@ public class EmailStepContributor implements StepContributor {
         assertMessage(message -> helper().getAllAttachments(message).size(), assertion);
     }
 
+    /**
+     * Applies a text assertion to the first attachment's original file name.
+     *
+     * @param assertion expected attachment-name condition
+     * @throws AssertionError when no attachment exists
+     */
     @Step(value = "email.assert.attachment.name", args = "text-assertion")
     public void assertAttachmentName(
             Assertion<String> assertion
@@ -219,6 +304,12 @@ public class EmailStepContributor implements StepContributor {
         }
     }
 
+    /**
+     * Byte-compares the first attachment with a local binary file.
+     *
+     * @param file expected binary file
+     * @throws AssertionError when no attachment exists or bytes differ
+     */
     @Step("email.assert.attachment.content.binary.file")
     public void assertAttachmentBinaryFile(
             File file
@@ -231,6 +322,12 @@ public class EmailStepContributor implements StepContributor {
         }
     }
 
+    /**
+     * Text-compares the first attachment with a local file.
+     *
+     * @param file expected text file
+     * @throws AssertionError when no attachment exists or text differs
+     */
     @Step("email.assert.attachment.content.text.file")
     public void assertAttachmentTextFile(
             File file
@@ -243,6 +340,12 @@ public class EmailStepContributor implements StepContributor {
         }
     }
 
+    /**
+     * Text-compares the first attachment with a Wakamiti document.
+     *
+     * @param document expected attachment text
+     * @throws AssertionError when no attachment exists or text differs
+     */
     @Step("email.assert.attachment.content.document")
     public void assertAttachmentDocument(
             Document document
@@ -259,6 +362,12 @@ public class EmailStepContributor implements StepContributor {
         throw new AssertionError("The email has no attachments");
     }
 
+    /**
+     * Defers deletion of messages whose first sender matches an assertion until
+     * teardown.
+     *
+     * @param assertion sender condition
+     */
     @Step(value = "email.cleanup.delete.emails.from", args = "text-assertion")
     public void cleanupDeleteEmailsFrom(
             Assertion<String> assertion
@@ -266,6 +375,12 @@ public class EmailStepContributor implements StepContributor {
         this.cleanupFrom.add(assertion);
     }
 
+    /**
+     * Defers deletion of messages whose subject matches an assertion until
+     * teardown.
+     *
+     * @param assertion subject condition
+     */
     @Step(value = "email.cleanup.delete.emails.with.subject", args = "text-assertion")
     public void cleanupDeleteEmailsWithSubject(
             Assertion<String> assertion

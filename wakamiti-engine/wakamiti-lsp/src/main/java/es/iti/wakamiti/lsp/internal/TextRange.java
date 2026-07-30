@@ -12,8 +12,20 @@ import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.Range;
 
 
+/**
+ * Provides the Text Range functionality used by Wakamiti.
+ */
 public class TextRange {
 
+    /**
+     * Creates a zero-based half-open text range.
+     *
+     * @param startLine         first included line
+     * @param startLinePosition first included character
+     * @param endLine           line containing the excluded end position
+     * @param endLinePosition   first excluded character
+     * @return the populated range
+     */
     public static TextRange of(
             int startLine,
             int startLinePosition,
@@ -28,6 +40,11 @@ public class TextRange {
         return range;
     }
 
+    /**
+     * Creates the sentinel range used when no source location exists.
+     *
+     * @return a range whose coordinates are all {@code -1}
+     */
     public static TextRange empty() {
         return of(-1, -1, -1, -1);
     }
@@ -37,30 +54,58 @@ public class TextRange {
     private int endLine;
     private int endLinePosition;
 
+    /**
+     * @return the zero-based start line
+     */
     public int startLine() {
         return startLine;
     }
 
+    /**
+     * @return the zero-based start character
+     */
     public int startLinePosition() {
         return startLinePosition;
     }
 
+    /**
+     * @return the zero-based end line
+     */
     public int endLine() {
         return endLine;
     }
 
+    /**
+     * @return the excluded end character
+     */
     public int endLinePosition() {
         return endLinePosition;
     }
 
+    /**
+     * Indicates whether start and end coordinates are identical.
+     *
+     * @return {@code true} for a zero-width range
+     */
     public boolean isEmpty() {
         return startLine == endLine && startLinePosition == endLinePosition;
     }
 
+    /**
+     * Indicates whether both endpoints lie on the same line.
+     *
+     * @return {@code true} for a single-line range
+     */
     public boolean isSingleLine() {
         return startLine == endLine;
     }
 
+    /**
+     * Tests whether this range contains the other range's start position.
+     *
+     * @param range range whose start is tested
+     * @return {@code true} when that position lies strictly inside this range
+     */
     public boolean intersect(
             TextRange range
     ) {
@@ -73,6 +118,12 @@ public class TextRange {
         );
     }
 
+    /**
+     * Associates selected content with this range.
+     *
+     * @param content text represented by the range
+     * @return a new text segment
+     */
     public TextSegment withContent(
             String content
     ) {
@@ -121,6 +172,11 @@ public class TextRange {
         return startLinePosition == other.startLinePosition;
     }
 
+    /**
+     * Converts this value to the LSP4J range representation.
+     *
+     * @return a range with equivalent zero-based positions
+     */
     public Range toLspRange() {
         return new Range(
                 new Position(startLine, startLinePosition),

@@ -52,6 +52,9 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 
 
+/**
+ * Provides the Html Report Generator functionality used by Wakamiti.
+ */
 @Extension(provider = "es.iti.wakamiti", name = "html-report", version = "2.6")
 public class HtmlReportGenerator implements Reporter {
 
@@ -67,6 +70,13 @@ public class HtmlReportGenerator implements Reporter {
     private String title;
     private Map<String, Object> parameters;
 
+    /**
+     * Creates a generator with a hardened FreeMarker configuration.
+     * <p>
+     * Templates are loaded from the context class loader using UTF-8, template
+     * failures are propagated to the report boundary, and the custom
+     * {@code duration} number format is registered.
+     */
     public HtmlReportGenerator() {
         templateConfiguration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_29);
         templateConfiguration.setDefaultEncoding("UTF-8");
@@ -101,6 +111,15 @@ public class HtmlReportGenerator implements Reporter {
         this.title = title;
     }
 
+    /**
+     * Applies report paths, title and arbitrary template parameters.
+     * <p>
+     * Values under the HTML report prefix are exposed directly to FreeMarker;
+     * values under the extra-info prefix are grouped in the
+     * {@code extra_info} template variable.
+     *
+     * @param configuration complete Wakamiti configuration
+     */
     public void setConfiguration(
             Configuration configuration
     ) {

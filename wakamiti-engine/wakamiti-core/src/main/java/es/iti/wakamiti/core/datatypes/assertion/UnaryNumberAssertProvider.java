@@ -30,7 +30,9 @@ import es.iti.wakamiti.api.ExpressionMatcher;
  */
 public class UnaryNumberAssertProvider extends AbstractAssertProvider {
 
+    /** Localization key for the matcher requiring an absent or {@code null} value. */
     public static final String NULL = "matcher.generic.null";
+    /** Localization key for the matcher requiring a non-{@code null} value. */
     public static final String NOT_NULL = "matcher.generic.not.null";
 
     private final Map<String, Supplier<Matcher<?>>> matchers = map(

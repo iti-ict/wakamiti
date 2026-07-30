@@ -37,14 +37,22 @@ import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
  */
 public class DurationProvider extends AbstractProvider {
 
+    /** Resource-bundle base name containing localized duration-unit expressions. */
     public static final String DURATIONS_RESOURCE = "iti_wakamiti_core-durations";
 
+    /** Localization key used to recognize nanosecond values. */
     public static final String NANOSECONDS = "duration.nanoseconds";
+    /** Localization key used to recognize microsecond values. */
     public static final String MICROSECONDS = "duration.microseconds";
+    /** Localization key used to recognize millisecond values. */
     public static final String MILLISECONDS = "duration.milliseconds";
+    /** Localization key used to recognize second values. */
     public static final String SECONDS = "duration.seconds";
+    /** Localization key used to recognize minute values. */
     public static final String MINUTES = "duration.minutes";
+    /** Localization key used to recognize hour values. */
     public static final String HOURS = "duration.hours";
+    /** Localization key used to recognize day values. */
     public static final String DAYS = "duration.days";
 
     private final Map<String, Function<Long, Duration>> durations = map(

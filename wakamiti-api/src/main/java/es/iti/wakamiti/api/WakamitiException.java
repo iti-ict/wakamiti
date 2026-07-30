@@ -21,6 +21,9 @@ public class WakamitiException extends RuntimeException {
 
     private static final long serialVersionUID = 3126782976719868151L;
 
+    /**
+     * Creates an exception without a message or cause.
+     */
     public WakamitiException() {
         super();
     }

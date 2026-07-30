@@ -13,7 +13,7 @@ import es.iti.wakamiti.api.event.Event;
 
 
 /**
- * This interface defines a contract for observers that handle Wakamiti events.
+ * Observes Wakamiti runtime events.
  *
  * @see Event
  */
@@ -21,19 +21,23 @@ import es.iti.wakamiti.api.event.Event;
 public interface EventObserver extends Contributor {
 
     /**
-     * Handles the received Wakamiti event.
+     * Handles one delivered event.
+     * <p>
+     * This callback executes in the publisher thread. Exceptions propagate to
+     * the dispatcher caller unless the publisher catches them.
+     * </p>
      *
-     * @param event The received event.
+     * @param event received event, never {@code null}
      */
     void eventReceived(
             Event event
     );
 
     /**
-     * Determines whether the observer accepts events of the specified type.
+     * Determines whether this observer should receive a given event type.
      *
-     * @param eventType The type of the event.
-     * @return {@code true} if the observer accepts events of the specified type, {@code false} otherwise.
+     * @param eventType event type identifier
+     * @return {@code true} to receive matching events
      */
     boolean acceptType(
             String eventType

@@ -101,9 +101,11 @@ public class ConfigurationFactoryTest {
     private static final String VAL_DATETIMES_3 = "2026-07-09 09:43:03";
     private static final String VAL_CUSTOM = "Custom Value";
 
+    /** JUnit rule used to set and restore environment variables for each test. */
     @Rule
     public final EnvironmentVariables env = new EnvironmentVariables();
 
+    /** Configuration factory under test, initialized with comma-separated multivalues. */
     private ConfigurationFactory factory;
 
     @Before

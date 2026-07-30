@@ -8,6 +8,13 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
+/**
+ * Base type for parsed Gherkin syntax nodes in the execution model.
+ * <p>
+ * Each node optionally stores its source {@link Location}. Synthetic root
+ * nodes may have a {@code null} location.
+ * </p>
+ */
 public abstract class Node {
 
     protected final String type = getClass().getSimpleName();
@@ -20,6 +27,12 @@ public abstract class Node {
         this.location = location;
     }
 
+    /**
+     * Returns where this syntax node begins in the source document.
+     *
+     * @return the source coordinate, or {@code null} for synthetic document
+     * roots
+     */
     public Location getLocation() {
         return location;
     }

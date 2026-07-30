@@ -22,7 +22,14 @@ import es.iti.wakamiti.api.plan.PlanNode;
  */
 public class NonRunnableBackend extends AbstractBackend {
 
-
+    /**
+     * Creates a discovery-only backend.
+     *
+     * @param configuration effective backend configuration
+     * @param typeRegistry  data types used to parse step expressions
+     * @param steps         runnable-step descriptors exposed for matching and
+     *                      completion, although execution remains disabled
+     */
     public NonRunnableBackend(
             Configuration configuration,
             WakamitiDataTypeRegistry typeRegistry,

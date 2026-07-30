@@ -21,6 +21,7 @@ import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
  */
 public class CallableSeparationCheck extends AbstractCheck {
 
+    /** Message-bundle key reported when methods or constructors lack required separation. */
     public static final String MSG_CALLABLE_SEPARATOR = "callable.separator";
 
     private static final int[] TOKENS = {

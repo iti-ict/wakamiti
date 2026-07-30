@@ -29,16 +29,26 @@ import es.iti.wakamiti.api.ExpressionMatcher;
  */
 public class UnaryStringAssertProvider extends AbstractAssertProvider {
 
+    /** Resource key for the assertion that accepts only {@code null}. */
     public static final String NULL = "matcher.generic.null";
+    /** Resource key for the assertion that accepts empty text or collections. */
     public static final String EMPTY = "matcher.generic.empty";
+    /** Resource key for the assertion accepting either null or empty values. */
     public static final String NULL_EMPTY = "matcher.generic.null.empty";
 
+    /** Resource key for the assertion rejecting {@code null}. */
     public static final String NOT_NULL = "matcher.generic.not.null";
+    /** Resource key for the assertion rejecting empty text and collections. */
     public static final String NOT_EMPTY = "matcher.generic.not.empty";
+    /** Resource key for the assertion requiring a non-null, non-empty value. */
     public static final String NOT_NULL_EMPTY = "matcher.generic.not.null.empty";
 
     private final Map<String, Supplier<Matcher<?>>> matchers = new LinkedHashMap<>();
 
+    /**
+     * Creates the standard nullability and emptiness assertion set for strings
+     * and collections.
+     */
     public UnaryStringAssertProvider() {
         matchers.put(NULL, Matchers::nullValue);
         matchers.put(EMPTY, () -> Matchers.anyOf(

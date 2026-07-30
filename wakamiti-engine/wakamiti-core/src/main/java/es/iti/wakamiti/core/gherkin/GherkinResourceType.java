@@ -33,8 +33,10 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinParser;
 )
 public class GherkinResourceType implements ResourceType<GherkinDocument> {
 
+    /** Resource-type name used to select the Gherkin parser and plan builder. */
     public static final String NAME = "gherkin";
 
+    /** Stateless shared instance registered as the Gherkin resource type. */
     public static final GherkinResourceType INSTANCE = new GherkinResourceType();
 
     /**

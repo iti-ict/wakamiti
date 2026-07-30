@@ -15,8 +15,22 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 
+/**
+ * Base type for Azure API DTO models.
+ * <p>
+ * Equality is based on {@link #hashValues()} and allows compatibility across
+ * assignable model subclasses.
+ * </p>
+ */
 public abstract class BaseModel implements Serializable {
 
+    /**
+     * Compares model identity using class compatibility and hash content.
+     *
+     * @param obj object to compare
+     * @return {@code true} when both objects are class-compatible and produce
+     *         the same hash based on {@link #hashValues()}
+     */
     @Override
     public boolean equals(
             Object obj
@@ -26,11 +40,21 @@ public abstract class BaseModel implements Serializable {
                 && this.hashCode() == obj.hashCode();
     }
 
+    /**
+     * Computes hash code from the values returned by {@link #hashValues()}.
+     *
+     * @return hash code for model identity
+     */
     @Override
     public int hashCode() {
         return Objects.hash(hashValues());
     }
 
+    /**
+     * Returns the logical identity fields of the model.
+     *
+     * @return values participating in equality/hash calculations
+     */
     protected abstract Object[] hashValues();
 
     @Override

@@ -20,7 +20,9 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  */
 public class BlockBoundaryBlankLineCheck extends AbstractCheck {
 
+    /** Message-bundle key reported for a blank line immediately after an opening brace. */
     public static final String MSG_BLOCK_START = "block.start.blank.line";
+    /** Message-bundle key reported for a blank line immediately before a closing brace. */
     public static final String MSG_BLOCK_END = "block.end.blank.line";
 
     private static final int[] TOKENS = {

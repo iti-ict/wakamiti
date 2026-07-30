@@ -12,11 +12,26 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ * Provides the Scenario Outline functionality used by Wakamiti.
+ */
 public class ScenarioOutline extends ScenarioDefinition implements TaggedNode {
 
     private final List<Tag> tags;
     private final List<es.iti.wakamiti.core.gherkin.parser.Examples> examples;
 
+    /**
+     * Creates a parameterized scenario template.
+     *
+     * @param tags        outline-level tags
+     * @param location    position of the outline keyword
+     * @param keyword     localized outline keyword
+     * @param name        outline title
+     * @param description free-form outline description
+     * @param steps       template steps containing placeholders
+     * @param examples    example blocks supplying placeholder values
+     * @param comments    comments associated with the outline
+     */
     public ScenarioOutline(
             List<Tag> tags,
             Location location,
@@ -32,10 +47,20 @@ public class ScenarioOutline extends ScenarioDefinition implements TaggedNode {
         this.examples = Collections.unmodifiableList(examples);
     }
 
+    /**
+     * Returns tags declared directly on the outline.
+     *
+     * @return an unmodifiable list in source order
+     */
     public List<Tag> getTags() {
         return tags;
     }
 
+    /**
+     * Returns all example blocks used to instantiate this template.
+     *
+     * @return an unmodifiable list in source order
+     */
     public List<Examples> getExamples() {
         return examples;
     }

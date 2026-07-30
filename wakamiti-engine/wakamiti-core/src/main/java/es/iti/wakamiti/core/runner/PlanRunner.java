@@ -26,6 +26,14 @@ import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 
 
+/**
+ * Coordinates end-to-end execution of a constructed plan.
+ * <p>
+ * The runner configures logging/event observers, assigns execution IDs,
+ * delegates node execution to {@link PlanNodeRunner} children, and publishes
+ * plan-level start/finish events.
+ * </p>
+ */
 public class PlanRunner {
 
     private static final ConfigurationFactory CONF_BUILDER = ConfigurationFactory.instance();
@@ -38,6 +46,12 @@ public class PlanRunner {
     private final PlanNode plan;
     private List<PlanNodeRunner> children;
 
+    /**
+     * Creates an execution coordinator for a fully constructed plan.
+     *
+     * @param plan          root plan node whose children will be executed
+     * @param configuration effective execution and reporting configuration
+     */
     public PlanRunner(
             PlanNode plan,
             Configuration configuration
@@ -49,19 +63,22 @@ public class PlanRunner {
     }
 
     /**
-     * Runs the test plan, executing each child node using PlanNodeRunners.
+     * Executes the plan in normal mode.
      *
-     * @return The root PlanNode after the execution of the test plan.
+     * @return root plan node after execution
      */
     public PlanNode run() {
         return runPlan(false);
     }
 
     /**
-     * Runs the test plan in validation mode, resolving and checking steps
-     * without invoking step implementations.
+     * Executes the plan in dry-run mode.
+     * <p>
+     * Step definitions are resolved and validated, but step implementations are
+     * not invoked.
+     * </p>
      *
-     * @return The root PlanNode after the validation run.
+     * @return root plan node after validation
      */
     public PlanNode noRun() {
         return runPlan(true);
@@ -107,9 +124,10 @@ public class PlanRunner {
     }
 
     /**
-     * Builds and returns a list of PlanNodeRunners for the child nodes of the test plan.
+     * Builds one child runner per top-level plan child.
      *
-     * @return The list of PlanNodeRunners.
+     * @param dryRun whether child runners should execute in dry-run mode
+     * @return top-level child runners
      */
     protected List<PlanNodeRunner> buildRunners(
             boolean dryRun

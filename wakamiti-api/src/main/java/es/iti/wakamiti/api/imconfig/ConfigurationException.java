@@ -20,18 +20,37 @@ public class ConfigurationException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 7175876124782335084L;
 
+    /**
+     * Creates an exception that preserves the failure raised while loading or
+     * validating configuration.
+     *
+     * @param throwable the underlying configuration failure
+     */
     public ConfigurationException(
             Throwable throwable
     ) {
         super(throwable);
     }
 
+    /**
+     * Creates an exception with a message describing the invalid
+     * configuration or failed operation.
+     *
+     * @param message the diagnostic message
+     */
     public ConfigurationException(
             String message
     ) {
         super(message);
     }
 
+    /**
+     * Creates an exception with both contextual diagnostics and the underlying
+     * failure.
+     *
+     * @param message   the diagnostic message
+     * @param throwable the underlying configuration failure
+     */
     public ConfigurationException(
             String message,
             Throwable throwable

@@ -35,6 +35,18 @@ public class TokenParser {
     private String remainString;
     private String nextToken;
 
+    /**
+     * Creates a longest-prefix tokenizer.
+     * <p>
+     * At each position every expression and escaped literal is tested; the
+     * longest match wins. Regular expressions are evaluated before literals
+     * when equal-length matches occur.
+     * </p>
+     *
+     * @param string   complete input to tokenize
+     * @param literals literal token values
+     * @param regex    regular expressions describing token prefixes
+     */
     public TokenParser(
             String string,
             List<String> literals,

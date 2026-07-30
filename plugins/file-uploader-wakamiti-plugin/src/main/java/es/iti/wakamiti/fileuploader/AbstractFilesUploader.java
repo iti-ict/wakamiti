@@ -23,6 +23,14 @@ import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Base {@link EventObserver} for uploading generated Wakamiti output files to
+ * a remote FTP, FTPS or SFTP server.
+ * <p>
+ * Implementations bind the uploader to a specific report-output event type and
+ * category.
+ * </p>
+ */
 public abstract class AbstractFilesUploader implements EventObserver {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AbstractFilesUploader.class);
@@ -48,48 +56,91 @@ public abstract class AbstractFilesUploader implements EventObserver {
         this.category = category;
     }
 
+    /**
+     * Enables or disables remote uploads for this output category.
+     *
+     * @param enabled Whether this category uploads files during report events
+     */
     public void setEnabled(
             boolean enabled
     ) {
         this.enabled = enabled;
     }
 
+    /**
+     * Sets the remote endpoint, optionally including a port as
+     * {@code host:port}.
+     *
+     * @param host FTP, FTPS or SFTP endpoint
+     */
     public void setHost(
             String host
     ) {
         this.host = host;
     }
 
+    /**
+     * Sets the username used to authenticate against the remote endpoint.
+     *
+     * @param username Remote account name
+     */
     public void setUsername(
             String username
     ) {
         this.username = username;
     }
 
+    /**
+     * Sets the password used to authenticate against the remote endpoint.
+     *
+     * @param password Remote password; mandatory for FTP/FTPS
+     */
     public void setPassword(
             String password
     ) {
         this.password = password;
     }
 
+    /**
+     * Sets the remote destination directory template.
+     * Temporal placeholders such as {@code %DATE%}, {@code %TIME%} and
+     * {@code %YYYY%} are resolved once per report-output cycle.
+     *
+     * @param remotePath Remote directory template
+     */
     public void setRemotePath(
             String remotePath
     ) {
         this.remotePath = remotePath;
     }
 
+    /**
+     * Selects the transport protocol implementation used for uploads.
+     *
+     * @param protocol One of {@code ftp}, {@code ftps} or {@code sftp}
+     */
     public void setProtocol(
             String protocol
     ) {
         this.protocol = protocol;
     }
 
+    /**
+     * Sets the SSH identity used by SFTP authentication when applicable.
+     *
+     * @param identity Optional SSH private-key path used by SFTP
+     */
     public void setIdentity(
             String identity
     ) {
         this.identity = identity;
     }
 
+    /**
+     * Returns the configuration subsection associated with this uploader type.
+     *
+     * @return Configuration subsection associated with this output category
+     */
     public String category() {
         return this.category;
     }
@@ -116,6 +167,11 @@ public abstract class AbstractFilesUploader implements EventObserver {
         }
     }
 
+    /**
+     * Reports whether a transmitter exists and its underlying session is open.
+     *
+     * @return {@code true} while connected to the remote server
+     */
     public boolean isConnected() {
         return transmitter != null && transmitter.isConnected();
     }

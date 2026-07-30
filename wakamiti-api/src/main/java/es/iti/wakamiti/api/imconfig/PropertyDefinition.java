@@ -21,6 +21,8 @@ public class PropertyDefinition {
 
     /**
      * Get a new builder
+      *
+      * @return the resulting value
      */
     public static PropertyDefinitionBuilder builder() {
         return new PropertyDefinitionBuilder();
@@ -28,6 +30,9 @@ public class PropertyDefinition {
 
     /**
      * Get a new builder for the given property
+      *
+      * @param property the property value
+      * @return the resulting value
      */
     public static PropertyDefinitionBuilder builder(
             String property
@@ -58,30 +63,69 @@ public class PropertyDefinition {
         this.propertyType = type;
     }
 
+    /**
+     * Returns the configuration key governed by this definition.
+     *
+     * @return the property key
+     */
     public String property() {
         return property;
     }
 
+    /**
+     * Returns the human-readable purpose of the property.
+     *
+     * @return the description, or an empty string when none was supplied
+     */
     public String description() {
         return description;
     }
 
+    /**
+     * Indicates whether a non-blank value must be present.
+     *
+     * @return {@code true} when absence is a validation error
+     */
     public boolean required() {
         return required;
     }
 
+    /**
+     * Returns the value to apply when the configuration omits this property.
+     *
+     * @return the configured default, or an empty optional when no default is
+     * defined
+     */
     public Optional<String> defaultValue() {
         return Optional.ofNullable(defaultValue);
     }
 
+    /**
+     * Returns the logical name of the value type used for validation.
+     *
+     * @return the underlying {@link PropertyType} name, such as
+     * {@code text}, {@code integer}, or {@code enum}
+     */
     public String type() {
         return propertyType.name();
     }
 
+    /**
+     * Indicates whether the property represents a collection of independently
+     * validated values.
+     *
+     * @return {@code true} for multi-valued properties
+     */
     public boolean multivalue() {
         return multivalue;
     }
 
+    /**
+     * Builds a compact usage hint from the type constraints, default value, and
+     * required flag.
+     *
+     * @return a user-facing description of the accepted value
+     */
     public String hint() {
         return String.format(
                 "%s%s%s",
@@ -91,6 +135,18 @@ public class PropertyDefinition {
         );
     }
 
+    /**
+     * Validates one textual value against this definition.
+     * <p>
+     * Blank values are accepted unless the property is required. Non-blank
+     * values are delegated to the configured {@link PropertyType}.
+     * </p>
+     *
+     * @param value the value to validate; may be {@code null} to represent an
+     *              absent property
+     * @return an explanatory validation error, or an empty optional when the
+     * value is valid
+     */
     public Optional<String> validate(
             String value
     ) {

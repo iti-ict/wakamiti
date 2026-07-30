@@ -12,10 +12,19 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ * Provides the Table Row functionality used by Wakamiti.
+ */
 public class TableRow extends Node {
 
     private final List<es.iti.wakamiti.core.gherkin.parser.TableCell> cells;
 
+    /**
+     * Creates a table row at a source location.
+     *
+     * @param location position of the row's opening delimiter
+     * @param cells    cells in left-to-right order
+     */
     public TableRow(
             Location location,
             List<es.iti.wakamiti.core.gherkin.parser.TableCell> cells
@@ -24,6 +33,11 @@ public class TableRow extends Node {
         this.cells = Collections.unmodifiableList(cells);
     }
 
+    /**
+     * Returns cells in their source order.
+     *
+     * @return an unmodifiable cell list
+     */
     public List<TableCell> getCells() {
         return cells;
     }

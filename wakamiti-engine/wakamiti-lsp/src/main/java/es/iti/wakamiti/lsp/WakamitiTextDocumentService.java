@@ -41,6 +41,12 @@ import es.iti.wakamiti.lsp.internal.GherkinWorkspace;
 import es.iti.wakamiti.lsp.internal.TextRange;
 
 
+/**
+ * LSP text-document service for Wakamiti Gherkin and configuration files.
+ * <p>
+ * Supported language IDs are {@code wakamiti-gherkin} and {@code yaml}.
+ * </p>
+ */
 public class WakamitiTextDocumentService implements TextDocumentService {
 
     private static final String FILE_TYPE_GHERKIN = "wakamiti-gherkin";
@@ -98,6 +104,9 @@ public class WakamitiTextDocumentService implements TextDocumentService {
                 .collect(toList());
     }
 
+    /**
+     * Registers an opened document and publishes its initial diagnostics.
+     */
     @Override
     public void didOpen(
             DidOpenTextDocumentParams params
@@ -113,6 +122,9 @@ public class WakamitiTextDocumentService implements TextDocumentService {
         }
     }
 
+    /**
+     * Applies incremental document changes and republishes diagnostics.
+     */
     @Override
     public void didChange(
             DidChangeTextDocumentParams params
@@ -199,6 +211,12 @@ public class WakamitiTextDocumentService implements TextDocumentService {
         return Either.<List<? extends Location>, List<? extends LocationLink>>forLeft(links);
     }
 
+    /**
+     * Converts an LSP range to workspace coordinates.
+     *
+     * @param range LSP range from the client
+     * @return zero-based workspace range after removing {@link #baseIndex}
+     */
     private TextRange textRange(
             Range range
     ) {

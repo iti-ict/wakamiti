@@ -23,8 +23,12 @@ import es.iti.wakamiti.api.extensions.EventObserver;
 )
 public class StandardOutputFilesUploader extends AbstractFilesUploader implements EventObserver {
 
+    /** Configuration category for Wakamiti standard output files. */
     public static final String CATEGORY = "standardOutputs";
 
+    /**
+     * Creates an uploader subscribed to standard-output-file events.
+     */
     public StandardOutputFilesUploader() {
         super(Event.STANDARD_OUTPUT_FILE_WRITTEN, CATEGORY);
     }

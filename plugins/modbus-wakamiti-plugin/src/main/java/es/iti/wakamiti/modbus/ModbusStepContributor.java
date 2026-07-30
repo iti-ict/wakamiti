@@ -31,6 +31,13 @@ import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Step contributor for Modbus TCP read/write operations and assertions.
+ * <p>
+ * Connection settings are stored as scenario state and used by setup/teardown
+ * lifecycle hooks.
+ * </p>
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "modbus",
@@ -60,6 +67,15 @@ public class ModbusStepContributor implements StepContributor {
         this.port = port;
     }
 
+    /**
+     * Creates and connects the Modbus TCP client before scenario execution.
+     * <p>
+     * Requires host, port and slave identifier to be already configured.
+     * </p>
+     *
+     * @throws WakamitiException if the configured host cannot be resolved or the
+     *         TCP connection cannot be established
+     */
     @SetUp
     public void createClient() {
         try {
@@ -78,6 +94,15 @@ public class ModbusStepContributor implements StepContributor {
         }
     }
 
+    /**
+     * Disconnects the Modbus TCP client after scenario execution.
+     * <p>
+     * If no client was created, this method can fail with a
+     * {@link NullPointerException}.
+     * </p>
+     *
+     * @throws WakamitiException if the underlying client cannot be disconnected
+     */
     @TearDown
     public void destroyClient() {
         try {
@@ -114,6 +139,16 @@ public class ModbusStepContributor implements StepContributor {
         this.slaveId = Integer.parseInt(slaveId);
     }
 
+    /**
+     * Reads a contiguous block of holding registers from the configured slave.
+     * <p>
+     * The returned register values are retained as scenario state for subsequent
+     * assertions made with {@link #assertReadValue(Integer)}.
+     *
+     * @param quantity number of consecutive registers to read
+     * @param address zero-based address of the first holding register
+     * @throws WakamitiException if no Modbus response can be obtained
+     */
     @Step(value = "modbus.execute.read", args = {"quantity:int", "address:int"})
     public void executeRead(
             Integer quantity,
@@ -126,6 +161,13 @@ public class ModbusStepContributor implements StepContributor {
         }
     }
 
+    /**
+     * Writes a single holding-register value to the configured slave.
+     *
+     * @param value 16-bit register value to write
+     * @param address address of the target holding register
+     * @throws WakamitiException if the write operation cannot be completed
+     */
     @Step(value = "modbus.execute.write", args = {"value:int", "address:int"})
     public void executeWrite(
             Integer value,
@@ -138,6 +180,17 @@ public class ModbusStepContributor implements StepContributor {
         }
     }
 
+    /**
+     * Verifies that the last holding-register read contains an expected value.
+     * <p>
+     * This assertion checks every register returned by the previous read; it does
+     * not require the value to occur at a particular offset.
+     * The inspected values come from the in-memory {@code registersRead} buffer
+     * populated by the latest {@link #executeRead(Integer, Integer)} call.
+     *
+     * @param value value expected in at least one of the registers
+     * @throws WakamitiException if no read has been performed or the value is absent
+     */
     @Step(value = "modbus.assert.read.value", args = {"value:int"})
     public void assertReadValue(
             Integer value

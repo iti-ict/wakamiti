@@ -8,10 +8,16 @@
 package es.iti.wakamiti.lsp.internal;
 
 
+/**
+ * Defines the values supported by Completion Type.
+ */
 public enum CompletionType {
 
+    /** Completion that inserts a localized Gherkin structural keyword. */
     KEYWORD,
+    /** Completion that inserts a configured Wakamiti property reference. */
     PROPERTY,
+    /** Completion that inserts a matching step definition expression. */
     STEP
 
 }

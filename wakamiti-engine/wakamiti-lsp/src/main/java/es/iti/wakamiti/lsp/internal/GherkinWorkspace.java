@@ -40,6 +40,16 @@ public class GherkinWorkspace {
     private String configurationUri;
     private TextDocument configurationDocument;
 
+    /**
+     * Creates an empty workspace using the position base expected by its
+     * connected client.
+     * <p>
+     * Document positions are stored internally as zero-based coordinates. The
+     * base index is subtracted when client positions are converted for
+     * completion operations.
+     *
+     * @param baseIndex coordinate offset used by the client protocol
+     */
     public GherkinWorkspace(
             int baseIndex
     ) {
@@ -47,6 +57,14 @@ public class GherkinWorkspace {
         this.diagnosticHelper = new WorkspaceDiagnosticHelper(this);
     }
 
+    /**
+     * Adds a Gherkin document if its URI is not already registered and
+     * reassesses the complete workspace.
+     *
+     * @param uri stable document identifier
+     * @param content complete Gherkin source
+     * @return diagnostics for all registered documents
+     */
     public Stream<DocumentDiagnostics> addGherkin(
             String uri,
             String content
@@ -55,6 +73,14 @@ public class GherkinWorkspace {
         return computeAllDiagnostics();
     }
 
+    /**
+     * Sets the workspace configuration document and reassesses every Gherkin
+     * document against it.
+     *
+     * @param uri stable configuration document identifier
+     * @param content complete YAML configuration source
+     * @return diagnostics produced with the new effective configuration
+     */
     public Stream<DocumentDiagnostics> addConfiguration(
             String uri,
             String content
@@ -64,6 +90,15 @@ public class GherkinWorkspace {
         return computeWorkspaceDiagnostics();
     }
 
+    /**
+     * Adds a Gherkin document without running assessment.
+     * <p>
+     * This is useful during bulk initialization, when diagnostics will be
+     * computed once after all files have been registered.
+     *
+     * @param uri stable document identifier
+     * @param content complete Gherkin source
+     */
     public void addGherkinWithoutDiagnostics(
             String uri,
             String content
@@ -71,6 +106,12 @@ public class GherkinWorkspace {
         documentAssessors.computeIfAbsent(uri, x -> new GherkinDocumentAssessor(uri, content));
     }
 
+    /**
+     * Sets the YAML configuration document without recalculating diagnostics.
+     *
+     * @param uri stable configuration document identifier
+     * @param content complete YAML configuration source
+     */
     public void addConfigurationWithoutDiagnostics(
             String uri,
             String content
@@ -79,6 +120,14 @@ public class GherkinWorkspace {
         this.configurationDocument = new TextDocument(content);
     }
 
+    /**
+     * Applies an incremental edit to the configuration and recomputes
+     * workspace diagnostics.
+     *
+     * @param range half-open, zero-based source range to replace
+     * @param text replacement text
+     * @return diagnostics produced with the updated configuration
+     */
     public Stream<DocumentDiagnostics> updateConfiguration(
             TextRange range,
             String text
@@ -87,13 +136,28 @@ public class GherkinWorkspace {
         return computeWorkspaceDiagnostics();
     }
 
+    /**
+     * Reassesses one Gherkin document against the current workspace state.
+     *
+     * @param uri identifier of the document to assess
+     * @return diagnostics grouped with the assessed document
+     */
     public DocumentDiagnostics computeDiagnostics(
             String uri
     ) {
         return document(uri).collectDiagnostics();
     }
 
-
+    /**
+     * Rebuilds the effective configuration and assesses every Gherkin
+     * document.
+     * <p>
+     * If the YAML configuration cannot be parsed, this pass returns an empty
+     * stream because no reliable effective configuration can be applied.
+     *
+     * @return diagnostics for all documents, or an empty stream on
+     *         configuration parsing failure
+     */
     public Stream<DocumentDiagnostics> computeWorkspaceDiagnostics() {
         try {
             var workspaceConfiguration = Configuration.factory().fromMap(
@@ -108,6 +172,17 @@ public class GherkinWorkspace {
         }
     }
 
+    /**
+     * Applies an incremental edit and recomputes all affected diagnostics.
+     * <p>
+     * Edits to the registered configuration are handled as configuration
+     * changes; every other URI is treated as a Gherkin document.
+     *
+     * @param uri identifier of the edited document
+     * @param range half-open, zero-based source range to replace
+     * @param text replacement text
+     * @return current diagnostics for the workspace
+     */
     public Stream<DocumentDiagnostics> update(
             String uri,
             TextRange range,
@@ -121,6 +196,16 @@ public class GherkinWorkspace {
         }
     }
 
+    /**
+     * Produces quick fixes for selected diagnostics.
+     * <p>
+     * The result combines actions local to the selected document with actions
+     * that require knowledge of other workspace documents.
+     *
+     * @param uri identifier of the document containing the diagnostics
+     * @param diagnostics diagnostics selected by the client
+     * @return applicable code actions
+     */
     public List<CodeAction> obtainCodeActions(
             String uri,
             List<Diagnostic> diagnostics
@@ -139,6 +224,14 @@ public class GherkinWorkspace {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Computes completion candidates at a client position.
+     *
+     * @param uri identifier of the Gherkin document
+     * @param position client position adjusted by {@code baseIndex} before
+     *                 analysis
+     * @return completion candidates valid at the requested position
+     */
     public List<CompletionItem> computeCompletions(
             String uri,
             Position position
@@ -149,6 +242,12 @@ public class GherkinWorkspace {
         );
     }
 
+    /**
+     * Collects the Gherkin symbols exposed in a document outline.
+     *
+     * @param uri identifier of the Gherkin document
+     * @return document symbols in source order
+     */
     public List<DocumentSymbol> documentSymbols(
             String uri
     ) {
@@ -162,6 +261,14 @@ public class GherkinWorkspace {
         return diagnosticHelper.computeInterDocumentDiagnostics(documentDiagnostics);
     }
 
+    /**
+     * Resolves the implementation linked from a definition-side position.
+     *
+     * @param uri identifier of a definition document
+     * @param position position inside a linked identifier
+     * @return the implementation segment, or an empty optional when the
+     *         document is not a definition or no link has been indexed
+     */
     public Optional<DocumentSegment> resolveImplementationLink(
             String uri,
             Position position
@@ -174,6 +281,14 @@ public class GherkinWorkspace {
                 .map(Pair::value);
     }
 
+    /**
+     * Resolves the definition linked from an implementation-side position.
+     *
+     * @param uri identifier of an implementation document
+     * @param position position inside a linked identifier
+     * @return the definition segment, or an empty optional when the document is
+     *         not an implementation or no link has been indexed
+     */
     public Optional<DocumentSegment> resolveDefinitionLink(
             String uri,
             Position position
@@ -186,6 +301,14 @@ public class GherkinWorkspace {
                 .map(Pair::key);
     }
 
+    /**
+     * Formats an entire Gherkin document.
+     *
+     * @param uri identifier of the document to format
+     * @param tabSize number of spaces used for each indentation level
+     * @return the range covering the current document paired with its complete
+     *         formatted replacement text
+     */
     public Pair<Range, String> format(
             String uri,
             int tabSize

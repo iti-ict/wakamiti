@@ -20,16 +20,35 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 
 
+/**
+ * Creates and configures Driver Helper instances.
+ */
 public class DriverHelperFactory {
 
     private final Logger logger;
 
+    /**
+     * Creates a driver-helper factory.
+     *
+     * @param logger logger passed to created driver adapters
+     */
     public DriverHelperFactory(
             Logger logger
     ) {
         this.logger = logger;
     }
 
+    /**
+     * Opens an Appium session and chooses an adapter for its platform.
+     * <p>
+     * Android capabilities produce an {@link AndroidDriverHelper}; unknown
+     * platforms fall back to the platform-neutral {@link DriverHelper}.
+     *
+     * @param capabilities desired platform, device and application capabilities
+     * @param appiumURL absolute Appium server endpoint
+     * @return helper wrapping the newly created session
+     * @throws WakamitiException if the URL is missing or malformed
+     */
     public DriverHelper create(
             Capabilities capabilities,
             String appiumURL

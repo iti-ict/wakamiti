@@ -18,6 +18,9 @@ import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateMethodModelEx;
 
 
+/**
+ * Provides the Count Steps Method functionality used by Wakamiti.
+ */
 public class CountStepsMethod implements TemplateMethodModelEx {
 
     @Override

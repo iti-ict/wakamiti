@@ -27,6 +27,12 @@ public class TextDocument {
     // the positions of each eol character in the overall raw document
     private int[] endOfLines;
 
+    /**
+     * Creates an editable document and indexes its newline offsets.
+     *
+     * @param rawDocument complete text using newline characters as line
+     *                    separators
+     */
     public TextDocument(
             String rawDocument
     ) {
@@ -34,6 +40,12 @@ public class TextDocument {
         this.endOfLines = locateEndOfLines(rawDocument);
     }
 
+    /**
+     * Extracts a zero-based line without its trailing newline.
+     *
+     * @param lineNumber zero-based line index
+     * @return line content
+     */
     public String extractLine(
             int lineNumber
     ) {
@@ -45,6 +57,13 @@ public class TextDocument {
         return rawDocument.substring(start, end);
     }
 
+    /**
+     * Extracts text in a half-open range: the start is included and the end is
+     * excluded.
+     *
+     * @param range zero-based document range
+     * @return selected text, possibly spanning newlines
+     */
     public String extractRange(
             TextRange range
     ) {
@@ -53,6 +72,13 @@ public class TextDocument {
         return rawDocument.substring(start, end);
     }
 
+    /**
+     * Replaces a half-open range and rebuilds the line-offset index.
+     *
+     * @param range range to remove
+     * @param text  replacement text
+     * @return this mutated document
+     */
     public TextDocument replaceRange(
             TextRange range,
             String text
@@ -64,6 +90,13 @@ public class TextDocument {
         return this;
     }
 
+    /**
+     * Replaces one line while retaining its existing line terminator.
+     *
+     * @param lineNumber zero-based line index
+     * @param line       replacement content without a newline
+     * @return this mutated document
+     */
     public TextDocument replaceLine(
             int lineNumber,
             String line
@@ -74,14 +107,29 @@ public class TextDocument {
         );
     }
 
+    /**
+     * Returns the complete current text including line terminators.
+     *
+     * @return raw document text
+     */
     public String rawText() {
         return rawDocument;
     }
 
+    /**
+     * Indicates whether the document contains no indexed lines.
+     *
+     * @return {@code true} for empty text
+     */
     public boolean isEmpty() {
         return numberOfLines() == 0;
     }
 
+    /**
+     * Counts logical lines, accounting for whether the text ends in a newline.
+     *
+     * @return number of addressable lines
+     */
     public int numberOfLines() {
         if (endOfLines.length == 0) {
             return 0;
@@ -92,6 +140,11 @@ public class TextDocument {
                 : endOfLines.length;
     }
 
+    /**
+     * Splits the current document into lines without terminators.
+     *
+     * @return lines in document order
+     */
     public String[] extractLines() {
         String[] lines = new String[numberOfLines()];
         for (int i = 0; i < lines.length; i++) {
@@ -100,12 +153,25 @@ public class TextDocument {
         return lines;
     }
 
+    /**
+     * Finds complete regular-expression matches across every line.
+     *
+     * @param pattern pattern applied independently to each line
+     * @return matching segments in document order
+     */
     public List<TextSegment> extractSegments(
             Pattern pattern
     ) {
         return extractSegments(pattern, 0);
     }
 
+    /**
+     * Finds a selected capture group across every line.
+     *
+     * @param pattern    line-oriented pattern
+     * @param regexGroup capture group used as segment content
+     * @return matching segments in document order
+     */
     public List<TextSegment> extractSegments(
             Pattern pattern,
             int regexGroup
@@ -117,6 +183,13 @@ public class TextDocument {
         return segments;
     }
 
+    /**
+     * Finds complete matches on one line.
+     *
+     * @param lineNumber zero-based line index
+     * @param pattern    pattern to apply
+     * @return matching segments from left to right
+     */
     public List<TextSegment> extractSegments(
             int lineNumber,
             Pattern pattern
@@ -124,6 +197,14 @@ public class TextDocument {
         return extractSegments(lineNumber, pattern, 0);
     }
 
+    /**
+     * Finds a selected capture group on one line.
+     *
+     * @param lineNumber zero-based line index
+     * @param pattern    pattern to apply
+     * @param regexGroup group returned as segment content
+     * @return matching segments from left to right
+     */
     public List<TextSegment> extractSegments(
             int lineNumber,
             Pattern pattern,
@@ -169,10 +250,21 @@ public class TextDocument {
         return indexes;
     }
 
+    /**
+     * Creates an independent document with the same current text.
+     *
+     * @return a mutable copy with its own line index
+     */
     public TextDocument copy() {
         return new TextDocument(rawDocument);
     }
 
+    /**
+     * Returns a half-open range covering the complete document.
+     *
+     * @return range from the first character to the start of the line after
+     * the last logical line
+     */
     public TextRange wholeRange() {
         return TextRange.of(0, 0, numberOfLines(), 0);
     }

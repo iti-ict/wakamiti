@@ -30,11 +30,15 @@ import slf4jansi.AnsiLogger;
 )
 public class DatabaseConfigContributor implements ConfigContributor<DatabaseStepContributor> {
 
+    /** Configuration key for the text marker interpreted as an SQL {@code NULL}. */
     public static final String DATABASE_NULL_SYMBOL = "database.nullSymbol";
+    /** Configuration key enabling rollback or cleanup actions after execution. */
     public static final String DATABASE_ENABLE_CLEANUP_UPON_COMPLETION = "database.enableCleanupUponCompletion";
+    /** Configuration key for the pattern that excludes spreadsheet sheets from datasets. */
     public static final String DATABASE_XLS_IGNORE_SHEET_PATTERN = "database.xls.ignoreSheetPattern";
     /** The CSV format name as specified by {@code CSVFormat}. */
     public static final String DATABASE_CSV_FORMAT = "database.csv.format";
+    /** Configuration key enabling connection validation before database steps run. */
     public static final String DATABASE_HEALTHCHECK = "database.healthcheck";
     /**
      * Max duration (milliseconds) allowed for similar-record lookup.

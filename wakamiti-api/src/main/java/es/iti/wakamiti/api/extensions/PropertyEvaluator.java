@@ -151,9 +151,20 @@ public abstract class PropertyEvaluator implements Contributor {
      */
     public static class Result {
 
+        /** Maps each original property expression to the value that replaced it. */
         Map<String, String> evaluations;
+        /** Final text after every supported property expression has been evaluated. */
         String value;
 
+        /**
+         * Creates an evaluation result from the replacement trace and final
+         * value.
+         *
+         * @param evaluations mappings from original expressions to their
+         *                    resolved values, in evaluation order
+         * @param value       the fully evaluated text
+         * @return a result containing the supplied map and value
+         */
         public static Result of(
                 Map<String, String> evaluations,
                 String value
@@ -164,10 +175,21 @@ public abstract class PropertyEvaluator implements Contributor {
             return result;
         }
 
+        /**
+         * Returns the replacements performed while evaluating the text.
+         *
+         * @return a map from each encountered property expression to its
+         * replacement value
+         */
         public Map<String, String> evaluations() {
             return evaluations;
         }
 
+        /**
+         * Returns the text produced after applying every evaluator.
+         *
+         * @return the evaluated value
+         */
         public String value() {
             return value;
         }

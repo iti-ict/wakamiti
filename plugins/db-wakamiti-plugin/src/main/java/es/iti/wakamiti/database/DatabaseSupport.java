@@ -75,6 +75,7 @@ import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
  */
 public class DatabaseSupport {
 
+    /** Reserved name of the connection selected when no explicit alias is supplied. */
     public static final String DEFAULT = "default";
     protected static final String ERROR_ASSERT_NO_RECORD_EXPECTED =
             "It was expected no record satisfying {} exist in table {}, but {}";

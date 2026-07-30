@@ -16,6 +16,13 @@ public class DocString extends Node {
     private final String contentType;
     private final String content;
 
+    /**
+     * Creates a delimited block argument.
+     *
+     * @param location    position of the opening delimiter
+     * @param contentType optional media type declared after the delimiter
+     * @param content     de-indented block content
+     */
     public DocString(
             Location location,
             String contentType,
@@ -26,10 +33,20 @@ public class DocString extends Node {
         this.content = content;
     }
 
+    /**
+     * Returns the block content without its delimiters.
+     *
+     * @return the parsed document body
+     */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Returns the optional media type declared by the document string.
+     *
+     * @return the content type, or {@code null} when omitted
+     */
     public String getContentType() {
         return contentType;
     }

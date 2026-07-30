@@ -31,6 +31,11 @@ public abstract class CommentedNode extends Node {
         return location;
     }
 
+    /**
+     * Returns comments associated with this syntax node.
+     *
+     * @return comments in source order
+     */
     public List<Comment> getComments() {
         return comments;
     }

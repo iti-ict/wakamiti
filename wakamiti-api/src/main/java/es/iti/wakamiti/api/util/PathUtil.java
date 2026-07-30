@@ -70,6 +70,19 @@ public final class PathUtil {
         return replaceTemporalPlaceholders(path, Instant.now());
     }
 
+    /**
+     * Replaces temporal placeholders using a specific instant in the
+     * system-default time zone.
+     * <p>
+     * Supported placeholders include {@code %YYYY%}, {@code %YY%},
+     * {@code %MM%}, {@code %DD%}, {@code %hh%}, {@code %mm%},
+     * {@code %ss%}, {@code %sss%}, {@code %DATE%}, and {@code %TIME%}.
+     * </p>
+     *
+     * @param path    path template
+     * @param instant instant used to render every temporal component
+     * @return a path with supported placeholders replaced
+     */
     public static Path replaceTemporalPlaceholders(
             Path path,
             Instant instant
@@ -94,6 +107,14 @@ public final class PathUtil {
         return pathString;
     }
 
+    /**
+     * Percent-encodes characters outside the URI reserved and unreserved sets
+     * accepted by this utility.
+     *
+     * @param input text to encode
+     * @return URI-safe text with unsupported characters represented in
+     * uppercase hexadecimal form
+     */
     public static String encodeURI(
             String input
     ) {
@@ -103,6 +124,12 @@ public final class PathUtil {
         });
     }
 
+    /**
+     * Decodes two-digit numeric percent escapes produced by this utility.
+     *
+     * @param input encoded URI text
+     * @return text with matching percent escapes converted to characters
+     */
     public static String decodeURI(
             String input
     ) {

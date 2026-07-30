@@ -13,6 +13,9 @@ import static java.util.Objects.isNull;
 import java.sql.JDBCType;
 
 
+/**
+ * Provides the Sql Server Format functionality used by Wakamiti.
+ */
 public class SqlServerFormat extends DefaultSqlFormat {
 
     @Override

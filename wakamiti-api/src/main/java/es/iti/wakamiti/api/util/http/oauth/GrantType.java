@@ -12,6 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 
+/**
+ * Defines the values supported by Grant Type.
+ */
 public enum GrantType {
 
     /**
@@ -32,6 +35,11 @@ public enum GrantType {
         this.requiredFields.addAll(List.of(requiredFields));
     }
 
+    /**
+     * Returns the form parameters required by this OAuth 2.0 grant flow.
+     *
+     * @return the required parameter names used when validating token requests
+     */
     public List<String> requiredFields() {
         return requiredFields;
     }

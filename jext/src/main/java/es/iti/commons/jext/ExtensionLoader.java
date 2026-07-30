@@ -19,6 +19,23 @@ package es.iti.commons.jext;
  */
 public interface ExtensionLoader {
 
+    /**
+     * Discovers the available implementations of an extension point.
+     * <p>
+     * Implementations may instantiate providers directly or return objects
+     * managed by an external container. The returned {@link Iterable} may be
+     * evaluated lazily, so callers must not assume that discovery or
+     * instantiation has completed when this method returns.
+     * </p>
+     *
+     * @param type   the extension point contract that every returned instance
+     *               must implement
+     * @param loader the class loader that defines the discovery scope; custom
+     *               loaders may use it to locate provider metadata or classes
+     * @param <T>    the extension point type
+     * @return the discovered implementations, or an empty iterable when no
+     * compatible provider is available
+     */
     <T> Iterable<T> load(
             Class<T> type,
             ClassLoader loader

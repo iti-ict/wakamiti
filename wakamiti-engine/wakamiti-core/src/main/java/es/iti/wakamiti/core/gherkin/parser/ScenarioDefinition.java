@@ -12,6 +12,9 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ * Provides the Scenario Definition functionality used by Wakamiti.
+ */
 public abstract class ScenarioDefinition extends CommentedNode {
 
     private final String keyword;
@@ -19,6 +22,17 @@ public abstract class ScenarioDefinition extends CommentedNode {
     private final String description;
     private final List<Step> steps;
 
+    /**
+     * Initializes the common structure shared by backgrounds, scenarios, and
+     * scenario outlines.
+     *
+     * @param location    position of the definition keyword
+     * @param keyword     localized source keyword
+     * @param name        definition title
+     * @param description free-form descriptive text
+     * @param steps       steps in source order
+     * @param comments    comments associated with the definition
+     */
     public ScenarioDefinition(
             Location location,
             String keyword,
@@ -34,18 +48,38 @@ public abstract class ScenarioDefinition extends CommentedNode {
         this.steps = Collections.unmodifiableList(steps);
     }
 
+    /**
+     * Returns the definition title.
+     *
+     * @return the source-level name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the localized keyword introducing the definition.
+     *
+     * @return the source keyword
+     */
     public String getKeyword() {
         return keyword;
     }
 
+    /**
+     * Returns free-form descriptive text preceding the first step.
+     *
+     * @return the description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Returns executable steps declared by this definition.
+     *
+     * @return an unmodifiable list in source order
+     */
     public List<Step> getSteps() {
         return steps;
     }

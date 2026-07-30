@@ -27,8 +27,17 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Component that provides operations to retrieve instances of
- * classes annotated with {@link Extension}.
+ * Resolves and instantiates classes annotated with {@link Extension} for a
+ * given extension point.
+ * <p>
+ * This manager caches discovered extension classes and resolved instances to
+ * avoid scanning class loaders on every query. Cache entries are kept for the
+ * lifetime of the manager instance and are not invalidated automatically.
+ * </p>
+ * <p>
+ * This class is not thread-safe. If it is shared across threads, callers are
+ * responsible for external synchronization.
+ * </p>
  */
 public class ExtensionManager {
 
@@ -80,6 +89,7 @@ public class ExtensionManager {
      * Get the extension annotated metadata for a given extension.
      *
      * @param extension An extension instance.
+     * @param <T>       The extension type.
      * @return The extension metadata, or {@code null} if a passed object is
      * not an extension.
      */
@@ -96,6 +106,7 @@ public class ExtensionManager {
      * Get all the extension annotated metadata for a given extension point.
      *
      * @param extensionPoint An extension point.
+     * @param <T>            The extension point type.
      * @return The extension metadata, or {@code null} if a passed object is
      * not an extension.
      */
@@ -111,6 +122,7 @@ public class ExtensionManager {
      * priority will be used.
      *
      * @param extensionPoint The extension point type.
+     * @param <T>            The extension point type.
      * @return An optional object either empty or wrapping the instance.
      */
     public <T> Optional<T> getExtension(
@@ -127,6 +139,7 @@ public class ExtensionManager {
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions satisfying this condition will be
      *                       returned.
+     * @param <T>            The extension point type.
      * @return An optional object either empty or wrapping the instance.
      */
     public <T> Optional<T> getExtensionThatSatisfy(
@@ -144,6 +157,7 @@ public class ExtensionManager {
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions which their metadata satisfies this
      *                       condition will be returned.
+     * @param <T>            The extension point type.
      * @return An optional object either empty or wrapping the instance.
      */
     public <T> Optional<T> getExtensionThatSatisfyMetadata(
@@ -158,6 +172,7 @@ public class ExtensionManager {
      * extension point.
      *
      * @param extensionPoint The extension point type.
+     * @param <T>            The extension point type.
      * @return A list with the extensions, empty if none was found.
      */
     public <T> Stream<T> getExtensions(
@@ -173,6 +188,7 @@ public class ExtensionManager {
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions satisfying this condition will be
      *                       returned.
+     * @param <T>            The extension point type.
      * @return A list with the extensions, empty if none was found.
      */
     public <T> Stream<T> getExtensionsThatSatisfy(
@@ -189,6 +205,7 @@ public class ExtensionManager {
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions which their metadata satisfies this
      *                       condition will be returned.
+     * @param <T>            The extension point type.
      * @return A list with the extensions, empty if none was found.
      */
     public <T> Stream<T> getExtensionsThatSatisfyMetadata(
@@ -255,11 +272,10 @@ public class ExtensionManager {
     }
 
     /**
-     * Retrieves the list of valid extensions from the cache or obtains them and
-     * stores them in the cache.
+     * Gets valid extensions from cache, or computes and stores them when absent.
      *
-     * @param context The context specifying the extension point and its data.
-     * @return The list of valid extensions for the specified extension point.
+     * @param context the extension point and filtering context
+     * @return cached valid extensions for the extension point
      */
     @SuppressWarnings("unchecked")
     protected <T> List<T> obtainCachedValidExtensions(
@@ -276,11 +292,10 @@ public class ExtensionManager {
     }
 
     /**
-     * Retrieves the valid extensions for the specified extension point using the
-     * provided extension context.
+     * Discovers and validates all extensions for the target extension point.
      *
-     * @param context The extension context specifying the extension point and its data.
-     * @return A list containing the valid extensions for the specified extension point.
+     * @param context extension discovery context
+     * @return valid extensions before runtime condition filtering
      */
     protected <T> List<T> obtainValidExtensions(
             ExtensionLoadContext<T> context
@@ -306,14 +321,12 @@ public class ExtensionManager {
     }
 
     /**
-     * Collects valid extensions for the specified extension point within
-     * the given extension context.
+     * Collects validated extension instances from one loader strategy into the
+     * provided accumulation list.
      *
-     * @param context             The extension context specifying the
-     *                            extension point and its data.
-     * @param collectedExtensions The list to which valid extensions
-     *                            will be added.
-     * @param <T>                 The type of the extension point.
+     * @param context             extension loading context
+     * @param collectedExtensions mutable destination list
+     * @param <T>                 extension point type
      */
     private <T> void collectValidExtensions(
             ExtensionLoadContext<T> context,
@@ -394,14 +407,15 @@ public class ExtensionManager {
     }
 
     /**
-     * Filters out overridden extensions from the given list.
+     * Applies {@link Extension#overrides()} rules to the discovered extension
+     * list.
      * <p>
-     * This method identifies overridable extensions within the provided list based on their
-     * metadata and removes overridden extensions, updating the list accordingly.
+     * When an extension declares that it overrides a discovered overridable
+     * extension, the overridden instance is removed from the resulting list.
      * </p>
      *
-     * @param extensions The list of extensions to filter.
-     * @param <T>        The type of the extension point.
+     * @param extensions mutable extension list to post-process
+     * @param <T>        extension point type
      */
     private <T> void filterOverriddenExtensions(
             List<T> extensions

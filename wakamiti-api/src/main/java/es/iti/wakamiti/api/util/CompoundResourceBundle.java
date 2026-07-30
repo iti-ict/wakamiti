@@ -39,6 +39,15 @@ public class CompoundResourceBundle extends ResourceBundle {
 
     private final List<ResourceBundle> resourceBundles;
 
+    /**
+     * Creates a bundle that searches delegates in list order.
+     * <p>
+     * The list itself is defensively copied. When multiple bundles define the
+     * same key, the first bundle has precedence.
+     * </p>
+     *
+     * @param resourceBundles bundles to aggregate in lookup-precedence order
+     */
     public CompoundResourceBundle(
             List<ResourceBundle> resourceBundles
     ) {

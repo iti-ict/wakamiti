@@ -42,6 +42,11 @@ import io.restassured.specification.RequestSpecification;
  * Provides methods to configure and execute REST API requests and assertions.
  * It includes methods for setting request parameters, headers, authentication,
  * and executing various HTTP methods.
+ * <p>
+ * Configuration steps accumulate request specifications in memory and affect
+ * subsequent HTTP action steps until they are replaced or reset by other
+ * steps.
+ * </p>
  *
  * @see RestSupport
  * @see StepContributor
@@ -518,6 +523,7 @@ public class RestStepContributor extends RestSupport implements StepContributor 
      *
      * @param name the name of the multipart field
      * @param file the file to attach
+     * @param mimeType the parameter value
      */
     @Step(value = "rest.define.attached.type.file", args = {"name:text", "type:text", "file:file"})
     public void setAttachedFile(
@@ -551,6 +557,15 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         specifications.add(request -> request.formParams(tableToMap(table)));
     }
 
+    /**
+     * Adds one URL-encoded form parameter to subsequent requests.
+     * <p>
+     * This also sets the request content type to
+     * {@code application/x-www-form-urlencoded}.
+     *
+     * @param name form field name
+     * @param value form field value
+     */
     @Step(value = "rest.define.form.parameter", args = {"name:text", "value:text"})
     public void setFormParameter(
             String name,
@@ -560,23 +575,44 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         specifications.add(request -> request.formParam(name, value));
     }
 
+    /**
+     * Executes a GET request using the accumulated request specification.
+     *
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.GET.query")
     public Object executeGetQuery() {
         executeRequest(RequestSpecification::get);
         return parsedResponse();
     }
 
+    /**
+     * Executes a GET request for the configured subject.
+     *
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.GET.subject")
     public Object executeGetSubject() {
         return executeGetQuery();
     }
 
+    /**
+     * Executes a DELETE request without an explicit request body.
+     *
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.DELETE.subject")
     public Object executeDeleteSubject() {
         executeRequest(RequestSpecification::delete);
         return parsedResponse();
     }
 
+    /**
+     * Executes a PUT request using a Wakamiti document as its body.
+     *
+     * @param document document whose content is sent verbatim
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.PUT.subject.from.document")
     public Object executePutSubjectUsingDocument(
             Document document
@@ -585,6 +621,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes a PUT request using the UTF-8 content of a file as its body.
+     *
+     * @param file readable file to send
+     * @return response body converted according to its content type
+     * @throws AssertionError if the file does not exist
+     */
     @Step("rest.execute.PUT.subject.from.file")
     public Object executePutSubjectUsingFile(
             File file
@@ -594,12 +637,23 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes a PUT request without an explicit request body.
+     *
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.PUT.subject.empty")
     public Object executePutSubject() {
         executeRequest(RequestSpecification::put);
         return parsedResponse();
     }
 
+    /**
+     * Executes a PATCH request using a Wakamiti document as its body.
+     *
+     * @param document document whose content is sent verbatim
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.PATCH.subject.from.document")
     public Object executePatchSubjectUsingDocument(
             Document document
@@ -608,6 +662,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes a PATCH request using the UTF-8 content of a file as its body.
+     *
+     * @param file readable file to send
+     * @return response body converted according to its content type
+     * @throws AssertionError if the file does not exist
+     */
     @Step("rest.execute.PATCH.subject.from.file")
     public Object executePatchSubjectUsingFile(
             File file
@@ -617,12 +678,24 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes a PATCH request without an explicit request body.
+     *
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.PATCH.subject.empty")
     public Object executePatchSubject() {
         executeRequest(RequestSpecification::patch);
         return parsedResponse();
     }
 
+    /**
+     * Executes a POST request using the UTF-8 content of a file as its body.
+     *
+     * @param file readable file to send
+     * @return response body converted according to its content type
+     * @throws AssertionError if the file does not exist
+     */
     @Step("rest.execute.POST.subject.from.file")
     public Object executePostSubjectUsingFile(
             File file
@@ -632,6 +705,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes a POST request using a Wakamiti document as its body.
+     *
+     * @param document document whose content is sent verbatim
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.POST.subject.from.document")
     public Object executePostSubjectUsingDocument(
             Document document
@@ -640,12 +719,23 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes a POST request without an explicit request body.
+     *
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.POST.subject.empty")
     public Object executePostSubject() {
         executeRequest(RequestSpecification::post);
         return parsedResponse();
     }
 
+    /**
+     * Executes the data-oriented POST step with a document body.
+     *
+     * @param document document whose content is sent verbatim
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.POST.data.from.document")
     public Object executePostDataUsingDocument(
             Document document
@@ -653,6 +743,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return executePostSubjectUsingDocument(document);
     }
 
+    /**
+     * Executes the data-oriented POST step with a file body.
+     *
+     * @param file readable file whose UTF-8 content is sent
+     * @return response body converted according to its content type
+     * @throws AssertionError if the file does not exist
+     */
     @Step("rest.execute.POST.data.from.file")
     public Object executePostDataUsingFile(
             File file
@@ -661,11 +758,22 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes the data-oriented POST step without an explicit body.
+     *
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.POST.data.empty")
     public Object executePostData() {
         return executePostSubject();
     }
 
+    /**
+     * Executes a DELETE request with a Wakamiti document body.
+     *
+     * @param document document whose content is sent verbatim
+     * @return response body converted according to its content type
+     */
     @Step("rest.execute.DELETE.data.from.document")
     public Object executeDeleteDataUsingDocument(
             Document document
@@ -674,6 +782,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Executes a DELETE request with the UTF-8 content of a file as its body.
+     *
+     * @param file readable file to send
+     * @return response body converted according to its content type
+     * @throws AssertionError if the file does not exist
+     */
     @Step("rest.execute.DELETE.data.from.file")
     public Object executeDeleteDataUsingFile(
             File file
@@ -683,6 +798,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         return parsedResponse();
     }
 
+    /**
+     * Requires the response body to match a document exactly, including
+     * structured field and array order.
+     *
+     * @param document expected response content
+     * @throws AssertionError if no response exists or its content differs
+     */
     @Step("rest.assert.response.body.strict.from.document")
     public void assertBodyStrictComparison(
             Document document
@@ -691,6 +813,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertContentIs(document, MatchMode.STRICT);
     }
 
+    /**
+     * Requires the response body to contain exactly the document's structured
+     * content while allowing arrays to appear in a different order.
+     *
+     * @param document expected response content
+     * @throws AssertionError if no response exists or its content differs
+     */
     @Step("rest.assert.response.body.strict.from.document.any-order")
     public void assertBodyStrictComparisonAnyOrder(
             Document document
@@ -699,6 +828,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertContentIs(document, MatchMode.STRICT_ANY_ORDER);
     }
 
+    /**
+     * Requires every value in a document to be present in the response while
+     * allowing additional fields or array elements and different array order.
+     *
+     * @param document minimum expected response content
+     * @throws AssertionError if no response exists or expected content is absent
+     */
     @Step("rest.assert.response.body.loose.from.document")
     public void assertBodyLooseComparison(
             Document document
@@ -707,6 +843,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertContentIs(document, MatchMode.LOOSE);
     }
 
+    /**
+     * Requires the response body to match a file exactly, including structured
+     * field and array order.
+     *
+     * @param file file containing the expected payload
+     * @throws AssertionError if the response is absent, the file does not exist
+     *                       or the payloads differ
+     */
     @Step("rest.assert.response.body.strict.from.file")
     public void assertStrictFileContent(
             File file
@@ -715,6 +859,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertContentIs(file, MatchMode.STRICT);
     }
 
+    /**
+     * Requires the response body to have exactly the file's structured content
+     * while allowing a different array order.
+     *
+     * @param file file containing the expected payload
+     * @throws AssertionError if the response is absent, the file does not exist
+     *                       or the payloads differ
+     */
     @Step("rest.assert.response.body.strict.from.file.any-order")
     public void assertStrictFileContentAnyOrder(
             File file
@@ -723,6 +875,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertContentIs(file, MatchMode.STRICT_ANY_ORDER);
     }
 
+    /**
+     * Requires every value described by a file to occur in the response while
+     * allowing additional structured content.
+     *
+     * @param file file containing the minimum expected payload
+     * @throws AssertionError if the response is absent, the file does not exist
+     *                       or expected content is missing
+     */
     @Step("rest.assert.response.body.loose.from.file")
     public void assertLooseFileContent(
             File file
@@ -731,6 +891,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertContentIs(file, MatchMode.LOOSE);
     }
 
+    /**
+     * Applies an integer assertion to the HTTP response status code.
+     *
+     * @param assertion condition evaluated against values such as {@code 200}
+     *                  or {@code 404}
+     * @throws AssertionError if no response exists or the condition fails
+     */
     @Step(value = "rest.assert.response.HTTP.code", args = "integer-assertion")
     public void assertHttpCode(
             Assertion<Integer> assertion
@@ -739,6 +906,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.statusCode(MatcherAssertion.asMatcher(assertion));
     }
 
+    /**
+     * Requires the response to declare a given content type.
+     *
+     * @param contentType REST Assured content-type name such as {@code JSON},
+     *                    {@code XML} or {@code TEXT}
+     * @throws AssertionError if no response exists or the media type differs
+     */
     @Step(value = "rest.assert.response.body.contentType", args = "word")
     public void assertResponseContentType(
             String contentType
@@ -747,6 +921,12 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.contentType(parseContentType(contentType));
     }
 
+    /**
+     * Applies an integer assertion to the response body's character length.
+     *
+     * @param assertion condition evaluated against the body length
+     * @throws AssertionError if no response exists or the condition fails
+     */
     @Step(value = "rest.assert.response.body.length", args = {"matcher:integer-assertion"})
     public void assertResponseLength(
             Assertion<Integer> assertion
@@ -755,6 +935,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.body(length(MatcherAssertion.asMatcher(assertion)));
     }
 
+    /**
+     * Applies a text assertion to an HTTP response header.
+     *
+     * @param name case-insensitive header name
+     * @param assertion condition evaluated against the header value
+     * @throws AssertionError if the response or header is absent, or the
+     *                       condition fails
+     */
     @Step(value = "rest.assert.response.body.header.text", args = {"name:word", "matcher:text-assertion"})
     public void assertResponseHeaderAsText(
             String name,
@@ -764,6 +952,15 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.header(name, MatcherAssertion.asMatcher(assertion));
     }
 
+    /**
+     * Parses an HTTP response header as an integer and applies an assertion.
+     *
+     * @param name case-insensitive header name
+     * @param assertion condition evaluated against the parsed integer
+     * @throws NumberFormatException if the header is not an integer
+     * @throws AssertionError if the response or header is absent, or the
+     *                       condition fails
+     */
     @Step(value = "rest.assert.response.body.header.integer", args = {"name:word", "matcher:integer-assertion"})
     public void assertResponseHeaderAsInteger(
             String name,
@@ -773,6 +970,15 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.header(name, Integer::parseInt, MatcherAssertion.asMatcher(assertion));
     }
 
+    /**
+     * Parses an HTTP response header as a decimal and applies an assertion.
+     *
+     * @param name case-insensitive header name
+     * @param assertion condition evaluated against the parsed decimal
+     * @throws NumberFormatException if the header is not a decimal
+     * @throws AssertionError if the response or header is absent, or the
+     *                       condition fails
+     */
     @Step(value = "rest.assert.response.body.header.decimal", args = {"name:word", "matcher:decimal-assertion"})
     public void assertResponseHeaderAsDecimal(
             String name,
@@ -782,6 +988,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         validatableResponse.header(name, BigDecimal::new, MatcherAssertion.asMatcher(assertion));
     }
 
+    /**
+     * Extracts a format-specific body fragment as text and applies an
+     * assertion.
+     *
+     * @param fragment JSON/XML path understood by the active content helper
+     * @param assertion condition evaluated against the extracted text
+     * @throws AssertionError if no response exists or the condition fails
+     */
     @Step(value = "rest.assert.response.body.fragment.text", args = {"fragment:text", "matcher:text-assertion"})
     public void assertBodyFragmentAsText(
             String fragment,
@@ -791,6 +1005,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, assertion, String.class);
     }
 
+    /**
+     * Extracts a format-specific body fragment as an integer and applies an
+     * assertion.
+     *
+     * @param fragment JSON/XML path understood by the active content helper
+     * @param assertion condition evaluated against the extracted integer
+     * @throws AssertionError if no response exists or the condition fails
+     */
     @Step(value = "rest.assert.response.body.fragment.integer", args = {"fragment:text", "matcher:integer-assertion"})
     public void assertBodyFragmentAsInteger(
             String fragment,
@@ -800,6 +1022,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, assertion, Integer.class);
     }
 
+    /**
+     * Extracts a format-specific body fragment as a decimal and applies an
+     * assertion.
+     *
+     * @param fragment JSON/XML path understood by the active content helper
+     * @param assertion condition evaluated against the extracted decimal
+     * @throws AssertionError if no response exists or the condition fails
+     */
     @Step(value = "rest.assert.response.body.fragment.decimal", args = {"fragment:text", "matcher:decimal-assertion"})
     public void assertBodyFragmentAsDecimal(
             String fragment,
@@ -809,6 +1039,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, assertion, BigDecimal.class);
     }
 
+    /**
+     * Strictly compares a structured response fragment with a document,
+     * preserving field and array order.
+     *
+     * @param fragment JSON/XML path selecting the actual fragment
+     * @param document expected fragment content
+     * @throws AssertionError if no response exists or the fragment differs
+     */
     @Step(value = "rest.assert.response.body.fragment.strict.from.document", args = {"fragment:text"})
     public void assertBodyFragmentStrict(
             String fragment,
@@ -818,6 +1056,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, document.getContent(), MatchMode.STRICT);
     }
 
+    /**
+     * Strictly compares a structured response fragment with file content,
+     * preserving field and array order.
+     *
+     * @param fragment JSON/XML path selecting the actual fragment
+     * @param file file containing the expected fragment
+     * @throws AssertionError if the response is absent or content differs
+     */
     @Step(value = "rest.assert.response.body.fragment.strict.from.file", args = {"fragment:text", "file"})
     public void assertBodyFragmentStrict(
             String fragment,
@@ -827,6 +1073,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, readFile(file), MatchMode.STRICT);
     }
 
+    /**
+     * Compares a response fragment with a document for exact structured
+     * content while allowing a different array order.
+     *
+     * @param fragment JSON/XML path selecting the actual fragment
+     * @param document expected fragment content
+     * @throws AssertionError if no response exists or the fragment differs
+     */
     @Step(value = "rest.assert.response.body.fragment.strict.from.document.any-order", args = {"fragment:text"})
     public void assertBodyFragmentStrictAnyOrder(
             String fragment,
@@ -836,6 +1090,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, document.getContent(), MatchMode.STRICT_ANY_ORDER);
     }
 
+    /**
+     * Compares a response fragment with file content exactly while allowing a
+     * different array order.
+     *
+     * @param fragment JSON/XML path selecting the actual fragment
+     * @param file file containing the expected fragment
+     * @throws AssertionError if the response is absent or content differs
+     */
     @Step(value = "rest.assert.response.body.fragment.strict.from.file.any-order", args = {"fragment:text", "file"})
     public void assertBodyFragmentStrictAnyOrder(
             String fragment,
@@ -845,6 +1107,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, readFile(file), MatchMode.STRICT_ANY_ORDER);
     }
 
+    /**
+     * Requires a response fragment to contain every value described by a
+     * document while allowing additional fields or array elements.
+     *
+     * @param fragment JSON/XML path selecting the actual fragment
+     * @param document minimum expected fragment content
+     * @throws AssertionError if no response exists or expected content is absent
+     */
     @Step(value = "rest.assert.response.body.fragment.loose.from.document", args = {"fragment:text"})
     public void assertBodyFragmentLoose(
             String fragment,
@@ -854,6 +1124,14 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, document.getContent(), MatchMode.LOOSE);
     }
 
+    /**
+     * Requires a response fragment to contain every value described by a file
+     * while allowing additional fields or array elements.
+     *
+     * @param fragment JSON/XML path selecting the actual fragment
+     * @param file file containing the minimum expected fragment
+     * @throws AssertionError if no response exists or expected content is absent
+     */
     @Step(value = "rest.assert.response.body.fragment.loose.from.file", args = {"fragment:text", "file"})
     public void assertBodyFragmentLoose(
             String fragment,
@@ -863,6 +1141,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertBodyFragment(fragment, readFile(file), MatchMode.LOOSE);
     }
 
+    /**
+     * Validates the response body against a schema supplied as a document.
+     *
+     * @param document JSON Schema or XML Schema text, according to the response
+     *                 content type
+     * @throws AssertionError if no response exists or schema validation fails
+     */
     @Step("rest.assert.response.body.schema.from.document")
     public void assertBodyContentSchema(
             Document document
@@ -871,7 +1156,13 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         assertContentSchema(document.getContent());
     }
 
-
+    /**
+     * Validates the response body against a schema read from a file.
+     *
+     * @param file file containing JSON Schema or XML Schema text
+     * @throws AssertionError if no response exists, the file does not exist or
+     *                       schema validation fails
+     */
     @Step(value = "rest.assert.response.body.schema.from.file")
     public void assertBodyContentSchema(
             File file

@@ -76,12 +76,19 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(GherkinPlanBuilder.class);
 
+    /** Plan-node property containing the node's normalized Gherkin element type. */
     public static final String GHERKIN_PROPERTY = "gherkinType";
+    /** Normalized property value identifying a Gherkin Feature node. */
     public static final String GHERKIN_TYPE_FEATURE = "feature";
+    /** Normalized property value identifying a Gherkin Scenario node. */
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
+    /** Normalized property value identifying a Gherkin Scenario Outline node. */
     public static final String GHERKIN_TYPE_SCENARIO_OUTLINE = "scenarioOutline";
+    /** Normalized property value identifying a Gherkin Background node. */
     public static final String GHERKIN_TYPE_BACKGROUND = "background";
+    /** Normalized property value identifying an executable Gherkin Step node. */
     public static final String GHERKIN_TYPE_STEP = "step";
+    /** Plan-node property preserving the enclosing feature's display name. */
     public static final String GHERKIN_FEATURE_NAME = "featureName";
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final int ALPHABET_SIZE = 26;

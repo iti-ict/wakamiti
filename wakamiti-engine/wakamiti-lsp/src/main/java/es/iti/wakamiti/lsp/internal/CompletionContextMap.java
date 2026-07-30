@@ -22,6 +22,9 @@ import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
 import es.iti.wakamiti.core.gherkin.parser.Step;
 
 
+/**
+ * Provides the Completion Context functionality used by Wakamiti.
+ */
 class CompletionContextMap {
 
     private enum Section {
@@ -32,7 +35,9 @@ class CompletionContextMap {
 
     public static class CompletionContext {
 
+        /** Closest syntax-tree node that determines the available completions. */
         public final Node node;
+        /** Portion of the node—main text, comment or step—containing the cursor. */
         public final Section section;
 
         public CompletionContext(

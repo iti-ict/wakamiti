@@ -24,6 +24,18 @@ import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.report.html.factory.DurationTemplateNumberFormatFactory;
 
 
+/**
+ * Compact projection of {@link PlanNodeSnapshot} used by the HTML report.
+ * <p>
+ * Field names are intentionally short because this model is serialized into
+ * inline browser payload:
+ * {@code t}=type, {@code i}=id, {@code n}=name, {@code k}=keyword,
+ * {@code l}=description, {@code g}=tags, {@code w}=duration, {@code p}=doc,
+ * {@code o}=doc type, {@code d}=data table, {@code m}=error message,
+ * {@code e}=error trace, {@code r}=result, {@code tr}=test-case result counts,
+ * {@code c}=children.
+ * </p>
+ */
 public class FilteredSnapshot {
 
     private NodeType t;
@@ -43,6 +55,17 @@ public class FilteredSnapshot {
     private Map<Result, Long> tr;
     private List<FilteredSnapshot> c = new LinkedList<>();
 
+    /**
+     * Projects a plan snapshot onto the compact JSON model embedded in the HTML
+     * report.
+     * <p>
+     * Empty optional values are omitted, IDs lose a leading {@code #},
+     * durations are preformatted, error traces are retained only for errored
+     * steps, and children are converted recursively.
+     *
+     * @param snapshot source plan node
+     * @return compact report representation
+     */
     public static FilteredSnapshot of(
             PlanNodeSnapshot snapshot
     ) {
@@ -72,72 +95,126 @@ public class FilteredSnapshot {
         return filteredSnapshot;
     }
 
+    /**
+     * Converts snapshots to compact report nodes while preserving order.
+     *
+     * @param snapshots source plan nodes
+     * @return compact nodes in the same order
+     */
     public static List<FilteredSnapshot> of(
             List<PlanNodeSnapshot> snapshots
     ) {
         return snapshots.stream().map(FilteredSnapshot::of).collect(Collectors.toList());
     }
 
+    /**
+     * @return node type serialized under compact key {@code t}
+     */
     public NodeType getT() {
         return t;
     }
 
+    /**
+     * @return node identifier without a leading {@code #}
+     */
     public String getI() {
         return i;
     }
 
+    /**
+     * @return display name of the plan node
+     */
     public String getN() {
         return n;
     }
 
+    /**
+     * @return localized Gherkin keyword
+     */
     public String getK() {
         return k;
     }
 
+    /**
+     * @return description lines, or {@code null} when absent
+     */
     public List<String> getL() {
         return l;
     }
 
+    /**
+     * @return node tags, or {@code null} when absent
+     */
     public List<String> getG() {
         return g;
     }
 
+    /**
+     * @return preformatted execution duration
+     */
     public String getW() {
         return w;
     }
 
+    /**
+     * @return doc-string content attached to the node
+     */
     public String getP() {
         return p;
     }
 
+    /**
+     * @return declared doc-string media type
+     */
     public String getO() {
         return o;
     }
 
+    /**
+     * @return data-table cells arranged by row and column
+     */
     public String[][] getD() {
         return d;
     }
 
+    /**
+     * @return response or output captured during step execution
+     */
     public String getResponse() {
         return response;
     }
 
+    /**
+     * @return step error message, or {@code null} for non-step nodes
+     */
     public String getM() {
         return m;
     }
 
+    /**
+     * @return error trace retained only for steps with {@link Result#ERROR}
+     */
     public String getE() {
         return e;
     }
 
+    /**
+     * @return execution result of the node
+     */
     public Result getR() {
         return r;
     }
 
+    /**
+     * @return aggregate test-case counts grouped by result
+     */
     public Map<Result, Long> getTr() {
         return tr;
     }
 
+    /**
+     * @return recursively filtered children, or {@code null} when absent
+     */
     public List<FilteredSnapshot> getC() {
         return c;
     }

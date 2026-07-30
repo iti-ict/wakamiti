@@ -18,6 +18,9 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 
 
+/**
+ * Provides the Files Uploader Configurator functionality used by Wakamiti.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "file-uploader-configurator",

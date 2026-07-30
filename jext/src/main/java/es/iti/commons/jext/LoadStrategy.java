@@ -25,7 +25,7 @@ public enum LoadStrategy {
     FRESH,
 
     /**
-     * The behavior is decided by the underline implementation
+     * The behavior is decided by the underlying implementation.
      */
     UNDEFINED
 

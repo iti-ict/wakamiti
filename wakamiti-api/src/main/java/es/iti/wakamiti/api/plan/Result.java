@@ -9,9 +9,12 @@ package es.iti.wakamiti.api.plan;
 
 
 /**
- * Represents different results of the execution of a node
- * in a plan.
- * Results are ordered in inverted order of severity.
+ * Execution outcomes for plan nodes.
+ * <p>
+ * Enum declaration order is significant: values are sorted from least severe
+ * ({@link #PASSED}) to most severe ({@link #ERROR}), so natural-order
+ * comparisons can be used to aggregate child results.
+ * </p>
  */
 public enum Result implements Comparable<Result> {
 
@@ -22,31 +25,28 @@ public enum Result implements Comparable<Result> {
     PASSED,
 
     /**
-     * The node was not executed due to having no children.
+     * The node could not be executed because it has no runnable steps.
      */
     NOT_IMPLEMENTED,
 
     /**
-     * The node was not executed due to the previous step
-     * not passing the test.
+     * The node was intentionally not executed because a previous prerequisite
+     * failed or was filtered out.
      */
     SKIPPED,
 
     /**
-     * The node or any of its children was not executed due
-     * to malformed definition.
+     * The node definition cannot be resolved into an executable step.
      */
     UNDEFINED,
 
     /**
-     * The node or any of its children has not passed the
-     * validation.
+     * The node completed but assertions or validations did not pass.
      */
     FAILED,
 
     /**
-     * The node or any of its children has experienced a fatal
-     * error.
+     * The node execution aborted due to an unexpected runtime error.
      */
     ERROR;
 

@@ -14,12 +14,21 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+/**
+ * Provides the Test Suite Tree functionality used by Wakamiti.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestSuiteTree extends TestSuite {
 
     @JsonProperty
     private List<TestSuiteTree> children;
 
+    /**
+     * Replaces the immediate suite nodes nested below this point in the tree.
+     *
+     * @param children immediate child suites returned by Azure
+     * @return this tree node
+     */
     public TestSuiteTree children(
             List<TestSuiteTree> children
     ) {
@@ -27,6 +36,9 @@ public class TestSuiteTree extends TestSuite {
         return this;
     }
 
+    /**
+     * @return immediate child suite nodes
+     */
     public List<TestSuiteTree> children() {
         return children;
     }

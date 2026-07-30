@@ -17,6 +17,9 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.PathUtil;
 
 
+/**
+ * Stores the configuration used by the Allure Reporter Config component.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "allure-report-config",
@@ -25,7 +28,9 @@ import es.iti.wakamiti.api.util.PathUtil;
 )
 public class AllureReporterConfig implements ConfigContributor<AllureReporter> {
 
+    /** Root configuration namespace for the Allure report contributor. */
     public static final String PREFIX = "allureReport";
+    /** Configuration key for the directory where Allure result files are written. */
     public static final String OUTPUT = PREFIX + ".output";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(

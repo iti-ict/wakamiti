@@ -8,8 +8,12 @@
 package es.iti.wakamiti.azure.api.model.query;
 
 
+/**
+ * Provides the Work Item Links Query functionality used by Wakamiti.
+ */
 public class WorkItemLinksQuery extends Query {
 
+    /** WIQL entity used for relation and hierarchy queries. */
     public static final String ENTITY = "WorkItemLinks";
 
     @Override
@@ -17,6 +21,12 @@ public class WorkItemLinksQuery extends Query {
         return ENTITY;
     }
 
+    /**
+     * Sets how source and target work items must participate in returned links.
+     *
+     * @param mode WIQL link-query mode, such as recursive hierarchy traversal
+     * @return this query
+     */
     public WorkItemLinksQuery mode(
             Mode mode
     ) {

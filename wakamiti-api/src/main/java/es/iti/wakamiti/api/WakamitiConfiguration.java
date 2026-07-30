@@ -25,6 +25,9 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 )
 public class WakamitiConfiguration implements ConfigContributor<Void> {
 
+    /**
+     * Prefix for configuration properties
+     */
     public static final String PREFIX = "wakamiti";
 
     /**
@@ -103,6 +106,9 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
      */
     public static final String TAG_FILTER = "tagFilter";
 
+    /**
+     * Dry run flag
+     */
     public static final String DRY_RUN = "dryRun";
 
     /**
@@ -182,8 +188,14 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
      */
     public static final String WORKING_DIR = "workingDir";
 
+    /**
+     * Faint style
+     */
     private static final String FAINT = "faint";
 
+    /**
+     * Default configuration values
+     */
     public static final Configuration DEFAULTS = Configuration.factory()
             .fromEnvironment()
             .appendFromSystem()

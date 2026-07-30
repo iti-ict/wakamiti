@@ -21,6 +21,9 @@ import java.util.stream.Stream;
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 
 
+/**
+ * Provides the Gherkin Formatter functionality used by Wakamiti.
+ */
 public final class GherkinFormatter {
 
     private GherkinFormatter() {
@@ -29,6 +32,9 @@ public final class GherkinFormatter {
     private static final String TRIPLE_QUOTE = "\"\"\"";
     private static final String TRIPLE_BACKQUOTE = "```";
 
+    /**
+     * Defines the values supported by Type.
+     */
     enum Type {
 
         EMPTY(false, 0, 0),
@@ -54,12 +60,28 @@ public final class GherkinFormatter {
             this.lookupDirection = lookupDirection;
         }
 
+        /** Structural indentation level assigned to this line type. */
         public final int level;
+        /** Whether this line type represents a dialect keyword. */
         public final boolean isKeyword;
+        /** Direction used to inherit indentation: previous, none or next keyword. */
         public final int lookupDirection;
 
     }
 
+    /**
+     * Formats Gherkin source without modifying the supplied document map.
+     * <p>
+     * Structural lines are indented according to feature, scenario and step
+     * nesting; redundant spaces outside doc strings are collapsed; and data
+     * table columns are padded to a common width. Doc-string content is
+     * preserved except when indentation must be added.
+     *
+     * @param documentMap parsed source and active dialect
+     * @param tabSize spaces per structural indentation level
+     * @return the complete formatted source
+     * @throws IllegalArgumentException if {@code tabSize} is negative
+     */
     public static String format(
             GherkinDocumentMap documentMap,
             int tabSize

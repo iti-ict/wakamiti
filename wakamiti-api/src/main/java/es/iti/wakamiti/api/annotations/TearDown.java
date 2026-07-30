@@ -14,10 +14,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
+/**
+ * Marks a contributor method as cleanup logic to execute after a scenario.
+ * <p>
+ * Multiple teardown methods are ordered by {@link #order()}; lower values run
+ * first. Cleanup implementations should remain safe when setup or scenario
+ * execution terminated early.
+ * </p>
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface TearDown {
 
+    /**
+     * Defines this teardown method's position in the cleanup sequence.
+     *
+     * @return the execution order, where lower values have precedence; defaults
+     * to {@code 100}
+     */
     int order() default 100;
 
 }

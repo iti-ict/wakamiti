@@ -17,6 +17,9 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
 
+/**
+ * Provides the Groovy Helper functionality used by Wakamiti.
+ */
 public final class GroovyHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.groovy");
@@ -24,6 +27,17 @@ public final class GroovyHelper {
     private GroovyHelper() {
     }
 
+    /**
+     * Evaluates a Groovy script with Wakamiti execution bindings.
+     * <p>
+     * The script receives {@code log}, an SLF4J logger, and {@code ctx}, the
+     * current backend's extra-property map. For example,
+     * {@code ctx.result = 2 + 2} stores a value for later steps.
+     *
+     * @param script Groovy source to evaluate
+     * @return value of the script's final expression
+     * @throws WakamitiException if compilation or execution fails
+     */
     public static Object executeScript(
             String script
     ) {

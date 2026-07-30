@@ -24,8 +24,12 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
 
 
 /**
- * This class associates each parsed section of a Gherkin documento
- * to the actual position in the file
+ * Maintains positional mapping utilities over editable Gherkin text.
+ * <p>
+ * The map helps language-server features determine whether edits require
+ * reparsing and locate structural segments (keywords, tags, properties) using
+ * zero-based line and character coordinates.
+ * </p>
  */
 public class GherkinDocumentMap {
 
@@ -42,6 +46,17 @@ public class GherkinDocumentMap {
     private GherkinDialect dialect;
     private TextDocument document;
 
+    /**
+     * Creates and parses a map for the supplied Gherkin source.
+     * <p>
+     * The document locale is read from its {@code # language:} header. When no
+     * valid header is present, English is used. The selected locale determines
+     * the dialect used to recognize features, rules, scenarios, examples,
+     * backgrounds and steps.
+     *
+     * @param document complete Gherkin source; subsequent line and character
+     *                 positions refer to this text
+     */
     public GherkinDocumentMap(
             String document
     ) {
@@ -50,23 +65,61 @@ public class GherkinDocumentMap {
         this.dialect = DIALECT_PROVIDER.getDialect(locale);
     }
 
-
+    /**
+     * Returns the current source text, including replacements made through
+     * this map.
+     *
+     * @return the complete, unparsed Gherkin source
+     */
     public String rawContent() {
         return document.rawText();
     }
 
+    /**
+     * Returns the mutable text representation used for positional operations.
+     * <p>
+     * The returned value is the instance owned by this map, not a defensive
+     * copy. Callers should normally use {@link #replace(TextRange, String)} so
+     * they can also determine whether the parsed structure must be rebuilt.
+     *
+     * @return the current text document
+     */
     public TextDocument document() {
         return document;
     }
 
+    /**
+     * Returns the dialect selected from the document language header.
+     *
+     * @return the dialect used for keyword recognition
+     */
     public GherkinDialect dialect() {
         return dialect;
     }
 
+    /**
+     * Returns the locale inferred from the Gherkin language header.
+     *
+     * @return the document locale, or English when no locale was declared
+     */
     public Locale locale() {
         return locale;
     }
 
+    /**
+     * Replaces a source range and reports whether the parsed Gherkin model may
+     * have become stale.
+     * <p>
+     * A multiline edit always requires reparsing because it can shift every
+     * subsequent node. For a single-line edit, reparsing is required when the
+     * edited range intersects syntax that can alter the document structure,
+     * such as a property, tag or Gherkin keyword. The text is updated before
+     * the result is returned.
+     *
+     * @param range half-open, zero-based range to replace
+     * @param text replacement text; it may contain line separators
+     * @return {@code true} when the caller must rebuild the parsed document
+     */
     public boolean replace(
             TextRange range,
             String text
@@ -81,6 +134,17 @@ public class GherkinDocumentMap {
         return requireParsing;
     }
 
+    /**
+     * Determines whether a single-line edit intersects syntax that affects the
+     * parsed Gherkin structure.
+     * <p>
+     * This method performs only the structural check and does not modify the
+     * document. The range is expected to be confined to one line.
+     *
+     * @param range half-open, zero-based edit range
+     * @return {@code true} for edits touching a relevant property, tag or
+     *         recognized keyword
+     */
     public boolean checkReplaceSingleLineRequireParsing(
             TextRange range
     ) {
@@ -115,6 +179,14 @@ public class GherkinDocumentMap {
         return requireParsing;
     }
 
+    /**
+     * Detects the step keyword used by a line in the current dialect.
+     *
+     * @param lineNumber zero-based line number
+     * @param stripLineContent line content with leading indentation removed
+     * @return the keyword's half-open range, or an empty range when the line
+     *         does not start with a step keyword
+     */
     public TextRange detectStepKeyword(
             int lineNumber,
             String stripLineContent
@@ -126,6 +198,13 @@ public class GherkinDocumentMap {
         );
     }
 
+    /**
+     * Detects a scenario or scenario-outline keyword in a line.
+     *
+     * @param lineNumber zero-based line number
+     * @param stripLineContent line content with leading indentation removed
+     * @return the matched keyword range, or an empty range
+     */
     public TextRange detectScenarioKeyword(
             int lineNumber,
             String stripLineContent
@@ -138,7 +217,19 @@ public class GherkinDocumentMap {
         );
     }
 
-
+    /**
+     * Detects the first keyword supplied by any requested dialect category.
+     * <p>
+     * Each function selects one keyword category from the active dialect, for
+     * example {@link GherkinDialect#getScenarioKeywords()}. The returned range
+     * uses the supplied line number and starts at character zero because the
+     * input is expected to have its indentation removed.
+     *
+     * @param lineNumber zero-based line number
+     * @param stripLineContent line content with leading indentation removed
+     * @param keywordSets functions selecting eligible dialect keyword lists
+     * @return the first matching keyword range, or an empty range
+     */
     @SafeVarargs
     public final TextRange detectKeyword(
             int lineNumber,
@@ -157,7 +248,14 @@ public class GherkinDocumentMap {
         return keywordRange;
     }
 
-
+    /**
+     * Tests whether a line starts with a keyword from any requested category.
+     *
+     * @param lineNumber zero-based line number
+     * @param stripLineContent line content with leading indentation removed
+     * @param keywordSets functions selecting eligible dialect keyword lists
+     * @return {@code true} when a requested keyword is detected
+     */
     @SafeVarargs
     public final boolean hasKeyword(
             int lineNumber,
@@ -167,6 +265,18 @@ public class GherkinDocumentMap {
         return !detectKeyword(lineNumber, stripLineContent, keywordSets).isEmpty();
     }
 
+    /**
+     * Determines whether a recognized step keyword is valid in its surrounding
+     * Gherkin context.
+     * <p>
+     * The preceding structural keyword is considered so that step syntax is
+     * accepted only within feature content rather than wherever a matching word
+     * happens to occur.
+     *
+     * @param lineNumber zero-based line number
+     * @param stripLineContent line content with leading indentation removed
+     * @return {@code true} when the line is interpreted as a step
+     */
     public boolean isStep(
             int lineNumber,
             String stripLineContent
@@ -184,6 +294,14 @@ public class GherkinDocumentMap {
         }
     }
 
+    /**
+     * Removes any recognized Gherkin keyword prefix from a line.
+     *
+     * @param lineNumber zero-based line number
+     * @param stripLineContent line content with leading indentation removed
+     * @return content following the keyword, or the original content when no
+     *         keyword matches
+     */
     public String removeKeyword(
             int lineNumber,
             String stripLineContent
@@ -218,6 +336,16 @@ public class GherkinDocumentMap {
         return null;
     }
 
+    /**
+     * Computes the Gherkin keywords that are structurally valid after a line.
+     * <p>
+     * Suggestions are derived from the closest preceding significant syntax
+     * and use the active dialect. No keywords are suggested from inside a doc
+     * string or data table.
+     *
+     * @param lineNumber zero-based insertion line
+     * @return dialect-specific keyword candidates in recommendation order
+     */
     public List<String> followingKeywords(
             int lineNumber
     ) {
@@ -403,6 +531,15 @@ public class GherkinDocumentMap {
         return Optional.empty();
     }
 
+    /**
+     * Finds regular-expression matches in an inclusive range of lines.
+     *
+     * @param startLine first zero-based line to inspect, inclusive
+     * @param endLine last zero-based line to inspect, inclusive
+     * @param pattern pattern applied independently to each line
+     * @param regexGroup capture group whose bounds define each result
+     * @return captured segments in document order
+     */
     public List<TextSegment> segmentsInLines(
             int startLine,
             int endLine,
@@ -416,6 +553,14 @@ public class GherkinDocumentMap {
         return segments;
     }
 
+    /**
+     * Finds Gherkin tag names in an inclusive range of lines.
+     *
+     * @param startLine first zero-based line to inspect, inclusive
+     * @param endLine last zero-based line to inspect, inclusive
+     * @return tag-name segments without their leading {@code @}, in document
+     *         order
+     */
     public List<TextSegment> tagsInLines(
             int startLine,
             int endLine
@@ -423,6 +568,14 @@ public class GherkinDocumentMap {
         return segmentsInLines(startLine, endLine, Pattern.compile("@(\\w+)"), 1);
     }
 
+    /**
+     * Builds the range used to validate content following a keyword marker.
+     *
+     * @param lineNumber zero-based line number
+     * @param keyword keyword whose marker is excluded from the result
+     * @return a half-open range from immediately after the keyword occurrence
+     *         to the end of the line
+     */
     public TextRange lineRangeWithoutKeyword(
             int lineNumber,
             String keyword

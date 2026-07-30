@@ -23,7 +23,12 @@ import es.iti.wakamiti.database.ConnectionParameters;
 
 
 /**
- * Provides Spring Connection services to the surrounding component.
+ * {@link ConnectionManager} backed by a Spring-managed {@link DataSource}.
+ * <p>
+ * When enabled through {@link #USE_SPRING_DATASOURCE}, this implementation
+ * overrides the default JDBC driver-based manager and delegates connection
+ * creation/release to the application {@link DataSource}.
+ * </p>
  */
 @Extension(
         provider = "es.iti.wakamiti",
@@ -36,11 +41,23 @@ import es.iti.wakamiti.database.ConnectionParameters;
 @ConditionalOnProperty(SpringConnectionProvider.USE_SPRING_DATASOURCE)
 public class SpringConnectionProvider implements ConnectionManager {
 
+    /** Property that enables the Spring-managed data source. */
     public static final String USE_SPRING_DATASOURCE = "wakamiti.database.useSpringDataSource";
 
     @Autowired
     private DataSource dataSource;
 
+    /**
+     * Obtains a connection from the injected Spring {@link DataSource}.
+     * <p>
+     * The {@code parameters} argument is ignored because DataSource credentials
+     * and URL are resolved by Spring configuration.
+     * </p>
+     *
+     * @param parameters unused connection parameters
+     * @return an open JDBC connection
+     * @throws SQLException when the DataSource cannot provide a connection
+     */
     @Override
     public Connection obtainConnection(
             ConnectionParameters parameters
@@ -48,6 +65,12 @@ public class SpringConnectionProvider implements ConnectionManager {
         return dataSource.getConnection();
     }
 
+    /**
+     * Releases a connection previously obtained from this provider.
+     *
+     * @param connection connection to close
+     * @throws SQLException when close fails
+     */
     @Override
     public void releaseConnection(
             Connection connection

@@ -18,6 +18,9 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 
 
+/**
+ * Provides the Appium Config Contributor functionality used by Wakamiti.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "appium-config",
@@ -26,7 +29,9 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 )
 public class AppiumConfigContributor implements ConfigContributor<AppiumStepContributor> {
 
+    /** Configuration section containing Appium driver capabilities. */
     public static final String APPIUM_CAPABILITIES = "appium.capabilities";
+    /** Configuration key for the Appium server endpoint. */
     public static final String APPIUM_URL = "appium.url";
 
     @Override

@@ -41,24 +41,42 @@ import es.iti.wakamiti.api.ExpressionMatcher;
  */
 public class BinaryStringAssertProvider extends AbstractAssertProvider {
 
+    /** Localization key for case-sensitive string equality. */
     public static final String EQUALS = "matcher.string.equals";
+    /** Localization key for case-insensitive string equality. */
     public static final String EQUALS_IGNORE_CASE = "matcher.string.equals.ignore.case";
+    /** Localization key for equality after insignificant whitespace is ignored. */
     public static final String EQUALS_IGNORE_WHITESPACE = "matcher.string.equals.ignore.whitespace";
+    /** Localization key for a case-sensitive prefix comparison. */
     public static final String STARTS_WITH = "matcher.string.starts.with";
+    /** Localization key for a case-insensitive prefix comparison. */
     public static final String STARTS_WITH_IGNORE_CASE = "matcher.string.starts.with.ignore.case";
+    /** Localization key for a case-sensitive suffix comparison. */
     public static final String ENDS_WITH = "matcher.string.ends.with";
+    /** Localization key for a case-insensitive suffix comparison. */
     public static final String ENDS_WITH_IGNORE_CASE = "matcher.string.ends.with.ignore.case";
+    /** Localization key for a case-sensitive substring comparison. */
     public static final String CONTAINS = "matcher.string.contains";
+    /** Localization key for a case-insensitive substring comparison. */
     public static final String CONTAINS_IGNORE_CASE = "matcher.string.contains.ignore.case";
 
+    /** Localization key for case-sensitive string inequality. */
     public static final String NOT_EQUALS = "matcher.string.not.equals";
+    /** Localization key for case-insensitive string inequality. */
     public static final String NOT_EQUALS_IGNORE_CASE = "matcher.string.not.equals.ignore.case";
+    /** Localization key for inequality after insignificant whitespace is ignored. */
     public static final String NOT_EQUALS_IGNORE_WHITESPACE = "matcher.string.not.equals.ignore.whitespace";
+    /** Localization key requiring a value not to start with a case-sensitive prefix. */
     public static final String NOT_STARTS_WITH = "matcher.string.not.starts.with";
+    /** Localization key requiring a value not to start with a prefix, ignoring case. */
     public static final String NOT_STARTS_WITH_IGNORE_CASE = "matcher.string.not.starts.with.ignore.case";
+    /** Localization key requiring a value not to end with a case-sensitive suffix. */
     public static final String NOT_ENDS_WITH = "matcher.string.not.ends.with";
+    /** Localization key requiring a value not to end with a suffix, ignoring case. */
     public static final String NOT_ENDS_WITH_IGNORE_CASE = "matcher.string.not.ends.with.ignore.case";
+    /** Localization key requiring absence of a case-sensitive substring. */
     public static final String NOT_CONTAINS = "matcher.string.not.contains";
+    /** Localization key requiring absence of a substring when case is ignored. */
     public static final String NOT_CONTAINS_IGNORE_CASE = "matcher.string.not.contains.ignore.case";
 
     private final Map<String, Function<String, Matcher<String>>> matchers = mapEntries(

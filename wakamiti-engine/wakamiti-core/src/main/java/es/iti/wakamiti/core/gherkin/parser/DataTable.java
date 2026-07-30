@@ -12,10 +12,19 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ * Provides the Data Table functionality used by Wakamiti.
+ */
 public class DataTable extends Node {
 
     private final List<TableRow> rows;
 
+    /**
+     * Creates a table argument and derives its location from the first row.
+     *
+     * @param rows non-empty rows in source order
+     * @throws IndexOutOfBoundsException if {@code rows} is empty
+     */
     public DataTable(
             List<TableRow> rows
     ) {
@@ -23,6 +32,11 @@ public class DataTable extends Node {
         this.rows = Collections.unmodifiableList(rows);
     }
 
+    /**
+     * Returns the table rows, including any header row.
+     *
+     * @return an unmodifiable list in source order
+     */
     public List<TableRow> getRows() {
         return rows;
     }

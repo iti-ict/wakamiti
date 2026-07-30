@@ -23,8 +23,12 @@ import es.iti.wakamiti.api.extensions.EventObserver;
 )
 public class TestCaseOutputFilesUploader extends AbstractFilesUploader implements EventObserver {
 
+    /** Configuration category for files produced by individual test cases. */
     public static final String CATEGORY = "testCaseOutputs";
 
+    /**
+     * Creates an uploader subscribed to test-case-output-file events.
+     */
     public TestCaseOutputFilesUploader() {
         super(Event.TEST_CASE_OUTPUT_FILE_WRITTEN, CATEGORY);
     }

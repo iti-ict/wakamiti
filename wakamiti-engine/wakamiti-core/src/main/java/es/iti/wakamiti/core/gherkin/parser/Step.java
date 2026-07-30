@@ -11,12 +11,24 @@ package es.iti.wakamiti.core.gherkin.parser;
 import java.util.List;
 
 
+/**
+ * Provides the Step functionality used by Wakamiti.
+ */
 public class Step extends CommentedNode {
 
     private final String keyword;
     private final String text;
     private final es.iti.wakamiti.core.gherkin.parser.Node argument;
 
+    /**
+     * Creates a parsed scenario step.
+     *
+     * @param location position of the step keyword
+     * @param keyword  localized Given/When/Then/And/But keyword
+     * @param text     step sentence without the keyword
+     * @param argument optional {@link DataTable} or {@link DocString}
+     * @param comments comments associated with the step
+     */
     public Step(
             Location location,
             String keyword,
@@ -30,14 +42,29 @@ public class Step extends CommentedNode {
         this.argument = argument;
     }
 
+    /**
+     * Returns the step sentence without its keyword.
+     *
+     * @return the step text
+     */
     public String getText() {
         return text;
     }
 
+    /**
+     * Returns the localized keyword that introduced the step.
+     *
+     * @return the source keyword
+     */
     public String getKeyword() {
         return keyword;
     }
 
+    /**
+     * Returns structured data attached beneath the step.
+     *
+     * @return a data table or document string, or {@code null}
+     */
     public Node getArgument() {
         return argument;
     }

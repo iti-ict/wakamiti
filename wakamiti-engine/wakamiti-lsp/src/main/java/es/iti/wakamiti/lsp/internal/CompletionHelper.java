@@ -20,11 +20,21 @@ import org.eclipse.lsp4j.InsertTextFormat;
 import org.slf4j.Logger;
 
 
+/**
+ * Provides the Completion Helper functionality used by Wakamiti.
+ */
 public class CompletionHelper {
 
     private final GherkinDocumentAssessor assessor;
     private final Logger logger;
 
+    /**
+     * Creates a completion service for one assessed document.
+     *
+     * @param assessor source of document structure, configuration and Wakamiti
+     *                 step hints
+     * @param logger logger used to explain why step suggestions are unavailable
+     */
     public CompletionHelper(
             GherkinDocumentAssessor assessor,
             Logger logger
@@ -33,6 +43,17 @@ public class CompletionHelper {
         this.logger = logger;
     }
 
+    /**
+     * Collects context-sensitive completion items before a cursor position.
+     * <p>
+     * Configuration comments complete property names, step lines complete
+     * registered step definitions, and structural positions complete keywords
+     * from the document's active Gherkin dialect.
+     *
+     * @param lineNumber zero-based cursor line
+     * @param rowPosition zero-based character offset within that line
+     * @return matching completion items, possibly empty
+     */
     public List<CompletionItem> collectCompletions(
             int lineNumber,
             int rowPosition

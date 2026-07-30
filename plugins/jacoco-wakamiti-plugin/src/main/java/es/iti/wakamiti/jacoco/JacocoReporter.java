@@ -50,6 +50,9 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Reports Jacoco execution information.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jacoco-reporter",
@@ -75,66 +78,101 @@ public class JacocoReporter implements EventObserver {
     private ExecFileLoader fileLoader;
     private ExecDumpClient dumpClient;
 
+    /**
+     * @param host host name or address of the JaCoCo TCP dump agent
+     */
     public void setHost(
             String host
     ) {
         this.host = host;
     }
 
+    /**
+     * @param port TCP port exposed by the JaCoCo agent
+     */
     public void setPort(
             String port
     ) {
         this.port = port;
     }
 
+    /**
+     * @param retries connection retries allowed when dumping execution data
+     */
     public void setRetries(
             int retries
     ) {
         this.retries = retries;
     }
 
+    /**
+     * @param output directory receiving per-test-case {@code .exec} files
+     */
     public void setOutput(
             Path output
     ) {
         this.output = output;
     }
 
+    /**
+     * @param xml directory receiving per-test-case JaCoCo XML reports
+     */
     public void setXml(
             Path xml
     ) {
         this.xml = xml;
     }
 
+    /**
+     * @param csv directory receiving per-test-case JaCoCo CSV reports
+     */
     public void setCsv(
             Path csv
     ) {
         this.csv = csv;
     }
 
+    /**
+     * Sets the path used to produce the final aggregate HTML report.
+     *
+     * @param html aggregate execution-data/report path
+     */
     public void setHtml(
             Path html
     ) {
         this.html = html;
     }
 
+    /**
+     * @param classes root directory searched recursively for analyzed {@code .class} files
+     */
     public void setClasses(
             Path classes
     ) {
         this.classes = classes;
     }
 
+    /**
+     * @param sources root directory searched for Java sources linked in reports
+     */
     public void setSources(
             Path sources
     ) {
         this.sources = sources;
     }
 
+    /**
+     * @param tabwidth tab width used to calculate source-report columns
+     */
     public void setTabwidth(
             int tabwidth
     ) {
         this.tabwidth = tabwidth;
     }
 
+    /**
+     * @param name display name assigned to generated JaCoCo bundles
+     */
     public void setName(
             String name
     ) {

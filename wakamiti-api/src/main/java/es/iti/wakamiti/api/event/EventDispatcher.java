@@ -15,9 +15,12 @@ import es.iti.wakamiti.api.extensions.EventObserver;
 
 
 /**
- * The {@code EventDispatcher} class manages the distribution of events to registered
- * {@link EventObserver} instances. It allows adding and removing observers and publishing
- * events to those observers.
+ * Dispatches runtime events to registered {@link EventObserver observers}.
+ * <p>
+ * Observers are stored in a {@link CopyOnWriteArraySet}, so registration is
+ * thread-safe and iteration is snapshot-based. Event delivery is synchronous:
+ * observers are invoked in iteration order in the publisher thread.
+ * </p>
  */
 public class EventDispatcher {
 
@@ -47,10 +50,14 @@ public class EventDispatcher {
     }
 
     /**
-     * Publishes an event to all registered observers that accept the specified event type.
+     * Publishes an event to observers that accept its type.
+     * <p>
+     * If one observer throws an exception, dispatch stops immediately and the
+     * exception propagates to the caller.
+     * </p>
      *
-     * @param type The type of the event.
-     * @param data The data associated with the event.
+     * @param type event type identifier
+     * @param data event payload, or {@code null}
      */
     public void publishEvent(
             String type,

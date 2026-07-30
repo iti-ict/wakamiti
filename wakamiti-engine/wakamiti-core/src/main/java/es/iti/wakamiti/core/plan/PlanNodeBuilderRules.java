@@ -649,7 +649,9 @@ public final class PlanNodeBuilderRules {
 
     private enum RuleMethod {
 
+        /** Apply the rule to every matching node. */
         ALL((list, consumer) -> list.forEach(consumer)),
+        /** Field value. */
         FIRST((list, consumer) -> list.stream().findAny().ifPresent(consumer));
 
         private final BiConsumer<List<PlanNodeBuilder>, Consumer<PlanNodeBuilder>> consumer;
@@ -675,6 +677,13 @@ public final class PlanNodeBuilderRules {
      */
     public interface PlanNodeBuilderRule {
 
+        /**
+         * Applies this transformation or validation rule to a plan-node
+         * builder.
+         *
+         * @param node node or subtree root to inspect and potentially mutate
+         * @throws WakamitiException when the rule detects an invalid plan
+         */
         void apply(
                 PlanNodeBuilder node
         ) throws WakamitiException;
@@ -687,8 +696,11 @@ public final class PlanNodeBuilderRules {
      */
     public static class PlanNodeBuilderRuleConsumer implements PlanNodeBuilderRule {
 
+        /** Field value. */
         protected final Predicate<PlanNodeBuilder> predicate;
+        /** Field value. */
         protected final Consumer<PlanNodeBuilder> consumer;
+        /** Field value. */
         protected final RuleMethod method;
 
         private PlanNodeBuilderRuleConsumer(
@@ -774,6 +786,7 @@ public final class PlanNodeBuilderRules {
      */
     public static final class PlanNodeBuilderRuleBiConsumer extends PlanNodeBuilderRuleConsumer {
 
+        /** Field value. */
         protected final Function<PlanNodeBuilder, Optional<PlanNodeBuilder>> rightNodeGetter;
 
         private PlanNodeBuilderRuleBiConsumer(

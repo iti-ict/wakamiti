@@ -19,18 +19,31 @@ import es.iti.wakamiti.database.jdbc.format.SqlServerFormat;
  */
 public enum DatabaseType {
 
+    /** Oracle dialect, using {@code DUAL} for connection health checks. */
     ORACLE("select 1 from dual"),
+    /** HyperSQL dialect, with a health check against its system-user view. */
     HSQLDB("SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS"),
+    /** H2 dialect using the standard health-check query and SQL formatter. */
     H2(),
+    /** Microsoft SQL Server dialect with its dedicated literal formatter. */
     SQLSERVER(new SqlServerFormat()),
+    /** MySQL dialect using the standard health-check query and SQL formatter. */
     MYSQL(),
+    /** MariaDB dialect using the standard health-check query and SQL formatter. */
     MARIADB(),
+    /** PostgreSQL dialect using the standard health-check query and SQL formatter. */
     POSTGRESQL(),
+    /** SQLite dialect using the standard health-check query and SQL formatter. */
     SQLITE(),
+    /** IBM Db2 dialect, using {@code SYSIBM.SYSDUMMY1} for health checks. */
     DB2("select 1 from sysibm.sysdummy1"),
+    /** IBM i (AS/400) dialect, using {@code SYSIBM.SYSDUMMY1} for health checks. */
     AS400("select 1 from sysibm.sysdummy1"),
+    /** Apache Derby dialect, using {@code SYSIBM.SYSDUMMY1} for health checks. */
     DERBY("SELECT 1 FROM SYSIBM.SYSDUMMY1"),
+    /** Informix dialect, whose health check queries the system table catalog. */
     INFORMIX("select count(*) from systables"),
+    /** Fallback for unrecognized JDBC subprotocols. */
     OTHER();
 
     private static final String DEFAULT = "select 1";
@@ -91,6 +104,11 @@ public enum DatabaseType {
         return this.healthCheckSql;
     }
 
+    /**
+     * Returns the value formatter selected for this database dialect.
+     *
+     * @return converter from textual test data to JDBC-compatible values
+     */
     public SqlFormat formatter() {
         return this.format;
     }

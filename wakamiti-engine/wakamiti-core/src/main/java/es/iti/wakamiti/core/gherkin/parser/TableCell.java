@@ -8,10 +8,19 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
+/**
+ * Provides the Table Cell functionality used by Wakamiti.
+ */
 public class TableCell extends Node {
 
     private final String value;
 
+    /**
+     * Creates a table cell.
+     *
+     * @param location position of the cell in the source row
+     * @param value    unescaped textual cell value
+     */
     public TableCell(
             Location location,
             String value
@@ -20,6 +29,11 @@ public class TableCell extends Node {
         this.value = value;
     }
 
+    /**
+     * Returns the parsed cell content.
+     *
+     * @return the unescaped value
+     */
     public String getValue() {
         return value;
     }

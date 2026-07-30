@@ -32,6 +32,9 @@ import es.iti.wakamiti.core.gherkin.parser.TableRow;
 import es.iti.wakamiti.core.gherkin.parser.Tag;
 
 
+/**
+ * Builds Gherkin Ast instances from the available plan data.
+ */
 public class GherkinAstBuilder implements Parser.Builder<GherkinDocument> {
 
     private Deque<es.iti.wakamiti.core.gherkin.parser.internal.AstNode> stack;

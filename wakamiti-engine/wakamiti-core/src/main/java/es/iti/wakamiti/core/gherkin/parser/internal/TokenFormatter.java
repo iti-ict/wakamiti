@@ -8,6 +8,9 @@
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
 
+/**
+ * Provides the Token Formatter functionality used by Wakamiti.
+ */
 public class TokenFormatter {
 
     private static final StringUtils.ToString<GherkinLineSpan> SPAN_TO_STRING =

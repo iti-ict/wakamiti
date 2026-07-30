@@ -38,11 +38,17 @@ import es.iti.wakamiti.api.extensions.DataTypeContributor;
 )
 public class WakamitiCoreTypes implements DataTypeContributor {
 
+    /** Regular expression matching a complete Wakamiti property placeholder. */
     public static final String PROPERTY_REGEX = "(\\$\\{.+\\})";
+    /** Regular expression matching a single- or double-quoted escaped string. */
     public static final String STRING_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
+    /** Regular expression matching a word that may contain a property placeholder. */
     public static final String WORD_REGEX = "[\\w-]+|[\\w-]*" + PROPERTY_REGEX + "[\\w-]*";
+    /** Regular expression matching an identifier that may contain a property placeholder. */
     public static final String IDENTIFIER_REGEX = "[\\w|\\d_]+|[\\w|\\d_]*" + PROPERTY_REGEX + "[\\w|\\d_]*";
+    /** Regular expression matching a quoted filesystem path. */
     public static final String FILE_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
+    /** Regular expression matching an HTTP, HTTPS or FTP URL, including placeholders. */
     public static final String URL_REGEX = "(http|ftp|https):\\/\\/(([\\w+?\\.\\w+])+|" + PROPERTY_REGEX + ")"
             + "(([\\w\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]|" + PROPERTY_REGEX + ")*)?|"
             + PROPERTY_REGEX;

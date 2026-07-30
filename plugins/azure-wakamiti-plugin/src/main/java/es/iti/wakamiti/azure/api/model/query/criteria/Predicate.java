@@ -8,18 +8,32 @@
 package es.iti.wakamiti.azure.api.model.query.criteria;
 
 
+/**
+ * Provides the Predicate functionality used by Wakamiti.
+ */
 public class Predicate implements Expression {
 
     private final Expression left;
     private Operator operator;
     private Expression right;
 
+    /**
+     * Wraps a completed criterion or expression for optional composition.
+     *
+     * @param criteria left-hand expression
+     */
     public Predicate(
             Expression criteria
     ) {
         this.left = criteria;
     }
 
+    /**
+     * Combines this predicate and another criterion with a grouped logical AND.
+     *
+     * @param criteria expression that must also hold
+     * @return grouped conjunction
+     */
     public Predicate and(
             Expression criteria
     ) {
@@ -28,6 +42,12 @@ public class Predicate implements Expression {
         return new PredicateGroup(this);
     }
 
+    /**
+     * Combines this predicate and another criterion with a grouped logical OR.
+     *
+     * @param criteria alternative expression
+     * @return grouped disjunction
+     */
     public Predicate or(
             Expression criteria
     ) {
@@ -36,6 +56,12 @@ public class Predicate implements Expression {
         return new PredicateGroup(this);
     }
 
+    /**
+     * Combines historical conditions with WIQL {@code AND EVER}.
+     *
+     * @param criteria expression that must have held at some revision
+     * @return grouped historical conjunction
+     */
     public Predicate andEver(
             Expression criteria
     ) {
@@ -44,6 +70,12 @@ public class Predicate implements Expression {
         return new PredicateGroup(this);
     }
 
+    /**
+     * Combines historical conditions with WIQL {@code OR EVER}.
+     *
+     * @param criteria alternative that may have held at some revision
+     * @return grouped historical disjunction
+     */
     public Predicate orEver(
             Expression criteria
     ) {
@@ -62,12 +94,21 @@ public class Predicate implements Expression {
         return String.format(operator.toString(), left, r);
     }
 
+    /**
+     * Defines the values supported by Operator.
+     */
     enum Operator {
+
+        /** Requires both adjacent work-item query criteria to match. */
         AND("%s AND %s"),
+        /** Requires at least one of the adjacent work-item query criteria to match. */
         OR("%s OR %s"),
+        /** Applies conjunction to each element of a link-query collection. */
         AND_EVER("%s AND EVER %s"),
+        /** Applies disjunction to elements of a link-query collection. */
         OR_EVER("%s OR EVER %s");
 
+        /** Field value. */
         private final String string;
 
         Operator(

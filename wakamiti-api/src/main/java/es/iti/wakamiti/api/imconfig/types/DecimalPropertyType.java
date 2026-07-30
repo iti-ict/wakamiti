@@ -11,6 +11,9 @@ package es.iti.wakamiti.api.imconfig.types;
 import es.iti.wakamiti.api.imconfig.PropertyType;
 
 
+/**
+ * Provides the Decimal Property Type functionality used by Wakamiti.
+ */
 public class DecimalPropertyType implements PropertyType {
 
     private final Double min;

@@ -43,7 +43,11 @@ import es.iti.wakamiti.database.jdbc.Database;
 
 
 /**
- * A contributor class for database-related steps in the test scenarios.
+ * Step contributor providing SQL-oriented setup, execution and assertions.
+ * <p>
+ * The contributor can hold multiple named connections and supports deferred
+ * cleanup operations that run during scenario teardown.
+ * </p>
  */
 @Extension(
         provider = "es.iti.wakamiti",
@@ -54,7 +58,10 @@ import es.iti.wakamiti.database.jdbc.Database;
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
 
     /**
-     * Cleans up operations after scenario execution.
+     * Executes queued cleanup operations before connections are closed.
+     * <p>
+     * Cleanup actions are executed even if prior scenario steps failed.
+     * </p>
      */
     @TearDown(order = 1)
     public void cleanUp() {
@@ -63,7 +70,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Releases database connections after scenario execution.
+     * Closes every opened connection provider and clears in-memory state.
+     * <p>
+     * This method runs after {@link #cleanUp()} due to teardown order.
+     * </p>
      */
     @TearDown(order = 2)
     public void releaseConnection() {

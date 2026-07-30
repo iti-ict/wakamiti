@@ -59,6 +59,17 @@ public class MavenArtifactFetcher implements DependencySelector {
     private List<Artifact> artifacts;
     private List<Exclusion> exclusions;
 
+    /**
+     * Creates a fetcher from a high-level request, parsing requested artifacts
+     * and exclusions into Maven Resolver model objects.
+     *
+     * @param system             repository-system service
+     * @param remoteRepositories repositories searched in priority order
+     * @param session            resolver session and local-repository context
+     * @param fetchRequest       requested coordinates, scopes, and exclusions
+     * @param listener           listener collecting failed transfers
+     * @param logger             destination for repository diagnostics
+     */
     public MavenArtifactFetcher(
             RepositorySystem system,
             List<RemoteRepository> remoteRepositories,
@@ -77,6 +88,21 @@ public class MavenArtifactFetcher implements DependencySelector {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Creates a dependency selector/fetcher from fully prepared resolver state.
+     * This constructor is also used to derive child selectors with merged
+     * exclusions.
+     *
+     * @param system             repository-system service
+     * @param remoteRepositories repositories searched in priority order
+     * @param session            active resolver session
+     * @param scopes             dependency scopes eligible for retrieval
+     * @param retrieveOptionals  whether optional dependencies are included
+     * @param exclusions         artifact exclusion patterns
+     * @param artifacts          root artifacts to fetch
+     * @param listener           transfer-failure collector
+     * @param logger             destination for diagnostics
+     */
     public MavenArtifactFetcher(
             RepositorySystem system,
             List<RemoteRepository> remoteRepositories,
@@ -114,6 +140,16 @@ public class MavenArtifactFetcher implements DependencySelector {
         }
     }
 
+    /**
+     * Resolves descriptors, collects dependency graphs, and downloads every
+     * configured root artifact.
+     *
+     * @return a result backed by the collected dependency graphs
+     * @throws DependencyCollectionException if a dependency graph cannot be
+     *                                      collected
+     * @throws ArtifactDescriptorException if an artifact descriptor cannot be
+     *                                     read
+     */
     public MavenFetchResult fetch() throws DependencyCollectionException, ArtifactDescriptorException {
         if (logger.isInfoEnabled()) {
             logger.info("Using the following repositories:");

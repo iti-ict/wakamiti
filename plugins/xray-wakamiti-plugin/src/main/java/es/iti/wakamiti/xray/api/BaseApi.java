@@ -39,6 +39,7 @@ import es.iti.wakamiti.xray.internal.WakamitiXRayException;
  */
 public class BaseApi {
 
+    /** Media type used for GraphQL requests and JSON responses. */
     public static final String APPLICATION_JSON = "application/json";
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
@@ -54,6 +55,17 @@ public class BaseApi {
     private final HttpClient httpClient;
     private final Logger logger;
 
+    /**
+     * Creates an API client that reuses an authorization value supplied by the caller.
+     * <p>
+     * This variant is intended for services such as Jira, where the caller already
+     * has a complete value for the {@code Authorization} header (for example,
+     * {@code Basic dXNlcjpwYXNzd29yZA==}).
+     *
+     * @param baseURL base URL against which relative endpoint paths are resolved
+     * @param authorization complete value to send in the {@code Authorization} header
+     * @param logger logger used to trace HTTP requests and responses
+     */
     public BaseApi(
             URL baseURL,
             String authorization,
@@ -70,6 +82,21 @@ public class BaseApi {
                 .build();
     }
 
+    /**
+     * Creates an API client and authenticates it with client credentials.
+     * <p>
+     * Construction performs an authentication request immediately. The token
+     * returned by {@code authURL} is retained as a Bearer token for subsequent
+     * requests made by this client.
+     *
+     * @param baseURL base URL against which authentication and API paths are resolved
+     * @param authURL relative authentication endpoint
+     * @param clientId OAuth-style client identifier accepted by the service
+     * @param clientSecret secret paired with {@code clientId}
+     * @param logger logger used to trace authentication and API traffic
+     * @throws es.iti.wakamiti.api.WakamitiException if authentication cannot be
+     *         completed or returns an unsuccessful HTTP response
+     */
     public BaseApi(
             URL baseURL,
             String authURL,

@@ -18,11 +18,25 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 
 
+/**
+ * Provides the Launcher functionality used by Wakamiti.
+ */
 public final class Launcher {
 
     private Launcher() {
     }
 
+    /**
+     * Starts the language server using command-line options.
+     * <p>
+     * TCP mode listens on the requested port and creates a server per client.
+     * Otherwise the server communicates over standard input and output, with
+     * console logging disabled to avoid corrupting the LSP message stream.
+     *
+     * @param args command-line options; use {@code --help} to print usage
+     * @throws ParseException if an option or value is invalid
+     * @throws IOException if logging or server transport initialization fails
+     */
     public static void main(
             String[] args
     ) throws ParseException, IOException {

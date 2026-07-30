@@ -41,6 +41,9 @@ import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 
 
+/**
+ * Synchronizes Azure data with the configured external system.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "azure-reporter",
@@ -49,7 +52,9 @@ import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 )
 public class AzureSynchronizer implements EventObserver {
 
+    /** Mapper mode that publishes one Azure Test Case per Gherkin feature. */
     public static final String GHERKIN_TYPE_FEATURE = "feature";
+    /** Mapper mode that publishes one Azure Test Case per Gherkin scenario. */
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureSynchronizer.class);
@@ -75,48 +80,75 @@ public class AzureSynchronizer implements EventObserver {
         throw new WakamitiException("Authentication is needed");
     };
 
+    /**
+     * @param enabled whether synchronization reacts to execution events
+     */
     public void enabled(
             boolean enabled
     ) {
         this.enabled = enabled;
     }
 
+    /**
+     * @param baseURL Azure DevOps service base URL
+     */
     public void baseURL(
             URL baseURL
     ) {
         this.baseURL = baseURL;
     }
 
+    /**
+     * @param organization Azure DevOps organization name
+     */
     public void organization(
             String organization
     ) {
         this.organization = organization;
     }
 
+    /**
+     * @param project Azure DevOps project containing the test plan
+     */
     public void project(
             String project
     ) {
         this.project = project;
     }
 
+    /**
+     * @param version Azure DevOps REST API version
+     */
     public void version(
             String version
     ) {
         this.version = version;
     }
 
+    /**
+     * @param testPlan plan identity and classification paths to synchronize
+     */
     public void testPlan(
             TestPlan testPlan
     ) {
         this.testPlan = testPlan;
     }
 
+    /**
+     * @param suiteBase base suite path beneath which Wakamiti creates suites
+     */
     public void suiteBase(
             String suiteBase
     ) {
         this.suiteBase = suiteBase;
     }
 
+    /**
+     * Configures HTTP Basic authentication for subsequent Azure API clients.
+     *
+     * @param user     Azure DevOps user name
+     * @param password password or compatible personal access token
+     */
     public void setCredentialsAuthenticator(
             String user,
             String password
@@ -124,36 +156,65 @@ public class AzureSynchronizer implements EventObserver {
         this.authenticator = client -> client.basicAuth(user, password);
     }
 
+    /**
+     * Configures bearer-token authentication for subsequent Azure API clients.
+     *
+     * @param token access token sent to Azure DevOps
+     */
     public void setTokenAuthenticator(
             String token
     ) {
         this.authenticator = client -> client.tokenAuth(token);
     }
 
+    /**
+     * @param configuration Azure test-configuration name assigned to test points
+     */
     public void configuration(
             String configuration
     ) {
         this.configuration = configuration;
     }
 
+    /**
+     * Selects synchronization granularity.
+     *
+     * @param testCasePerFeature {@code true} for one Test Case per feature;
+     *                           {@code false} for one per scenario
+     */
     public void testCasePerFeature(
             boolean testCasePerFeature
     ) {
         this.testCasePerFeature = testCasePerFeature;
     }
 
+    /**
+     * @param createItemsIfAbsent whether missing plans, suites and cases may be created
+     */
     public void createItemsIfAbsent(
             boolean createItemsIfAbsent
     ) {
         this.createItemsIfAbsent = createItemsIfAbsent;
     }
 
+    /**
+     * Sets whether remote items without a corresponding Wakamiti node should
+     * be removed during synchronization.
+     *
+     * @param removeOrphans orphan-removal policy
+     */
     public void removeOrphans(
             boolean removeOrphans
     ) {
         this.removeOrphans = removeOrphans;
     }
 
+    /**
+     * Adds path glob patterns for report files uploaded to the current run.
+     * Existing patterns are retained.
+     *
+     * @param attachments patterns matched against report output paths
+     */
     public void attachments(
             Set<String> attachments
     ) {
@@ -169,6 +230,18 @@ public class AzureSynchronizer implements EventObserver {
         return api;
     }
 
+    /**
+     * Handles Azure synchronization lifecycle events.
+     * <p>
+     * On {@link Event#PLAN_RUN_STARTED}, the local plan is synchronized and a
+     * remote run is opened. On {@link Event#PLAN_RUN_FINISHED}, results are
+     * pushed and the run is completed. Matching report files are uploaded as
+     * attachments when {@link Event#REPORT_OUTPUT_FILE_WRITTEN} is received.
+     * The Azure API client is closed after each handled event.
+     * </p>
+     *
+     * @param event received runtime event
+     */
     @Override
     public void eventReceived(
             Event event
@@ -208,6 +281,12 @@ public class AzureSynchronizer implements EventObserver {
         api().close();
     }
 
+    /**
+     * Declares the event types consumed by this observer.
+     *
+     * @param eventType event type identifier
+     * @return {@code true} for plan start/finish and report file events
+     */
     @Override
     public boolean acceptType(
             String eventType
@@ -216,6 +295,11 @@ public class AzureSynchronizer implements EventObserver {
                 .contains(eventType);
     }
 
+    /**
+     * Synchronizes plan metadata and starts a remote Azure run.
+     *
+     * @param plan executed plan snapshot used to map suites/tests
+     */
     private void syncAndStart(
             PlanNodeSnapshot plan
     ) {
@@ -256,6 +340,11 @@ public class AzureSynchronizer implements EventObserver {
         LOGGER.debug("{} remote test results ready to sync", testResults.size());
     }
 
+    /**
+     * Maps local execution results to Azure test results and completes the run.
+     *
+     * @param plan executed plan snapshot containing final outcomes
+     */
     private void uploadExecution(
             PlanNodeSnapshot plan
     ) {

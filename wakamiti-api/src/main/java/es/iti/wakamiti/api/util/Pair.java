@@ -28,6 +28,13 @@ public class Pair<T, U> {
     private final T key;
     private final U value;
 
+    /**
+     * Creates a pair without imposing nullability constraints on either
+     * component.
+     *
+     * @param key   the first component
+     * @param value the second component
+     */
     public Pair(
             T key,
             U value
@@ -111,6 +118,11 @@ public class Pair<T, U> {
         return map.apply(key, value);
     }
 
+    /**
+     * Adapts this pair to the standard map-entry abstraction.
+     *
+     * @return an entry containing this pair's key and value
+     */
     public Map.Entry<T, U> asEntry() {
         return entry(key, value);
     }

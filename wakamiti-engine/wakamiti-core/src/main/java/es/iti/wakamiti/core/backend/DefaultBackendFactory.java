@@ -61,6 +61,12 @@ public class DefaultBackendFactory implements BackendFactory {
 
     private final WakamitiContributors contributors;
 
+    /**
+     * Creates a factory backed by the runtime contributor registry.
+     *
+     * @param contributors source of step, data-type, and configuration
+     *                     contributors
+     */
     public DefaultBackendFactory(
             WakamitiContributors contributors
     ) {

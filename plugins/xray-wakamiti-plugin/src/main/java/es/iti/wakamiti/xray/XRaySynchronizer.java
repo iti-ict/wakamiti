@@ -42,6 +42,9 @@ import es.iti.wakamiti.xray.model.TestPlan;
 import es.iti.wakamiti.xray.model.TestSet;
 
 
+/**
+ * Synchronizes XRay data with the configured external system.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "xray-reporter",
@@ -52,7 +55,9 @@ public class XRaySynchronizer implements EventObserver {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(XRaySynchronizer.class);
 
+    /** Gherkin node type used when one Xray test is generated per feature. */
     public static final String GHERKIN_TYPE_FEATURE = "feature";
+    /** Gherkin node type used when one Xray test is generated per scenario. */
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
 
     private boolean enabled;
@@ -72,78 +77,152 @@ public class XRaySynchronizer implements EventObserver {
     private XRayApi xRayApi;
     private JiraApi jiraApi;
 
+    /**
+     * Enables or disables every synchronization action handled by this observer.
+     *
+     * @param enabled {@code true} to synchronize plans, results and attachments
+     */
     public void enabled(
             boolean enabled
     ) {
         this.enabled = enabled;
     }
 
+    /**
+     * Configures the Xray Cloud API endpoint.
+     *
+     * @param xRayBaseURL base URL used for authentication and GraphQL operations
+     */
     public void xRayBaseURL(
             URL xRayBaseURL
     ) {
         this.xRayBaseURL = xRayBaseURL;
     }
 
+    /**
+     * Configures the Jira REST API endpoint used for issue updates and attachments.
+     *
+     * @param jiraBaseURL base URL of the Jira instance backing Xray
+     */
     public void jiraBaseURL(
             URL jiraBaseURL
     ) {
         this.jiraBaseURL = jiraBaseURL;
     }
 
+    /**
+     * Configures the client identifier used to authenticate with Xray Cloud.
+     *
+     * @param clientId Xray API client identifier
+     */
     public void xRayclientId(
             String clientId
     ) {
         this.xRayclientId = clientId;
     }
 
+    /**
+     * Configures the secret paired with the Xray API client identifier.
+     *
+     * @param clientSecret Xray API client secret
+     */
     public void xRayclientSecret(
             String clientSecret
     ) {
         this.xRayclientSecret = clientSecret;
     }
 
+    /**
+     * Configures the Base64-encoded credentials used by Jira REST requests.
+     *
+     * @param jiraCredentials encoded Jira credentials without the {@code Basic}
+     *        authentication scheme
+     */
     public void jiraCredentials(
             String jiraCredentials
     ) {
         this.jiraCredentials = jiraCredentials;
     }
 
+    /**
+     * Selects the Jira project where missing Xray entities will be created.
+     *
+     * @param project Jira project key
+     */
     public void project(
             String project
     ) {
         this.project = project;
     }
 
+    /**
+     * Selects the test plan that receives synchronized tests and executions.
+     * <p>
+     * Before synchronization, the plan may contain only a Jira summary. It is
+     * replaced with the matching remote plan, or with a newly created one when
+     * creation is enabled.
+     *
+     * @param testPlan local test-plan selector
+     */
     public void testPlan(
             TestPlan testPlan
     ) {
         this.testPlan = testPlan;
     }
 
+    /**
+     * Configures the source-path base removed from generated Xray test-set names.
+     *
+     * @param testSet base path used by the selected plan mapper
+     */
     public void testSet(
             String testSet
     ) {
         this.testSet = testSet;
     }
 
+    /**
+     * Restricts synchronization to tests carrying a particular Wakamiti identifier
+     * as a Jira label.
+     *
+     * @param tag required label; a blank value includes all generated tests
+     */
     public void tag(
             String tag
     ) {
         this.tag = tag;
     }
 
+    /**
+     * Controls whether a missing remote test plan may be created automatically.
+     *
+     * @param createItemsIfAbsent {@code true} to create a plan when no plan with the
+     *        configured summary exists
+     */
     public void createItemsIfAbsent(
             boolean createItemsIfAbsent
     ) {
         this.createItemsIfAbsent = createItemsIfAbsent;
     }
 
+    /**
+     * Selects the granularity of generated Xray tests.
+     *
+     * @param testCasePerFeature {@code true} to generate one test per feature;
+     *        {@code false} to generate one test per scenario
+     */
     public void testCasePerFeature(
             boolean testCasePerFeature
     ) {
         this.testCasePerFeature = testCasePerFeature;
     }
 
+    /**
+     * Adds path globs that identify report files to attach to the Jira test
+     * execution after they are written.
+     *
+     * @param attachments glob patterns evaluated against report output paths
+     */
     public void attachments(
             Set<String> attachments
     ) {

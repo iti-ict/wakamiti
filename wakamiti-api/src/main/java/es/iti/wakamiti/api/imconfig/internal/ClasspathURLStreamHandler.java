@@ -24,6 +24,14 @@ public class ClasspathURLStreamHandler extends URLStreamHandler {
 
     private final ClassLoader classLoader;
 
+    /**
+     * Creates a handler that resolves {@code classpath:} URLs against a
+     * specific class loader.
+     *
+     * @param classLoader the non-null loader whose resource namespace will be
+     *                    exposed through the virtual protocol
+     * @throws NullPointerException if {@code classLoader} is {@code null}
+     */
     public ClasspathURLStreamHandler(
             ClassLoader classLoader
     ) {

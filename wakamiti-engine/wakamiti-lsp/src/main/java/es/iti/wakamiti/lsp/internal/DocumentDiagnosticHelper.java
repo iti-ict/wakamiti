@@ -42,12 +42,28 @@ public class DocumentDiagnosticHelper {
     private final GherkinDocumentAssessor assessor;
     private final Map<Range, List<CodeAction>> quickFixes = new HashMap<>();
 
+    /**
+     * Creates a diagnostic service tied to one document assessor.
+     *
+     * @param assessor assessor supplying parsed content, configuration and step
+     *                 hints
+     */
     public DocumentDiagnosticHelper(
             GherkinDocumentAssessor assessor
     ) {
         this.assessor = assessor;
     }
 
+    /**
+     * Recomputes diagnostics and their associated quick fixes.
+     * <p>
+     * Parser failures are reported first and prevent semantic assessment.
+     * Otherwise the method reports undefined steps, missing scenario IDs and
+     * documents without scenarios. Previously registered quick fixes are
+     * discarded so they always correspond to the returned diagnostics.
+     *
+     * @return current diagnostics for the assessor's document
+     */
     public List<Diagnostic> collectDiagnostics() {
         quickFixes.clear();
         List<Diagnostic> diagnostics = new ArrayList<>();
@@ -59,6 +75,14 @@ public class DocumentDiagnosticHelper {
         return diagnostics;
     }
 
+    /**
+     * Returns quick fixes registered for a diagnostic's exact source range.
+     *
+     * @param errorDiagnostic diagnostic previously returned by
+     *                        {@link #collectDiagnostics()}
+     * @return replacement or insertion actions, or an empty list when the
+     *         diagnostic has no registered fix
+     */
     public List<CodeAction> retrieveQuickFixes(
             Diagnostic errorDiagnostic
     ) {
@@ -248,6 +272,20 @@ public class DocumentDiagnosticHelper {
         codeActions.add(codeAction);
     }
 
+    /**
+     * Creates a protocol diagnostic with Wakamiti as its source.
+     * <p>
+     * Each additional string is attached as related information at the same
+     * location. This is used, for example, to retain the unmatched step text
+     * separately from the user-facing diagnostic message.
+     *
+     * @param severity diagnostic severity shown by the client
+     * @param uri URI of the affected document
+     * @param range affected source range
+     * @param warning primary diagnostic message
+     * @param extra optional related-information messages
+     * @return a fully initialized LSP diagnostic
+     */
     public static Diagnostic diagnostic(
             DiagnosticSeverity severity,
             String uri,

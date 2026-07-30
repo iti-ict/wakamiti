@@ -51,9 +51,14 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 
+/**
+ * Provides the Rest Support functionality used by Wakamiti.
+ */
 public class RestSupport {
 
+    /** Successful HTTP status code. */
     private static final int HTTP_OK = 200;
+    /** Shared logger category for REST request, response and assertion diagnostics. */
     public static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.rest");
 
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = WakamitiAPI.instance()

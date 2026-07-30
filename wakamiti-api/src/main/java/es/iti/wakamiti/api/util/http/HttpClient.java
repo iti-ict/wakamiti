@@ -51,6 +51,11 @@ import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Provides access to the Http Client service.
+ *
+ * @param <SELF> the concrete client type
+ */
 public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpClientInterface<SELF> {
 
     @Serial
@@ -73,7 +78,9 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
      * A default number of maximum retries on both types <b>on-response</b> and <b>on-throwable</b>
      */
     private static final int DEFAULT_MAX_ATTEMPTS = 5;
+    /** Number of worker threads per available processor. */
     private static final int THREADS_PER_PROCESSOR = 10;
+    /** First HTTP server-error status code. */
     private static final int SERVER_ERROR_STATUS = 500;
 
     /**
@@ -118,6 +125,16 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * THREADS_PER_PROCESSOR);
     }
 
+    /**
+     * Registers a callback invoked after each completed HTTP exchange.
+     * <p>
+     * The callback receives the final response after retry handling and is
+     * preserved when the client is copied.
+     * </p>
+     *
+     * @param postCall response consumer to invoke after a successful exchange
+     * @return this client
+     */
     public SELF postCall(
             Consumer<HttpResponse<Optional<JsonNode>>> postCall
     ) {
@@ -152,6 +169,17 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         return self();
     }
 
+    /**
+     * Configures a persistent HTTP Basic authorization header.
+     * <p>
+     * The header is stored among the client's default headers and therefore
+     * applies to subsequent request copies until replaced.
+     * </p>
+     *
+     * @param username the credential user name
+     * @param password the credential password
+     * @return this client
+     */
     public SELF basicAuth(
             String username,
             String password
@@ -161,6 +189,12 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
         return self();
     }
 
+    /**
+     * Configures a persistent Bearer authorization header.
+     *
+     * @param token the raw access token, without the {@code Bearer} prefix
+     * @return this client
+     */
     public SELF bearerAuth(
             String token
     ) {
@@ -558,12 +592,25 @@ public abstract class HttpClient<SELF extends HttpClient<SELF>> implements HttpC
                 });
     }
 
+    /**
+     * Creates an independent client copy by serialization.
+     * <p>
+     * Configuration and request state are cloned, while the transient
+     * post-response callback and JSON body are restored explicitly.
+     * </p>
+     *
+     * @return a deep copy with the same concrete fluent type
+     */
     public SELF copy() {
         SELF clone = SerializationUtils.clone(self()).postCall(postCall);
         Optional.ofNullable(body).map(Objects::toString).ifPresent(clone::body);
         return clone;
     }
 
+    /**
+     * Initiates shutdown of the shared asynchronous-request executor.
+     * A later request can recreate the executor when necessary.
+     */
     public void close() {
         executor.shutdown();
     }

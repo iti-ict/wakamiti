@@ -28,6 +28,10 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 
 
+/**
+ * Provides assertions and XML object deserialization support for REST
+ * responses.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-xml-helper",

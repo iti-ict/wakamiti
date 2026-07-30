@@ -17,6 +17,9 @@ import java.util.Scanner;
 import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
 
 
+/**
+ * Provides the Gherkin Line functionality used by Wakamiti.
+ */
 public class GherkinLine {
 
     private final String lineText;

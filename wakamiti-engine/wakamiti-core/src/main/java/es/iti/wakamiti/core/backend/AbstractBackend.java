@@ -57,17 +57,11 @@ public abstract class AbstractBackend implements Backend {
         this.hinter = new StepHinter(runnableSteps, configuration, resolver, typeRegistry);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public WakamitiDataTypeRegistry getTypeRegistry() {
         return typeRegistry;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getAvailableSteps(
             Locale locale,
@@ -76,9 +70,6 @@ public abstract class AbstractBackend implements Backend {
         return getSuggestionsForInvalidStep("", locale, -1, includeVariations);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<String> getSuggestionsForInvalidStep(
             String invalidStep,
@@ -89,9 +80,6 @@ public abstract class AbstractBackend implements Backend {
         return hinter.getHintsForInvalidStep(invalidStep, locale, locale, numberOfHints, includeVariations);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public String getHintFor(
             String invalidStep,

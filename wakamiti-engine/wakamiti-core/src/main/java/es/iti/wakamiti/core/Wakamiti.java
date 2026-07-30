@@ -78,6 +78,7 @@ import es.iti.wakamiti.core.util.TagFilter;
  */
 public final class Wakamiti {
 
+    /** Root logger used for engine lifecycle, discovery and execution diagnostics. */
     public static final Logger LOGGER = WakamitiLogger.forClass(Wakamiti.class);
     private static final AtomicBoolean INSTANTIATED = new AtomicBoolean();
     private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
@@ -274,6 +275,7 @@ public final class Wakamiti {
      * but using the given content instead of discovering resources
      *
      * @param configuration The configuration for creating the test plan.
+     * @param inputStream   The parameter value
      * @return A new test plan ready to be executed.
      */
     public PlanNode createPlanFromContent(
@@ -485,11 +487,19 @@ public final class Wakamiti {
     }
 
     /**
-     * Writes the output file for the specified plan and configuration.
+     * Writes execution output files for the given plan according to the
+     * provided configuration.
+     * <p>
+     * Before writing any file, this method resolves hidden properties in the
+     * provided {@code plan}. This is a side effect over the received plan
+     * instance and therefore affects subsequent consumers of the same plan
+     * object.
+     * </p>
      *
-     * @param plan          The plan for which the output file is generated.
-     * @param configuration The configuration used for writing the output file.
-     * @return The path of the written output file or {@code null} if generation is disabled.
+     * @param plan          plan to serialize into output files
+     * @param configuration effective output-related configuration
+     * @return path of the standard output file, or {@code null} when output
+     *         generation is disabled or an I/O error occurs
      */
     public Path writeOutputFile(
             PlanNode plan,

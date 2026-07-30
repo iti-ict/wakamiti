@@ -28,21 +28,30 @@ import java.util.ServiceLoader;
 @Target(ElementType.TYPE)
 public @interface Extension {
 
+    /**
+     * Default extension priority.
+     */
     int NORMAL_PRIORITY = 5;
 
     /**
      * The provider (organization, package, group, etc.) of the extension
+     *
+     * @return the extension provider
      */
     String provider() default "none";
 
     /**
      * The name of the extension
+     *
+     * @return the extension name
      */
     String name();
 
     /**
      * Minimum supported core version in form of
      * {@code <majorVersion>.<minorVersion>}.
+     *
+     * @return the minimum supported core version
      */
     String version() default "1.0";
 
@@ -56,6 +65,8 @@ public @interface Extension {
      * work, so clients must provide the name of the class directly in those
      * cases.
      * </p>
+     *
+     * @return the qualified extension point class name
      */
     String extensionPoint() default "";
 
@@ -67,6 +78,8 @@ public @interface Extension {
      * is different), the extension manager will emit a warning and prevent the
      * extension from loading.
      * </p>
+     *
+     * @return the minimum supported extension point version
      */
     String extensionPointVersion() default "1.0";
 
@@ -74,12 +87,16 @@ public @interface Extension {
      * Extensions marked as externally managed will not resolve to use the
      * {@link ServiceLoader} mechanism. Instead, custom {@link ExtensionLoader}
      * will be used to retrieve the instance of the extension.
+     *
+     * @return whether the extension is externally managed
      */
     boolean externallyManaged() default false;
 
     /**
      * Priority used when extensions collide, the highest value has priority
      * over others.
+     *
+     * @return the extension priority
      */
     int priority() default NORMAL_PRIORITY;
 
@@ -97,6 +114,8 @@ public @interface Extension {
      * this extension in case both of them are valid alternatives. It only has
      * effect if the {@link #overridable()} property of the extension to override
      * is set to {@code true}.
+     *
+     * @return the qualified class name of the overridden extension
      */
     String overrides() default "";
 

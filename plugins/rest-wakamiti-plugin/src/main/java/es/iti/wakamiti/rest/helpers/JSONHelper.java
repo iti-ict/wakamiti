@@ -24,6 +24,9 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 
 
+/**
+ * Provides the JSONHelper functionality used by Wakamiti.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-json-helper",

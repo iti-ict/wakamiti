@@ -23,6 +23,13 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.core.Wakamiti;
 
 
+/**
+ * Hosts Wakamiti's language server over TCP sockets.
+ * <p>
+ * Each accepted socket is served by a dedicated
+ * {@link WakamitiLanguageServer} instance created on a cached thread pool.
+ * </p>
+ */
 public class TcpSocketLanguageServer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TcpSocketLanguageServer.class);
@@ -33,6 +40,12 @@ public class TcpSocketLanguageServer {
 
     private ServerSocket serverSocket;
 
+    /**
+     * Creates a TCP language-server host without binding its socket.
+     *
+     * @param address local endpoint on which {@link #start()} will listen
+     * @param baseIndex coordinate offset expected by connected clients
+     */
     public TcpSocketLanguageServer(
             InetSocketAddress address,
             int baseIndex
@@ -42,6 +55,13 @@ public class TcpSocketLanguageServer {
         this.baseIndex = baseIndex;
     }
 
+    /**
+     * Binds the configured endpoint and starts accepting clients in the
+     * internal runner thread.
+     *
+     * @throws IOException if the endpoint cannot be bound
+     * @throws IllegalThreadStateException if this instance has already started
+     */
     public void start() throws IOException {
         serverSocket = new ServerSocket();
         serverSocket.bind(endpoint);
@@ -49,6 +69,13 @@ public class TcpSocketLanguageServer {
         LOGGER.info("Language Server listening at {}:{}", getAddress(), getPort());
     }
 
+    /**
+     * Accept loop that creates one language-server instance per client socket.
+     * <p>
+     * The loop runs in {@link #internalRunner} after {@link #start()} and
+     * stops when the server socket is closed.
+     * </p>
+     */
     private void run() {
         LOGGER.info("Contributors available: {}", Wakamiti.contributors().allContributors());
         var threadPool = Executors.newCachedThreadPool();
@@ -91,16 +118,39 @@ public class TcpSocketLanguageServer {
         }
     }
 
+    /**
+     * Returns the bound local port.
+     *
+     * @return actual listening port, including an automatically assigned port
+     *         when the configured endpoint used port zero
+     * @throws IllegalStateException if the server is not currently running
+     */
     public int getPort() {
         assertServerRunning();
         return serverSocket.getLocalPort();
     }
 
+    /**
+     * Returns the local address to which the server socket is bound.
+     *
+     * @return bound network address
+     * @throws IllegalStateException if the server is not currently running
+     */
     public InetAddress getAddress() {
         assertServerRunning();
         return serverSocket.getInetAddress();
     }
 
+    /**
+     * Stops accepting new connections by closing the listening socket.
+     * <p>
+     * Calling this method more than once is safe for already-closed sockets but
+     * still requires the server to have been started.
+     * </p>
+     *
+     * @throws IOException if the socket cannot be closed
+     * @throws NullPointerException if the server has not been started
+     */
     public void close() throws IOException {
         serverSocket.close();
     }

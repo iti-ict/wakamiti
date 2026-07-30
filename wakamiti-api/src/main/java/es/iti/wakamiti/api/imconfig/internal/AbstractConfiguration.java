@@ -30,6 +30,9 @@ import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
 import es.iti.wakamiti.api.imconfig.PropertyDefinition;
 
 
+/**
+ * Stores the configuration used by the Abstract Configuration component.
+ */
 public abstract class AbstractConfiguration implements Configuration {
 
     protected final ConfigurationFactory builder;

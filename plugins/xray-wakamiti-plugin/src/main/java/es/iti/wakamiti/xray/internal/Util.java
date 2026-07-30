@@ -16,12 +16,28 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 
+/**
+ * Utility methods for working with Util.
+ */
 public abstract class Util {
 
     private Util() {
         // prevent instantiation
     }
 
+    /**
+     * Creates a stateful predicate that accepts only the first value for each key.
+     * <p>
+     * The backing key set is concurrent, so the predicate can be used safely in a
+     * parallel stream. For example,
+     * {@code tests.stream().filter(distinctByKey(TestCase::getIssueId))} retains
+     * the first test for every issue identifier.
+     *
+     * @param keyExtractor function that obtains the identity key for each value
+     * @param <T> type of value tested by the predicate
+     * @return a predicate returning {@code true} once for each distinct key and
+     *         {@code false} for subsequent occurrences
+     */
     public static <T> Predicate<T> distinctByKey(
             Function<? super T, ?> keyExtractor
     ) {

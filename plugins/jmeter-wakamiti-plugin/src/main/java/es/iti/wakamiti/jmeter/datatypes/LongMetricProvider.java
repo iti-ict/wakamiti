@@ -15,11 +15,18 @@ import java.util.Map;
 import es.iti.wakamiti.jmeter.Metric;
 
 
+/**
+ * Provides Long Metric services to the surrounding component.
+ */
 public class LongMetricProvider extends AbstractMetricProvider {
 
+    /** Localized data-type key for an absolute number of executed samples. */
     public static final String SAMPLES = "metric.long.samples";
+    /** Localized data-type key for an absolute number of failed samples. */
     public static final String ERRORS = "metric.long.errors";
+    /** Localized data-type key for the total number of received network bytes. */
     public static final String RECEIVED_BYTES = "metric.long.receivedBytes";
+    /** Localized data-type key for the total number of sent network bytes. */
     public static final String SENT_BYTES = "metric.long.sentBytes";
 
     private static final Map<String, Metric<Long>> METRICS = map(

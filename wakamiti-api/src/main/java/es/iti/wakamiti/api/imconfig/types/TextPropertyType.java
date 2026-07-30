@@ -13,10 +13,21 @@ import java.util.regex.Pattern;
 import es.iti.wakamiti.api.imconfig.PropertyType;
 
 
+/**
+ * Provides the Text Property Type functionality used by Wakamiti.
+ */
 public class TextPropertyType implements PropertyType {
 
     private final Pattern pattern;
 
+    /**
+     * Creates a text validator with an optional regular-expression constraint.
+     *
+     * @param pattern the expression that the complete value must match, or
+     *                {@code null} to accept any text
+     * @throws java.util.regex.PatternSyntaxException if {@code pattern} is
+     *                                               invalid
+     */
     public TextPropertyType(
             String pattern
     ) {
@@ -40,6 +51,12 @@ public class TextPropertyType implements PropertyType {
         return pattern == null ? "Any text" : "Text satisfying regex //" + pattern + "//";
     }
 
+    /**
+     * Returns the regular expression used to validate values.
+     *
+     * @return the configured expression
+     * @throws NullPointerException if this type was created without a pattern
+     */
     public String pattern() {
         return this.pattern.pattern();
     }

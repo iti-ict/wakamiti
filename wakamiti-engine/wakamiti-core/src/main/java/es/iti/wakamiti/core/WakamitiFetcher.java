@@ -35,13 +35,18 @@ import net.harawata.appdirs.AppDirsFactory;
 
 
 /**
- * This class provides functionality for fetching Maven dependencies.
+ * Resolves plugin/module artifacts from Maven repositories and appends fetched
+ * JARs to the runtime classpath.
  */
 public class WakamitiFetcher {
 
     private final Logger logger;
     private final Configuration conf;
 
+    /**
+     * Creates a fetcher using Wakamiti's logger and default Maven
+     * configuration.
+     */
     public WakamitiFetcher() {
         this(Wakamiti.LOGGER, Wakamiti.defaultConfiguration());
     }
@@ -67,12 +72,17 @@ public class WakamitiFetcher {
     }
 
     /**
-     * Fetches Maven dependencies for the specified modules.
+     * Fetches dependencies for requested modules.
+     * <p>
+     * When {@code mustClean} is true, the Wakamiti local cache is deleted
+     * before download. Successfully fetched JAR files are appended to the
+     * process classpath.
+     * </p>
      *
-     * @param modules   The list of modules to fetch.
-     * @param mustClean Flag indicating whether to clean the local Maven repository before fetching.
-     * @return A list of paths to the fetched artifacts.
-     * @throws WakamitiException If an error occurs during the fetching process.
+     * @param modules   Maven coordinates to resolve
+     * @param mustClean whether cached artifacts should be removed first
+     * @return artifact paths reported by the fetcher
+     * @throws WakamitiException when fetching or cache preparation fails
      */
     public List<Path> fetch(
             List<String> modules,
@@ -146,9 +156,13 @@ public class WakamitiFetcher {
     }
 
     /**
-     * Updates the classpath with the specified artifacts.
+     * Appends fetched JAR files to the current process classpath.
+     * <p>
+     * Invalid or missing JAR files are logged and skipped; remaining artifacts
+     * continue to be processed.
+     * </p>
      *
-     * @param artifacts The list of paths to the fetched artifacts.
+     * @param artifacts resolved artifact paths
      */
     private void updateClasspath(
             List<Path> artifacts

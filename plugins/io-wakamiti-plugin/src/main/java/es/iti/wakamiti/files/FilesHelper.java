@@ -32,6 +32,9 @@ import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Provides the Files Helper functionality used by Wakamiti.
+ */
 public class FilesHelper {
 
     private static final Logger LOGGER = WakamitiLogger
@@ -173,6 +176,16 @@ public class FilesHelper {
         return WakamitiAPI.instance().resourceLoader();
     }
 
+    /**
+     * Waits for a named entry event in the file's parent directory.
+     *
+     * @param file exact child name to observe
+     * @param eventKind creation, modification or deletion event kind
+     * @param timeout maximum wait in seconds for each polling cycle
+     * @throws IOException if the directory cannot be watched
+     * @throws InterruptedException if the waiting thread is interrupted
+     * @throws TimeoutException if no matching event arrives before the timeout
+     */
     public void waitForFile(
             File file,
             WatchEvent.Kind<Path> eventKind,
@@ -198,10 +211,22 @@ public class FilesHelper {
         }
     }
 
+    /**
+     * Runs registered restoration operations in their stored order.
+     * Operations remain registered, so this method is intended to run once at
+     * scenario teardown.
+     */
     public void cleanup() {
         cleanUpOperations.forEach(Runnable::run);
     }
 
+    /**
+     * Creates a symbolic link and schedules its removal during cleanup.
+     *
+     * @param link path of the link to create
+     * @param path target path referenced by the link
+     * @throws FilesHelperException if the link cannot be created
+     */
     public void createSymLink(
             Path link,
             Path path
@@ -210,6 +235,16 @@ public class FilesHelper {
         cleanUpOperations.addLast(() -> FilesHelper.deleteSymbolicLink(symLink));
     }
 
+    /**
+     * Moves a source file to an exact target path and records enough state to
+     * restore the source and clean created target directories.
+     *
+     * @param source existing source file
+     * @param target destination file path
+     * @throws IOException if temporary backup creation fails or the source is
+     *                     absent
+     * @throws FilesHelperException if copying or moving fails
+     */
     public void moveToFile(
             File source,
             File target
@@ -236,6 +271,15 @@ public class FilesHelper {
         throw new FileNotFoundException("Source '" + source + "' does not exist");
     }
 
+    /**
+     * Moves a file or directory into a target directory and schedules
+     * restoration of its original tree.
+     *
+     * @param source existing file or directory
+     * @param target destination directory
+     * @throws IOException if backup creation fails or the source is absent
+     * @throws FilesHelperException if a filesystem operation fails
+     */
     public void moveToDir(
             File source,
             File target
@@ -276,6 +320,14 @@ public class FilesHelper {
         }
     }
 
+    /**
+     * Copies a source to an exact file path and schedules cleanup of newly
+     * created target content.
+     *
+     * @param source source file
+     * @param target destination file
+     * @throws FilesHelperException if copying fails
+     */
     public void copyToFile(
             File source,
             File target
@@ -287,6 +339,15 @@ public class FilesHelper {
         cleanUpOperations.addFirst(() -> FilesHelper.cleanDirectory(p));
     }
 
+    /**
+     * Copies a file or directory into a destination directory and schedules
+     * cleanup of the affected target tree.
+     *
+     * @param source existing file or directory
+     * @param target destination directory
+     * @throws FileNotFoundException if the source does not exist
+     * @throws FilesHelperException if copying fails
+     */
     public void copyToDir(
             File source,
             File target
@@ -312,6 +373,14 @@ public class FilesHelper {
         cleanUpOperations.addFirst(() -> FilesHelper.cleanDirectory(p));
     }
 
+    /**
+     * Deletes a file or directory after making a temporary backup, then
+     * schedules restoration during cleanup.
+     *
+     * @param file existing path to delete
+     * @throws IOException if backup creation or direct file deletion fails
+     * @throws FilesHelperException if directory operations fail
+     */
     public void delete(
             File file
     ) throws IOException {

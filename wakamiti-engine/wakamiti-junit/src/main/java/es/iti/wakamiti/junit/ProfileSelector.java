@@ -14,6 +14,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+/**
+ * Resolves whether a JUnit 4 test class is enabled for the active profile set.
+ * <p>
+ * Active profiles are read from {@value #PROFILE_PROPERTY} with fallback to
+ * {@value #PROFILE_FALLBACK_PROPERTY}. Strict mode is controlled by
+ * {@value #STRICT_PROPERTY} with fallback to
+ * {@value #STRICT_FALLBACK_PROPERTY}.
+ * </p>
+ */
 final class ProfileSelector {
 
     static final String PROFILE_PROPERTY = "wakamiti.junit.profile";
@@ -25,6 +34,18 @@ final class ProfileSelector {
         // static utility
     }
 
+    /**
+     * Checks whether a profiled test class should run.
+     * <p>
+     * If the class has no {@link Profile} (or it declares no effective values),
+     * execution is allowed unless strict mode is enabled with active profiles.
+     * If the class declares profiles, execution requires at least one match with
+     * active profiles, except in non-strict mode with no active profiles.
+     * </p>
+     *
+     * @param testClass test class to evaluate
+     * @return {@code true} when the class is enabled for execution
+     */
     static boolean isEnabled(
             Class<?> testClass
     ) {

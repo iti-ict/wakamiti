@@ -14,15 +14,26 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 import es.iti.wakamiti.core.gherkin.parser.Location;
 
 
+/**
+ * Provides the Token functionality used by Wakamiti.
+ */
 public class Token {
 
+    /** Source line from which this token was scanned; {@code null} denotes EOF. */
     public final es.iti.wakamiti.core.gherkin.parser.internal.GherkinLine line;
+    /** Grammar token type assigned by the token matcher. */
     public Parser.TokenType matchedType;
+    /** Localized Gherkin keyword matched at the start of the token. */
     public String matchedKeyword;
+    /** Semantic text remaining after the matched keyword and delimiters. */
     public String matchedText;
+    /** Data-table cells or other subspans recognized inside the source line. */
     public List<GherkinLineSpan> mathcedItems;
+    /** Number of leading indentation characters removed during matching. */
     public int matchedIndent;
+    /** Gherkin dialect selected by a language token or inherited parser state. */
     public GherkinDialect matchedGherkinDialect;
+    /** One-based source location reported for this token. */
     public Location location;
 
     public Token(

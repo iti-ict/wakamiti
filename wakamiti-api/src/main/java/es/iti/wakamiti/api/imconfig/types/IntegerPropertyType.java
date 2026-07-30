@@ -11,11 +11,22 @@ package es.iti.wakamiti.api.imconfig.types;
 import es.iti.wakamiti.api.imconfig.PropertyType;
 
 
+/**
+ * Provides the Integer Property Type functionality used by Wakamiti.
+ */
 public class IntegerPropertyType implements PropertyType {
 
     private final Long min;
     private final Long max;
 
+    /**
+     * Creates an integer validator with optional inclusive bounds.
+     *
+     * @param min the lower bound, or {@code null} for no minimum
+     * @param max the upper bound, or {@code null} for no maximum
+     * @throws IllegalArgumentException if {@code min} is greater than
+     *                                  {@code max}
+     */
     public IntegerPropertyType(
             Number min,
             Number max

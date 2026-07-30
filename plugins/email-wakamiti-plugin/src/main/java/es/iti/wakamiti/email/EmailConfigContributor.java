@@ -25,11 +25,17 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 )
 public class EmailConfigContributor implements ConfigContributor<EmailStepContributor> {
 
+    /** Configuration key for the incoming-mail server host. */
     public static final String STORE_HOST = "email.store.host";
+    /** Configuration key for the incoming-mail server port. */
     public static final String STORE_PORT = "email.store.port";
+    /** Configuration key for the Jakarta Mail store protocol, such as IMAP. */
     public static final String STORE_PROTOCOL = "email.store.protocol";
+    /** Configuration key for the mailbox account address or login name. */
     public static final String ADDRESS = "email.address";
+    /** Configuration key for the mailbox account password. */
     public static final String PASSWORD = "email.password";
+    /** Configuration key for the mailbox folder searched by email steps. */
     public static final String STORE_FOLDER = "email.store.folder";
 
     @Override

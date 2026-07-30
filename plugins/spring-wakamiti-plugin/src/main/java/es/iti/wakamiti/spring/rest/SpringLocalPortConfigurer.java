@@ -27,6 +27,9 @@ import es.iti.wakamiti.rest.RestStepContributor;
 import es.iti.wakamiti.spring.db.SpringConnectionProvider;
 
 
+/**
+ * Provides the Spring Local Port Configurer functionality used by Wakamiti.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-configurator-springboot",
@@ -38,7 +41,9 @@ import es.iti.wakamiti.spring.db.SpringConnectionProvider;
 @ConditionalOnProperty(SpringLocalPortConfigurer.USE_SPRING_LOCAL_SERVER_PORT)
 public class SpringLocalPortConfigurer implements ConfigContributor<RestStepContributor> {
 
+    /** Logger used while configuring the local server port. */
     private static final Logger LOGGER = WakamitiLogger.forClass(SpringLocalPortConfigurer.class);
+    /** Property that enables local server-port discovery. */
     public static final String USE_SPRING_LOCAL_SERVER_PORT = "wakamiti.rest.useSpringLocalServerPort";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(

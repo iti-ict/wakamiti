@@ -14,6 +14,9 @@ package es.iti.wakamiti.api;
  */
 public class WakamitiSkippedException extends WakamitiException {
 
+    /**
+     * Creates a skip signal without an explanatory message.
+     */
     public WakamitiSkippedException() {
         super();
     }

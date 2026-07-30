@@ -22,6 +22,9 @@ import es.iti.wakamiti.api.imconfig.PropertyDefinition;
 import es.iti.wakamiti.api.imconfig.types.internal.PropertyTypeFactory;
 
 
+/**
+ * Parses Property Definition input and exposes its structured representation.
+ */
 public class PropertyDefinitionParser {
 
     private final Yaml yaml = new Yaml();

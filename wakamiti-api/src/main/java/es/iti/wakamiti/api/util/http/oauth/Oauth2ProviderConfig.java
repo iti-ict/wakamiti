@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 import es.iti.wakamiti.api.WakamitiException;
 
 
+/**
+ * Stores the configuration used by the Oauth2 Provider Config component.
+ */
 public class Oauth2ProviderConfig {
 
     private static final String GRANT_TYPE = "grant_type";
@@ -34,10 +37,24 @@ public class Oauth2ProviderConfig {
     private String clientId;
     private String clientSecret;
 
+    /**
+     * Finds a previously retrieved token matching the grant's identifying
+     * parameters.
+     *
+     * @return the cached token when caching is enabled and a matching entry
+     * exists; otherwise an empty optional
+     */
     public Optional<String> findCachedToken() {
         return Optional.ofNullable(CACHED_TOKEN.get(getKey())).filter(x -> cacheAuth);
     }
 
+    /**
+     * Stores a token under the current grant parameters and returns it for use
+     * in fluent retrieval code.
+     *
+     * @param token the raw access token
+     * @return the same token
+     */
     public String storeTokenAndGet(
             String token
     ) {
@@ -45,10 +62,28 @@ public class Oauth2ProviderConfig {
         return token;
     }
 
+    /**
+     * Returns the mutable form parameters sent to the token endpoint.
+     *
+     * @return parameters in insertion order
+     */
     public Map<String, String> parameters() {
         return parameters;
     }
 
+    /**
+     * Adds or replaces a token-request form parameter.
+     * <p>
+     * Setting {@code grant_type} also initializes the typed grant when it has
+     * not already been selected.
+     * </p>
+     *
+     * @param name  the form field name
+     * @param value the form field value
+     * @return this configuration
+     * @throws IllegalArgumentException if an unknown {@code grant_type} value
+     *                                  is supplied
+     */
     public Oauth2ProviderConfig addParameter(
             String name,
             String value
@@ -60,6 +95,12 @@ public class Oauth2ProviderConfig {
         return this;
     }
 
+    /**
+     * Enables or disables reuse of tokens held in the shared in-memory cache.
+     *
+     * @param cacheAuth {@code true} to reuse matching cached tokens
+     * @return this configuration
+     */
     public Oauth2ProviderConfig cacheAuth(
             boolean cacheAuth
     ) {
@@ -67,6 +108,13 @@ public class Oauth2ProviderConfig {
         return this;
     }
 
+    /**
+     * Selects the OAuth grant flow and initializes its {@code grant_type} form
+     * parameter when absent.
+     *
+     * @param type the grant flow
+     * @return this configuration
+     */
     public Oauth2ProviderConfig type(
             GrantType type
     ) {
@@ -75,10 +123,21 @@ public class Oauth2ProviderConfig {
         return this;
     }
 
+    /**
+     * Returns the authorization server's token endpoint.
+     *
+     * @return the endpoint URL, or {@code null} until configured
+     */
     public URL url() {
         return url;
     }
 
+    /**
+     * Sets the authorization server's token endpoint.
+     *
+     * @param url the token endpoint URL
+     * @return this configuration
+     */
     public Oauth2ProviderConfig url(
             URL url
     ) {
@@ -86,10 +145,21 @@ public class Oauth2ProviderConfig {
         return this;
     }
 
+    /**
+     * Returns the OAuth client identifier.
+     *
+     * @return the client identifier, or {@code null} until configured
+     */
     public String clientId() {
         return clientId;
     }
 
+    /**
+     * Sets the OAuth client identifier used for Basic authentication.
+     *
+     * @param clientId the client identifier
+     * @return this configuration
+     */
     public Oauth2ProviderConfig clientId(
             String clientId
     ) {
@@ -97,10 +167,21 @@ public class Oauth2ProviderConfig {
         return this;
     }
 
+    /**
+     * Returns the OAuth client secret.
+     *
+     * @return the client secret, or {@code null} until configured
+     */
     public String clientSecret() {
         return clientSecret;
     }
 
+    /**
+     * Sets the OAuth client secret used for Basic authentication.
+     *
+     * @param clientSecret the client secret
+     * @return this configuration
+     */
     public Oauth2ProviderConfig clientSecret(
             String clientSecret
     ) {
@@ -108,6 +189,13 @@ public class Oauth2ProviderConfig {
         return this;
     }
 
+    /**
+     * Verifies that the selected grant and endpoint credentials are complete.
+     * Grant-specific form fields are checked in addition to the client
+     * identifier, client secret, and token URL.
+     *
+     * @throws WakamitiException if any required value is absent or blank
+     */
     public void checkParameters() {
         if (isNull(type)) {
             throw new WakamitiException("Missing oauth2 grant type.");

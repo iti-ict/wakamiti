@@ -18,6 +18,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  */
 public class DeclarationParametersPerLineCheck extends AbstractCheck {
 
+    /** Message-bundle key reported when declaration parameters share a source line. */
     public static final String MSG_PARAMETER_LINE = "declaration.parameter.line";
 
     private static final int[] TOKENS = {

@@ -95,6 +95,8 @@ public class MavenFetcher {
 
     /**
      * Set the logger for this object
+     * @param logger the parameter value
+     * @return the resulting value
      */
     public MavenFetcher logger(
             Logger logger
@@ -105,6 +107,8 @@ public class MavenFetcher {
 
     /**
      * Set the URL for the net proxy
+     * @param url the parameter value
+     * @return the resulting value
      */
     public MavenFetcher proxyURL(
             String url
@@ -117,6 +121,9 @@ public class MavenFetcher {
 
     /**
      * Set the credentials for the next proxy
+     * @param password the parameter value
+     * @param username the parameter value
+     * @return the resulting value
      */
     public MavenFetcher proxyCredentials(
             String username,
@@ -130,6 +137,8 @@ public class MavenFetcher {
 
     /**
      * Set exceptions for the next proxy
+     * @param exceptions the parameter value
+     * @return the resulting value
      */
     public MavenFetcher proxyExceptions(
             Collection<String> exceptions
@@ -141,6 +150,8 @@ public class MavenFetcher {
 
     /**
      * Set the local repository path
+     * @param localRepositoryPath the parameter value
+     * @return the resulting value
      */
     public MavenFetcher localRepositoryPath(
             String localRepositoryPath
@@ -151,6 +162,8 @@ public class MavenFetcher {
 
     /**
      * Set the local repository path
+     * @param localRepositoryPath the parameter value
+     * @return the resulting value
      */
     public MavenFetcher localRepositoryPath(
             Path localRepositoryPath
@@ -166,6 +179,7 @@ public class MavenFetcher {
      * <p>
      * Use this method if you want to restrict artifact downloading to a set
      * of private repositories,
+     * @return the resulting value
      */
     public MavenFetcher clearRemoteRepositories() {
         this.remoteRepositories.clear();
@@ -174,6 +188,8 @@ public class MavenFetcher {
 
     /**
      * Add a remote repository
+     * @param repository the parameter value
+     * @return the resulting value
      */
     public MavenFetcher addRemoteRepository(
             Repository repository
@@ -188,6 +204,9 @@ public class MavenFetcher {
 
     /**
      * Add a remote repository
+     * @param id the parameter value
+     * @param url the parameter value
+     * @return the resulting value
      */
     public MavenFetcher addRemoteRepository(
             String id,
@@ -209,6 +228,8 @@ public class MavenFetcher {
      * Configure the fetcher according a set of properties
      *
      * @see MavenFetcherProperties
+     * @param properties the parameter value
+     * @return this fetcher
      */
     public MavenFetcher config(
             Properties properties
@@ -260,6 +281,8 @@ public class MavenFetcher {
     /**
      * Retrieve the specified artifacts and their dependencies from the remote
      * repositories.
+     * @param request the parameter value
+     * @return the resulting value
      */
     public MavenFetchResult fetchArtifacts(
             MavenFetchRequest request

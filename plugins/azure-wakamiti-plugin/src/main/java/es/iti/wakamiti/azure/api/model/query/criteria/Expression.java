@@ -8,6 +8,9 @@
 package es.iti.wakamiti.azure.api.model.query.criteria;
 
 
+/**
+ * Defines the contract implemented by Expression.
+ */
 public interface Expression {
 
 }

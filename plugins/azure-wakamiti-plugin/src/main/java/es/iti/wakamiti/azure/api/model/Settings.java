@@ -12,12 +12,21 @@ import java.io.Serializable;
 import java.time.ZoneId;
 
 
+/**
+ * Provides the Settings functionality used by Wakamiti.
+ */
 public class Settings implements Serializable {
 
     private ZoneId zoneId;
     private String configuration;
     private String testCaseType;
 
+    /**
+     * Sets the time zone used to render run and result timestamps for Azure.
+     *
+     * @param zoneId zone used to serialize execution timestamps
+     * @return these settings
+     */
     public Settings zoneId(
             ZoneId zoneId
     ) {
@@ -25,10 +34,19 @@ public class Settings implements Serializable {
         return this;
     }
 
+    /**
+     * @return zone used when publishing Azure execution timestamps
+     */
     public ZoneId zoneId() {
         return zoneId;
     }
 
+    /**
+     * Selects the Azure Test Configuration assigned to synchronized test points.
+     *
+     * @param configuration Azure test-configuration name selected for synchronization
+     * @return these settings
+     */
     public Settings configuration(
             String configuration
     ) {
@@ -36,10 +54,19 @@ public class Settings implements Serializable {
         return this;
     }
 
+    /**
+     * @return selected Azure test-configuration name
+     */
     public String configuration() {
         return configuration;
     }
 
+    /**
+     * Selects the Azure work-item type used when creating test cases.
+     *
+     * @param testCaseType Azure work-item type used for synchronized test cases
+     * @return these settings
+     */
     public Settings testCaseType(
             String testCaseType
     ) {
@@ -47,6 +74,9 @@ public class Settings implements Serializable {
         return this;
     }
 
+    /**
+     * @return configured Azure test-case work-item type
+     */
     public String testCaseType() {
         return testCaseType;
     }

@@ -12,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+/**
+ * Provides the Point Assignment functionality used by Wakamiti.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PointAssignment extends BaseModel {
 
@@ -22,9 +25,19 @@ public class PointAssignment extends BaseModel {
     @JsonProperty
     private String configurationName;
 
+    /**
+     * Creates an empty assignment for JSON deserialization or fluent population.
+     */
     public PointAssignment() {
     }
 
+    /**
+     * Creates a complete Azure test-point assignment.
+     *
+     * @param id test-point identifier used when creating a run
+     * @param configurationId assigned test-configuration identifier
+     * @param configurationName human-readable configuration name
+     */
     public PointAssignment(
             String id,
             String configurationId,
@@ -35,10 +48,19 @@ public class PointAssignment extends BaseModel {
         this.configurationName = configurationName;
     }
 
+    /**
+     * @return Azure test-point identifier
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Assigns the Azure test-point identifier used when scheduling a run.
+     *
+     * @param id Azure test-point identifier
+     * @return this assignment
+     */
     public PointAssignment id(
             String id
     ) {
@@ -46,10 +68,19 @@ public class PointAssignment extends BaseModel {
         return this;
     }
 
+    /**
+     * @return assigned Azure test-configuration identifier
+     */
     public String configurationId() {
         return configurationId;
     }
 
+    /**
+     * Assigns the identifier of the Test Configuration behind this point.
+     *
+     * @param configurationId Azure test-configuration identifier
+     * @return this assignment
+     */
     public PointAssignment configurationId(
             String configurationId
     ) {
@@ -57,10 +88,19 @@ public class PointAssignment extends BaseModel {
         return this;
     }
 
+    /**
+     * @return human-readable assigned configuration name
+     */
     public String configurationName() {
         return configurationName;
     }
 
+    /**
+     * Sets the display name of the Test Configuration behind this point.
+     *
+     * @param configurationName displayed configuration name
+     * @return this assignment
+     */
     public PointAssignment configurationName(
             String configurationName
     ) {

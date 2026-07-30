@@ -15,6 +15,14 @@ import org.eclipse.lsp4j.services.WorkspaceService;
 import es.iti.wakamiti.lsp.internal.GherkinWorkspace;
 
 
+/**
+ * LSP workspace service for project-level notifications.
+ * <p>
+ * Current implementation logs workspace events and delegates no state changes
+ * to {@link GherkinWorkspace}. Diagnostics are recomputed by document-level
+ * events.
+ * </p>
+ */
 public class WakamitiWorkspaceService implements WorkspaceService {
 
     private final WakamitiLanguageServer server;
@@ -28,6 +36,13 @@ public class WakamitiWorkspaceService implements WorkspaceService {
         this.workspace = workspace;
     }
 
+    /**
+     * Receives client workspace-configuration changes.
+     * <p>
+     * This implementation currently logs the event and performs no additional
+     * action.
+     * </p>
+     */
     @Override
     public void didChangeConfiguration(
             DidChangeConfigurationParams params
@@ -35,6 +50,13 @@ public class WakamitiWorkspaceService implements WorkspaceService {
         LoggerUtil.logEntry("workspace.didChangeConfiguration", params);
     }
 
+    /**
+     * Receives file-watcher notifications from the client workspace.
+     * <p>
+     * This implementation currently logs the event and performs no additional
+     * action.
+     * </p>
+     */
     @Override
     public void didChangeWatchedFiles(
             DidChangeWatchedFilesParams params

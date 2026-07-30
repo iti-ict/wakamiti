@@ -19,6 +19,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+/**
+ * Provides the User DAO functionality used by Wakamiti.
+ */
 @Repository
 public class UserDAO {
 

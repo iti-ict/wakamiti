@@ -20,17 +20,41 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 
+/**
+ * {@link FTPTransmitter} implementation backed by an SFTP connection.
+ * <p>
+ * The transmitter keeps one SSH session and one SFTP channel open between
+ * {@link #connect(String, String, Integer, String, String)} and
+ * {@link #disconnect()}.
+ * </p>
+ */
 public class SFTPTransmitter implements FTPTransmitter {
 
     private ChannelSftp channel;
     private Session session;
     private String home;
 
+    /**
+     * Indicates whether the underlying SSH session is currently connected.
+     *
+     * @return {@code true} when the session exists and is connected
+     */
     @Override
     public boolean isConnected() {
         return session != null && session.isConnected();
     }
 
+    /**
+     * Opens an SSH session and SFTP channel using either password or identity
+     * authentication.
+     *
+     * @param username login user
+     * @param host     remote host
+     * @param port     remote port, or {@code null} to use the SSH default
+     * @param password password credential, or {@code null}
+     * @param identity local private-key path, or {@code null}
+     * @throws IOException when the session or channel cannot be opened
+     */
     @Override
     public void connect(
             String username,
@@ -62,6 +86,11 @@ public class SFTPTransmitter implements FTPTransmitter {
         }
     }
 
+    /**
+     * Closes the SFTP channel and SSH session if they were opened.
+     *
+     * @throws IOException kept for interface compatibility
+     */
     @Override
     public void disconnect() throws IOException {
         if (channel != null) {
@@ -72,6 +101,17 @@ public class SFTPTransmitter implements FTPTransmitter {
         }
     }
 
+    /**
+     * Uploads one local file to the destination folder.
+     * <p>
+     * Missing destination directories are created recursively before the file
+     * transfer starts.
+     * </p>
+     *
+     * @param localFile         local file to upload
+     * @param destinationFolder remote folder where the file will be stored
+     * @throws IOException when directory creation or upload fails
+     */
     @Override
     public void transferFile(
             Path localFile,

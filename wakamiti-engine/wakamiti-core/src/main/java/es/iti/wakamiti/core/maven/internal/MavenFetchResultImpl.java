@@ -25,6 +25,9 @@ import es.iti.wakamiti.core.maven.FetchedArtifact;
 import es.iti.wakamiti.core.maven.MavenFetchResult;
 
 
+/**
+ * Provides the Maven Fetch Result Impl functionality used by Wakamiti.
+ */
 public class MavenFetchResultImpl implements MavenFetchResult {
 
     private final List<CollectResult> results;

@@ -23,8 +23,12 @@ import es.iti.wakamiti.api.extensions.EventObserver;
 )
 public class ReportOutputFilesUploader extends AbstractFilesUploader implements EventObserver {
 
+    /** Configuration category for files emitted by report plugins. */
     public static final String CATEGORY = "reportOutputs";
 
+    /**
+     * Creates an uploader subscribed to report-output-file events.
+     */
     public ReportOutputFilesUploader() {
         super(Event.REPORT_OUTPUT_FILE_WRITTEN, CATEGORY);
     }

@@ -11,19 +11,34 @@ package es.iti.wakamiti.xray.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
+/**
+ * Provides the Test Status functionality used by Wakamiti.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestStatus {
 
     String name;
 
+    /**
+     * Creates an empty status for GraphQL deserialization.
+     */
     public TestStatus() {
         // Empty constructor
     }
 
+    /**
+     * @return Xray status name, for example {@code PASSED}
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the status name used when comparing or updating Xray Test Runs.
+     *
+     * @param name Xray execution status name
+     * @return this status
+     */
     public TestStatus setName(
             String name
     ) {

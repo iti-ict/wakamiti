@@ -110,6 +110,7 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param locale          The locale for parsing.
      * @param includeDecimals Indicates whether the data type should include decimal values.
      * @param converter       Converter function for converting from Number to the specified type.
+     * @param <T>             The parsed number type.
      * @return TypeParser instance for parsing numeric values.
      */
     public static <T> TypeParser<T> parser(

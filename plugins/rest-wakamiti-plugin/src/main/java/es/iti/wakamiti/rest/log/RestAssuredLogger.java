@@ -27,12 +27,24 @@ import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
 
 
+/**
+ * Rest-Assured filter that logs HTTP responses in a readable format.
+ */
 public class RestAssuredLogger implements Filter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.rest");
     private static final String HEADER_NAME_AND_VALUE_SEPARATOR = ": ";
     private static PrintStream printStream;
 
+    /**
+     * Returns the shared stream that forwards each printed line to the REST
+     * plugin logger.
+     * <p>
+     * The stream is initialized lazily and has automatic flushing enabled so
+     * REST Assured logging is emitted promptly.
+     *
+     * @return reusable logger-backed print stream
+     */
     public static PrintStream getPrintStream() {
         if (printStream == null) {
             printStream = new PrintStream(new ByteArrayOutputStream(), true) { // true: auto flush must be set!

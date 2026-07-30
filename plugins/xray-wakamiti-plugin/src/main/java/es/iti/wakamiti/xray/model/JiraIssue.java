@@ -27,6 +27,16 @@ public class JiraIssue {
     private String type;
     private List<String> labels = new ArrayList<>();
 
+    /**
+     * Creates a complete Jira issue projection.
+     *
+     * @param key human-readable issue key
+     * @param self Jira REST resource URL
+     * @param summary issue summary
+     * @param description issue description
+     * @param type Jira issue-type name
+     * @param labels Jira labels
+     */
     public JiraIssue(
             String key,
             String self,
@@ -43,9 +53,18 @@ public class JiraIssue {
         this.labels = labels;
     }
 
+    /**
+     * Creates an empty issue for JSON deserialization or fluent population.
+     */
     public JiraIssue() {
     }
 
+    /**
+     * Sets the human-readable key assigned to the backing Jira issue.
+     *
+     * @param key Jira issue key
+     * @return this issue
+     */
     public JiraIssue key(
             String key
     ) {
@@ -53,6 +72,12 @@ public class JiraIssue {
         return this;
     }
 
+    /**
+     * Sets the REST resource URL identifying the backing Jira issue.
+     *
+     * @param self Jira REST resource URL
+     * @return this issue
+     */
     public JiraIssue self(
             String self
     ) {
@@ -60,6 +85,12 @@ public class JiraIssue {
         return this;
     }
 
+    /**
+     * Sets the Jira summary displayed as the Xray entity's title.
+     *
+     * @param summary Jira issue summary
+     * @return this issue
+     */
     public JiraIssue summary(
             String summary
     ) {
@@ -67,6 +98,12 @@ public class JiraIssue {
         return this;
     }
 
+    /**
+     * Sets the Jira description synchronized from the Wakamiti plan.
+     *
+     * @param description Jira issue description
+     * @return this issue
+     */
     public JiraIssue description(
             String description
     ) {
@@ -74,6 +111,12 @@ public class JiraIssue {
         return this;
     }
 
+    /**
+     * Sets the Jira issue-type name represented by this projection.
+     *
+     * @param type Jira issue-type name
+     * @return this issue
+     */
     public JiraIssue type(
             String type
     ) {
@@ -81,6 +124,12 @@ public class JiraIssue {
         return this;
     }
 
+    /**
+     * Replaces the labels used to correlate and filter synchronized tests.
+     *
+     * @param labels labels used for filtering and synchronization
+     * @return this issue
+     */
     public JiraIssue labels(
             List<String> labels
     ) {
@@ -88,26 +137,44 @@ public class JiraIssue {
         return this;
     }
 
+    /**
+     * @return human-readable Jira issue key
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * @return Jira REST resource URL
+     */
     public String getSelf() {
         return self;
     }
 
+    /**
+     * @return issue summary
+     */
     public String getSummary() {
         return summary;
     }
 
+    /**
+     * @return issue description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return Jira issue-type name
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * @return labels attached to the issue
+     */
     public List<String> getLabels() {
         return labels;
     }

@@ -111,6 +111,12 @@ public class SQLParser {
     private final DatabaseType type;
     private final boolean autoTrim;
 
+    /**
+     * Creates a parser configured for one SQL dialect and comparison policy.
+     *
+     * @param type database dialect used for identifiers and date literals
+     * @param autoTrim whether generated comparisons trim character values
+     */
     public SQLParser(
             DatabaseType type,
             boolean autoTrim

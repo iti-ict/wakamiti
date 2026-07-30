@@ -28,8 +28,22 @@ import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.database.jdbc.WakamitiTimestamp;
 
 
+/**
+ * Provides the Default Sql Format functionality used by Wakamiti.
+ */
 public class DefaultSqlFormat implements SqlFormat {
 
+    /**
+     * Converts textual test data to a value appropriate for a JDBC type.
+     * <p>
+     * Boolean, numeric and temporal types receive semantic conversion; unknown
+     * or character types retain the original string. A {@code null} input is
+     * preserved.
+     *
+     * @param value textual value to convert
+     * @param type target JDBC type
+     * @return converted JDBC value, the original text or {@code null}
+     */
     @Override
     public Object formatValue(
             String value,

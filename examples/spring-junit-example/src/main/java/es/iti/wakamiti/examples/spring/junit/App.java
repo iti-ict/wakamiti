@@ -12,6 +12,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
+/**
+ * Provides the App functionality used by Wakamiti.
+ */
 @SpringBootApplication
 public class App {
 

@@ -17,9 +17,11 @@ import es.iti.wakamiti.api.plan.PlanNodeBuilder;
 
 
 /**
- * This interface defines the methods required to instantiate a
- * Wakamiti model {@link es.iti.wakamiti.api.plan} from a set of
- * Gherkin resources.
+ * Builds a plan model from input resources.
+ * <p>
+ * Builders are discovered as extensions and instantiated with
+ * {@link LoadStrategy#FRESH}, so each use receives a new instance.
+ * </p>
  */
 @ExtensionPoint(loadStrategy = LoadStrategy.FRESH)
 public interface PlanBuilder extends Contributor {
@@ -36,10 +38,11 @@ public interface PlanBuilder extends Contributor {
     );
 
     /**
-     * Creates a plan using the provided list of resources.
+     * Parses resources and creates a plan tree.
      *
-     * @param resources The list of resources for the plan.
-     * @return A {@link PlanNodeBuilder} representing the created plan.
+     * @param resources ordered resources to parse
+     * @return mutable plan builder root
+     * @throws RuntimeException when resources are malformed or cannot be parsed
      */
     PlanNodeBuilder createPlan(
             List<Resource<?>> resources

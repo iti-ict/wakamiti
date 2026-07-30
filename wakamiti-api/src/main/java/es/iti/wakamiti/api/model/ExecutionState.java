@@ -14,9 +14,14 @@ import java.util.Optional;
 
 
 /**
- * A test {@code PlanNode} object is any of the parts that form a test plan.
+ * Mutable execution lifecycle state for one plan node.
+ * <p>
+ * The state transitions from "not started" to "started" to "finished". A node
+ * can be marked as started and finished only once. This class is not
+ * thread-safe.
+ * </p>
  *
- * @param <R> The type of the result of the execution
+ * @param <R> result type used by the owning execution model
  */
 public class ExecutionState<R> {
 
@@ -109,11 +114,10 @@ public class ExecutionState<R> {
     }
 
     /**
-     * Mark the current execution as started at the given instant.
+     * Marks execution as started.
      *
-     * @param instant The start instant
-     * @throws IllegalStateException If the execution was already
-     *                               marked as started
+     * @param instant start timestamp
+     * @throws IllegalStateException when start has already been recorded
      */
     public void markStarted(
             Instant instant
@@ -125,12 +129,11 @@ public class ExecutionState<R> {
     }
 
     /**
-     * Mark the current execution as finished with the given result.
+     * Marks execution as finished with a result and no error details.
      *
-     * @param instant The finish instant
-     * @param result  The finish result
-     * @throws IllegalStateException If the execution was already
-     *                               marked as finished
+     * @param instant finish timestamp
+     * @param result  final execution result
+     * @throws IllegalStateException when finish has already been recorded
      */
     public void markFinished(
             Instant instant,
@@ -140,17 +143,13 @@ public class ExecutionState<R> {
     }
 
     /**
-     * Mark the current execution as finished with the given result
-     * and error.
+     * Marks execution as finished with optional error metadata.
      *
-     * @param instant         The finish instant
-     * @param result          The finish result
-     * @param error           The exception that caused the failure.
-     *                        Can be null.
-     * @param errorClassifier The error classifier associated with the
-     *                        error
-     * @throws IllegalStateException If the execution was already marked
-     *                               as finished
+     * @param instant         finish timestamp
+     * @param result          final execution result
+     * @param error           error that caused the outcome, or {@code null}
+     * @param errorClassifier optional error category, or {@code null}
+     * @throws IllegalStateException when finish has already been recorded
      */
     public void markFinished(
             Instant instant,
@@ -162,19 +161,18 @@ public class ExecutionState<R> {
     }
 
     /**
-     * Mark the current execution as finished with the given result,
-     * error and returned value.
+     * Marks execution as finished with full optional diagnostics.
+     * <p>
+     * This method sets finish instant, result and optional error/classifier/
+     * response atomically from the caller perspective.
+     * </p>
      *
-     * @param instant         The finish instant
-     * @param result          The finish result
-     * @param error           The exception that caused the failure.
-     *                        Can be null.
-     * @param errorClassifier The error classifier associated with the
-     *                        error
-     * @param response        The returned value associated with the
-     *                        execution. Can be null.
-     * @throws IllegalStateException If the execution was already marked
-     *                               as finished
+     * @param instant         finish timestamp
+     * @param result          final execution result
+     * @param error           error that caused the outcome, or {@code null}
+     * @param errorClassifier optional error category, or {@code null}
+     * @param response        optional response payload, or {@code null}
+     * @throws IllegalStateException when finish has already been recorded
      */
     public void markFinished(
             Instant instant,

@@ -15,16 +15,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 
+/**
+ * Provides the User functionality used by Wakamiti.
+ */
 @Entity
 @Table(name = "APP_USER")
 public class User {
 
+    /** Primary key persisted in the {@code APP_USER} table. */
     @Id
     public int id;
 
+    /** User's given name persisted by the verification example. */
     @Column
     public String firstName;
 
+    /** User's family name persisted by the verification example. */
     @Column
     public String lastName;
 

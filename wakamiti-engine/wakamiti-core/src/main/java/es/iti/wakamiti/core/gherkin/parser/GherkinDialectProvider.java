@@ -18,6 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import es.iti.wakamiti.core.gherkin.parser.internal.ResourceLoader;
 
 
+/**
+ * Provides Gherkin Dialect services to the surrounding component.
+ */
 @SuppressWarnings("unchecked")
 public class GherkinDialectProvider {
 
@@ -37,14 +40,34 @@ public class GherkinDialectProvider {
         this.defaultDialect = defaultDialect;
     }
 
+    /**
+     * Creates a provider whose default dialect is English.
+     */
     public GherkinDialectProvider() {
         this("en");
     }
 
+    /**
+     * Loads the configured fallback dialect.
+     *
+     * @return a dialect built from its bundled JSON definition
+     * @throws ParserException.NoSuchLanguageException if no bundled definition
+     *                                                exists
+     */
     public es.iti.wakamiti.core.gherkin.parser.GherkinDialect getDefaultDialect() {
         return getDialect(defaultDialect, null);
     }
 
+    /**
+     * Loads a dialect by language code, caching its raw keyword definition.
+     *
+     * @param language Gherkin language code
+     * @param location source coordinate used when reporting an unsupported
+     *                 language; may be {@code null}
+     * @return a new dialect view over the cached definition
+     * @throws ParserException.NoSuchLanguageException if the dialect resource
+     *                                                cannot be loaded
+     */
     public es.iti.wakamiti.core.gherkin.parser.GherkinDialect getDialect(
             String language,
             Location location
@@ -57,6 +80,13 @@ public class GherkinDialectProvider {
         return new es.iti.wakamiti.core.gherkin.parser.GherkinDialect(language, map);
     }
 
+    /**
+     * Loads a dialect from a locale's BCP 47 language tag.
+     *
+     * @param locale locale identifying the requested language
+     * @return the corresponding Gherkin dialect
+     * @throws ParserException.NoSuchLanguageException if no definition exists
+     */
     public GherkinDialect getDialect(
             Locale locale
     ) {

@@ -127,6 +127,20 @@ public final class JsonUtils {
         return read(obj, expression, String.class);
     }
 
+    /**
+     * Reads and converts a value selected from JSON.
+     * <p>
+     * Expressions beginning with {@code $} use JSONPath; other expressions
+     * use Groovy property/index navigation.
+     * </p>
+     *
+     * @param obj        source JSON tree
+     * @param expression JSONPath or Groovy-style navigation expression
+     * @param type       target Java class
+     * @param <T>        target value type
+     * @return the selected and converted value, or {@code null} when the
+     * configured JSONPath suppresses a missing result
+     */
     public static <T> T read(
             JsonNode obj,
             String expression,
@@ -139,6 +153,14 @@ public final class JsonUtils {
         }
     }
 
+    /**
+     * Reads a selected JSON value while preserving its inferred generic type.
+     *
+     * @param obj        source JSON tree
+     * @param expression JSONPath or Groovy-style navigation expression
+     * @param <T>        inferred target value type
+     * @return the selected value converted through Jackson
+     */
     public static <T> T read(
             JsonNode obj,
             String expression
@@ -147,6 +169,15 @@ public final class JsonUtils {
         });
     }
 
+    /**
+     * Reads and converts a selected JSON value using a generic type token.
+     *
+     * @param obj        source JSON tree
+     * @param expression JSONPath or Groovy-style navigation expression
+     * @param type       token retaining the complete generic target type
+     * @param <T>        target value type
+     * @return the selected and converted value
+     */
     public static <T> T read(
             JsonNode obj,
             String expression,
@@ -159,6 +190,14 @@ public final class JsonUtils {
         }
     }
 
+    /**
+     * Converts an entire JSON tree to a Java value.
+     *
+     * @param obj  source JSON tree
+     * @param type target Java class
+     * @param <T>  target value type
+     * @return the converted value
+     */
     public static <T> T read(
             JsonNode obj,
             Class<T> type
@@ -166,6 +205,14 @@ public final class JsonUtils {
         return MAPPER.convertValue(obj, type);
     }
 
+    /**
+     * Converts an entire JSON tree using a generic type token.
+     *
+     * @param obj  source JSON tree
+     * @param type token retaining the complete generic target type
+     * @param <T>  target value type
+     * @return the converted value
+     */
     public static <T> T read(
             JsonNode obj,
             TypeRef<T> type

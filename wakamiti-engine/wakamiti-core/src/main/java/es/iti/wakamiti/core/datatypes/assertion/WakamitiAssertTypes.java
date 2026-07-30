@@ -122,6 +122,15 @@ public class WakamitiAssertTypes implements DataTypeContributor {
         );
     }
 
+    /**
+     * Creates a localized binary assertion data type for temporal values.
+     *
+     * @param name     expression type name registered in Wakamiti
+     * @param dateType target temporal class, which controls accepted date/time
+     *                 components
+     * @param <T>      comparable temporal value type
+     * @return the configured assertion data type
+     */
     @SuppressWarnings("rawtypes")
     public static <T extends Comparable<T> & TemporalAccessor> WakamitiDataTypeBase<Assertion> binaryDateAssert(
             String name,

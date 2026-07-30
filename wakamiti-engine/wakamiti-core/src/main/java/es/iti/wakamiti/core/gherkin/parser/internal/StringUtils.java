@@ -11,8 +11,18 @@ package es.iti.wakamiti.core.gherkin.parser.internal;
 import java.util.List;
 
 
+/**
+ * Internal string helper methods used by the generated parser runtime.
+ */
 public class StringUtils {
 
+    /**
+     * Joins string items using a separator.
+     *
+     * @param separator separator inserted between consecutive items
+     * @param items     ordered items to concatenate
+     * @return joined text
+     */
     public static String join(
             String separator,
             List<String> items
@@ -20,6 +30,15 @@ public class StringUtils {
         return join(ToString.DEFAULT, separator, items);
     }
 
+    /**
+     * Joins arbitrary items using a custom string converter.
+     *
+     * @param toString converter applied to each item
+     * @param separator separator inserted between consecutive items
+     * @param items ordered items to concatenate
+     * @param <T> item type
+     * @return joined text
+     */
     public static <T> String join(
             ToString<T> toString,
             String separator,
@@ -35,6 +54,12 @@ public class StringUtils {
         return sb.toString();
     }
 
+    /**
+     * Removes leading Unicode whitespace characters from a string.
+     *
+     * @param s source text
+     * @return string without leading whitespace
+     */
     public static String ltrim(
             String s
     ) {
@@ -45,8 +70,14 @@ public class StringUtils {
         return s.substring(i);
     }
 
+    /**
+     * Functional converter used by {@link #join(ToString, String, Iterable)}.
+     *
+     * @param <T> item type
+     */
     public interface ToString<T> {
 
+        /** Identity converter for string items. */
         ToString<String> DEFAULT = o -> o;
 
         String toString(

@@ -14,6 +14,9 @@ import java.util.Locale;
 import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
 
 
+/**
+ * Provides the Wakamiti Duration Data Type functionality used by Wakamiti.
+ */
 public class WakamitiDurationDataType extends WakamitiDataTypeBase<Duration> {
 
     private static final DurationProvider PROVIDER = new DurationProvider();
@@ -29,13 +32,25 @@ public class WakamitiDurationDataType extends WakamitiDataTypeBase<Duration> {
                 WakamitiDurationDataType::parser);
     }
 
-
+    /**
+     * Creates a parser for localized, human-readable duration expressions.
+     *
+     * @param locale locale controlling recognized units and number formatting
+     * @return a parser that yields {@code null} for unsupported expressions
+     */
     public static TypeParser<Duration> parser(
             Locale locale
     ) {
         return expression -> PROVIDER.durationFromExpression(locale, expression).orElse(null);
     }
 
+    /**
+     * Builds the complete regular expression accepted by the duration parser
+     * for a locale.
+     *
+     * @param locale locale controlling translated duration expressions
+     * @return a grouped alternation of every supported expression
+     */
     public static String regexPattern(
             Locale locale
     ) {

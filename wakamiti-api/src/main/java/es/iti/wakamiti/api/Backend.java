@@ -29,14 +29,18 @@ import es.iti.wakamiti.api.plan.PlanNode;
  */
 public interface Backend {
 
+    /** Placeholder name used for positional step arguments without an explicit parameter name. */
     String UNNAMED_ARG = "unnamed";
+    /** Parameter name used to bind DocString arguments to step methods. */
     String DOCUMENT_ARG = "document";
+    /** Parameter name used to bind DataTable arguments to step methods. */
     String DATATABLE_ARG = "datatable";
 
     /**
      * Performs set-up operations prior to running any step.
      * Typically, these operations correspond to methods
      * annotated with {@link SetUp} in {@link StepContributor}.
+     * Setup is expected to run once per test-case execution.
      */
     void setUp();
 
@@ -44,6 +48,8 @@ public interface Backend {
      * Performs tear-down operations after running all steps.
      * Typically, these operations correspond to methods
      * annotated with {@link TearDown} in {@link StepContributor}.
+     * Tear-down is expected to run once per test-case execution, even when one
+     * or more steps failed.
      */
     void tearDown();
 
@@ -53,7 +59,7 @@ public interface Backend {
      *
      * @param modelStep The step to be executed.
      * @throws WakamitiException when the given node is not
-     *                           suitable for being executed.
+     *                           suitable for being executed
      */
     void runStep(
             PlanNode modelStep
@@ -65,6 +71,10 @@ public interface Backend {
      * <p>
      * Implementations that do not provide a specific dry-run behavior will
      * fallback to {@link #runStep(PlanNode)}.
+     * </p>
+     * <p>
+     * Dry-run implementations should still resolve arguments and validate step
+     * bindings so undefined or incompatible steps are reported consistently.
      *
      * @param modelStep The step to be validated.
      */
@@ -84,7 +94,7 @@ public interface Backend {
     /**
      * Gets extra properties to use in the scenario context.
      *
-     * @return The extra properties map.
+     * @return mutable property map scoped to the backend execution
      */
     default Map<String, Object> getExtraProperties() {
         return new LinkedHashMap<>();

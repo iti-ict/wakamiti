@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 
+/**
+ * Stores the configuration used by the Defined Configuration component.
+ */
 public interface DefinedConfiguration extends Configuration {
 
     /**
@@ -27,6 +30,9 @@ public interface DefinedConfiguration extends Configuration {
 
     /**
      * Retrieve the property definition for a given property
+      *
+      * @param key the key value
+      * @return the resulting value
      */
     Optional<PropertyDefinition> getDefinition(
             String key

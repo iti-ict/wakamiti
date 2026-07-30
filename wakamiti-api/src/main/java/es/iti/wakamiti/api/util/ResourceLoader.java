@@ -69,6 +69,13 @@ public class ResourceLoader {
     private final Charset charset;
     private File workingDir = new File(".");
 
+    /**
+     * Creates a loader that decodes textual resources with a specific charset.
+     * The default locale is normalized to English to keep content-type and path
+     * processing independent of the host operating system.
+     *
+     * @param charset charset used when no resource-specific encoding is given
+     */
     public ResourceLoader(
             Charset charset
     ) {
@@ -76,10 +83,20 @@ public class ResourceLoader {
         Locale.setDefault(Locale.ENGLISH); // avoid different behaviors regarding the OS language
     }
 
+    /**
+     * Creates a UTF-8 resource loader.
+     */
     public ResourceLoader() {
         this(StandardCharsets.UTF_8);
     }
 
+    /**
+     * Infers a content type from a file's extension.
+     *
+     * @param file file whose name will be inspected
+     * @return the configured content type, or the default binary type when the
+     * extension is unknown
+     */
     public static ContentType getContentType(
             File file
     ) {
@@ -89,6 +106,11 @@ public class ResourceLoader {
                 .orElse(ContentType.DEFAULT_BINARY);
     }
 
+    /**
+     * Returns the configured content types indexed by file extension.
+     *
+     * @return the content types indexed by extension
+     */
     public static Map<String, ContentType> contentTypes() {
         return CONTENT_TYPE_FROM_EXTENSION;
     }
@@ -703,6 +725,15 @@ public class ResourceLoader {
      */
     public interface Parser<T> {
 
+        /**
+         * Converts a resource stream into an application value.
+         * Implementations do not own the stream and should not close it.
+         *
+         * @param stream  resource bytes positioned at the beginning
+         * @param charset charset selected for textual decoding
+         * @return the parsed value
+         * @throws IOException if the stream cannot be read or parsed
+         */
         T parse(
                 InputStream stream,
                 Charset charset

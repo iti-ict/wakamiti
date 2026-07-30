@@ -20,6 +20,10 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.xray.model.TestPlan;
 
 
+/**
+ * Applies Xray/Jira synchronization configuration to
+ * {@link XRaySynchronizer}.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "xray-config",
@@ -28,20 +32,35 @@ import es.iti.wakamiti.xray.model.TestPlan;
 )
 public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer> {
 
+    /** Configuration key that enables the Xray synchronization observer. */
     public static final String XRAY_ENABLED = "xray.enabled";
+    /** Configuration key for the Xray Cloud API base URL. */
     public static final String XRAY_BASE_URL = "xray.baseURL";
+    /** Configuration key for the Jira project that owns synchronized Xray issues. */
     public static final String XRAY_PROJECT = "xray.project";
+    /** Configuration key for the Xray Cloud API client identifier. */
     public static final String XRAY_CREDENTIALS_CLIENT_ID = "xray.auth.credentials.client-id";
+    /** Configuration key for the Xray Cloud API client secret. */
     public static final String XRAY_CREDENTIALS_CLIENT_SECRET = "xray.auth.credentials.client-secret";
+    /** Configuration key for Base64-encoded Jira Basic credentials. */
     public static final String JIRA_CREDENTIALS = "jira.auth.credentials";
+    /** Configuration key for the Jira instance base URL. */
     public static final String JIRA_BASE_URL = "jira.baseURL";
+    /** Parent configuration key containing the target Xray test-plan definition. */
     public static final String XRAY_PLAN = "xray.plan";
+    /** Reserved configuration key for an Xray test-plan identifier. */
     public static final String XRAY_PLAN_ID = "xray.plan.id";
+    /** Configuration key for the Jira summary used to locate the target test plan. */
     public static final String XRAY_PLAN_SUMMARY = "xray.plan.summary";
+    /** Configuration key for the optional label used to filter synchronized tests. */
     public static final String XRAY_TAG = "xray.tag";
+    /** Configuration key controlling automatic creation of a missing test plan. */
     public static final String XRAY_CREATE_ITEMS_IF_ABSENT = "xray.createItemsIfAbsent";
+    /** Configuration key selecting feature-level instead of scenario-level tests. */
     public static final String XRAY_TEST_CASE_PER_FEATURE = "xray.testCasePerFeature";
+    /** Configuration key for the source base removed from generated test-set paths. */
     public static final String XRAY_SUITE_BASE = "xray.suiteBase";
+    /** Configuration key containing report-path globs to upload as attachments. */
     public static final String XRAY_ATTACHMENTS = "xray.attachments";
 
     @Override
@@ -68,6 +87,13 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         return this::configure;
     }
 
+    /**
+     * Binds required and optional configuration properties to the synchronizer.
+     *
+     * @param synchronizer synchronizer instance to configure
+     * @param configuration effective runtime configuration
+     * @throws WakamitiException when required properties are missing
+     */
     private void configure(
             XRaySynchronizer synchronizer,
             Configuration configuration
@@ -90,6 +116,13 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         configuration.get(XRAY_CREATE_ITEMS_IF_ABSENT, Boolean.class).ifPresent(synchronizer::createItemsIfAbsent);
     }
 
+    /**
+     * Builds the target Xray test-plan descriptor from configuration.
+     *
+     * @param configuration effective runtime configuration
+     * @return resolved test plan descriptor
+     * @throws WakamitiException when the test plan section is missing
+     */
     private TestPlan plan(
             Configuration configuration
     ) {
@@ -101,6 +134,16 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
         return plan;
     }
 
+    /**
+     * Resolves a required property and forwards its value to a setter.
+     *
+     * @param config configuration source
+     * @param property required property key
+     * @param type expected property type
+     * @param setter consumer invoked with the resolved value
+     * @param <T> property type
+     * @throws WakamitiException when the property is absent
+     */
     private <T> void requiredProperty(
             Configuration config,
             String property,

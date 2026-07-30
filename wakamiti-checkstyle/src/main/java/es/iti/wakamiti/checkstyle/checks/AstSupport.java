@@ -13,11 +13,24 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 
+/**
+ * Utility helpers for Checkstyle {@link DetailAST} traversal.
+ * <p>
+ * Methods are null-safe only when explicitly stated by their contract.
+ * </p>
+ */
 final class AstSupport {
 
     private AstSupport() {
     }
 
+    /**
+     * Determines whether a node represents an invokable member declaration.
+     *
+     * @param ast AST node to inspect, or {@code null}
+     * @return {@code true} for method, constructor, or compact constructor
+     *         declarations
+     */
     static boolean isCallableMember(
             DetailAST ast
     ) {
@@ -30,6 +43,12 @@ final class AstSupport {
         );
     }
 
+    /**
+     * Computes the greatest source line reached by a node subtree.
+     *
+     * @param ast non-null AST root
+     * @return maximum line number among the node and descendants
+     */
     static int maximumLine(
             DetailAST ast
     ) {
@@ -44,6 +63,13 @@ final class AstSupport {
         return result;
     }
 
+    /**
+     * Computes the earliest non-comment source line in a subtree.
+     *
+     * @param ast non-null AST root
+     * @return first line number containing code, or {@code 0} when the subtree
+     *         contains only comments
+     */
     static int minimumCodeLine(
             DetailAST ast
     ) {
@@ -61,6 +87,13 @@ final class AstSupport {
         return result;
     }
 
+    /**
+     * Determines whether a node declares a Java type.
+     *
+     * @param ast AST node to inspect
+     * @return {@code true} when the node is class, interface, enum, annotation
+     *         or record definition
+     */
     static boolean isTypeDefinition(
             DetailAST ast
     ) {

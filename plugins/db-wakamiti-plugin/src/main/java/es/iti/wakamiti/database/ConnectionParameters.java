@@ -167,6 +167,7 @@ public class ConnectionParameters {
      * Sets whether to include spaces in comparisons.
      *
      * @param autoTrim {@code true} to enable auto trim, {@code false} otherwise.
+     * @return this connection parameters instance
      */
     public ConnectionParameters autoTrim(
             boolean autoTrim
@@ -175,10 +176,23 @@ public class ConnectionParameters {
         return this;
     }
 
+    /**
+     * Returns the requested JDBC auto-commit mode.
+     *
+     * @return configured value, or {@code null} when the driver default should
+     *         be preserved
+     */
     public Boolean autoCommit() {
         return autoCommit;
     }
 
+    /**
+     * Sets whether each SQL statement is committed automatically.
+     *
+     * @param autoCommit {@code true} to commit after every statement;
+     *                   {@code false} to require explicit transaction commits
+     * @return this connection-parameter instance
+     */
     public ConnectionParameters autoCommit(
             boolean autoCommit
     ) {
@@ -187,9 +201,13 @@ public class ConnectionParameters {
     }
 
     /**
-     * Returns a string representation of the ConnectionParameters.
+     * Returns a string representation of these connection parameters.
+     * <p>
+     * This output includes the raw password value and should therefore not be
+     * logged in untrusted or production environments.
+     * </p>
      *
-     * @return The string representation
+     * @return string representation including configured fields
      */
     @Override
     public String toString() {

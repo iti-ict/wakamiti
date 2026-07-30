@@ -30,6 +30,9 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.PropertyDefinition;
 
 
+/**
+ * Provides the Apache Configuration2 functionality used by Wakamiti.
+ */
 public class ApacheConfiguration2 extends AbstractConfiguration {
 
     protected final org.apache.commons.configuration2.Configuration conf;

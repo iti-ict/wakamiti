@@ -19,12 +19,23 @@ public class MavenFetchException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Wraps an underlying resolver or transport failure.
+     *
+     * @param e original failure
+     */
     public MavenFetchException(
             Throwable e
     ) {
         super(e);
     }
 
+    /**
+     * Adds fetch-operation context to an underlying failure.
+     *
+     * @param message diagnostic context
+     * @param e       original failure
+     */
     public MavenFetchException(
             String message,
             Throwable e
@@ -32,6 +43,11 @@ public class MavenFetchException extends RuntimeException {
         super(message, e);
     }
 
+    /**
+     * Creates a fetch failure without a lower-level cause.
+     *
+     * @param message diagnostic description
+     */
     public MavenFetchException(
             String message
     ) {

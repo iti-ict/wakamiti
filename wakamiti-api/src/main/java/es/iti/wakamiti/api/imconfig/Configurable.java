@@ -19,6 +19,8 @@ public interface Configurable {
 
     /**
      * Apply the given configuration
+      *
+      * @param configuration the configuration value
      */
     void configure(
             Configuration configuration

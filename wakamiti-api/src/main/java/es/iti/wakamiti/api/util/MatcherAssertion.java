@@ -26,6 +26,12 @@ public class MatcherAssertion<T> implements Assertion<T> {
 
     private final Matcher<T> matcher;
 
+    /**
+     * Creates an assertion backed by a Hamcrest matcher.
+     *
+     * @param matcher the matcher that evaluates values and describes
+     *                mismatches
+     */
     public MatcherAssertion(
             Matcher<T> matcher
     ) {

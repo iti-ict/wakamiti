@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * Utility methods for working with Logger Util.
+ */
 public final class LoggerUtil {
 
     private static final String DASHES = " --------------------------------------------------- ";
@@ -28,6 +31,17 @@ public final class LoggerUtil {
         return loggers.computeIfAbsent("es.iti.wakamiti.lsp." + logger, LoggerFactory::getLogger);
     }
 
+    /**
+     * Logs an incoming protocol value and returns that same value unchanged.
+     * <p>
+     * Returning the argument makes the method suitable for inline use in
+     * request-processing pipelines.
+     *
+     * @param logger logical protocol operation appended to the LSP logger name
+     * @param params request or event payload to log
+     * @param <T> payload type
+     * @return {@code params}
+     */
     public static <T> T logEntry(
             String logger,
             T params
@@ -36,6 +50,14 @@ public final class LoggerUtil {
         return params;
     }
 
+    /**
+     * Logs an outgoing protocol value and returns that same value unchanged.
+     *
+     * @param logger logical protocol operation appended to the LSP logger name
+     * @param response response payload to log
+     * @param <T> payload type
+     * @return {@code response}
+     */
     public static <T> T logExit(
             String logger,
             T response

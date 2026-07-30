@@ -19,9 +19,13 @@ import java.util.Map;
  */
 public class Schema {
 
+    /** JDBC type metadata indexed first by normalized table name and then column name. */
     public final Map<String, Map<String, JDBCType>> types = new HashMap<>();
+    /** Ordered primary-key column names indexed by normalized table name. */
     public final Map<String, List<String>> pk = new HashMap<>();
+    /** Physical table names indexed by the normalized names used during matching. */
     public final Map<String, String> tables = new HashMap<>();
+    /** Physical column names indexed by normalized table and column names. */
     public final Map<String, Map<String, String>> columns = new HashMap<>();
 
 }

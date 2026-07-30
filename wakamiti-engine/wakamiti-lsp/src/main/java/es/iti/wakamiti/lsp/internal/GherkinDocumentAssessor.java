@@ -39,6 +39,9 @@ import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
 import es.iti.wakamiti.core.gherkin.parser.Tag;
 
 
+/**
+ * Provides the Gherkin Document Assessor functionality used by Wakamiti.
+ */
 public class GherkinDocumentAssessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("document.synchronization");
@@ -64,12 +67,24 @@ public class GherkinDocumentAssessor {
     DocumentDiagnosticHelper diagnosticHelper;
     CompletionHelper completionHelper;
 
+    /**
+     * Creates an assessor for source without an associated URI, using the
+     * default parser, Wakamiti configuration and hinter factory.
+     *
+     * @param document complete Gherkin source
+     */
     public GherkinDocumentAssessor(
             String document
     ) {
         this("", document);
     }
 
+    /**
+     * Creates an assessor with an empty workspace configuration.
+     *
+     * @param uri document URI used in diagnostics and workspace edits
+     * @param document complete Gherkin source
+     */
     public GherkinDocumentAssessor(
             String uri,
             String document
@@ -77,6 +92,14 @@ public class GherkinDocumentAssessor {
         this(uri, document, Configuration.factory().empty());
     }
 
+    /**
+     * Creates an assessor with the supplied workspace configuration and the
+     * default parser, global configuration and hinter factory.
+     *
+     * @param uri document URI used in diagnostics and workspace edits
+     * @param document complete Gherkin source
+     * @param workspaceConfiguration configuration shared by workspace documents
+     */
     public GherkinDocumentAssessor(
             String uri,
             String document,
@@ -92,7 +115,21 @@ public class GherkinDocumentAssessor {
         );
     }
 
-
+    /**
+     * Creates a fully customized document assessor.
+     * <p>
+     * Configuration is resolved with document values taking precedence over
+     * workspace values, which in turn take precedence over global values. The
+     * source is parsed immediately so diagnostics, completions and symbols are
+     * available after construction.
+     *
+     * @param uri document URI used in diagnostics and workspace edits
+     * @param parser parser used to build the Gherkin syntax model
+     * @param hinterProvider factory for completion and validation hints
+     * @param globalConfiguration process-wide base configuration
+     * @param workspaceConfiguration workspace-level configuration overrides
+     * @param document complete Gherkin source
+     */
     public GherkinDocumentAssessor(
             String uri,
             GherkinParser parser,
@@ -111,16 +148,35 @@ public class GherkinDocumentAssessor {
         resetDocument(document);
     }
 
-
+    /**
+     * Returns the identifier associated with this document.
+     *
+     * @return document URI, possibly empty for standalone assessment
+     */
     public String uri() {
         return this.uri;
     }
 
-
+    /**
+     * Converts the document URI to a local path.
+     *
+     * @return path represented by {@link #uri()}
+     * @throws IllegalArgumentException if the URI cannot be converted to a path
+     */
     public Path path() {
         return Path.of(URI.create(uri));
     }
 
+    /**
+     * Replaces the global configuration used during the next document reset.
+     * <p>
+     * This setter does not reparse the current source; call
+     * {@link #resetDocument(String)} when the new configuration must take
+     * effect immediately.
+     *
+     * @param configuration new process-wide base configuration
+     * @return this assessor
+     */
     public GherkinDocumentAssessor updateGlobalConfiguration(
             Configuration configuration
     ) {
@@ -128,6 +184,13 @@ public class GherkinDocumentAssessor {
         return this;
     }
 
+    /**
+     * Sets the maximum expanded suggestions returned for steps and quick fixes.
+     *
+     * @param maxSuggestions maximum number of detailed candidates before a
+     *                       compact representation is preferred
+     * @return this assessor
+     */
     public GherkinDocumentAssessor setMaxSuggestions(
             int maxSuggestions
     ) {
@@ -135,6 +198,13 @@ public class GherkinDocumentAssessor {
         return this;
     }
 
+    /**
+     * Replaces the workspace configuration and immediately rebuilds the
+     * current document state.
+     *
+     * @param workspaceConfiguration new workspace-level overrides
+     * @return this assessor
+     */
     public GherkinDocumentAssessor setWorkspaceConfiguration(
             Configuration workspaceConfiguration
     ) {
@@ -143,6 +213,17 @@ public class GherkinDocumentAssessor {
         return this;
     }
 
+    /**
+     * Replaces and reparses the complete document.
+     * <p>
+     * The method extracts configuration comments, merges all configuration
+     * levels, creates a matching hinter and refreshes derived metadata. Parser
+     * failures are retained as diagnostic state rather than propagated, so a
+     * caller can still request diagnostics for invalid source.
+     *
+     * @param document complete replacement source
+     * @return this assessor
+     */
     public synchronized GherkinDocumentAssessor resetDocument(
             String document
     ) {
@@ -196,6 +277,13 @@ public class GherkinDocumentAssessor {
         }
     }
 
+    /**
+     * Applies an incremental source edit and refreshes all derived state.
+     *
+     * @param range half-open, zero-based range to replace
+     * @param delta replacement text
+     * @return this assessor
+     */
     public synchronized GherkinDocumentAssessor updateDocument(
             TextRange range,
             String delta
@@ -243,6 +331,13 @@ public class GherkinDocumentAssessor {
         );
     }
 
+    /**
+     * Collects configuration, keyword or step completions at a position.
+     *
+     * @param lineNumber zero-based cursor line
+     * @param rowPosition zero-based character offset in the line
+     * @return matching completion items
+     */
     public List<CompletionItem> collectCompletions(
             int lineNumber,
             int rowPosition
@@ -250,18 +345,32 @@ public class GherkinDocumentAssessor {
         return completionHelper.collectCompletions(lineNumber, rowPosition);
     }
 
-
+    /**
+     * Recomputes diagnostics for the current parsed and configured state.
+     *
+     * @return diagnostics grouped with this assessor's URI
+     */
     public DocumentDiagnostics collectDiagnostics() {
         return new DocumentDiagnostics(uri, diagnosticHelper.collectDiagnostics());
     }
 
+    /**
+     * Retrieves fixes calculated for a diagnostic during the latest assessment.
+     *
+     * @param errorDiagnostic diagnostic whose source range identifies the fixes
+     * @return applicable quick-fix actions, possibly empty
+     */
     public List<CodeAction> retrieveQuickFixes(
             Diagnostic errorDiagnostic
     ) {
         return diagnosticHelper.retrieveQuickFixes(errorDiagnostic);
     }
 
-
+    /**
+     * Returns the current complete document source.
+     *
+     * @return current Gherkin text
+     */
     public String content() {
         return documentMap.document().rawText();
     }
@@ -274,7 +383,11 @@ public class GherkinDocumentAssessor {
         return this.documentConfiguration;
     }
 
-
+    /**
+     * Returns the current raw source without triggering parsing or assessment.
+     *
+     * @return current Gherkin text
+     */
     public String peekContent() {
         return this.documentMap.rawContent();
     }
@@ -302,6 +415,15 @@ public class GherkinDocumentAssessor {
                 .map(segment -> new DocumentSegment(uri, segment.range().toLspRange(), segment.content()));
     }
 
+    /**
+     * Finds the nearest scenario ID tag at or before a position.
+     * <p>
+     * The search walks upward line by line and returns the first captured ID
+     * value; the leading {@code @} is not part of the segment.
+     *
+     * @param position position from which to search upward
+     * @return nearest ID segment, or an empty optional
+     */
     public Optional<TextSegment> obtainIdAt(
             Position position
     ) {
@@ -314,10 +436,21 @@ public class GherkinDocumentAssessor {
         return Optional.empty();
     }
 
+    /**
+     * Finds all scenario ID tags matching the configured pattern.
+     *
+     * @return captured ID segments without the leading {@code @}
+     */
     public List<TextSegment> obtainIdTags() {
         return documentMap.document().extractSegments(additionalInfo.idTagPattern, 1);
     }
 
+    /**
+     * Finds a scenario or scenario outline carrying a given ID tag.
+     *
+     * @param id identifier without the leading {@code @}
+     * @return matching scenario definition, or an empty optional
+     */
     public Optional<ScenarioDefinition> obtainScenarioById(
             String id
     ) {
@@ -337,6 +470,12 @@ public class GherkinDocumentAssessor {
         return Optional.empty();
     }
 
+    /**
+     * Builds the hierarchical symbols used by an editor document outline.
+     *
+     * @return a feature-rooted symbol tree, or an empty list when no feature
+     *         could be parsed
+     */
     public List<DocumentSymbol> collectSymbols() {
         if (parsedDocument == null || parsedDocument.getFeature() == null) {
             return List.of();
@@ -344,6 +483,11 @@ public class GherkinDocumentAssessor {
         return List.of(new SymbolCollector(this).collectSymbols(parsedDocument.getFeature()));
     }
 
+    /**
+     * Returns the number of logical lines in the current source.
+     *
+     * @return document line count
+     */
     public int numberOfLines() {
         return documentMap.document().numberOfLines();
     }

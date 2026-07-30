@@ -20,6 +20,9 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
 
 
+/**
+ * Provides the Sum All Method functionality used by Wakamiti.
+ */
 public class SumAllMethod implements TemplateMethodModelEx {
 
     @Override

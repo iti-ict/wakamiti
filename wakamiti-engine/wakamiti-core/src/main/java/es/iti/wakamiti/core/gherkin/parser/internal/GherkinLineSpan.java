@@ -8,6 +8,9 @@
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
 
+/**
+ * Provides the Gherkin Line Span functionality used by Wakamiti.
+ */
 public class GherkinLineSpan {
 
     /** One-based column at which this span starts in its source line. */

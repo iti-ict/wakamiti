@@ -38,6 +38,9 @@ import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Reports Allure execution information.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "allure-report",
@@ -52,6 +55,15 @@ public class AllureReporter implements Reporter {
 
     private Path outputDir = Path.of("allure-results");
 
+    /**
+     * Sets the directory in which Allure result JSON and attachments are
+     * written.
+     * <p>
+     * Relative paths are resolved by Wakamiti and the directory is created
+     * when reporting begins.
+     *
+     * @param outputDir result directory, defaulting to {@code allure-results}
+     */
     public void setOutputDir(
             Path outputDir
     ) {
@@ -382,9 +394,14 @@ public class AllureReporter implements Reporter {
         }
     }
 
+    /**
+     * Provides the Test Case Context functionality used by Wakamiti.
+     */
     private static final class TestCaseContext {
 
+        /** Feature ancestor used to populate Allure suite and feature labels. */
         private final PlanNodeSnapshot feature;
+        /** Scenario or example node converted into one Allure test-case result. */
         private final PlanNodeSnapshot testCase;
 
         private TestCaseContext(

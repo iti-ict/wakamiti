@@ -35,11 +35,15 @@ public @interface ExtensionPoint {
     /**
      * The version of the extension point in form of
      * {@code <majorVersion>.<minorVersion>}.
+     *
+     * @return the extension point version
      */
     String version() default "1.0";
 
     /**
      * The load strategy used when an extension is requested
+     *
+     * @return the extension load strategy
      */
     LoadStrategy loadStrategy() default LoadStrategy.UNDEFINED;
 

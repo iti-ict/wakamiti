@@ -13,8 +13,11 @@ package es.iti.wakamiti.amqp;
  */
 public enum MatchMode {
 
+    /** Requires the actual JSON structure and array order to match exactly. */
     STRICT,
+    /** Requires exact JSON content while allowing array elements in any order. */
     STRICT_ANY_ORDER,
+    /** Accepts additional fields in the actual JSON while checking expected content. */
     LOOSE
 
 }

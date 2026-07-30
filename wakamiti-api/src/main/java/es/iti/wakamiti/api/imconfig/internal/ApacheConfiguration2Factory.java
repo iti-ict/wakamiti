@@ -44,6 +44,9 @@ import es.iti.wakamiti.api.imconfig.Property;
 import es.iti.wakamiti.api.imconfig.PropertyDefinition;
 
 
+/**
+ * Creates and configures Apache Configuration2 instances.
+ */
 public class ApacheConfiguration2Factory implements ConfigurationFactory {
 
     private final PropertyDefinitionParser parser = new PropertyDefinitionParser();

@@ -18,6 +18,9 @@ import org.eclipse.aether.transfer.TransferListener;
 import org.slf4j.Logger;
 
 
+/**
+ * Provides the Maven Transfer Listener functionality used by Wakamiti.
+ */
 public class MavenTransferListener implements TransferListener {
 
     private static final long BYTES_PER_KILOBYTE = 1000L;
@@ -25,6 +28,13 @@ public class MavenTransferListener implements TransferListener {
     private final List<String> succededTransfers = new ArrayList<>();
     private final List<String> failedTransfers = new ArrayList<>();
 
+    /**
+     * Creates a listener that records JAR outcomes and reports transfer
+     * progress.
+     *
+     * @param logger non-null destination for transfer diagnostics
+     * @throws NullPointerException if {@code logger} is {@code null}
+     */
     public MavenTransferListener(
             Logger logger
     ) {
@@ -32,10 +42,21 @@ public class MavenTransferListener implements TransferListener {
         this.logger = logger;
     }
 
+    /**
+     * Returns JAR file names whose latest observed transfer succeeded.
+     *
+     * @return an immutable snapshot of successful transfers
+     */
     public List<String> succededTransfers() {
         return List.copyOf(succededTransfers);
     }
 
+    /**
+     * Returns JAR file names whose transfer failed and was not subsequently
+     * superseded by a success.
+     *
+     * @return an immutable snapshot of failed transfers
+     */
     public List<String> failedTransfers() {
         return List.copyOf(failedTransfers);
     }

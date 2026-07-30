@@ -20,6 +20,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 
+/**
+ * Parses CLI options for the Wakamiti LSP process.
+ */
 public class CliArguments {
 
     private static final String ARG_HELP = "h";
@@ -31,6 +34,9 @@ public class CliArguments {
     private final Options cliOptions;
     private CommandLine cliCommand;
 
+    /**
+     * Creates the supported command-line option model.
+     */
     public CliArguments() {
         this.cliOptions = new Options();
         cliOptions.addOption(ARG_HELP, "help", false, "Show this help screen");
@@ -46,6 +52,13 @@ public class CliArguments {
         cliOptions.addOption(ARG_DEBUG, "debug", false, "Enable debug logs");
     }
 
+    /**
+     * Parses command-line arguments and stores the resulting option state.
+     *
+     * @param args raw process arguments
+     * @return this parsed argument object
+     * @throws ParseException when an option or value is invalid
+     */
     public CliArguments parse(
             String[] args
     ) throws ParseException {
@@ -54,6 +67,9 @@ public class CliArguments {
         return this;
     }
 
+    /**
+     * Prints usage for both standard-input/output and TCP server modes.
+     */
     public void printUsage() {
         new HelpFormatter().printHelp(
                 "",
@@ -66,22 +82,50 @@ public class CliArguments {
         );
     }
 
+    /**
+     * Indicates whether help output was requested.
+     *
+     * @return {@code true} when {@code --help} or {@code -h} is present
+     */
     public boolean isHelpActive() {
         return cliCommand.hasOption(ARG_HELP);
     }
 
+    /**
+     * Returns the coordinate base used for text ranges.
+     *
+     * @return {@code 0} by default, or the explicitly supplied base
+     * @throws NumberFormatException when the provided value is not numeric
+     */
     public int positionBase() {
         return Integer.parseInt(cliCommand.getOptionValue(ARG_POSITION_BASE, "0"));
     }
 
+    /**
+     * Indicates whether the language server should listen on TCP instead of
+     * standard input/output.
+     *
+     * @return {@code true} in TCP mode
+     */
     public boolean isTcpServer() {
         return cliCommand.hasOption(ARG_TCP_SERVER);
     }
 
+    /**
+     * Returns the requested TCP listening port.
+     *
+     * @return the configured port, or {@code 0} for automatic allocation
+     * @throws NumberFormatException when the provided value is not numeric
+     */
     public int port() {
         return Integer.parseInt(cliCommand.getOptionValue(ARG_PORT, "0"));
     }
 
+    /**
+     * Indicates whether verbose diagnostic logging is enabled.
+     *
+     * @return {@code true} when the debug option is present
+     */
     public boolean debugEnabled() {
         return cliCommand.hasOption(ARG_DEBUG);
     }

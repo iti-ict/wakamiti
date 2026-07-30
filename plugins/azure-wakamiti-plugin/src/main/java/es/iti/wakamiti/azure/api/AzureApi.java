@@ -75,6 +75,9 @@ import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
 
 
+/**
+ * Provides access to the Azure Api service.
+ */
 public class AzureApi extends BaseApi<AzureApi> {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureApi.class);
@@ -612,6 +615,7 @@ public class AzureApi extends BaseApi<AzureApi> {
      * Creates a new test run within Azure DevOps.
      *
      * @param run the test run to be created.
+     * @return the created test run
      */
     public TestRun createRun(
             TestRun run

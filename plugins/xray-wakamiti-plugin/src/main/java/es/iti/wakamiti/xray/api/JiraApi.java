@@ -20,11 +20,21 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.xray.model.TestCase;
 
 
+/**
+ * Provides access to the Jira Api service.
+ */
 public class JiraApi extends BaseApi {
 
     private static final String API_ISSUE = "/rest/api/2/issue";
     private final Logger logger;
 
+    /**
+     * Creates a Jira REST client authenticated with a pre-encoded Basic credential.
+     *
+     * @param urlBase Jira base URL, such as {@code https://example.atlassian.net}
+     * @param credentials Base64-encoded credentials, without the {@code Basic} scheme
+     * @param logger logger used to trace Jira requests and synchronization decisions
+     */
     public JiraApi(
             URL urlBase,
             String credentials,
@@ -34,6 +44,16 @@ public class JiraApi extends BaseApi {
         this.logger = logger;
     }
 
+    /**
+     * Uploads a file as an attachment to a Jira issue.
+     * <p>
+     * Jira identifies the target by its issue key or numeric identifier. The file
+     * is sent as multipart form data and the Atlassian CSRF check is explicitly
+     * disabled for this attachment request.
+     *
+     * @param id Jira issue key or identifier that will own the attachment
+     * @param attachment local path of the file to upload
+     */
     public void addAttachment(
             String id,
             Path attachment
@@ -41,6 +61,16 @@ public class JiraApi extends BaseApi {
         post(API_ISSUE + "/" + id + "/attachments", attachment.toFile());
     }
 
+    /**
+     * Updates Jira summaries for test cases whose local representation changed.
+     * <p>
+     * Each pair contains the remote test currently stored in Xray as its key and
+     * the desired local test as its value. Only the Jira summary is changed; the
+     * Xray test definition and associations are left untouched.
+     *
+     * @param testCases changed test-case pairs, with the old remote value first and
+     *        the replacement local value second
+     */
     public void updateTestCases(
             List<Pair<TestCase, TestCase>> testCases
     ) {

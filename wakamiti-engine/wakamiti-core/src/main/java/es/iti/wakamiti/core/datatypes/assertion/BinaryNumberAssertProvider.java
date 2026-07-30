@@ -43,19 +43,30 @@ import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
  * A provider for binary number assertions.
  *
  * @param <T> The type of numbers to compare.
+ * @param <R> The assertion result type.
  */
 public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends AbstractAssertProvider {
 
+    /** Localization key for numeric equality. */
     public static final String EQUALS = "matcher.number.equals";
+    /** Localization key for a strictly greater numeric comparison. */
     public static final String GREATER = "matcher.number.greater";
+    /** Localization key for a strictly smaller numeric comparison. */
     public static final String LESS = "matcher.number.less";
+    /** Localization key for a greater-than-or-equal numeric comparison. */
     public static final String GREATER_EQUALS = "matcher.number.greater.equals";
+    /** Localization key for a less-than-or-equal numeric comparison. */
     public static final String LESS_EQUALS = "matcher.number.less.equals";
 
+    /** Localization key for numeric inequality. */
     public static final String NOT_EQUALS = "matcher.number.not.equals";
+    /** Localization key for negating a strictly greater numeric comparison. */
     public static final String NOT_GREATER = "matcher.number.not.greater";
+    /** Localization key for negating a strictly smaller numeric comparison. */
     public static final String NOT_LESS = "matcher.number.not.less";
+    /** Localization key for negating a greater-than-or-equal comparison. */
     public static final String NOT_GREATER_EQUALS = "matcher.number.not.greater.equals";
+    /** Localization key for negating a less-than-or-equal comparison. */
     public static final String NOT_LESS_EQUALS = "matcher.number.not.less.equals";
 
     private final Map<String, Function<T, Matcher<T>>> matchers = map(
@@ -149,6 +160,18 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends Abst
         );
     }
 
+    /**
+     * Creates a binary assertion provider for date/time values.
+     * <p>
+     * The target temporal class determines whether date, time, or both
+     * components are accepted and which temporal query performs conversion.
+     * </p>
+     *
+     * @param regexProvider locale-specific expression provider
+     * @param dateType      temporal target class
+     * @param <T>           comparable temporal value type
+     * @return a provider that parses and compares the selected temporal type
+     */
     public static <T extends Comparable<T> & TemporalAccessor>
     BinaryNumberAssertProvider<T, ? extends TemporalAccessor> createFromDate(
             ThrowableFunction<Locale, String> regexProvider,

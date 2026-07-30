@@ -8,10 +8,16 @@
 package es.iti.wakamiti.rest;
 
 
+/**
+ * Defines the values supported by Match Mode.
+ */
 public enum MatchMode {
 
+    /** Requires exactly the expected JSON structure and array order. */
     STRICT,
+    /** Requires exact JSON content while allowing array elements in any order. */
     STRICT_ANY_ORDER,
+    /** Accepts additional actual JSON fields while checking all expected content. */
     LOOSE
 
 }

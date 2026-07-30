@@ -8,8 +8,18 @@
 package es.iti.wakamiti.lsp.internal;
 
 
+/**
+ * Provides the Text Segment functionality used by Wakamiti.
+ */
 public final class TextSegment {
 
+    /**
+     * Creates content associated with a source range.
+     *
+     * @param range   range occupied by the content
+     * @param content selected text
+     * @return a new segment
+     */
     public static TextSegment of(
             TextRange range,
             String content
@@ -28,10 +38,16 @@ public final class TextSegment {
         this.content = content;
     }
 
+    /**
+     * @return the source range occupied by this segment
+     */
     public TextRange range() {
         return range;
     }
 
+    /**
+     * @return the text selected by the range
+     */
     public String content() {
         return content;
     }

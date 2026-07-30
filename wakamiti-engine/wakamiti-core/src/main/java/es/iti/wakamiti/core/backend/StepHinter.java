@@ -40,6 +40,15 @@ public class StepHinter implements Hinter {
     private final Locale defaultTextLocale;
     private final Locale defaultDataLocale;
 
+    /**
+     * Creates a completion engine for localized step definitions.
+     *
+     * @param runnableSteps available definitions to use as hint candidates
+     * @param configuration configuration supplying known properties and
+     *                      default text/data locales
+     * @param stepResolver  resolver used to identify partially matching steps
+     * @param typeRegistry  data types used to suggest expression values
+     */
     public StepHinter(
             List<RunnableStep> runnableSteps,
             Configuration configuration,

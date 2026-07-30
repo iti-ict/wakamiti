@@ -25,12 +25,17 @@ import es.iti.wakamiti.core.Wakamiti;
 public interface WakamitiConfigurable {
 
     /**
-     * Reads the configuration from the provided files and properties.
+     * Builds the effective plugin configuration.
+     * <p>
+     * Merge precedence is:
+     * default configuration < configuration files < explicit plugin properties.
+     * Configuration files are read as {@code inner("wakamiti")} namespaces.
+     * </p>
      *
-     * @param confFiles  List of configuration files.
-     * @param properties Map of configuration properties.
-     * @return The merged configuration.
-     * @throws ConfigurationException If there is an issue with the configuration.
+     * @param confFiles  ordered configuration-file paths
+     * @param properties explicit key/value overrides from plugin configuration
+     * @return merged effective configuration
+     * @throws ConfigurationException when any file cannot be parsed or loaded
      */
     default Configuration readConfiguration(
             List<String> confFiles,

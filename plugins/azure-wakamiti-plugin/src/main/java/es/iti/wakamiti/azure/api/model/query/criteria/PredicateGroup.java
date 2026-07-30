@@ -8,8 +8,17 @@
 package es.iti.wakamiti.azure.api.model.query.criteria;
 
 
+/**
+ * Provides the Predicate Group functionality used by Wakamiti.
+ */
 public class PredicateGroup extends Predicate {
 
+    /**
+     * Creates a grouping boundary for a compound WIQL expression.
+     *
+     * @param criteria expression whose subsequent right-hand group is rendered
+     *                 between parentheses
+     */
     public PredicateGroup(
             Expression criteria
     ) {

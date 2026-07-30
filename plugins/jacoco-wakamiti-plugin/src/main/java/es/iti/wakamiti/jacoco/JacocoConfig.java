@@ -19,6 +19,9 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.PathUtil;
 
 
+/**
+ * Stores the configuration used by the Jacoco Config component.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jacoco-config",
@@ -26,16 +29,27 @@ import es.iti.wakamiti.api.util.PathUtil;
 )
 public class JacocoConfig implements ConfigContributor<JacocoReporter> {
 
+    /** Configuration key for the host exposing the JaCoCo agent dump endpoint. */
     public static final String JACOCO_HOST = "jacoco.dump.host";
+    /** Configuration key for the TCP port of the JaCoCo agent dump endpoint. */
     public static final String JACOCO_PORT = "jacoco.dump.port";
+    /** Configuration key for the destination of the downloaded execution-data file. */
     public static final String JACOCO_OUTPUT = "jacoco.dump.output";
+    /** Configuration key for retries when connecting to the JaCoCo agent. */
     public static final String JACOCO_RETRIES = "jacoco.dump.retries";
+    /** Configuration key for the generated JaCoCo XML report path. */
     public static final String JACOCO_XML = "jacoco.report.xml";
+    /** Configuration key for the generated JaCoCo CSV report path. */
     public static final String JACOCO_CSV = "jacoco.report.csv";
+    /** Configuration key for the generated JaCoCo HTML report directory. */
     public static final String JACOCO_HTML = "jacoco.report.html";
+    /** Configuration key containing class-file roots analyzed for coverage. */
     public static final String JACOCO_CLASSES = "jacoco.report.classes";
+    /** Configuration key containing source roots linked from coverage reports. */
     public static final String JACOCO_SOURCES = "jacoco.report.sources";
+    /** Configuration key for the source tab width used by the HTML report. */
     public static final String JACOCO_TABWITH = "jacoco.report.tabwith";
+    /** Configuration key for the logical bundle name displayed in reports. */
     public static final String JACOCO_NAME = "jacoco.report.name";
 
     @Override

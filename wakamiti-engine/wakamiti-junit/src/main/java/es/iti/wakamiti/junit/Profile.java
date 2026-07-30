@@ -31,6 +31,8 @@ public @interface Profile {
 
     /**
      * One or more profile identifiers accepted by the test class.
+     *
+     * @return the resulting value
      */
     String[] value();
 

@@ -69,6 +69,8 @@ public class AmqpSupport {
 
     /**
      * Configures queue declaration durable flag.
+     *
+     * @param durable whether queues should be durable
      */
     public void setDurable(
             boolean durable
@@ -78,6 +80,8 @@ public class AmqpSupport {
 
     /**
      * Configures queue declaration exclusive flag.
+     *
+     * @param exclusive whether queues should be exclusive
      */
     public void setExclusive(
             boolean exclusive
@@ -87,6 +91,8 @@ public class AmqpSupport {
 
     /**
      * Configures queue declaration auto-delete flag.
+     *
+     * @param autoDelete whether queues should be deleted automatically
      */
     public void setAutoDelete(
             boolean autoDelete
@@ -96,6 +102,8 @@ public class AmqpSupport {
 
     /**
      * Configures message persistence mode for sends.
+     *
+     * @param messagePersistent whether sent messages should be persistent
      */
     public void setMessagePersistent(
             boolean messagePersistent

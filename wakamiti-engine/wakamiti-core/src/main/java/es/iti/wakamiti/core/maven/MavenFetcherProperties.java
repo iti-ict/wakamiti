@@ -8,6 +8,9 @@
 package es.iti.wakamiti.core.maven;
 
 
+/**
+ * Provides the Maven Fetcher Properties functionality used by Wakamiti.
+ */
 public final class MavenFetcherProperties {
 
     private MavenFetcherProperties() {

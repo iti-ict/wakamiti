@@ -71,15 +71,42 @@ public class PlanNodeSnapshot {
     private Map<Result, Long> childrenResults;
     private List<PlanNodeSnapshot> children;
 
+    /**
+     * Creates an empty snapshot for serialization frameworks and synthetic
+     * aggregation roots.
+     * <p>
+     * Application code should normally use {@link #PlanNodeSnapshot(PlanNode)}
+     * so that all derived execution fields are populated consistently.
+     * </p>
+     */
     public PlanNodeSnapshot() {
     }
 
+    /**
+     * Captures the current state of a plan node and all its descendants using
+     * the current local date and time as the snapshot marker.
+     *
+     * @param node the executable node whose current state will be captured
+     */
     public PlanNodeSnapshot(
             PlanNode node
     ) {
         this(node, LocalDateTime.now().toString());
     }
 
+    /**
+     * Captures the current state of a plan node tree with a caller-provided
+     * timestamp shared by every descendant snapshot.
+     * <p>
+     * Execution instants are converted to the system-default time zone.
+     * Throwable information is reduced to the first error's message and stack
+     * trace, while result summaries are computed for child and test-case nodes.
+     * </p>
+     *
+     * @param node            the executable node whose state will be captured
+     * @param snapshotInstant the textual timestamp assigned to this snapshot
+     *                        and its descendants
+     */
     public PlanNodeSnapshot(
             PlanNode node,
             String snapshotInstant
@@ -228,6 +255,18 @@ public class PlanNodeSnapshot {
                 .max(Comparator.naturalOrder()).orElse(null);
     }
 
+    /**
+     * Traverses this snapshot tree in pre-order and returns nodes accepted by a
+     * predicate.
+     * <p>
+     * A rejected parent does not prune its descendants; each node is evaluated
+     * independently.
+     * </p>
+     *
+     * @param filter predicate selecting snapshots for the resulting stream
+     * @return a lazy stream containing matching nodes, starting with this node
+     * when accepted
+     */
     public Stream<PlanNodeSnapshot> flatten(
             Predicate<PlanNodeSnapshot> filter
     ) {
@@ -288,134 +327,256 @@ public class PlanNodeSnapshot {
         return errorWriter.toString();
     }
 
+    /**
+     * Returns the semantic role of the captured node.
+     *
+     * @return the node type, or {@code null} for a synthetic grouping root
+     */
     public NodeType getNodeType() {
         return nodeType;
     }
 
-
+    /**
+     * Returns the captured source or generated identifier.
+     *
+     * @return the node identifier, or {@code null}
+     */
     public String getId() {
         return id;
     }
 
-
+    /**
+     * Returns the captured source-level node name.
+     *
+     * @return the node name, or {@code null}
+     */
     public String getName() {
         return name;
     }
 
-
+    /**
+     * Returns the localized source keyword.
+     *
+     * @return the keyword, or {@code null} for synthetic nodes
+     */
     public String getKeyword() {
         return keyword;
     }
 
-
+    /**
+     * Returns the language used to parse the source.
+     *
+     * @return the language code, or {@code null}
+     */
     public String getLanguage() {
         return language;
     }
 
-
+    /**
+     * Returns the source location or logical resource name.
+     *
+     * @return the source identifier, or {@code null}
+     */
     public String getSource() {
         return source;
     }
 
-
+    /**
+     * Returns the label prepared for reports and test-runner output.
+     *
+     * @return the captured display name, or {@code null}
+     */
     public String getDisplayName() {
         return displayName;
     }
 
-
+    /**
+     * Returns the captured source description.
+     *
+     * @return description lines in source order; regular node snapshots use an
+     * empty list when no description exists
+     */
     public List<String> getDescription() {
         return description;
     }
 
-
+    /**
+     * Returns the captured effective tags.
+     *
+     * @return tags in their original iteration order
+     */
     public List<String> getTags() {
         return tags;
     }
 
-
+    /**
+     * Returns the configuration properties scoped to the captured node.
+     *
+     * @return the captured properties in declaration order
+     */
     public Map<String, String> getProperties() {
         return properties;
     }
 
-
+    /**
+     * Returns when node execution started, expressed in the system-default
+     * local time zone.
+     *
+     * @return an ISO local date-time string, or {@code null} if execution did
+     * not start
+     */
     public String getStartInstant() {
         return startInstant;
     }
 
-
+    /**
+     * Returns when node execution finished, expressed in the system-default
+     * local time zone.
+     *
+     * @return an ISO local date-time string, or {@code null} if execution did
+     * not finish
+     */
     public String getFinishInstant() {
         return finishInstant;
     }
 
-
+    /**
+     * Returns the captured execution duration.
+     *
+     * @return elapsed milliseconds, or {@code null} if no duration was
+     * available
+     */
     public Long getDuration() {
         return duration;
     }
 
-
+    /**
+     * Returns attached document content when the node carries a
+     * {@link Document}.
+     *
+     * @return the document body, or {@code null}
+     */
     public String getDocument() {
         return document;
     }
 
-
+    /**
+     * Returns the media type associated with {@link #getDocument()}.
+     *
+     * @return the document type, or {@code null} when absent or unspecified
+     */
     public String getDocumentType() {
         return documentType;
     }
 
-
+    /**
+     * Returns the cells attached when the node carries a {@link DataTable}.
+     *
+     * @return the captured table array, or {@code null}
+     */
     public String[][] getDataTable() {
         return dataTable;
     }
 
-
+    /**
+     * Returns the localized message of the first captured execution error.
+     *
+     * @return the error message, or {@code null} when no error was recorded
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
-
+    /**
+     * Returns the complete stack trace of the first captured execution error.
+     *
+     * @return the rendered stack trace, or {@code null} when no error was
+     * recorded
+     */
     public String getErrorTrace() {
         return errorTrace;
     }
 
-
+    /**
+     * Returns the classifier associated with this node's failure.
+     *
+     * @return the direct or derived classifier, or {@code null} when the node
+     * has no classified error
+     */
     public String getErrorClassifier() {
         return errorClassifier;
     }
 
+    /**
+     * Returns the textual response captured from the node execution state.
+     *
+     * @return the response, or {@code null} when none was produced
+     */
     public String getResponse() {
         return response;
     }
 
-
+    /**
+     * Returns the node's result at snapshot time.
+     *
+     * @return the execution result, or {@code null} before a result exists
+     */
     public Result getResult() {
         return result;
     }
 
-
+    /**
+     * Returns aggregate result counts for all descendant test cases.
+     *
+     * @return result-to-count mappings, or {@code null} for nodes without
+     * children
+     */
     public Map<Result, Long> getTestCaseResults() {
         return testCaseResults;
     }
 
-
+    /**
+     * Returns result counts for direct child snapshots.
+     *
+     * @return direct-child result counts, or {@code null} for leaf snapshots
+     */
     public Map<Result, Long> getChildrenResults() {
         return childrenResults;
     }
 
-
+    /**
+     * Returns aggregate failure-classifier counts for descendant test cases.
+     *
+     * @return classifier-to-count mappings for aggregator snapshots, or
+     * {@code null} when no aggregate was computed
+     */
     public Map<String, Long> getErrorClassifiers() {
         return errorClassifiers;
     }
 
+    /**
+     * Returns snapshots of direct descendants.
+     *
+     * @return children in plan order, or {@code null} for a leaf snapshot
+     */
     public List<PlanNodeSnapshot> getChildren() {
         return children;
     }
 
-
+    /**
+     * Returns the identifier shared by nodes belonging to the same execution.
+     *
+     * @return the execution identifier, or {@code null} when none was assigned
+     */
     public String getExecutionID() {
         return executionID;
     }
 
-
+    /**
+     * Returns the timestamp at which this state was captured.
+     *
+     * @return the caller-provided or generated snapshot timestamp
+     */
     public String getSnapshotInstant() {
         return snapshotInstant;
     }

@@ -34,6 +34,9 @@ import es.iti.wakamiti.xray.model.TestCase;
 import es.iti.wakamiti.xray.model.TestSet;
 
 
+/**
+ * Maps Mapper data between its external and internal representations.
+ */
 public abstract class Mapper {
 
     private static final String TABLE_SEPARATOR = "|";
@@ -49,6 +52,14 @@ public abstract class Mapper {
         this.suiteBase = suiteBase;
     }
 
+    /**
+     * Selects the mapper that represents tests at the requested Gherkin level.
+     *
+     * @param type supported Gherkin type; currently {@code feature} or
+     *        {@code scenario}
+     * @return a factory capable of creating the corresponding mapper, or
+     *         {@code null} when the type is not supported
+     */
     public static Instancer ofType(
             String type
     ) {
@@ -126,6 +137,17 @@ public abstract class Mapper {
         };
     }
 
+    /**
+     * Converts an execution-plan snapshot into Xray Cucumber test definitions.
+     * <p>
+     * Nodes are grouped into test sets according to the concrete mapper strategy.
+     * Each resulting test preserves the local name, description, identifier,
+     * rendered Gherkin steps, data tables and document strings required to create
+     * the equivalent remote Xray test.
+     *
+     * @param plan root of the Wakamiti execution plan to convert
+     * @return a lazy stream of Xray test definitions derived from the plan
+     */
     public Stream<TestCase> map(
             PlanNodeSnapshot plan
     ) {
@@ -138,6 +160,12 @@ public abstract class Mapper {
                 );
     }
 
+    /**
+     * Identifies the Gherkin node level handled by this mapper.
+     *
+     * @return the configured Gherkin type, such as {@code feature} or
+     *         {@code scenario}
+     */
     public abstract String type();
 
     protected String gherkinType(
@@ -146,8 +174,19 @@ public abstract class Mapper {
         return Optional.ofNullable(node.getProperties()).map(p -> p.get("gherkinType")).orElse("");
     }
 
+    /**
+     * Factory contract for creating mappers with a caller-selected suite base.
+     */
     public interface Instancer {
 
+        /**
+         * Creates a mapper whose generated suite paths are relative to the supplied
+         * base directory.
+         *
+         * @param suiteBase base directory to remove from source paths; a blank value
+         *        preserves the complete source path
+         * @return a mapper configured for that suite base
+         */
         Mapper instance(
                 String suiteBase
         );

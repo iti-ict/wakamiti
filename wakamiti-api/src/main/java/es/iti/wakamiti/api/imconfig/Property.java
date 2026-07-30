@@ -21,10 +21,18 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 public @interface Property {
 
-    /** The property key */
+    /**
+     * The property key
+     *
+     * @return the resulting value
+     */
     String key();
 
-    /** The value (either single or multiple) of the property */
+    /**
+     * The value (either single or multiple) of the property
+     *
+     * @return the resulting value
+     */
     String[] value();
 
 }

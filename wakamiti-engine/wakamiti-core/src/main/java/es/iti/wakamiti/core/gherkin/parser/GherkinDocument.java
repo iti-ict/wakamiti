@@ -9,10 +9,18 @@ package es.iti.wakamiti.core.gherkin.parser;
 
 
 
+/**
+ * Provides the Gherkin Document functionality used by Wakamiti.
+ */
 public class GherkinDocument extends Node {
 
     private final es.iti.wakamiti.core.gherkin.parser.Feature feature;
 
+    /**
+     * Creates a parsed document around its single feature declaration.
+     *
+     * @param feature parsed feature, or {@code null} for an empty document
+     */
     public GherkinDocument(
             es.iti.wakamiti.core.gherkin.parser.Feature feature
     ) {
@@ -20,6 +28,11 @@ public class GherkinDocument extends Node {
         this.feature = feature;
     }
 
+    /**
+     * Returns the feature declared by this document.
+     *
+     * @return the parsed feature, or {@code null} when no feature was present
+     */
     public Feature getFeature() {
         return feature;
     }

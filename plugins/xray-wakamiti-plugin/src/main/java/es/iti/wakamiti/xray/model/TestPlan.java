@@ -13,6 +13,9 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
+/**
+ * Provides the Test Plan functionality used by Wakamiti.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestPlan {
 
@@ -23,6 +26,14 @@ public class TestPlan {
     private List<TestCase> testCases;
     private TestExecution testExecution;
 
+    /**
+     * Creates a complete Xray Test Plan projection.
+     *
+     * @param issueId Xray internal issue identifier
+     * @param jira backing Jira issue
+     * @param projectId Jira project identifier
+     * @param testCases tests currently assigned to the plan
+     */
     public TestPlan(
             String issueId,
             JiraIssue jira,
@@ -35,9 +46,18 @@ public class TestPlan {
         this.testCases = testCases;
     }
 
+    /**
+     * Creates an empty plan for GraphQL deserialization.
+     */
     public TestPlan() {
     }
 
+    /**
+     * Assigns the internal Xray issue identifier returned for this Test Plan.
+     *
+     * @param id Xray internal issue identifier
+     * @return this plan
+     */
     public TestPlan id(
             String id
     ) {
@@ -45,6 +65,12 @@ public class TestPlan {
         return this;
     }
 
+    /**
+     * Associates the Jira issue that stores the Test Plan's visible metadata.
+     *
+     * @param jira backing Jira issue projection
+     * @return this plan
+     */
     public TestPlan jira(
             JiraIssue jira
     ) {
@@ -52,6 +78,12 @@ public class TestPlan {
         return this;
     }
 
+    /**
+     * Sets the Jira project identifier reported by Xray for this plan.
+     *
+     * @param projectId Jira project identifier
+     * @return this plan
+     */
     public TestPlan projectId(
             String projectId
     ) {
@@ -59,6 +91,12 @@ public class TestPlan {
         return this;
     }
 
+    /**
+     * Replaces the tests currently associated with the remote Test Plan.
+     *
+     * @param testCases tests assigned to the plan
+     * @return this plan
+     */
     public TestPlan testCases(
             List<TestCase> testCases
     ) {
@@ -66,6 +104,12 @@ public class TestPlan {
         return this;
     }
 
+    /**
+     * Records the Test Execution created for the current Wakamiti run.
+     *
+     * @param testExecution execution created for this synchronization
+     * @return this plan
+     */
     public TestPlan testExecution(
             TestExecution testExecution
     ) {
@@ -73,22 +117,37 @@ public class TestPlan {
         return this;
     }
 
+    /**
+     * @return Xray internal issue identifier
+     */
     public String getIssueId() {
         return issueId;
     }
 
+    /**
+     * @return Jira issue backing the plan
+     */
     public JiraIssue getJira() {
         return jira;
     }
 
+    /**
+     * @return Jira project identifier
+     */
     public String getProjectId() {
         return projectId;
     }
 
+    /**
+     * @return tests assigned to the plan
+     */
     public List<TestCase> getTestCases() {
         return testCases;
     }
 
+    /**
+     * @return execution created for this plan run
+     */
     public TestExecution getTestExecution() {
         return testExecution;
     }

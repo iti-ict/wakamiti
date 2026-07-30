@@ -27,8 +27,12 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.jmeter.Metric;
 
 
+/**
+ * Provides Abstract Metric services to the surrounding component.
+ */
 public abstract class AbstractMetricProvider extends AbstractProvider {
 
+    /** Base name of the bundles containing localized metric expressions. */
     public static final String RESOURCE = "iti_wakamiti-metric";
     protected static final ResourceLoader RESOURCE_LOADER = WakamitiAPI.instance().resourceLoader();
 
@@ -73,6 +77,16 @@ public abstract class AbstractMetricProvider extends AbstractProvider {
         return translatedExpressions;
     }
 
+    /**
+     * Builds the regular expressions accepted by this metric provider in a
+     * locale.
+     * <p>
+     * Expressions retain provider declaration order because Wakamiti uses that
+     * order while trying datatype alternatives.
+     *
+     * @param locale locale used to load translated expression templates
+     * @return mutable ordered list of normalized regular expressions
+     */
     public LinkedList<String> regex(
             Locale locale
     ) {

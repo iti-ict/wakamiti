@@ -8,11 +8,20 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
+/**
+ * Provides the Location functionality used by Wakamiti.
+ */
 public class Location {
 
     private final int line;
     private final int column;
 
+    /**
+     * Creates a one-based source coordinate.
+     *
+     * @param line   source line number
+     * @param column source column number
+     */
     public Location(
             int line,
             int column
@@ -21,10 +30,20 @@ public class Location {
         this.column = column;
     }
 
+    /**
+     * Returns the one-based source line.
+     *
+     * @return the line number
+     */
     public int getLine() {
         return line;
     }
 
+    /**
+     * Returns the one-based source column.
+     *
+     * @return the column number
+     */
     public int getColumn() {
         return column;
     }

@@ -40,12 +40,11 @@ public final class MapUtils {
      *
      * @param <K> the {@code Map}'s key type
      * @param <V> the {@code Map}'s value type
+     * @param k the mapping key
+     * @param v the mapping value
      * @return a {@code Map} containing the specified mappings
      * @throws IllegalArgumentException if there are any duplicate keys
      * @throws NullPointerException     if any key or value is {@code null}
-      *
-      * @param v the v value
-      * @param k the parameter value
      */
     public static <K, V> Map<K, V> map(
             K k,

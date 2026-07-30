@@ -21,6 +21,15 @@ public class WakamitiDataTypeRegistry {
 
     private final Map<String, WakamitiDataType<?>> types;
 
+    /**
+     * Creates a registry backed by a name-to-type map.
+     * <p>
+     * The map is retained rather than copied, allowing its owner to control
+     * whether registrations remain mutable.
+     * </p>
+     *
+     * @param types registered types indexed by their expression names
+     */
     public WakamitiDataTypeRegistry(
             Map<String, WakamitiDataType<?>> types
     ) {

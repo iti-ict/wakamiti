@@ -11,8 +11,18 @@ package es.iti.wakamiti.database.jdbc.format;
 import java.sql.JDBCType;
 
 
+/**
+ * Defines the contract implemented by Sql Format.
+ */
 public interface SqlFormat {
 
+    /**
+     * Converts a textual value from a feature into a JDBC-compatible value.
+     *
+     * @param value source text, or {@code null} for SQL {@code NULL}
+     * @param type JDBC type reported by the target column or parameter
+     * @return value suitable for binding through JDBC
+     */
     Object formatValue(
             String value,
             JDBCType type

@@ -8,10 +8,19 @@
 package es.iti.wakamiti.core.gherkin.parser;
 
 
+/**
+ * Provides the Comment functionality used by Wakamiti.
+ */
 public class Comment extends Node {
 
     private final String text;
 
+    /**
+     * Creates a source comment.
+     *
+     * @param location location of the comment marker
+     * @param text     complete comment text as parsed from the source
+     */
     public Comment(
             Location location,
             String text
@@ -20,6 +29,11 @@ public class Comment extends Node {
         this.text = text;
     }
 
+    /**
+     * Returns the comment text.
+     *
+     * @return the source text associated with the comment
+     */
     public String getText() {
         return text;
     }

@@ -127,6 +127,14 @@ public final class XmlUtils {
         }
     }
 
+    /**
+     * Serializes a Java value as XML and parses the result into an XMLBeans
+     * object.
+     *
+     * @param input value to serialize using the shared Jackson XML mapper
+     * @return the parsed XML representation
+     * @throws XmlRuntimeException if serialization or parsing fails
+     */
     public static XmlObject xml(
             Object input
     ) {
@@ -233,6 +241,22 @@ public final class XmlUtils {
         return results.size() > 1 ? results.toString() : results.stream().findFirst().orElse(null);
     }
 
+    /**
+     * Selects XML content and converts it to a Java class.
+     * <p>
+     * Expressions containing a slash are evaluated as XPath. Simpler
+     * expressions fall back to Groovy XML navigation, which supports property
+     * and index syntax. Multiple selected nodes are wrapped in a synthetic
+     * {@code root} element before conversion.
+     * </p>
+     *
+     * @param obj        source XML object
+     * @param expression XPath or Groovy-style navigation expression
+     * @param type       target Java class
+     * @param <T>        target value type
+     * @return the selected and converted value
+     * @throws XmlRuntimeException if XML reconstruction or conversion fails
+     */
     public static <T> T read(
             XmlObject obj,
             String expression,
@@ -276,6 +300,15 @@ public final class XmlUtils {
         }
     }
 
+    /**
+     * Selects XML content and converts it using a generic type token.
+     *
+     * @param obj        source XML object
+     * @param expression XPath or Groovy-style navigation expression
+     * @param type       token retaining the complete generic target type
+     * @param <T>        target value type
+     * @return the selected and converted value
+     */
     public static <T> T read(
             XmlObject obj,
             String expression,
@@ -293,6 +326,14 @@ public final class XmlUtils {
         }
     }
 
+    /**
+     * Converts an entire XML document to a Java class through its DOM node.
+     *
+     * @param obj  source XML object
+     * @param type target Java class
+     * @param <T>  target value type
+     * @return the converted value
+     */
     public static <T> T read(
             XmlObject obj,
             Class<T> type
@@ -300,6 +341,14 @@ public final class XmlUtils {
         return MAPPER.convertValue(obj.getDomNode(), type);
     }
 
+    /**
+     * Converts an entire XML document using a generic type token.
+     *
+     * @param obj  source XML object
+     * @param type token retaining the complete generic target type
+     * @param <T>  target value type
+     * @return the converted value
+     */
     public static <T> T read(
             XmlObject obj,
             TypeRef<T> type

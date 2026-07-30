@@ -31,22 +31,43 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.JsonUtils;
 
 
+/**
+ * Provides Oauth2 services to the surrounding component.
+ */
 public final class Oauth2Provider {
 
     private static final int CLIENT_ERROR_STATUS = 400;
+    /** JSON property containing the bearer token in a successful OAuth response. */
     public static final String ACCESS_TOKEN = "access_token";
 
     private final Oauth2ProviderConfig oauth2ProviderConfig = new Oauth2ProviderConfig();
     private AccessTokenRetriever retriever;
 
+    /**
+     * Creates a provider using the built-in HTTP token retriever and an empty,
+     * mutable configuration.
+     */
     public Oauth2Provider() {
         this.retriever = new DefaultAccessTokenRetriever();
     }
 
+    /**
+     * Returns the live configuration used for subsequent token requests.
+     *
+     * @return this provider's mutable OAuth configuration
+     */
     public Oauth2ProviderConfig configuration() {
         return oauth2ProviderConfig;
     }
 
+    /**
+     * Replaces the token retrieval strategy, primarily for alternate
+     * transports or deterministic testing.
+     *
+     * @param retriever the non-null strategy used when no cached token exists
+     * @return this provider
+     * @throws WakamitiException if {@code retriever} is {@code null}
+     */
     public Oauth2Provider setRetriever(
             AccessTokenRetriever retriever
     ) {
@@ -57,6 +78,18 @@ public final class Oauth2Provider {
         return this;
     }
 
+    /**
+     * Obtains an access token for the current configuration.
+     * <p>
+     * A cached token is returned when caching is enabled and a matching entry
+     * exists. Otherwise configuration is validated, the retriever is invoked,
+     * and the resulting token is stored in the shared cache.
+     * </p>
+     *
+     * @return the raw access token
+     * @throws WakamitiException if required OAuth parameters are absent or
+     *                           retrieval fails
+     */
     public String getAccessToken() {
         return oauth2ProviderConfig.findCachedToken()
                 .orElseGet(() -> {
@@ -68,12 +101,21 @@ public final class Oauth2Provider {
 
     public interface AccessTokenRetriever {
 
+        /**
+         * Exchanges an OAuth configuration for an access token.
+         *
+         * @param config the validated request configuration
+         * @return the raw access token returned by the authorization server
+         */
         String get(
                 Oauth2ProviderConfig config
         );
 
     }
 
+    /**
+     * Provides the Default Access Token Retriever functionality used by Wakamiti.
+     */
     private static final class DefaultAccessTokenRetriever implements AccessTokenRetriever {
 
         public String get(

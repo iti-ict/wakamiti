@@ -19,8 +19,12 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 
 
+/**
+ * Creates and configures Duration Template Number Format instances.
+ */
 public final class DurationTemplateNumberFormatFactory extends TemplateNumberFormatFactory {
 
+    /** Stateless singleton registered as FreeMarker's {@code duration} format. */
     public static final DurationTemplateNumberFormatFactory INSTANCE
             = new DurationTemplateNumberFormatFactory();
 
@@ -37,8 +41,12 @@ public final class DurationTemplateNumberFormatFactory extends TemplateNumberFor
         return new DurationNumberFormat(env.getTemplateNumberFormat(params, locale));
     }
 
+    /**
+     * Provides the Duration Number Format functionality used by Wakamiti.
+     */
     private static final class DurationNumberFormat extends TemplateNumberFormat {
 
+        /** Field value. */
         private final TemplateNumberFormat innerFormat;
 
         private DurationNumberFormat(
@@ -66,6 +74,15 @@ public final class DurationTemplateNumberFormatFactory extends TemplateNumberFor
 
     }
 
+    /**
+     * Formats milliseconds as compact hours, minutes, seconds and milliseconds.
+     * Zero-valued leading components are omitted; milliseconds are always
+     * shown. For example, {@code 3_661_007} becomes
+     * {@code "1h 1m 1s 7ms"}.
+     *
+     * @param value duration in milliseconds
+     * @return compact human-readable duration
+     */
     public static String format(
             long value
     ) {

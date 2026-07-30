@@ -17,8 +17,16 @@ import es.iti.wakamiti.xray.model.JiraIssue;
 import es.iti.wakamiti.xray.model.TestSet;
 
 
+/**
+ * Maps Scenario data between its external and internal representations.
+ */
 public class ScenarioMapper extends Mapper {
 
+    /**
+     * Creates a mapper that produces one Xray test for each Wakamiti scenario.
+     *
+     * @param suiteBase base directory used to relativize generated test-set paths
+     */
     public ScenarioMapper(
             String suiteBase
     ) {
@@ -39,6 +47,11 @@ public class ScenarioMapper extends Mapper {
                 );
     }
 
+    /**
+     * Identifies scenarios as the Gherkin level consumed by this mapper.
+     *
+     * @return the scenario Gherkin type identifier
+     */
     @Override
     public String type() {
         return XRaySynchronizer.GHERKIN_TYPE_SCENARIO;

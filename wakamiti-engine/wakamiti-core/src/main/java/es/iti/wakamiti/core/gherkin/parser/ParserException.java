@@ -15,6 +15,9 @@ import es.iti.wakamiti.core.gherkin.parser.internal.StringUtils;
 import es.iti.wakamiti.core.gherkin.parser.internal.Token;
 
 
+/**
+ * Exception thrown when a Gherkin document cannot be parsed.
+ */
 public class ParserException extends RuntimeException {
 
     private final transient es.iti.wakamiti.core.gherkin.parser.Location location;
@@ -34,6 +37,12 @@ public class ParserException extends RuntimeException {
         this.location = location;
     }
 
+    /**
+     * Returns the source coordinate associated with the parse failure.
+     *
+     * @return the location, or {@code null} for errors that span several
+     * locations
+     */
     public es.iti.wakamiti.core.gherkin.parser.Location getLocation() {
         return location;
     }
@@ -47,6 +56,13 @@ public class ParserException extends RuntimeException {
 
     public static class AstBuilderException extends ParserException {
 
+        /**
+         * Creates an error raised while translating parser events into the
+         * public syntax tree.
+         *
+         * @param message  description of the invalid AST state
+         * @param location source coordinate where construction failed
+         */
         public AstBuilderException(
                 String message,
                 es.iti.wakamiti.core.gherkin.parser.Location location
@@ -58,6 +74,12 @@ public class ParserException extends RuntimeException {
 
     public static class NoSuchLanguageException extends ParserException {
 
+        /**
+         * Creates an error for an unsupported Gherkin language directive.
+         *
+         * @param language unsupported language code
+         * @param location location of the directive, or {@code null}
+         */
         public NoSuchLanguageException(
                 String language,
                 es.iti.wakamiti.core.gherkin.parser.Location location
@@ -74,6 +96,14 @@ public class ParserException extends RuntimeException {
         private final transient Token receivedToken;
         private final transient List<String> expectedTokenTypes;
 
+        /**
+         * Creates an error describing a token that is invalid in the current
+         * parser state.
+         *
+         * @param receivedToken     actual token read from the source
+         * @param expectedTokenTypes human-readable expected token categories
+         * @param stateComment      parser-state context retained for diagnostics
+         */
         public UnexpectedTokenException(
                 Token receivedToken,
                 List<String> expectedTokenTypes,
@@ -109,6 +139,16 @@ public class ParserException extends RuntimeException {
         private final String stateComment;
         private final transient List<String> expectedTokenTypes;
 
+        /**
+         * Creates an error for input ending before the current grammar
+         * production was complete.
+         *
+         * @param receivedToken     end-of-file token carrying the source
+         *                          location
+         * @param expectedTokenTypes token categories that could have continued
+         *                           the production
+         * @param stateComment      parser-state context retained for diagnostics
+         */
         public UnexpectedEOFException(
                 Token receivedToken,
                 List<String> expectedTokenTypes,
@@ -132,6 +172,12 @@ public class ParserException extends RuntimeException {
 
         private final List<ParserException> errors;
 
+        /**
+         * Combines multiple recoverable parse failures into one exception.
+         *
+         * @param errors non-null list of errors in discovery order
+         * @throws NullPointerException if {@code errors} is {@code null}
+         */
         public CompositeParserException(
                 List<ParserException> errors
         ) {
@@ -149,6 +195,11 @@ public class ParserException extends RuntimeException {
             return "Parser errors:\n" + StringUtils.join(exceptionToString, "\n", errors);
         }
 
+        /**
+         * Returns the individual failures represented by this aggregate.
+         *
+         * @return an immutable copy of the parser errors
+         */
         public List<ParserException> getErrors() {
             return List.copyOf(errors);
         }

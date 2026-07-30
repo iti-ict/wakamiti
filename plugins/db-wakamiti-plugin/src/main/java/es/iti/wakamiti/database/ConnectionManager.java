@@ -48,8 +48,13 @@ public interface ConnectionManager extends Contributor {
      * Obtains a valid connection according to an existing connection. If the
      * current connection is closed or invalid, a new one will be retrieved;
      * otherwise, the current connection is returned.
+     * <p>
+     * When a new connection is created, this method does not close the previous
+     * instance. Callers are responsible for releasing stale connections.
+     * </p>
      *
      * @param connection The current connection
+     * @param connectionParameters connection settings used when reconnecting
      * @return a valid connection
      * @throws SQLException when the connection was not successfully retrieved
      */

@@ -29,6 +29,11 @@ public class FTPClientTransmitter implements FTPTransmitter {
     private final FTPClient ftpClient;
     private String home;
 
+    /**
+     * Creates an Apache Commons Net transmitter.
+     *
+     * @param secure {@code true} for FTPS; {@code false} for plain FTP
+     */
     public FTPClientTransmitter(
             boolean secure
     ) {

@@ -28,6 +28,9 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
  */
 public abstract class AbstractAssertProvider extends AbstractProvider {
 
+    /**
+     * Resource-bundle base name containing localized matcher expressions.
+     */
     public static final String MATCHERS_RESOURCE = "iti_wakamiti_core-matchers";
 
     protected AbstractAssertProvider() {

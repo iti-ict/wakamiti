@@ -566,12 +566,26 @@ public class WakamitiDateDataType<T extends TemporalAccessor> extends WakamitiDa
         return dateTimePatterns(locale, temporalProperties(getJavaType()));
     }
 
+    /**
+     * Defines the contract implemented by Temporal Properties.
+     */
     public interface TemporalProperties {
 
+        /**
+         * Indicates whether expressions must include a calendar-date
+         * component.
+         *
+         * @return {@code true} by default
+         */
         default boolean withDate() {
             return true;
         }
 
+        /**
+         * Indicates whether expressions must include a local-time component.
+         *
+         * @return {@code true} by default
+         */
         default boolean withTime() {
             return true;
         }

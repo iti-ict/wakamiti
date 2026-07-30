@@ -25,6 +25,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  */
 public class TypeClosingBlankLineCheck extends AbstractCheck {
 
+    /** Message-bundle key reported when a type lacks its required boundary blank line. */
     public static final String MSG_TYPE_BOUNDARY_LINES = "type.boundary.blank.lines";
 
     private static final int[] TOKENS = {

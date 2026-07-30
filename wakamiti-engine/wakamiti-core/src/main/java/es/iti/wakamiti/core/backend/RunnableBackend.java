@@ -41,13 +41,17 @@ import es.iti.wakamiti.core.util.LocaleLoader;
 
 
 /**
- * Implementation of the Backend interface that allows running tests.
- * It provides the capability to execute individual test steps and
- * handle the setup and teardown operations.
- *
+ * Runnable {@link es.iti.wakamiti.api.Backend} implementation for test-case
+ * execution.
+ * <p>
+ * This backend resolves runnable steps, executes setup/teardown hooks,
+ * propagates per-step execution state and stores scenario-scoped extra
+ * properties.
+ * </p>
  */
 public class RunnableBackend extends AbstractBackend {
 
+    /** Engine logger shared by runnable backends for execution diagnostics. */
     public static final Logger LOGGER = Wakamiti.LOGGER;
     private static final List<String> DATA_ARG_ALTERNATIVES = List.of(DOCUMENT_ARG, DATATABLE_ARG);
 
@@ -277,7 +281,12 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     /**
-     * Fetches backend data associated with each step.
+     * Resolves and caches backend execution metadata for every step in the test
+     * case.
+     * <p>
+     * The cache is built lazily once; step-resolution errors are recorded so
+     * affected steps are marked with errors during execution.
+     * </p>
      */
     private void fetchStepBackendData() {
         if (stepBackendData.isEmpty()) {
@@ -325,10 +334,14 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     /**
-     * Runs a test step.
+     * Executes a resolved step implementation.
+     * <p>
+     * A {@link WakamitiStepRunContext} is installed for the current thread
+     * during execution and cleared in {@code finally}.
+     * </p>
      *
-     * @param step    The test step to be executed.
-     * @param instant The current instant.
+     * @param step    test step to execute
+     * @param instant execution start timestamp
      */
     @SuppressWarnings("unchecked")
     protected void runStep(
@@ -450,9 +463,12 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     /**
-     * Gets the extra properties associated with this backend.
+     * Returns the mutable scenario context map.
+     * <p>
+     * The map always contains reserved keys {@code id} and {@code results}.
+     * </p>
      *
-     * @return The extra properties.
+     * @return scenario extra properties map
      */
     @Override
     public Map<String, Object> getExtraProperties() {
@@ -460,14 +476,17 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     /**
-     * The {@code ContextMap} class is a specialized map used to store
-     * extra properties associated with the backend.
-     * It prevents certain keys (like "results" and "id") from being
-     * used and allows cleaning them before putAll.
+     * Scenario context map with reserved system keys.
+     * <p>
+     * Clients may store custom values except for {@link #ID_PROP} and
+     * {@link #RESULTS_PROP}, which are managed by the backend.
+     * </p>
      */
     public class ContextMap extends LinkedHashMap<String, Object> {
 
+        /** Plan-node property that carries examples or execution-result rows. */
         public static final String RESULTS_PROP = "results";
+        /** Plan-node property that carries the stable identifier of an executable node. */
         public static final String ID_PROP = "id";
 
         ContextMap() {

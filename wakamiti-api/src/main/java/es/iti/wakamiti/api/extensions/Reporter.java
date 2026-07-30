@@ -13,17 +13,21 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 
 
 /**
- * This interface defines a contract for implementing reporters that generate reports based on
- * the provided plan node descriptors.
+ * Generates output artifacts from an executed plan snapshot.
  */
 @ExtensionPoint
 public interface Reporter extends Contributor {
 
     /**
-     * Perform the report operation on the given plan node descriptor.
+     * Produces report output for the supplied execution tree.
+     * <p>
+     * Implementations should treat {@code rootNode} as read-only and are free
+     * to perform blocking I/O. Runtime failures should be propagated so the
+     * caller can decide whether report generation is optional or fatal.
+     * </p>
      *
-     * @param rootNode The root node descriptor. It may be a standalone
-     *                 plan or a root node grouping several plans.
+     * @param rootNode executed plan snapshot; may represent one plan or an
+     *                 aggregator root
      */
     void report(
             PlanNodeSnapshot rootNode

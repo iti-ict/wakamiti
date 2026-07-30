@@ -38,6 +38,21 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
     private final WakamitiDataTypeRegistry typeRegistry;
     private final List<Pair<String, String>> argumentMap = new ArrayList<>();
 
+    /**
+     * Derives the logical arguments of an annotated step method.
+     * <p>
+     * Explicit argument declarations are parsed first. Missing declarations
+     * are inferred from registered Java types, and a trailing document or data
+     * table parameter is recognized automatically. The constructor rejects any
+     * mismatch between the declaration and method signature.
+     * </p>
+     *
+     * @param stepProviderClass class declaring the step implementation
+     * @param stepMethod        method annotated with {@link Step}
+     * @param typeRegistry      registry used to resolve logical data types
+     * @throws WrongStepDefinitionException if argument names, types, or count
+     *                                      do not match the Java signature
+     */
     public BackendArguments(
             Class<?> stepProviderClass,
             Method stepMethod,

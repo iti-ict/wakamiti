@@ -30,8 +30,11 @@ public class FilesStepConfigurator implements ConfigContributor<FilesStepContrib
 
     private static final String ENTRY_SEPARATOR = "=";
 
+    /** Configuration key for file-watch timeout in seconds. */
     public static final String FILES_ACCESS_TIMEOUT = "files.timeout";
+    /** Configuration key mapping symbolic-link paths to their targets. */
     public static final String FILES_LINKS = "files.links";
+    /** Configuration key enabling restoration of file operations at teardown. */
     public static final String FILES_ENABLE_CLEANUP_UPON_COMPLETION = "files.enableCleanupUponCompletion";
 
     @Override
@@ -47,6 +50,14 @@ public class FilesStepConfigurator implements ConfigContributor<FilesStepContrib
         return this::configure;
     }
 
+    /**
+     * Applies timeout, cleanup and symbolic-link settings to a contributor.
+     * Link entries accept comma or semicolon separation and use
+     * {@code link=target} syntax.
+     *
+     * @param contributor file-step contributor to configure
+     * @param configuration effective Wakamiti configuration
+     */
     public void configure(
             FilesStepContributor contributor,
             Configuration configuration

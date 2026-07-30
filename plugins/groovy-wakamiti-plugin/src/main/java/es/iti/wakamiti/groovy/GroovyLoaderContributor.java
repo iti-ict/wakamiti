@@ -43,6 +43,7 @@ import groovy.lang.GroovyClassLoader;
 )
 public class GroovyLoaderContributor implements LoaderContributor {
 
+    /** Logger category used while discovering and compiling Groovy contributors. */
     public static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.groovy");
 
     private final GroovyClassLoader groovyClassLoader = new GroovyClassLoader();

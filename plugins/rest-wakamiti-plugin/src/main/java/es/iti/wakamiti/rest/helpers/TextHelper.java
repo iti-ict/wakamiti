@@ -16,6 +16,9 @@ import es.iti.wakamiti.rest.MatchMode;
 import io.restassured.http.ContentType;
 
 
+/**
+ * Provides the Text Helper functionality used by Wakamiti.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-text-helper",

@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 
 
+/**
+ * Defines the contract implemented by Throwable Runnable.
+ */
 public final class FutureUtil {
 
     private static final long POLLING_INTERVAL_MILLIS = 1000L;
@@ -32,6 +35,11 @@ public final class FutureUtil {
 
     public interface ThrowableRunnable {
 
+        /**
+         * Performs an asynchronous action that may fail.
+         *
+         * @throws Exception when the action cannot complete
+         */
         void run() throws Exception;
 
     }
@@ -39,6 +47,12 @@ public final class FutureUtil {
     private FutureUtil() {
     }
 
+    /**
+     * Schedules a cancellable asynchronous action through LSP4J.
+     *
+     * @param runnable action to execute
+     * @return a future completed when the action finishes
+     */
     public static CompletableFuture<Object> run(
             ThrowableRunnable runnable
     ) {
@@ -48,6 +62,15 @@ public final class FutureUtil {
         });
     }
 
+    /**
+     * Applies a potentially failing function asynchronously.
+     *
+     * @param function function to execute
+     * @param input    function input
+     * @param <T>      result type
+     * @param <U>      input type
+     * @return a cancellable future containing the result
+     */
     public static <T, U> CompletableFuture<T> run(
             ThrowableFunction<U, T> function,
             U input
@@ -58,6 +81,13 @@ public final class FutureUtil {
         });
     }
 
+    /**
+     * Schedules a cancellable action after a fixed delay.
+     *
+     * @param runnable     action to execute
+     * @param delaySeconds delay before execution in seconds
+     * @return a future completed when the delayed action finishes
+     */
     public static CompletableFuture<Object> runDelayed(
             ThrowableRunnable runnable,
             int delaySeconds
@@ -71,6 +101,13 @@ public final class FutureUtil {
         );
     }
 
+    /**
+     * Executes an action after an arbitrary future reaches a terminal state.
+     * Completion is observed by a background polling task.
+     *
+     * @param future         future to monitor
+     * @param actionWhenDone action invoked after completion or cancellation
+     */
     public static void whenDone(
             Future<?> future,
             Runnable actionWhenDone
@@ -88,7 +125,12 @@ public final class FutureUtil {
         });
     }
 
-
+    /**
+     * Returns an already completed future containing {@code null}.
+     *
+     * @param <T> expected result type
+     * @return a completed empty future
+     */
     public static <T> CompletableFuture<T> empty() {
         return CompletableFuture.completedFuture(null);
     }

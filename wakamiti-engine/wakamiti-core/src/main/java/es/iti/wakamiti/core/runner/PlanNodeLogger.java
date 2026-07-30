@@ -38,6 +38,14 @@ public class PlanNodeLogger {
     private final long totalNumberTestCases;
     private long currentTestCaseNumber;
 
+    /**
+     * Creates an execution logger and derives presentation options from the
+     * effective configuration.
+     *
+     * @param logger        logging backend
+     * @param configuration source of step-source and elapsed-time flags
+     * @param plan          root plan used to compute test-case progress totals
+     */
     public PlanNodeLogger(
             Logger logger,
             Configuration configuration,

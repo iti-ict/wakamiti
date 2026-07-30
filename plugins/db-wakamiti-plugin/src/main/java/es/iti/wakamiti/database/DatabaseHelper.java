@@ -40,6 +40,7 @@ public final class DatabaseHelper {
      * The date time formatter used for formatting timestamps with milliseconds.
      */
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    /** Formatter for SQL timestamps written as {@code yyyy-MM-dd HH:mm:ss}. */
     public static final DateTimeFormatter DATE_TIME_FORMATTER_2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
@@ -291,6 +292,15 @@ public final class DatabaseHelper {
         );
     }
 
+    /**
+     * Materializes all remaining rows of a data set and closes it.
+     * <p>
+     * Column order is retained in each row map. Failure to close the data set
+     * is converted to a {@link WakamitiException}.
+     *
+     * @param dataSet positioned data set to consume from its next row
+     * @return rows represented as column-name/value maps
+     */
     public static List<Map<String, Object>> read(
             DataSet dataSet
     ) {

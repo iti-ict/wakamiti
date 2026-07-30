@@ -37,12 +37,16 @@ import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Provides the Cucumber Exporter functionality used by Wakamiti.
+ */
 @Extension(
         name = "cucumber-exporter",
         version = "2.6"
 )
 public class CucumberExporter implements Reporter {
 
+    /** Logger category used for Cucumber export progress and diagnostics. */
     public static final Logger LOGGER = WakamitiLogger.forClass(CucumberExporter.class);
 
     private static final String DOC_STRING = "doc_string";
@@ -88,12 +92,27 @@ public class CucumberExporter implements Reporter {
         return (node.getKeyword() == null || node.getKeyword().isEmpty() ? " " : node.getKeyword());
     }
 
+    /**
+     * Sets the destination of the generated Cucumber JSON report.
+     * <p>
+     * Relative paths are resolved through Wakamiti's resource loader; parent
+     * directories and file permissions must permit writing.
+     *
+     * @param outputFile report path, defaulting to
+     *                   {@code cucumber-report.json}
+     */
     public void setOutputFile(
             String outputFile
     ) {
         this.outputFile = outputFile;
     }
 
+    /**
+     * Sets how Wakamiti plan nodes are represented as Cucumber steps.
+     *
+     * @param strategy export strategy controlling whether nested plan nodes are
+     *                 emitted as inner steps
+     */
     public void setStrategy(
             Strategy strategy
     ) {
@@ -241,9 +260,14 @@ public class CucumberExporter implements Reporter {
         return node.getProperties() != null && "feature".equals(node.getProperties().get("gherkinType"));
     }
 
+    /**
+     * Defines the values supported by Strategy.
+     */
     public enum Strategy {
 
+        /** Exports nested executable steps as children of their containing step. */
         INNERSTEPS,
+        /** Exports nested executable steps alongside their containing outer step. */
         OUTERSTEPS
 
     }

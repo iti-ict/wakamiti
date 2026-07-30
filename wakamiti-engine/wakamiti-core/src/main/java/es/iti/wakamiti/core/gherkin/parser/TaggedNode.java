@@ -11,8 +11,16 @@ package es.iti.wakamiti.core.gherkin.parser;
 import java.util.List;
 
 
+/**
+ * Represents a Tagged Node node in the execution model.
+ */
 public interface TaggedNode {
 
+    /**
+     * Returns tags declared directly on this syntax node.
+     *
+     * @return tags in source order
+     */
     List<Tag> getTags();
 
 }

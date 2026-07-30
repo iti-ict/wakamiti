@@ -26,7 +26,15 @@ public class FetchedArtifact {
     private final Path path;
     private final List<FetchedArtifact> dependencies;
 
-
+    /**
+     * Creates a resolved artifact and its direct dependency tree.
+     *
+     * @param groupId      Maven group identifier
+     * @param artifactId   Maven artifact identifier
+     * @param version      resolved artifact version
+     * @param path         physical file in the local repository
+     * @param dependencies direct resolved dependencies in collection order
+     */
     public FetchedArtifact(
             String groupId,
             String artifactId,
@@ -41,6 +49,16 @@ public class FetchedArtifact {
         this.dependencies = dependencies;
     }
 
+    /**
+     * Creates a lightweight artifact tree from compact coordinates, primarily
+     * for tests and expected-result construction.
+     *
+     * @param coordinates Maven coordinates in
+     *                    {@code groupId:artifactId:version} form
+     * @param dependencies direct dependencies
+     * @throws ArrayIndexOutOfBoundsException if coordinates omit a required
+     *                                       component
+     */
     public FetchedArtifact(
             String coordinates,
             FetchedArtifact... dependencies
@@ -50,6 +68,8 @@ public class FetchedArtifact {
 
     /**
      * The group id
+     *
+     * @return the resulting value
      */
     public String groupId() {
         return groupId;
@@ -57,6 +77,8 @@ public class FetchedArtifact {
 
     /**
      * The artifact id
+     *
+     * @return the resulting value
      */
     public String artifactId() {
         return artifactId;
@@ -64,6 +86,8 @@ public class FetchedArtifact {
 
     /**
      * The version of the artifact
+     *
+     * @return the resulting value
      */
     public String version() {
         return version;
@@ -71,6 +95,8 @@ public class FetchedArtifact {
 
     /**
      * Full coordinates text, in form of {@literal <groupId>:<artifactId>:<version>}
+     *
+     * @return the resulting value
      */
     public String coordinates() {
         return groupId() + ":" + artifactId() + ":" + version();
@@ -78,6 +104,8 @@ public class FetchedArtifact {
 
     /**
      * The fetched artifacts that are direct dependencies of this artifact
+     *
+     * @return the resulting value
      */
     public Stream<FetchedArtifact> dependencies() {
         return dependencies.stream();
@@ -85,6 +113,8 @@ public class FetchedArtifact {
 
     /**
      * The fetched artifacts that are direct or inherited dependencies of this artifact
+     *
+     * @return the resulting value
      */
     public Stream<FetchedArtifact> allDependencies() {
         return Stream.concat(
@@ -95,6 +125,8 @@ public class FetchedArtifact {
 
     /**
      * The path of the physical file in the local repository
+     *
+     * @return the resulting value
      */
     public Path path() {
         return path;

@@ -13,6 +13,11 @@ import java.util.function.Function;
 import us.abstracta.jmeter.javadsl.core.stats.StatsSummary;
 
 
+/**
+ * Defines the contract implemented by Metric.
+ *
+ * @param <T> the metric value type
+ */
 public interface Metric<T> extends Function<StatsSummary, T> {
 
 }

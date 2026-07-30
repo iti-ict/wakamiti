@@ -30,6 +30,8 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
      * <pre>assertThat("myStringOfNote", length(lessThan(15))))</pre>
      *
      * @param lengthMatcher the matcher to apply to the examined {@link CharSequence}
+      *
+      * @return the resulting value
      */
     public static CharSequenceLengthMatcher length(
             Matcher<? super Integer> lengthMatcher
@@ -46,6 +48,8 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
      *
      * @param length the length that the returned matcher will expect any
      *               examined string to have
+      *
+      * @return the resulting value
      */
     public static CharSequenceLengthMatcher length(
             int length
@@ -55,6 +59,12 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
 
     private final Matcher<? super Integer> lengthMatcher;
 
+    /**
+     * Creates a length matcher backed by an arbitrary integer matcher.
+     *
+     * @param lengthMatcher matcher evaluated against the examined character
+     *                      sequence's length
+     */
     public CharSequenceLengthMatcher(
             Matcher<? super Integer> lengthMatcher
     ) {

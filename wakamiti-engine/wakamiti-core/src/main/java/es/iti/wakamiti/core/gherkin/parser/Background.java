@@ -11,8 +11,22 @@ package es.iti.wakamiti.core.gherkin.parser;
 import java.util.List;
 
 
+/**
+ * Provides the Background functionality used by Wakamiti.
+ */
 public class Background extends ScenarioDefinition {
 
+    /**
+     * Creates a background section whose steps provide shared preconditions
+     * for scenarios in the enclosing feature.
+     *
+     * @param location    position of the background keyword
+     * @param keyword     localized background keyword
+     * @param name        background title
+     * @param description free-form description following the title
+     * @param steps       shared steps in source order
+     * @param comments    comments associated with the background
+     */
     public Background(
             Location location,
             String keyword,

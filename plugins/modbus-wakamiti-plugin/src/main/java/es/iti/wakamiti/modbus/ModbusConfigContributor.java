@@ -14,6 +14,10 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 
 
+/**
+ * Supplies default Modbus connection settings and applies them to
+ * {@link ModbusStepContributor}.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "modbus-config",
@@ -22,8 +26,11 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 )
 public class ModbusConfigContributor implements ConfigContributor<ModbusStepContributor> {
 
+    /** Configuration key for the Modbus TCP server host name or address. */
     public static final String HOST = "modbus.host";
+    /** Configuration key for the Modbus TCP server port. */
     public static final String PORT = "modbus.port";
+    /** Configuration key for the Modbus unit or slave identifier. */
     public static final String SLAVE_ID = "modbus.slaveId";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(
@@ -44,11 +51,23 @@ public class ModbusConfigContributor implements ConfigContributor<ModbusStepCont
         return DEFAULTS;
     }
 
+    /**
+     * Returns the configurator callback used to transfer configuration values
+     * into the step contributor.
+     *
+     * @return contributor configurator
+     */
     @Override
     public Configurer<ModbusStepContributor> configurer() {
         return this::configure;
     }
 
+    /**
+     * Applies resolved host/port/slave settings to the contributor.
+     *
+     * @param contributor modbus step contributor
+     * @param configuration effective runtime configuration
+     */
     private void configure(
             ModbusStepContributor contributor,
             Configuration configuration

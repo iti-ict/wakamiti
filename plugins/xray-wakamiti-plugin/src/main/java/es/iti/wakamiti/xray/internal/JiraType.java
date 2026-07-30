@@ -8,9 +8,14 @@
 package es.iti.wakamiti.xray.internal;
 
 
+/**
+ * Defines the values supported by Jira Type.
+ */
 public enum JiraType {
 
+    /** Xray test issue type used to store an executable test definition. */
     TEST("Test"),
+    /** Xray test-plan issue type used to group tests and their executions. */
     TEST_PLAN("Test Plan");
 
     private String name;
@@ -21,6 +26,11 @@ public enum JiraType {
         this.name = name;
     }
 
+    /**
+     * Returns the issue-type name expected by Jira and Xray queries.
+     *
+     * @return external Jira issue-type name
+     */
     public String getName() {
         return name;
     }

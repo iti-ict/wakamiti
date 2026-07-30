@@ -8,6 +8,9 @@
 package es.iti.wakamiti.core.gherkin.parser.internal;
 
 
+/**
+ * Builds Token Formatter instances from the available plan data.
+ */
 public class TokenFormatterBuilder implements Parser.Builder<String> {
 
     private final TokenFormatter formatter = new TokenFormatter();

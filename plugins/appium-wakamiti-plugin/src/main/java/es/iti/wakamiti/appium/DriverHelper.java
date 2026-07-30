@@ -20,11 +20,20 @@ import es.iti.wakamiti.api.WakamitiException;
 import io.appium.java_client.AppiumDriver;
 
 
+/**
+ * Provides the Driver Helper functionality used by Wakamiti.
+ */
 public class DriverHelper {
 
     protected final AppiumDriver driver;
     protected final Logger logger;
 
+    /**
+     * Creates the platform-neutral driver adapter.
+     *
+     * @param driver active Appium session
+     * @param logger logger receiving driver command details
+     */
     public DriverHelper(
             AppiumDriver driver,
             Logger logger
@@ -33,16 +42,31 @@ public class DriverHelper {
         this.logger = logger;
     }
 
+    /**
+     * Terminates the remote Appium session and closes its application.
+     */
     public void close() {
         driver.quit();
     }
 
+    /**
+     * Finds the first element matching a Selenium locator.
+     *
+     * @param elementBy locator evaluated by the underlying driver
+     * @return matching remote element
+     * @throws org.openqa.selenium.NoSuchElementException when no element matches
+     */
     public WebElement findElement(
             By elementBy
     ) {
         return driver.findElement(elementBy);
     }
 
+    /**
+     * Performs a single pointer click on an element.
+     *
+     * @param element remote element receiving the gesture
+     */
     public void tap(
             WebElement element
     ) {
@@ -51,6 +75,11 @@ public class DriverHelper {
         actions.perform();
     }
 
+    /**
+     * Performs a double pointer click on an element.
+     *
+     * @param element remote element receiving the gesture
+     */
     public void doubleTap(
             WebElement element
     ) {
@@ -59,6 +88,12 @@ public class DriverHelper {
         actions.perform();
     }
 
+    /**
+     * Executes an Appium {@code mobile: shell} command and logs its result.
+     *
+     * @param command executable or Android shell command name
+     * @param args ordered command arguments
+     */
     public void executeShellCommand(
             String command,
             String... args
@@ -71,30 +106,60 @@ public class DriverHelper {
         logger.debug("command response: {} ", output);
     }
 
+    /**
+     * Cancels an active simulated call.
+     *
+     * @param number number associated with the call
+     * @throws WakamitiException when the current platform has no call support
+     */
     public void cancelCall(
             String number
     ) {
         operationNotAvailable();
     }
 
+    /**
+     * Starts a simulated incoming call.
+     *
+     * @param number number presented by the caller
+     * @throws WakamitiException when the current platform has no call support
+     */
     public void receiveCall(
             String number
     ) {
         operationNotAvailable();
     }
 
+    /**
+     * Accepts a simulated incoming call.
+     *
+     * @param number number associated with the call
+     * @throws WakamitiException when the current platform has no call support
+     */
     public void acceptIncomingCall(
             String number
     ) {
         operationNotAvailable();
     }
 
+    /**
+     * Rejects a simulated incoming call.
+     *
+     * @param number number associated with the call
+     * @throws WakamitiException when the current platform has no call support
+     */
     public void rejectIncomingCall(
             String number
     ) {
         operationNotAvailable();
     }
 
+    /**
+     * Determines whether the device currently reports an incoming call.
+     *
+     * @return {@code true} when an incoming call is detected
+     * @throws WakamitiException when the current platform has no call support
+     */
     public boolean isIncomingCall() {
         operationNotAvailable();
         return false;

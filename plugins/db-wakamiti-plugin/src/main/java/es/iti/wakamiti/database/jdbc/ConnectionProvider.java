@@ -22,7 +22,7 @@ import es.iti.wakamiti.database.ConnectionParameters;
 
 
 /**
- * Provides JDBC connection management including obtaining, testing, and releasing connections.
+ * Provides Connection services to the surrounding component.
  */
 public class ConnectionProvider implements AutoCloseable {
 

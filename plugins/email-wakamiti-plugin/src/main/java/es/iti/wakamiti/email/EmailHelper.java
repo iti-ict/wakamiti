@@ -45,6 +45,9 @@ import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
+/**
+ * Provides the Email Helper functionality used by Wakamiti.
+ */
 public class EmailHelper {
 
     private static final String FORMAT = "[d' days 'H' hours 'm' minutes 's' seconds']";
@@ -53,6 +56,18 @@ public class EmailHelper {
     private Store store;
     private final Map<String, Folder> folders = new HashMap<>();
 
+    /**
+     * Opens an authenticated JavaMail store connection.
+     *
+     * @param protocol store protocol such as {@code imap}, {@code imaps},
+     *                 {@code pop3} or {@code pop3s}
+     * @param host mail-server host
+     * @param port explicit store port, or {@code null} for the protocol default
+     * @param address mailbox login/address
+     * @param password mailbox password
+     * @throws WakamitiException when required settings are missing or the store
+     *                           cannot connect
+     */
     public EmailHelper(
             String protocol,
             String host,
@@ -102,6 +117,11 @@ public class EmailHelper {
         return bodyPart.getInputStream().readAllBytes();
     }
 
+    /**
+     * Expunges and closes every opened folder, then closes the mail store.
+     * Folder-close failures are logged individually; a store-close failure is
+     * propagated as a {@link WakamitiException}.
+     */
     public void close() {
         try {
             closeFolders();
@@ -149,6 +169,12 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Counts messages that do not have the JavaMail {@code SEEN} flag.
+     *
+     * @param folderName mailbox folder to search
+     * @return number of unread messages
+     */
     public Integer getUnreadMessages(
             String folderName
     ) {
@@ -161,6 +187,12 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Finds the newest non-deleted message in a folder.
+     *
+     * @param folderName mailbox folder to inspect
+     * @return latest available message, or {@code null} when the folder is empty
+     */
     public Message getLatestMessage(
             String folderName
     ) {
@@ -180,6 +212,16 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Waits for JavaMail to report a newly added message and returns the final
+     * message in the folder.
+     *
+     * @param folderName mailbox folder to observe
+     * @param duration maximum wait
+     * @return message added during the wait
+     * @throws org.awaitility.core.ConditionTimeoutException if no addition is
+     *                                                        observed in time
+     */
     public Message waitForIncomingMessage(
             String folderName,
             Duration duration
@@ -208,6 +250,13 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Extracts all MIME parts explicitly marked as attachments.
+     *
+     * @param message message to inspect
+     * @return attachment bytes keyed by original file name, or an empty map for
+     *         a non-multipart message
+     */
     public Map<String, byte[]> getAllAttachments(
             Message message
     ) {
@@ -222,6 +271,13 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Extracts the first MIME attachment encountered.
+     *
+     * @param message message to inspect
+     * @return attachment file name and bytes
+     * @throws NoSuchElementException when the message has no attachment
+     */
     public Map.Entry<String, byte[]> getFirstAttachment(
             Message message
     ) {
@@ -238,6 +294,17 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Extracts textual message content.
+     * <p>
+     * Plain string content is returned directly. For multipart messages, all
+     * parts without a disposition are concatenated in MIME order, excluding
+     * attachments.
+     *
+     * @param message message to inspect
+     * @return extracted body text
+     * @throws WakamitiException when the content type cannot be interpreted
+     */
     public String getBody(
             Message message
     ) {
@@ -262,6 +329,13 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Marks every message satisfying a condition as deleted.
+     * Deletion is expunged when {@link #close()} closes the folder.
+     *
+     * @param folderName mailbox folder to scan
+     * @param condition predicate evaluated for each message
+     */
     public void deleteMessages(
             String folderName,
             ThrowableFunction<Message, Boolean> condition
@@ -279,6 +353,13 @@ public class EmailHelper {
         }
     }
 
+    /**
+     * Returns every message currently visible in a folder.
+     *
+     * @param folderName mailbox folder to read
+     * @return messages in JavaMail folder order
+     * @throws MessagingException if the server cannot enumerate messages
+     */
     public Message[] getAllMessages(
             String folderName
     ) throws MessagingException {

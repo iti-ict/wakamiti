@@ -20,8 +20,27 @@ import es.iti.wakamiti.api.imconfig.types.IntegerPropertyType;
 import es.iti.wakamiti.api.imconfig.types.TextPropertyType;
 
 
+/**
+ * Creates and configures Property Type instances.
+ */
 public final class PropertyTypeFactory {
 
+    /**
+     * Creates a built-in property type from its serialized name and arguments.
+     * <p>
+     * Supported names are {@code text}, {@code integer}, {@code decimal},
+     * {@code enum}, and {@code boolean}. Recognized arguments depend on the
+     * type; for example numeric types accept {@code min} and {@code max}, while
+     * enumerations require {@code values}.
+     * </p>
+     *
+     * @param type      the built-in type name
+     * @param arguments type-specific constructor arguments; {@code null} is
+     *                  treated as an empty map
+     * @return the configured property type
+     * @throws ConfigurationException if the type is absent or unknown, or its
+     *                                arguments are invalid
+     */
     public PropertyType create(
             String type,
             Map<String, Object> arguments

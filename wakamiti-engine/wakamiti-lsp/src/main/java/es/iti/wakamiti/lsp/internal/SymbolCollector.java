@@ -30,17 +30,33 @@ import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
 import es.iti.wakamiti.core.gherkin.parser.Step;
 
 
+/**
+ * Provides the Symbol Collector functionality used by Wakamiti.
+ */
 public class SymbolCollector {
 
     private static final int MAX_SYMBOL_LENGTH = 20;
     private final GherkinDocumentAssessor assessor;
 
+    /**
+     * Creates a collector whose ranges are resolved against an assessed
+     * document.
+     *
+     * @param assessor owner of the parsed feature and source map
+     */
     public SymbolCollector(
             GherkinDocumentAssessor assessor
     ) {
         this.assessor = assessor;
     }
 
+    /**
+     * Builds the root symbol for a feature and recursively adds its scenario
+     * definitions.
+     *
+     * @param feature parsed feature to represent
+     * @return package-like feature symbol spanning the entire document
+     */
     public DocumentSymbol collectSymbols(
             Feature feature
     ) {
@@ -63,6 +79,14 @@ public class SymbolCollector {
         return symbol;
     }
 
+    /**
+     * Builds a scenario, outline or background symbol and its step children.
+     *
+     * @param current scenario definition to represent
+     * @param next next sibling, used to delimit the current symbol range
+     * @param upperRange parent range used when there is no next sibling
+     * @return hierarchical scenario-definition symbol
+     */
     public DocumentSymbol collectSymbols(
             ScenarioDefinition current,
             Optional<ScenarioDefinition> next,
@@ -97,6 +121,15 @@ public class SymbolCollector {
         return symbol;
     }
 
+    /**
+     * Builds a step symbol and, when present, a child for its doc string or
+     * data table argument.
+     *
+     * @param current step to represent
+     * @param next next sibling, used to delimit a step with an argument
+     * @param upperRange parent range used when there is no next sibling
+     * @return method-like step symbol
+     */
     public DocumentSymbol collectSymbols(
             Step current,
             Optional<Step> next,

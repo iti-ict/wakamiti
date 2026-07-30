@@ -208,6 +208,12 @@ public class WakamitiDataTypeBase<T> implements WakamitiDataType<T> {
      */
     public interface LocaleTypeParser<T> {
 
+        /**
+         * Creates or selects a value parser for a locale.
+         *
+         * @param locale locale controlling syntax and formatting
+         * @return the parser for values written in that locale
+         */
         TypeParser<T> parser(
                 Locale locale
         );

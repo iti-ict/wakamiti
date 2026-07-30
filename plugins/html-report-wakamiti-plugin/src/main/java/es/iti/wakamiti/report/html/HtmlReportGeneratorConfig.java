@@ -25,10 +25,15 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 )
 public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGenerator> {
 
+    /** Root configuration namespace for the HTML report generator. */
     public static final String PREFIX = "htmlReport";
+    /** Configuration key for arbitrary metadata rendered in the report header. */
     public static final String EXTRA_INFO = PREFIX + ".extra_info";
+    /** Configuration key for the generated HTML report path. */
     public static final String OUTPUT_FILE = PREFIX + ".output";
+    /** Configuration key for an optional custom stylesheet included in the report. */
     public static final String CSS_FILE = PREFIX + ".css";
+    /** Configuration key for the title displayed in the generated report. */
     public static final String TITLE = PREFIX + ".title";
 
     private static final Configuration DEFAULTS = Configuration.factory().fromPairs(

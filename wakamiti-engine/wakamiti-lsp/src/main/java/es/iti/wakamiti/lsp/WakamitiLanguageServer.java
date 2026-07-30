@@ -40,7 +40,12 @@ import es.iti.wakamiti.lsp.internal.GherkinWorkspace;
 
 
 /**
- * Provides the Wakamiti Language Server functionality used by Wakamiti.
+ * Language Server Protocol entry point for Wakamiti Gherkin tooling.
+ * <p>
+ * One server instance owns a shared {@link GherkinWorkspace} and coordinates
+ * diagnostics and text-document features through its document/workspace
+ * services.
+ * </p>
  */
 public class WakamitiLanguageServer implements LanguageServer, LanguageClientAware {
 
@@ -52,6 +57,12 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
 
     LanguageClient client;
 
+    /**
+     * Creates an LSP server and its shared document workspace.
+     *
+     * @param baseIndex coordinate offset used by the connected client
+     *                  (typically 0 or 1 depending on client conventions)
+     */
     public WakamitiLanguageServer(
             int baseIndex
     ) {
@@ -60,6 +71,15 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
         this.workspaceService = new WakamitiWorkspaceService(this, workspace);
     }
 
+    /**
+     * Describes the protocol features implemented by the Wakamiti server.
+     * <p>
+     * The server supports incremental synchronization, completion, quick
+     * fixes, definition/implementation navigation, whole-document formatting
+     * and document symbols.
+     *
+     * @return a new capabilities descriptor safe for caller modification
+     */
     public static ServerCapabilities capabilities() {
         var capabilities = new ServerCapabilities();
         capabilities.setCompletionProvider(new CompletionOptions(true, null));
@@ -162,10 +182,18 @@ public class WakamitiLanguageServer implements LanguageServer, LanguageClientAwa
         }
     }
 
+    /**
+     * Recomputes and publishes diagnostics for every known workspace document.
+     */
     void sendWorkspaceDiagnostics() {
         sendDiagnostics(workspace.computeWorkspaceDiagnostics());
     }
 
+    /**
+     * Publishes diagnostics grouped by document URI.
+     *
+     * @param allDiagnostics diagnostics stream to publish
+     */
     void sendDiagnostics(
             Stream<DocumentDiagnostics> allDiagnostics
     ) {

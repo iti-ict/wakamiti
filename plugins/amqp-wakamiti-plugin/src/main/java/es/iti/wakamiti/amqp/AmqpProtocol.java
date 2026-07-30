@@ -16,7 +16,9 @@ import java.util.Map;
  */
 public enum AmqpProtocol {
 
+    /** AMQP 1.0 protocol implemented by the Qpid JMS client. */
     AMQP_1_0,
+    /** AMQP 0-9-1 protocol implemented by the RabbitMQ client. */
     AMQP_0_9_1;
 
     private static final Map<String, AmqpProtocol> ALIASES = Map.ofEntries(

@@ -15,9 +15,13 @@ import es.iti.wakamiti.core.gherkin.parser.internal.Parser.RuleType;
 import es.iti.wakamiti.core.gherkin.parser.internal.Parser.TokenType;
 
 
+/**
+ * Represents a Ast Node node in the execution model.
+ */
 public class AstNode {
 
     private final Map<RuleType, List<Object>> subItems = new EnumMap<>(RuleType.class);
+    /** Grammar rule represented by this abstract-syntax-tree node. */
     public final RuleType ruleType;
 
     public AstNode(

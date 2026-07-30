@@ -17,6 +17,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+/**
+ * Provides the Work Item functionality used by Wakamiti.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WorkItem {
 
@@ -26,6 +29,12 @@ public class WorkItem {
     private String name;
     private Map<String, String> workItemFields;
 
+    /**
+     * Assigns the numeric identifier returned by Azure DevOps for this work item.
+     *
+     * @param id Azure work-item identifier
+     * @return this work item
+     */
     public WorkItem id(
             String id
     ) {
@@ -33,10 +42,19 @@ public class WorkItem {
         return this;
     }
 
+    /**
+     * @return Azure work-item identifier
+     */
     public String id() {
         return id;
     }
 
+    /**
+     * Sets the display name used when this lightweight work-item reference is shown.
+     *
+     * @param name display name associated with the work item
+     * @return this work item
+     */
     public WorkItem name(
             String name
     ) {
@@ -44,10 +62,19 @@ public class WorkItem {
         return this;
     }
 
+    /**
+     * @return work-item display name
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Flattens Azure's list of field maps into a single reference-name map.
+     *
+     * @param workItemFields field fragments returned by the API
+     * @return this work item
+     */
     @JsonProperty
     public WorkItem workItemFields(
             List<Map<String, String>> workItemFields
@@ -56,6 +83,9 @@ public class WorkItem {
         return this;
     }
 
+    /**
+     * @return fields keyed by Azure reference name
+     */
     public Map<String, String> workItemFields() {
         return workItemFields;
     }

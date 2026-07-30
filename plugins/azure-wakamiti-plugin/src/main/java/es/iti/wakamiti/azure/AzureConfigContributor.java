@@ -25,6 +25,9 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.azure.api.model.TestPlan;
 
 
+/**
+ * Provides the Azure Config Contributor functionality used by Wakamiti.
+ */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "azure-config",
@@ -33,24 +36,42 @@ import es.iti.wakamiti.azure.api.model.TestPlan;
 )
 public class AzureConfigContributor implements ConfigContributor<AzureSynchronizer> {
 
+    /** Configuration key that enables synchronization with Azure Test Plans. */
     public static final String AZURE_ENABLED = "azure.enabled";
+    /** Configuration key for the Azure DevOps service base URL. */
     public static final String AZURE_BASE_URL = "azure.baseURL";
+    /** Configuration key for the user name used by Basic authentication. */
     public static final String AZURE_AUTH_USERNAME = "azure.auth.username";
+    /** Configuration key for the password used by Basic authentication. */
     public static final String AZURE_AUTH_PASSWORD = "azure.auth.password";
+    /** Configuration key for the Azure DevOps personal access token. */
     public static final String AZURE_AUTH_TOKEN = "azure.auth.token";
+    /** Configuration key selecting the Azure DevOps REST API version. */
     public static final String AZURE_API_VERSION = "azure.apiVersion";
+    /** Configuration key for the Azure DevOps organization name. */
     public static final String AZURE_ORGANIZATION = "azure.organization";
+    /** Configuration key for the Azure DevOps project name or identifier. */
     public static final String AZURE_PROJECT = "azure.project";
+    /** Configuration key for the test configuration assigned to synchronized runs. */
     public static final String AZURE_CONFIGURATION = "azure.configuration";
+    /** Parent configuration section defining the target Azure test plan. */
     public static final String AZURE_PLAN = "azure.plan";
+    /** Configuration key for the name used to locate or create the Azure test plan. */
     public static final String AZURE_PLAN_NAME = "azure.plan.name";
+    /** Configuration key for the Azure area path assigned to created work items. */
     public static final String AZURE_PLAN_AREA = "azure.plan.area";
+    /** Configuration key for the Azure iteration path assigned to created work items. */
     public static final String AZURE_PLAN_ITERATION = "azure.plan.iteration";
+    /** Configuration key for the source base removed from generated suite paths. */
     public static final String AZURE_SUITE_BASE = "azure.suiteBase";
+    /** Configuration key containing report-path globs uploaded to Azure test runs. */
     public static final String AZURE_ATTACHMENTS = "azure.attachments";
+    /** Configuration key selecting one Azure test case per feature or per scenario. */
     public static final String AZURE_TEST_CASE_PER_FEATURE = "azure.testCasePerFeature";
+    /** Configuration key controlling automatic creation of missing Azure entities. */
     public static final String AZURE_CREATE_ITEMS_IF_ABSENT = "azure.createItemsIfAbsent";
 
+    /** Azure DevOps REST API version used when none is explicitly configured. */
     public static final String DEFAULT_AZURE_API_VERSION = "6.0-preview";
 
     @Override

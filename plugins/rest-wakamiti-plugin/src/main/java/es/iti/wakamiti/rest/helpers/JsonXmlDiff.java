@@ -32,10 +32,21 @@ import es.iti.wakamiti.rest.MatchMode;
 import io.restassured.http.ContentType;
 
 
+/**
+ * Compares JSON or XML documents and reports the differences between them.
+ */
 public class JsonXmlDiff {
 
     private final ObjectMapper mapper;
 
+    /**
+     * Creates a structural comparator for JSON or XML.
+     *
+     * @param contentType source format parsed by the comparator
+     * @throws IllegalArgumentException if the type is neither
+     *                                  {@link ContentType#JSON} nor
+     *                                  {@link ContentType#XML}
+     */
     public JsonXmlDiff(
             ContentType contentType
     ) {
@@ -71,6 +82,20 @@ public class JsonXmlDiff {
         return segmentExpected + " size: " + expectedNode.size() + ", actual size: " + actualNode.size();
     }
 
+    /**
+     * Parses and structurally compares two payloads.
+     * <p>
+     * {@code STRICT} requires identical object-field order, array order and
+     * size. {@code STRICT_ANY_ORDER} retains exact content and size while
+     * ignoring array order. {@code LOOSE} allows additional actual fields and
+     * array elements but still requires every expected value.
+     *
+     * @param expected expected JSON or XML payload
+     * @param actual actual payload in the same format
+     * @param matchMode comparison policy
+     * @throws ComparisonFailure when structural differences are found
+     * @throws WakamitiException when either payload cannot be parsed
+     */
     public void assertContent(
             String expected,
             String actual,

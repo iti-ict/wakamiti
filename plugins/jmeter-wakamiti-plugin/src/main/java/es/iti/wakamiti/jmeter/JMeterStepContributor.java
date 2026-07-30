@@ -629,6 +629,19 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.executePlan();
     }
 
+    /**
+     * Executes an incremental load plan with progressively larger thread
+     * plateaus.
+     * <p>
+     * Iteration {@code n} ramps to {@code threads * n} users and holds that
+     * load for {@code hold}; all generated stages form one executed plan.
+     *
+     * @param threads number of users added at each iteration
+     * @param ramp time allowed to reach each target
+     * @param hold time each target load is maintained
+     * @param iterations number of progressively larger stages
+     * @throws IOException if the JMeter plan or its results cannot be processed
+     */
     @Step(value = "jmeter.execute.increase.iterations",
             args = {"threads:int", "ramp:duration", "hold:duration", "iterations:int"})
     public void executeIncrease(
@@ -644,6 +657,16 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.executePlan();
     }
 
+    /**
+     * Executes a load plan described by a table of consecutive stretches.
+     * <p>
+     * Each row contains a thread target and ramp duration, with an optional
+     * hold duration. Rows are processed in table order to build a single thread
+     * schedule before execution.
+     *
+     * @param stretches table containing threads, ramp and optional hold values
+     * @throws IOException if the JMeter plan or its results cannot be processed
+     */
     @Step("jmeter.execute.stretches")
     public void executeStretches(
             DataTable stretches
@@ -661,7 +684,14 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.executePlan();
     }
 
-
+    /**
+     * Evaluates a duration metric over aggregate sample statistics.
+     *
+     * @param metric extractor for a duration-valued aggregate metric
+     * @param matcher assertion applied to the extracted value
+     * @throws AssertionError if no execution results exist or the assertion
+     *                       does not match
+     */
     @Step(value = "jmeter.assert.metric.duration", args = {"metric:duration-metric", "matcher:duration-assertion"})
     public void assertDurationMetric(
             Metric<Duration> metric,
@@ -671,6 +701,14 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         Assertion.assertThat(metric.apply(stats.overall()), matcher);
     }
 
+    /**
+     * Evaluates an integral metric over aggregate sample statistics.
+     *
+     * @param metric extractor for a long-valued aggregate metric
+     * @param matcher assertion applied to the extracted value
+     * @throws AssertionError if no execution results exist or the assertion
+     *                       does not match
+     */
     @Step(value = "jmeter.assert.metric.long", args = {"metric:long-metric", "matcher:long-assertion"})
     public void assertLongMetric(
             Metric<Long> metric,
@@ -680,6 +718,14 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         Assertion.assertThat(metric.apply(stats.overall()), matcher);
     }
 
+    /**
+     * Evaluates a decimal metric over aggregate sample statistics.
+     *
+     * @param metric extractor for a double-valued aggregate metric
+     * @param matcher assertion applied to the extracted value
+     * @throws AssertionError if no execution results exist or the assertion
+     *                       does not match
+     */
     @Step(value = "jmeter.assert.metric.double", args = {"metric:double-metric", "matcher:double-assertion"})
     public void assertDoubleMetric(
             Metric<Double> metric,

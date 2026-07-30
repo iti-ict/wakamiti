@@ -38,17 +38,34 @@ import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import es.iti.wakamiti.api.util.Pair;
 
 
+/**
+ * Provides the Workspace Diagnostic Helper functionality used by Wakamiti.
+ */
 public class WorkspaceDiagnosticHelper {
 
     private final GherkinWorkspace workspace;
     private final Map<String, Map<Range, List<CodeAction>>> quickFixes = new HashMap<>();
 
+    /**
+     * Creates a helper for diagnostics that depend on relationships between
+     * multiple workspace documents.
+     *
+     * @param workspace workspace whose definition and implementation IDs are
+     *                  correlated
+     */
     public WorkspaceDiagnosticHelper(
             GherkinWorkspace workspace
     ) {
         this.workspace = workspace;
     }
 
+    /**
+     * Retrieves workspace-level fixes for selected diagnostics.
+     *
+     * @param uri document containing the diagnostics
+     * @param diagnostics diagnostics selected by the client
+     * @return actions whose registered ranges match the selected diagnostics
+     */
     public Stream<CodeAction> retrieveCodeActions(
             String uri,
             List<Diagnostic> diagnostics
@@ -61,6 +78,15 @@ public class WorkspaceDiagnosticHelper {
                 .flatMap(e -> e.getValue().stream());
     }
 
+    /**
+     * Rebuilds quick fixes from the latest inter-document diagnostics.
+     * <p>
+     * A missing implementation ID receives an action that either appends the
+     * corresponding scenario to an existing implementation file or creates a
+     * new implementation feature.
+     *
+     * @param diagnosticsPerDocument diagnostics grouped by document URI
+     */
     public void registerWorkspaceQuickFixes(
             Map<String, List<Diagnostic>> diagnosticsPerDocument
     ) {
@@ -81,6 +107,18 @@ public class WorkspaceDiagnosticHelper {
         }
     }
 
+    /**
+     * Validates scenario-ID relationships across definition and implementation
+     * documents.
+     * <p>
+     * Duplicate IDs and IDs missing on either side are reported. Only unique,
+     * bidirectionally matched IDs are entered in the workspace navigation map.
+     * The returned groups include both the input diagnostics and newly created
+     * relationship diagnostics.
+     *
+     * @param documentDiagnostics document-local diagnostics to augment
+     * @return augmented diagnostics grouped by document
+     */
     public Stream<DocumentDiagnostics> computeInterDocumentDiagnostics(
             List<DocumentDiagnostics> documentDiagnostics
     ) {

@@ -21,6 +21,13 @@ import es.iti.wakamiti.api.WakamitiException;
  */
 public interface FTPTransmitter {
 
+    /**
+     * Creates a transmitter for a configured protocol.
+     *
+     * @param protocol lowercase {@code ftp}, {@code ftps} or {@code sftp}
+     * @return a disconnected transmitter
+     * @throws WakamitiException when the protocol is unsupported
+     */
     static FTPTransmitter of(
             String protocol
     ) {
@@ -35,8 +42,21 @@ public interface FTPTransmitter {
         return factory.get(protocol).get();
     }
 
+    /**
+     * @return whether the underlying control connection or SSH session is open
+     */
     boolean isConnected();
 
+    /**
+     * Opens and authenticates a remote transfer session.
+     *
+     * @param username remote account
+     * @param host remote host name or address
+     * @param port explicit port, or {@code null} for the protocol default
+     * @param password optional for key-based SFTP, required by FTP/FTPS
+     * @param identity optional SSH private-key path
+     * @throws IOException if connection or authentication fails
+     */
     void connect(
             String username,
             String host,
@@ -45,8 +65,20 @@ public interface FTPTransmitter {
             String identity
     ) throws IOException;
 
+    /**
+     * Closes the remote transfer session.
+     *
+     * @throws IOException if the transport cannot disconnect cleanly
+     */
     void disconnect() throws IOException;
 
+    /**
+     * Uploads one local file, creating missing remote directories recursively.
+     *
+     * @param localFile local source path
+     * @param destinationFolder remote destination directory
+     * @throws IOException if directory creation or transfer fails
+     */
     void transferFile(
             Path localFile,
             Path destinationFolder

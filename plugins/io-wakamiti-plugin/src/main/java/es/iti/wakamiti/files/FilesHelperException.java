@@ -11,8 +11,16 @@ package es.iti.wakamiti.files;
 import java.io.IOException;
 
 
+/**
+ * Exception raised by the Files Helper Exception component.
+ */
 public class FilesHelperException extends RuntimeException {
 
+    /**
+     * Wraps a low-level filesystem failure raised by helper operations.
+     *
+     * @param e original I/O failure
+     */
     public FilesHelperException(
             IOException e
     ) {

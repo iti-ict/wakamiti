@@ -8,8 +8,12 @@
 package es.iti.wakamiti.azure.api.model.query;
 
 
+/**
+ * Provides the Work Items Query functionality used by Wakamiti.
+ */
 public class WorkItemsQuery extends Query {
 
+    /** WIQL entity used for flat work-item queries. */
     public static final String ENTITY = "WorkItems";
 
     @Override

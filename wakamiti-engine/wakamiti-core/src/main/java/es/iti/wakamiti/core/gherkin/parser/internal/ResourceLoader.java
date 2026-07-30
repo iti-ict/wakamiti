@@ -15,6 +15,9 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
 
+/**
+ * Loads Resource resources and extensions.
+ */
 public class ResourceLoader {
 
     public static InputStream openInputStream(

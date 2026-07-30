@@ -14,23 +14,21 @@ import es.iti.wakamiti.api.plan.PlanNode;
 
 
 /**
- * Factory interface for creating instances of Backend. The factory
- * is responsible for creating backends based on test case nodes
- * and configurations.
- * <p>It also provides the ability to create a non-runnable
- * backend for exposing information without executing tests.</p>
- * <p>Additionally, it can create a hinter for providing
- * suggestions and hints.</p>
+ * Factory for backend-related runtime services.
+ * <p>
+ * Implementations normally create one runnable {@link Backend} per test case
+ * execution to keep scenario state isolated.
+ * </p>
  */
 public interface BackendFactory {
 
     /**
-     * Create a new backend for a node of type {@link NodeType#TEST_CASE}
-     * and a given configuration.
+     * Creates a runnable backend for one test case node.
      *
-     * @param node          The test case node.
-     * @param configuration The test case configuration.
-     * @return A new backend.
+     * @param node          test-case node, typically of type
+     *                      {@link NodeType#TEST_CASE}
+     * @param configuration effective execution configuration for that test case
+     * @return runnable backend bound to the supplied node/context
      */
     Backend createBackend(
             PlanNode node,
@@ -38,28 +36,24 @@ public interface BackendFactory {
     );
 
     /**
-     * Create a new <b>non-runnable</b> backend based on a given
-     * configuration, limited to step-related data providing. It
-     * is useful to expose that information to third-party
-     * components (like completion tools) without compromising
-     * the test plan execution.
-     * The resulting backend would throw {@link UnsupportedOperationException}
-     * if a test case is attempted to be run.
+     * Creates a non-runnable backend for metadata and discovery use cases.
+     * <p>
+     * Returned instances are intended for listing steps, hints and data types
+     * without executing plan steps.
+     * </p>
      *
-     * @param configuration The configuration for the non-runnable
-     *                      backend.
-     * @return A non-runnable backend.
+     * @param configuration runtime configuration
+     * @return non-runnable backend instance
      */
     Backend createNonRunnableBackend(
             Configuration configuration
     );
 
     /**
-     * Create a hinter for providing suggestions and hints based
-     * on the given configuration.
+     * Creates a hinter used to generate suggestions for invalid steps.
      *
-     * @param configuration The configuration for the hinter.
-     * @return A hinter instance.
+     * @param configuration runtime configuration for hint generation
+     * @return hinter instance
      */
     Hinter createHinter(
             Configuration configuration

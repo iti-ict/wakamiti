@@ -29,6 +29,9 @@ import es.iti.wakamiti.xray.model.TestRun;
 import es.iti.wakamiti.xray.model.TestSet;
 
 
+/**
+ * Provides access to the XRay Api service.
+ */
 public class XRayApi extends BaseApi {
 
     private static final String API_GRAPHQL = "/api/v2/graphql";
@@ -39,6 +42,18 @@ public class XRayApi extends BaseApi {
     private final String project;
     private final Logger logger;
 
+    /**
+     * Creates an authenticated Xray Cloud GraphQL client.
+     * <p>
+     * The constructor exchanges the supplied client credentials for a Bearer token
+     * and stores the default Jira project used when creating Xray entities.
+     *
+     * @param baseURL Xray Cloud API base URL
+     * @param clientId Xray API client identifier
+     * @param clientSecret Xray API client secret
+     * @param project default Jira project key for newly created entities
+     * @param logger logger used to trace GraphQL traffic and synchronization activity
+     */
     public XRayApi(
             URL baseURL,
             String clientId,
@@ -51,6 +66,12 @@ public class XRayApi extends BaseApi {
         this.logger = logger;
     }
 
+    /**
+     * Retrieves the test plans visible to the authenticated Xray client.
+     *
+     * @return up to the first 100 plans, including their Xray issue identifiers and
+     *         Jira keys and summaries
+     */
     public List<TestPlan> getTestPlans() {
         String query = query("query {"
                 + "    getTestPlans( limit: 100) {"
@@ -70,6 +91,13 @@ public class XRayApi extends BaseApi {
         });
     }
 
+    /**
+     * Creates a test plan in the configured Jira project.
+     *
+     * @param title Jira summary to assign to the new plan
+     * @return the created plan, populated with its Xray issue identifier, project
+     *         identifier, Jira key and summary
+     */
     public TestPlan createTestPlan(
             String title
     ) {
@@ -94,6 +122,13 @@ public class XRayApi extends BaseApi {
         return read(response, "$.data.createTestPlan.testPlan", TestPlan.class);
     }
 
+    /**
+     * Retrieves an Xray test and the Jira metadata needed for synchronization.
+     *
+     * @param issueId Xray internal issue identifier of the test
+     * @return the test when Xray returned one, or an empty value when no test exists
+     *         for the supplied identifier
+     */
     public Optional<TestCase> getTestCase(
             String issueId
     ) {
@@ -119,6 +154,12 @@ public class XRayApi extends BaseApi {
         return Optional.ofNullable(testCase);
     }
 
+    /**
+     * Associates newly created Xray tests with a test plan.
+     *
+     * @param createdIssues Xray internal issue identifiers of the tests to add
+     * @param remotePlan existing remote plan that will receive the tests
+     */
     public void addTestsToPlan(
             List<String> createdIssues,
             TestPlan remotePlan
@@ -137,6 +178,12 @@ public class XRayApi extends BaseApi {
         post(API_GRAPHQL, mutation);
     }
 
+    /**
+     * Associates a test execution with an existing Xray test plan.
+     *
+     * @param testExecutionIssue Xray internal issue identifier of the execution
+     * @param remotePlan existing remote plan that will receive the execution
+     */
     public void addTestExecutionsToTestPlan(
             String testExecutionIssue,
             TestPlan remotePlan
@@ -155,6 +202,15 @@ public class XRayApi extends BaseApi {
         post(API_GRAPHQL, mutation);
     }
 
+    /**
+     * Adds each test to the remote test set with the same Jira summary.
+     * <p>
+     * Associations are attempted only when a local test-set reference matches one
+     * of {@code remoteTestSets}; unmatched references are intentionally ignored.
+     *
+     * @param tests tests whose test-set memberships must be synchronized
+     * @param remoteTestSets available remote sets used to resolve memberships
+     */
     public void addTestsToSets(
             List<TestCase> tests,
             List<TestSet> remoteTestSets
@@ -184,6 +240,12 @@ public class XRayApi extends BaseApi {
         });
     }
 
+    /**
+     * Retrieves Xray test sets together with their current test membership.
+     *
+     * @return up to the first 100 test sets; an empty list is returned when the API
+     *         produces no response
+     */
     public List<TestSet> getTestSets() {
         String query = query("query { "
                 + "   getTestSets(limit: 100) {"
@@ -222,6 +284,15 @@ public class XRayApi extends BaseApi {
         return list;
     }
 
+    /**
+     * Creates test sets from local definitions.
+     * <p>
+     * The Jira summary and first label, when present, are copied to each new issue.
+     *
+     * @param newTestSets local test-set definitions to create
+     * @return remote representations containing the generated Xray issue identifiers
+     *         and Jira metadata, in input order
+     */
     public List<TestSet> createTestSets(
             List<TestSet> newTestSets
     ) {
@@ -247,6 +318,16 @@ public class XRayApi extends BaseApi {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Creates Cucumber tests in Xray from local Gherkin definitions.
+     * <p>
+     * The returned objects retain the local summary and test-set associations so
+     * later synchronization stages can create the corresponding relationships.
+     *
+     * @param newTests local test definitions to create
+     * @param project Jira project key in which the test issues will be created
+     * @return created remote tests, in input order
+     */
     public List<TestCase> createTestCases(
             List<TestCase> newTests,
             String project
@@ -280,6 +361,16 @@ public class XRayApi extends BaseApi {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Creates a test execution containing the supplied Xray tests.
+     * <p>
+     * The execution is assigned to the {@code Wakamiti} test environment.
+     *
+     * @param summary Jira summary for the new test execution
+     * @param createdIssues Xray internal issue identifiers of the tests to execute
+     * @param project Jira project key in which the execution will be created
+     * @return the created execution with its Xray identifier and Jira metadata
+     */
     public TestExecution createTestExecution(
             String summary,
             List<String> createdIssues,
@@ -308,6 +399,15 @@ public class XRayApi extends BaseApi {
         return read(response, "$.data.createTestExecution.testExecution", TestExecution.class);
     }
 
+    /**
+     * Synchronizes the status of existing Xray test runs with local test results.
+     * <p>
+     * The method queries runs for all supplied tests and updates only runs whose
+     * remote status differs from the status stored in the corresponding test case.
+     * Tests without a matching run require no remote change.
+     *
+     * @param createdIssues tests carrying the desired execution status
+     */
     public void updateTestRunStatus(
             List<TestCase> createdIssues
     ) {

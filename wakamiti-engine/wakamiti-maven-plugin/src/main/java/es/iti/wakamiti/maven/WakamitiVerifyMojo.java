@@ -148,10 +148,14 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
     private List<String> projectDependencies;
 
     /**
-     * Executes the plugin.
+     * Executes Wakamiti plan creation and execution for the Maven build.
+     * <p>
+     * Failures in executed tests are reported as build failures unless
+     * {@code testFailureIgnore} is enabled.
+     * </p>
      *
-     * @throws MojoExecutionException If an unexpected problem occurs during execution.
-     * @throws MojoFailureException   If a failure is encountered during execution.
+     * @throws MojoExecutionException when configuration or runtime errors occur
+     * @throws MojoFailureException   when tests fail and failure is not ignored
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -199,6 +203,14 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
         }
     }
 
+    /**
+     * Decides whether a raised execution exception should fail the build,
+     * be ignored, or be deferred to the {@code control} goal.
+     *
+     * @param exception error detected during verify execution
+     * @throws MojoExecutionException when execution errors must fail immediately
+     * @throws MojoFailureException   when test failures must fail immediately
+     */
     private void errorControl(
             AbstractMojoExecutionException exception
     )

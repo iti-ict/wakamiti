@@ -39,7 +39,9 @@ import es.iti.wakamiti.api.imconfig.Configuration;
  */
 public class CliArguments {
 
+    /** Short option used to request the list of available Wakamiti modules. */
     public static final String ARG_LIST = "l";
+    /** Short option used to select the ISO 639-1 execution language. */
     public static final String ARG_LANGUAGE = "L";
 
     private static final String DEFAULT_CONF_FILE = "wakamiti.yaml";
@@ -54,6 +56,11 @@ public class CliArguments {
     private final Options cliOptions;
     private CommandLine cliCommand;
 
+    /**
+     * Creates the command-line model and registers every launcher option.
+     * <p>
+     * Call {@link #parse(String...)} before reading option-dependent values.
+     */
     public CliArguments() {
         this.cliOptions = new Options();
         cliOptions.addOption(ARG_HELP, "help", false, "Show this help screen");
@@ -106,10 +113,10 @@ public class CliArguments {
     }
 
     /**
-     * Retrieves the Wakamiti-specific configuration based on the parsed command-line arguments.
+     * Builds launcher-side configuration for the {@code wakamiti} namespace.
      *
-     * @return The Wakamiti-specific configuration.
-     * @throws URISyntaxException If a URI syntax exception occurs.
+     * @return effective Wakamiti configuration
+     * @throws URISyntaxException when launcher location cannot be resolved
      */
     public Configuration wakamitiConfiguration() throws URISyntaxException {
         Properties properties = cliCommand.getOptionProperties(ARG_WAKAMITI_PROPERTY);
@@ -119,10 +126,11 @@ public class CliArguments {
     }
 
     /**
-     * Retrieves the MavenFetcher-specific configuration based on the parsed command-line arguments.
+     * Builds launcher-side configuration for the {@code mavenFetcher}
+     * namespace.
      *
-     * @return The MavenFetcher-specific configuration.
-     * @throws URISyntaxException If a URI syntax exception occurs.
+     * @return effective Maven fetcher configuration
+     * @throws URISyntaxException when launcher location cannot be resolved
      */
     public Configuration mavenFetcherConfiguration() throws URISyntaxException {
         Properties properties = cliCommand.getOptionProperties(ARG_MAVEN_PROPERTY);
@@ -186,12 +194,32 @@ public class CliArguments {
                 : List.of();
     }
 
+    /**
+     * Returns the parsed value of an option.
+     *
+     * @param key short or long option name, such as {@link #ARG_LANGUAGE}
+     * @return option value, or an empty string when the option was not supplied
+     */
     public String getValue(
             String key
     ) {
         return cliCommand.getOptionValue(key, "");
     }
 
+    /**
+     * Merges configuration sources for one launcher qualifier.
+     * <p>
+     * Merge precedence is:
+     * launcher.properties < project file < command-line properties.
+     * Missing files are ignored.
+     * </p>
+     *
+     * @param confFileName project configuration file path
+     * @param arguments    command-line properties for the qualifier
+     * @param qualifier    top-level configuration namespace to extract
+     * @return merged configuration for the qualifier
+     * @throws URISyntaxException when launcher folder cannot be resolved
+     */
     private Configuration buildConfiguration(
             String confFileName,
             Properties arguments,

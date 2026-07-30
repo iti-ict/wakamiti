@@ -15,11 +15,24 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
+/**
+ * Selects one or more Wakamiti configuration profiles for a JUnit 5 test
+ * class.
+ * <p>
+ * The annotation is inherited, allowing a test hierarchy to share the same
+ * profile selection unless a subclass declares its own value.
+ * </p>
+ */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Profile {
 
+    /**
+     * Returns profile identifiers in application order.
+     *
+     * @return the configuration profile names to activate
+     */
     String[] value();
 
 }

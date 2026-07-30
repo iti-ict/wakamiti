@@ -22,6 +22,9 @@ import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
 import es.iti.wakamiti.core.gherkin.parser.Location;
 
 
+/**
+ * Provides the Token Matcher functionality used by Wakamiti.
+ */
 public class TokenMatcher implements ITokenMatcher {
 
     private static final Pattern LANGUAGE_PATTERN = Pattern.compile("^\\s*#\\s*language\\s*:\\s*([a-zA-Z\\-_]+)\\s*$");

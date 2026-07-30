@@ -34,10 +34,13 @@ import es.iti.wakamiti.core.Wakamiti;
 
 
 /**
- * The PlanNodeRunner class is responsible for executing a given
- * PlanNode and managing its lifecycle.
- * It provides methods to run a node, handle pre- and post-execution
- * actions, and create child runners for nested nodes.
+ * Executes one {@link PlanNode} and coordinates its descendants.
+ * <p>
+ * A runner can execute only once. During execution it publishes start/finish
+ * node events, lazily resolves a backend for test-case nodes, propagates
+ * execution to children and aggregates child results. In dry-run mode, steps
+ * are validated through backend dry-run hooks instead of being executed.
+ * </p>
  */
 public class PlanNodeRunner {
 
@@ -52,6 +55,15 @@ public class PlanNodeRunner {
     private Optional<Backend> backend;
     private State state;
 
+    /**
+     * Creates a runner with an already selected backend.
+     *
+     * @param node           node to execute
+     * @param configuration  effective node configuration
+     * @param backendFactory factory used for descendant test cases
+     * @param backend        backend inherited by compatible descendants
+     * @param logger         execution logger
+     */
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -82,6 +94,14 @@ public class PlanNodeRunner {
         this.dryRun = dryRun;
     }
 
+    /**
+     * Creates a normal-execution runner that resolves backends as required.
+     *
+     * @param node           node to execute
+     * @param configuration  effective node configuration
+     * @param backendFactory factory used to create test-case backends
+     * @param logger         execution logger
+     */
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -91,6 +111,19 @@ public class PlanNodeRunner {
         this(node, configuration, backendFactory, Optional.empty(), logger, false, "0");
     }
 
+    /**
+     * Creates a runner with explicit dry-run behavior.
+     * <p>
+     * Dry runs resolve and validate steps without invoking contributor
+     * implementations.
+     * </p>
+     *
+     * @param node           node to execute or validate
+     * @param configuration  effective node configuration
+     * @param backendFactory factory used to create test-case backends
+     * @param logger         execution logger
+     * @param dryRun         {@code true} to validate without executing steps
+     */
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -152,10 +185,10 @@ public class PlanNodeRunner {
     }
 
     /**
-     * Runs the associated PlanNode and returns the result.
+     * Executes this node according to its type and lifecycle state.
      *
-     * @return The result of the node execution.
-     * @throws IllegalStateException If the run() method is invoked more than once.
+     * @return node result, or {@code null} when no executable branch applies
+     * @throws IllegalStateException when invoked more than once
      */
     protected Result runNode() {
         if (state != State.PREPARED) {
@@ -224,6 +257,13 @@ public class PlanNodeRunner {
         return result;
     }
 
+    /**
+     * Executes child runners in encounter order and timestamps each resulting
+     * outcome.
+     *
+     * @return stream of child execution timestamps and results, excluding
+     *         children with a {@code null} result
+     */
     protected Stream<Pair<Instant, Result>> runChildren() {
         return getChildren().stream()
                 .map(PlanNodeRunner::runNode)
@@ -231,6 +271,16 @@ public class PlanNodeRunner {
                 .map(result -> new Pair<>(Instant.now(), result));
     }
 
+    /**
+     * Executes a step node using the resolved backend.
+     * <p>
+     * Runtime failures are converted into {@link Result#ERROR} on the node
+     * execution state. Post-step hooks are always invoked.
+     * </p>
+     *
+     * @return recorded node result, or {@code null} when backend execution did
+     *         not produce state
+     */
     protected Result runStep() {
         stepPreExecution(node);
         try {
@@ -289,10 +339,24 @@ public class PlanNodeRunner {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns the executable node whose state is managed by this runner.
+     *
+     * @return the underlying plan node
+     */
     public PlanNode getNode() {
         return node;
     }
 
+    /**
+     * Hook executed before a test-case node runs its descendants.
+     * <p>
+     * Default behavior logs the test-case header and invokes backend
+     * {@link Backend#setUp()}.
+     * </p>
+     *
+     * @param node test-case node about to execute
+     */
     protected void testCasePreExecution(
             PlanNode node
     ) {
@@ -300,24 +364,45 @@ public class PlanNodeRunner {
         getBackend().ifPresent(Backend::setUp);
     }
 
+    /**
+     * Hook executed after a test-case node finishes descendant execution.
+     * <p>
+     * Default behavior invokes backend {@link Backend#tearDown()}.
+     * </p>
+     *
+     * @param node executed test-case node
+     */
     protected void testCasePostExecution(
             PlanNode node
     ) {
         getBackend().ifPresent(Backend::tearDown);
     }
 
+    /**
+     * Hook executed immediately before backend step invocation.
+     *
+     * @param step step node about to execute
+     */
     protected void stepPreExecution(
             PlanNode step
     ) {
         /* nothing by default */
     }
 
+    /**
+     * Hook executed after backend step invocation, even when the step failed.
+     *
+     * @param step executed step node
+     */
     protected void stepPostExecution(
             PlanNode step
     ) {
         logger.logStepResult(step);
     }
 
+    /**
+     * Internal runner lifecycle.
+     */
     protected enum State {
 
         PREPARED,

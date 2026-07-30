@@ -16,6 +16,9 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 
+/**
+ * Utility methods for working with String Utils.
+ */
 public final class StringUtils {
 
     private StringUtils() {

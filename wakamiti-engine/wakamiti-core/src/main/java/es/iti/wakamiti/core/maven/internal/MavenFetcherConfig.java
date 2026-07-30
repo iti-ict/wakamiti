@@ -21,17 +21,32 @@ import es.iti.wakamiti.core.maven.MavenFetcher;
 import es.iti.wakamiti.core.maven.Repository;
 
 
+/**
+ * Stores the configuration used by the Maven Fetcher Config component.
+ */
 public class MavenFetcherConfig {
 
+    /** Property containing semicolon-separated remote repository URLs. */
     public static final String REMOTE_REPOSITORIES = "remoteRepositories";
+    /** Property selecting the Maven local-repository directory. */
     public static final String LOCAL_REPOSITORY = "localRepository";
+    /** Property containing the outbound proxy URL. */
     public static final String PROXY_URL = "proxy.url";
+    /** Property containing the proxy authentication user name. */
     public static final String PROXY_USERNAME = "proxy.username";
+    /** Property containing the proxy authentication password. */
     public static final String PROXY_PASSWORD = "proxy.password";
+    /** Property containing semicolon-separated proxy bypass patterns. */
     public static final String PROXY_EXCEPTIONS = "proxy.exceptions";
 
     private final Properties properties;
 
+    /**
+     * Loads UTF-8 Maven-fetcher properties from a file.
+     *
+     * @param configFile path to the Java properties file
+     * @throws IOException if the file cannot be opened or read
+     */
     public MavenFetcherConfig(
             String configFile
     ) throws IOException {
@@ -43,12 +58,25 @@ public class MavenFetcherConfig {
         }
     }
 
+    /**
+     * Creates a configuration backed by existing properties.
+     *
+     * @param properties properties to apply; retained without copying
+     */
     public MavenFetcherConfig(
             Properties properties
     ) {
         this.properties = properties;
     }
 
+    /**
+     * Applies configured repositories, local cache, and proxy settings to a
+     * Maven fetcher.
+     *
+     * @param fetcher target fetcher
+     * @throws MalformedURLException if a configured repository or proxy URL is
+     *                               invalid
+     */
     public void config(
             MavenFetcher fetcher
     ) throws MalformedURLException {

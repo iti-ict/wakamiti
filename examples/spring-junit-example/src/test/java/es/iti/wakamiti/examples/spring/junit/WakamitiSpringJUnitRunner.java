@@ -32,6 +32,18 @@ public class WakamitiSpringJUnitRunner extends WakamitiJUnitRunner {
     private static final Map<Class<?>, ConfigurableApplicationContext> SPRING_CONTEXTS = new ConcurrentHashMap<>();
     private final Class<?> configurationClass;
 
+    /**
+     * Creates a Spring-aware runner for one JUnit configuration class.
+     * <p>
+     * A Spring application context is cached per configuration class and reused
+     * across this runner instance lifecycle, then closed in
+     * {@link #withAfterClasses(Statement)}.
+     * </p>
+     *
+     * @param configurationClass JUnit class that declares Spring bootstrap
+     *                           annotations
+     * @throws InitializationError when bootstrap preconditions are invalid
+     */
     public WakamitiSpringJUnitRunner(Class<?> configurationClass) throws InitializationError {
         super(bootstrapSpring(configurationClass));
         this.configurationClass = configurationClass;

@@ -46,6 +46,15 @@ public class RunnableStep {
     private final ResourceLoader resourceLoader = WakamitiAPI.instance().resourceLoader();
     private final String stepProvider;
 
+    /**
+     * Creates an executable localized step definition.
+     *
+     * @param definitionFile resource-bundle base name containing translations
+     * @param definitionKey  key of the step expression in that bundle
+     * @param arguments      validated logical-to-Java argument mapping
+     * @param stepExecutor   reflective invocation adapter
+     * @param stepProvider   diagnostic name of the contributing provider
+     */
     public RunnableStep(
             String definitionFile,
             String definitionKey,

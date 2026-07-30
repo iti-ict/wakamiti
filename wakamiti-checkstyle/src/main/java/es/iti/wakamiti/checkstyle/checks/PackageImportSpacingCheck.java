@@ -19,7 +19,9 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  */
 public class PackageImportSpacingCheck extends AbstractCheck {
 
+    /** Message-bundle key for incorrect spacing between a package and its imports. */
     public static final String MSG_PACKAGE_IMPORTS = "package.imports.blank.lines";
+    /** Message-bundle key for incorrect spacing between imports and the first type. */
     public static final String MSG_IMPORTS_TYPE = "imports.type.blank.lines";
 
     private static final int[] TOKENS = {

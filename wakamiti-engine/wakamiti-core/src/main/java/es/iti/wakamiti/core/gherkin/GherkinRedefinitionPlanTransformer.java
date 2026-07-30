@@ -49,9 +49,13 @@ import es.iti.wakamiti.core.plan.RuleBasedPlanTransformer;
 
 
 /**
- * Represents a transformer for Gherkin-based test plans that allows
- * redefining certain aspects of the plan structure.
- *
+ * Rewrites paired Gherkin definition/implementation plans into an executable
+ * merged structure.
+ * <p>
+ * Rules remove definition-only nodes, attach implementation steps and
+ * backgrounds to definition scenarios, expand scenario outlines and convert
+ * empty aggregators into virtual steps to preserve execution traceability.
+ * </p>
  */
 @Extension(
         provider = "es.iti.wakamiti",
@@ -62,12 +66,14 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
         implements PlanTransformer {
 
     /**
-     * {@inheritDoc}
+     * Builds the ordered rule set used to reshape the plan tree.
      * <p>
-     * This method creates a list of rules for transforming Gherkin-based test plans.
+     * Rule order is significant because later operations depend on nodes created
+     * or modified by earlier steps.
+     * </p>
      *
-     * @param configuration The configuration for the Gherkin redefinition transformer.
-     * @return A list of plan node builder rules.
+     * @param configuration transformer configuration (tags, parser behavior)
+     * @return ordered transformation rules
      */
     @Override
     protected List<PlanNodeBuilderRule> createRules(

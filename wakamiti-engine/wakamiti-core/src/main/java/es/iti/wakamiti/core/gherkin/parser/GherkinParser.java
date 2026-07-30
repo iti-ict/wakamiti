@@ -14,10 +14,20 @@ import es.iti.wakamiti.core.gherkin.parser.internal.GherkinAstBuilder;
 import es.iti.wakamiti.core.gherkin.parser.internal.Parser;
 
 
+/**
+ * Parses Gherkin input and exposes its structured representation.
+ */
 public class GherkinParser {
 
     private final Parser<GherkinDocument> parser = new Parser<>(new GherkinAstBuilder());
 
+    /**
+     * Parses a Gherkin character stream into its syntax-tree representation.
+     *
+     * @param reader source positioned at the beginning of a Gherkin document
+     * @return the parsed document
+     * @throws ParserException when tokens do not form a valid Gherkin document
+     */
     public GherkinDocument parse(
             Reader reader
     ) {
