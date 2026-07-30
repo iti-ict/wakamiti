@@ -278,7 +278,7 @@ public class WorkspaceDiagnosticHelper {
             var textDocument = new VersionedTextDocumentIdentifier(implementationUri, null);
             TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
             textDocumentEdit.setTextDocument(textDocument);
-            textDocumentEdit.setEdits(List.of(textEdit));
+            textDocumentEdit.setEdits(List.of(Either.forLeft(textEdit)));
             changes.add(Either.forLeft(textDocumentEdit));
         } else {
             String newText = Snippets.implementationScenarioSnippet(id, definition, implementation);
@@ -287,7 +287,7 @@ public class WorkspaceDiagnosticHelper {
             var textDocument = new VersionedTextDocumentIdentifier(implementation.uri(), null);
             TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
             textDocumentEdit.setTextDocument(textDocument);
-            textDocumentEdit.setEdits(List.of(textEdit));
+            textDocumentEdit.setEdits(List.of(Either.forLeft(textEdit)));
             changes.add(Either.forLeft(textDocumentEdit));
         }
         return codeAction;

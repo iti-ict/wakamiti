@@ -65,7 +65,7 @@ public class DocumentAdditionalInfo {
                 .map(Pattern::compile)
                 .orElseThrow();
 
-        this.idTagGenerator = new RgxGen(idTagPattern.pattern().replace("*", "{5}"));
+        this.idTagGenerator = RgxGen.parse(idTagPattern.pattern().replace("*", "{5}"));
 
         if (this.redefinitionEnabled) {
             this.redefinitionDefinitionTag = effectiveConfiguration

@@ -13,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.junit.Test;
 
 import es.iti.wakamiti.lsp.internal.DocumentDiagnostics;
@@ -104,7 +105,9 @@ public class TestDiagnostics {
             DocumentDiagnostics diagnostics
     ) {
         return diagnostics.diagnostics().stream()
-                .map(Diagnostic::getMessage).toList();
+                .map(Diagnostic::getMessage)
+                .map(Either::getLeft)
+                .toList();
     }
 
 }

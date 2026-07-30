@@ -237,7 +237,7 @@ public class DocumentDiagnosticHelper {
             var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(), null);
             TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
             textDocumentEdit.setTextDocument(textDocument);
-            textDocumentEdit.setEdits(List.of(textEdit));
+            textDocumentEdit.setEdits(List.of(Either.forLeft(textEdit)));
             WorkspaceEdit edit = new WorkspaceEdit(List.of(Either.forLeft(textDocumentEdit)));
             CodeAction codeAction = new CodeAction("Replace step with: " + hint);
             codeAction.setIsPreferred(Boolean.TRUE);
@@ -261,7 +261,7 @@ public class DocumentDiagnosticHelper {
         );
         var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(), null);
         TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
-        textDocumentEdit.setEdits(List.of(textEdit));
+        textDocumentEdit.setEdits(List.of(Either.forLeft(textEdit)));
         textDocumentEdit.setTextDocument(textDocument);
         WorkspaceEdit edit = new WorkspaceEdit(List.of(Either.forLeft(textDocumentEdit)));
         CodeAction codeAction = new CodeAction("Add ID tag to this scenario");
