@@ -14,7 +14,6 @@
         This POM is used as an aggregator in order to build all the components at the same time.
      -->
 
-    <groupId>es.iti.wakamiti</groupId>
     <artifactId>wakamiti-aggregator</artifactId>
     <packaging>pom</packaging>
     <!-- This version number is for this specific pom, is not relevant for the rest of the components -->
