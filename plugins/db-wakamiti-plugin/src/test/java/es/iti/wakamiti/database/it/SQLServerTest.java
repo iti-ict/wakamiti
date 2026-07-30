@@ -18,6 +18,8 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -62,6 +64,9 @@ public class SQLServerTest {
     @BeforeClass
     public static void setUp() throws IOException {
         System.out.println("Creating container. Please, be patient... ");
+        Logger.getLogger("com.microsoft.sqlserver.jdbc").setLevel(Level.SEVERE);
+        Logger.getLogger("com.microsoft.sqlserver.jdbc.SQLServerConnection").setLevel(Level.SEVERE);
+
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println(message("\rContainer [MSSQLServerContainer] started with [url={}, username={}, password={}]",
                 CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
