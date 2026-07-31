@@ -519,7 +519,11 @@
                         <configuration>
                             <autoPublish>false</autoPublish>
                             <ignorePublishedComponents>true</ignorePublishedComponents>
-                            <skipPublishing>${maven.deploy.skip}</skipPublishing>
+                            <excludeArtifacts>
+                                <excludeArtifact>wakamiti-aggregator</excludeArtifact>
+                                <excludeArtifact>wakamiti-plugin-aggregator</excludeArtifact>
+                                <excludeArtifact>wakamiti-checkstyle</excludeArtifact>
+                            </excludeArtifacts>
                         </configuration>
                         <executions>
                             <execution>
