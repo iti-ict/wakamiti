@@ -519,6 +519,7 @@
                         <configuration>
                             <autoPublish>false</autoPublish>
                             <ignorePublishedComponents>true</ignorePublishedComponents>
+                            <skipPublishing>${maven.deploy.skip}</skipPublishing>
                         </configuration>
                         <executions>
                             <execution>
