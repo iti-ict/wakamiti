@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+
+  # REST/DB Testing with Spring Petclinic
+  app:
+    container_name: app-petclinic
+    image: springcommunity/spring-petclinic-rest:2.1.5
+    ports:
+      - "9966:9966"
+    environment:
+      - JAVA_TOOL_OPTIONS="-Dspring.profiles.active=wakamiti,spring-data-jpa"
+    volumes:
+      - "./application-wakamiti.properties:/app/classes/application-wakamiti.properties"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  database:
+    container_name: mysql-petclinic
+    image: mysql:5.7.44
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=petclinic
+      - MYSQL_DATABASE=petclinic
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p$$MYSQL_ROOT_PASSWORD","--protocol","tcp"]
+      interval: 1s
+      retries: 30
+
+  # AMQP/JMS Message Broker
+  rabbitmq:
+    container_name: rabbitmq-amqp
+    image: rabbitmq:3.12-management
+    ports:
+      - "5672:5672"   # AMQP port
+      - "15672:15672" # Management console
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Email Service
+  greenmail:
+    container_name: greenmail-email
+    image: greenmail/standalone:2.1.0
+    ports:
+      - "1025:3025" # SMTP port
+      - "3143:3143" # IMAP port
+    environment:
+      - GREENMAIL_OPTS=-Dgreenmail.smtp.hostname=0.0.0.0 -Dgreenmail.smtp.port=3025 -Dgreenmail.imap.hostname=0.0.0.0 -Dgreenmail.imap.port=3143 -Dgreenmail.users=test:test@example.com -Dgreenmail.users.login=email

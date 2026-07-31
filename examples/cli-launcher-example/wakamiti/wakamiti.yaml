@@ -1,0 +1,41 @@
+wakamiti:
+  resourceTypes:
+    - gherkin
+
+  log:
+    level: trace
+
+  launcher:
+    modules:
+      - mysql:mysql-connector-java:8.0.28
+
+  outputFilePath: /result/report-%execID%.json
+  htmlReport:
+    output: /result/report-%execID%.html
+  rest:
+    baseURL: http://host.docker.internal:9966/petclinic/api
+  jmeter:
+    baseURL: http://host.docker.internal:9966/petclinic/api
+    report:
+      jtl: /result/report-%execID%.jtl
+  database:
+    connection:
+      url: jdbc:mysql://host.docker.internal:3309/petclinic?useUnicode=true
+      username: root
+      password: petclinic
+      driver: com.mysql.cj.jdbc.Driver
+    enableCleanupUponCompletion: "true"
+  email:
+    store:
+      host: host.docker.internal
+      port: 3143
+      protocol: imap
+      folder: INBOX
+    address: test@example.com
+    password: test
+  amqp:
+    connection:
+      url: amqp://host.docker.internal:5672
+      protocol: AMQP_0_9_1
+      username: admin
+      password: admin

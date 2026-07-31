@@ -1,0 +1,114 @@
+<!--
+  ~ Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+  ~
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at https://mozilla.org/MPL/2.0/.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>cli-launcher-example</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.deploy.skip>true</maven.deploy.skip>
+
+        <rest.version>2.10.0</rest.version>
+        <db.version>3.9.0</db.version>
+        <amqp.version>2.10.0</amqp.version>
+        <email.version>1.6.0</email.version>
+        <groovy.version>2.8.0</groovy.version>
+        <io.version>2.8.0</io.version>
+        <jmeter.version>1.2.0</jmeter.version>
+        <html.version>2.10.0</html.version>
+
+        <volume>${project.basedir}/wakamiti:/wakamiti</volume>
+        <repo>${user.home}/.m2/repository:/repository</repo>
+        <add.host/>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>init</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <commandlineArgs>compose up --wait</commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test1</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <commandlineArgs>
+                                run --rm -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test
+                                -K resourcePath=/wakamiti/rest.feature
+                                -m ${groupId}:rest-wakamiti-plugin:${rest.version},${groupId}:db-wakamiti-plugin:${db.version},${groupId}:amqp-wakamiti-plugin:${amqp.version},${groupId}:email-wakamiti-plugin:${email.version},${groupId}:groovy-wakamiti-plugin:${groovy.version},${groupId}:io-wakamiti-plugin:${io.version},${groupId}:html-report-wakamiti-plugin:${html.version}
+                            </commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test2</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <commandlineArgs>
+                                run --rm -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test
+                                -K resourcePath=/wakamiti/jmeter.feature
+                                -m ${groupId}:jmeter-wakamiti-plugin:${jmeter.version},${groupId}:db-wakamiti-plugin:${db.version},${groupId}:amqp-wakamiti-plugin:${amqp.version},${groupId}:email-wakamiti-plugin:${email.version},${groupId}:groovy-wakamiti-plugin:${groovy.version},${groupId}:io-wakamiti-plugin:${io.version},${groupId}:html-report-wakamiti-plugin:${html.version}
+                            </commandlineArgs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>down</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <commandlineArgs>compose down</commandlineArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>docker</executable>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>properties-linux</id>
+            <activation>
+                <os><family>linux</family></os>
+            </activation>
+            <properties>
+                <add.host>--add-host=host.docker.internal:host-gateway</add.host>
+            </properties>
+        </profile>
+    </profiles>
+</project>
