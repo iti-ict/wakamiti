@@ -14,6 +14,8 @@
     <artifactId>wakamiti-plugin-maven-archetype</artifactId>
     <version>1.2.0</version>
     <packaging>maven-archetype</packaging>
+    <name>Wakamiti Plugin Maven Archetype</name>
+    <description>Maven archetype used to bootstrap Wakamiti plugins</description>
 
     <properties>
         <maven.version>3.9.16</maven.version>
