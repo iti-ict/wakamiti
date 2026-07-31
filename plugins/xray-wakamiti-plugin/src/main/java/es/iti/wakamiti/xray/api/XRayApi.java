@@ -275,6 +275,9 @@ public class XRayApi extends BaseApi {
 
         List<TestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<>() {
         });
+        if (list == null) {
+            return Collections.emptyList();
+        }
 
         for (int i = 0; i < list.size(); i++) {
             List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<>() {

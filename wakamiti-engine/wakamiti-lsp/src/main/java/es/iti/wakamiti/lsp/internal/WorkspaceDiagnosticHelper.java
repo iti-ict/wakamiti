@@ -70,7 +70,7 @@ public class WorkspaceDiagnosticHelper {
             String uri,
             List<Diagnostic> diagnostics
     ) {
-        List<Range> ranges = diagnostics.stream().map(Diagnostic::getRange).collect(toList());
+        List<Range> ranges = diagnostics.stream().map(Diagnostic::getRange).toList();
         return quickFixes
                 .getOrDefault(uri, Map.of())
                 .entrySet().stream()
@@ -94,7 +94,8 @@ public class WorkspaceDiagnosticHelper {
         for (var documentDiagnostic : diagnosticsPerDocument.entrySet()) {
             String uri = documentDiagnostic.getKey();
             for (var diagnostic : documentDiagnostic.getValue()) {
-                if (!diagnostic.getMessage().equals("There is no implementation scenario with this ID")) {
+                var message = diagnostic.getMessage();
+                if (!message.isLeft() || !"There is no implementation scenario with this ID".equals(message.getLeft())) {
                     continue;
                 }
                 String id = diagnostic.getRelatedInformation().get(0).getMessage();

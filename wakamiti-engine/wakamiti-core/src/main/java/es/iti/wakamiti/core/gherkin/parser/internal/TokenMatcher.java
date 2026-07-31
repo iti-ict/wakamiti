@@ -146,7 +146,7 @@ public class TokenMatcher implements ITokenMatcher {
             es.iti.wakamiti.core.gherkin.parser.internal
                     .Token token
     ) {
-        if (Arrays.stream(token.getTokenValue().split("\\s+"))
+        if (token.line != null && Arrays.stream(token.getTokenValue().split("\\s+"))
                 .allMatch(t -> t.startsWith(GherkinLanguageConstants.TAG_PREFIX))) {
             setTokenMatched(token, TokenType.TagLine, null, null, null, token.line.getTags());
             return true;

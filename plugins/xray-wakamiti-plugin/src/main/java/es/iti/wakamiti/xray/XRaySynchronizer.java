@@ -409,14 +409,22 @@ public class XRaySynchronizer implements EventObserver {
     }
 
     private void createTestPlan() {
-        testPlan = xRayApi.getTestPlans().stream().filter(tp -> this.testPlan.getJira().getSummary().equals(tp.getJira().getSummary())).findFirst()
+        String testPlanSummary = Optional.ofNullable(testPlan)
+                .map(TestPlan::getJira)
+                .map(JiraIssue::getSummary)
+                .orElseThrow(() -> new WakamitiXRayException(
+                        "No test plan summary configured for XRay synchronization."));
+
+        testPlan = xRayApi.getTestPlans().stream()
+                .filter(tp -> testPlanSummary.equals(Optional.ofNullable(tp.getJira()).map(JiraIssue::getSummary).orElse(null)))
+                .findFirst()
                 .orElseGet(() -> {
                     if (createItemsIfAbsent) {
-                        return xRayApi.createTestPlan(testPlan.getJira().getSummary());
+                        return xRayApi.createTestPlan(testPlanSummary);
                     } else {
                         throw new WakamitiXRayException(
                                 "Test Plan with name '{}' does not exist in XRay. ",
-                                testPlan.getJira().getSummary());
+                                testPlanSummary);
                     }
                 });
 
