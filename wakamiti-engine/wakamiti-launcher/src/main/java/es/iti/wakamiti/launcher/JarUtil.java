@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -13,9 +15,11 @@ import java.nio.file.Paths;
 
 /**
  * Utility class for handling JAR files in the context of WakamitiLauncher.
- *
  */
-public class JarUtil {
+public final class JarUtil {
+
+    private JarUtil() {
+    }
 
     /**
      * Retrieves the folder containing the JAR file from which WakamitiLauncher is executed.
@@ -29,8 +33,9 @@ public class JarUtil {
      */
     public static Path jarFolder() throws URISyntaxException {
         return Paths.get(
-            WakamitiLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
-                    .replaceAll("^/\\w:", "")
+                WakamitiLauncher.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
+                        .replaceAll("^/\\w:", "")
         ).getParent();
     }
+
 }

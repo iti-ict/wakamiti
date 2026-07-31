@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -16,13 +18,21 @@ import java.lang.annotation.Target;
  * Pair of [key,value] used in {@link AnnotatedConfiguration#value()}
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface Property {
 
-    /** The property key */
+    /**
+     * The property key
+     *
+     * @return the resulting value
+     */
     String key();
 
-    /** The value (either single or multiple) of the property */
+    /**
+     * The value (either single or multiple) of the property
+     *
+     * @return the resulting value
+     */
     String[] value();
 
 }

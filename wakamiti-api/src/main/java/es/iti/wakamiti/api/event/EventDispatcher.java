@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,18 +8,19 @@
 package es.iti.wakamiti.api.event;
 
 
-import es.iti.wakamiti.api.extensions.EventObserver;
-
 import java.time.Clock;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import es.iti.wakamiti.api.extensions.EventObserver;
+
 
 /**
- * The {@code EventDispatcher} class manages the distribution of events to registered
- * {@link EventObserver} instances. It allows adding and removing observers and publishing
- * events to those observers.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * Dispatches runtime events to registered {@link EventObserver observers}.
+ * <p>
+ * Observers are stored in a {@link CopyOnWriteArraySet}, so registration is
+ * thread-safe and iteration is snapshot-based. Event delivery is synchronous:
+ * observers are invoked in iteration order in the publisher thread.
+ * </p>
  */
 public class EventDispatcher {
 
@@ -29,7 +32,9 @@ public class EventDispatcher {
      *
      * @param observer The observer to add.
      */
-    public void addObserver(EventObserver observer) {
+    public void addObserver(
+            EventObserver observer
+    ) {
         this.observers.add(observer);
     }
 
@@ -38,17 +43,26 @@ public class EventDispatcher {
      *
      * @param observer The observer to remove.
      */
-    public void removeObserver(EventObserver observer) {
+    public void removeObserver(
+            EventObserver observer
+    ) {
         this.observers.remove(observer);
     }
 
     /**
-     * Publishes an event to all registered observers that accept the specified event type.
+     * Publishes an event to observers that accept its type.
+     * <p>
+     * If one observer throws an exception, dispatch stops immediately and the
+     * exception propagates to the caller.
+     * </p>
      *
-     * @param type The type of the event.
-     * @param data The data associated with the event.
+     * @param type event type identifier
+     * @param data event payload, or {@code null}
      */
-    public void publishEvent(String type, Object data) {
+    public void publishEvent(
+            String type,
+            Object data
+    ) {
         Event event = new Event(type, clock.instant(), data);
         for (EventObserver observer : this.observers) {
             if (observer.acceptType(type)) {

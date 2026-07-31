@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.9.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, Apache POI, Commons CSV, H2 and the supported database test drivers.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [3.8.0] - 2026-06-03
 
 ### Fixed

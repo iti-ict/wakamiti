@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,8 +8,21 @@
 package es.iti.wakamiti.api.util.http;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import es.iti.wakamiti.api.WakamitiException;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.Parameter.param;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Optional;
+
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.codec.binary.Base64;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,19 +38,8 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Optional;
-
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.Parameter.param;
+import com.fasterxml.jackson.databind.JsonNode;
+import es.iti.wakamiti.api.WakamitiException;
 
 
 public class HttpClientTest {
@@ -43,27 +47,27 @@ public class HttpClientTest {
     private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("https://localhost:{0}", PORT.toString());
 
-    private static final ClientAndServer server = startClientAndServer(PORT);
+    private static final ClientAndServer SERVER = startClientAndServer(PORT);
 
     private TestApi abstractClient;
 
     @BeforeClass
     public static void setup() {
         ConfigurationProperties.logLevel("OFF");
-        HttpsURLConnection.setDefaultSSLSocketFactory(new KeyStoreFactory(
+        SSLContext.setDefault(new KeyStoreFactory(
                 Configuration.configuration(),
-                new MockServerLogger()).sslContext().getSocketFactory());
+                new MockServerLogger()).sslContext());
     }
 
     @AfterClass
     public static void shutdown() {
-        server.close();
+        SERVER.close();
     }
 
     @Before
     public void beforeEach() throws MalformedURLException {
         abstractClient = new TestApi(new URL(BASE_URL));
-        server.reset();
+        SERVER.reset();
     }
 
     @Test
@@ -78,8 +82,7 @@ public class HttpClientTest {
                                 param("param2", "value2")
                         )
                         .withContentType(MediaType.APPLICATION_JSON)
-                        .withHeader("Accept", "application/json")
-                ,
+                        .withHeader("Accept", "application/json"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -112,8 +115,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", basic("user", "pass"))
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -148,8 +150,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -187,8 +188,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -211,7 +211,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -226,8 +225,7 @@ public class HttpClientTest {
                         )
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
-                        .withHeader("Authorization", "bearer abc")
-                ,
+                        .withHeader("Authorization", "bearer abc"),
                 response()
                         .withStatusCode(204)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -261,8 +259,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -285,7 +282,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -301,8 +297,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -325,7 +320,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -341,8 +335,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -365,7 +358,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test
@@ -381,8 +373,7 @@ public class HttpClientTest {
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withHeader("Accept", "application/json")
                         .withHeader("Authorization", "bearer abc")
-                        .withBody("{\"id\":\"123\",\"name\":\"something\"}")
-                ,
+                        .withBody("{\"id\":\"123\",\"name\":\"something\"}"),
                 response()
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -407,7 +398,6 @@ public class HttpClientTest {
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
 
-
         // act
         response = abstractClient.newRequest()
                 .pathParam("id", "123")
@@ -423,7 +413,6 @@ public class HttpClientTest {
         assertThat(response.headers().map())
                 .containsEntry("content-length", List.of("32"))
                 .containsEntry("content-type", List.of("application/json"));
-
     }
 
     @Test(expected = WakamitiException.class)
@@ -450,23 +439,36 @@ public class HttpClientTest {
         assertThat(response.statusCode()).isEqualTo(404);
     }
 
-    private void mockServer(HttpRequest expected, HttpResponse response) {
+    private void mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
         mockServer(expected, response, Times.once());
     }
 
-    private void mockServer(HttpRequest expected, HttpResponse response, Times times) {
-        server.when(expected, times).respond(response);
+    private void mockServer(
+            HttpRequest expected,
+            HttpResponse response,
+            Times times
+    ) {
+        SERVER.when(expected, times).respond(response);
     }
 
-    private String basic(String username, String password) {
+    private String basic(
+            String username,
+            String password
+    ) {
         return "Basic " + Base64.encodeBase64String((username + ":" + password).getBytes());
     }
 
     private static class TestApi extends HttpClient<TestApi> {
 
-        public TestApi(URL baseUrl) {
+        public TestApi(
+                URL baseUrl
+        ) {
             super(baseUrl);
         }
 
     }
+
 }

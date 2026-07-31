@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,15 +8,15 @@
 package es.iti.wakamiti.maven;
 
 
-import org.apache.maven.plugin.AbstractMojoExecutionException;
-
 import java.util.Optional;
+
+import org.apache.maven.plugin.AbstractMojoExecutionException;
 
 
 /**
  * Utility class to store and retrieve the result of plugin execution.
  */
-public class MojoResult {
+public final class MojoResult {
 
     private static AbstractMojoExecutionException error;
 
@@ -36,7 +38,10 @@ public class MojoResult {
      *
      * @param e The error that occurred during plugin execution.
      */
-    public static void setError(AbstractMojoExecutionException e) {
+    public static void setError(
+            AbstractMojoExecutionException e
+    ) {
         MojoResult.error = e;
     }
+
 }

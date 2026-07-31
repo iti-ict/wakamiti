@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,14 +8,15 @@
 package es.iti.wakamiti.maven;
 
 
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import org.apache.maven.plugin.logging.Log;
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.maven.plugin.logging.Log;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 /**
@@ -22,12 +25,17 @@ import java.util.Map;
 public interface WakamitiConfigurable {
 
     /**
-     * Reads the configuration from the provided files and properties.
+     * Builds the effective plugin configuration.
+     * <p>
+     * Merge precedence is:
+     * default configuration < configuration files < explicit plugin properties.
+     * Configuration files are read as {@code inner("wakamiti")} namespaces.
+     * </p>
      *
-     * @param confFiles  List of configuration files.
-     * @param properties Map of configuration properties.
-     * @return The merged configuration.
-     * @throws ConfigurationException If there is an issue with the configuration.
+     * @param confFiles  ordered configuration-file paths
+     * @param properties explicit key/value overrides from plugin configuration
+     * @return merged effective configuration
+     * @throws ConfigurationException when any file cannot be parsed or loaded
      */
     default Configuration readConfiguration(
             List<String> confFiles,
@@ -58,4 +66,5 @@ public interface WakamitiConfigurable {
      * @return The Maven logger.
      */
     Log getLog();
+
 }

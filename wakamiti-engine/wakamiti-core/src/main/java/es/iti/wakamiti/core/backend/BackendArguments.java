@@ -1,18 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.core.backend;
 
-
-import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.annotations.Step;
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.Pair;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -22,13 +16,19 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.annotations.Step;
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.util.Pair;
+
 
 /**
  * Represents the arguments associated with a step in the Wakamiti framework.
  * It parses, infers, and validates the arguments for a step based on the
  * Step annotation and the method signature of the step provider.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class BackendArguments implements Iterable<Pair<String, String>> {
 
@@ -38,9 +38,24 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
     private final WakamitiDataTypeRegistry typeRegistry;
     private final List<Pair<String, String>> argumentMap = new ArrayList<>();
 
-
+    /**
+     * Derives the logical arguments of an annotated step method.
+     * <p>
+     * Explicit argument declarations are parsed first. Missing declarations
+     * are inferred from registered Java types, and a trailing document or data
+     * table parameter is recognized automatically. The constructor rejects any
+     * mismatch between the declaration and method signature.
+     * </p>
+     *
+     * @param stepProviderClass class declaring the step implementation
+     * @param stepMethod        method annotated with {@link Step}
+     * @param typeRegistry      registry used to resolve logical data types
+     * @throws WrongStepDefinitionException if argument names, types, or count
+     *                                      do not match the Java signature
+     */
     public BackendArguments(
-            Class<?> stepProviderClass, Method stepMethod,
+            Class<?> stepProviderClass,
+            Method stepMethod,
             WakamitiDataTypeRegistry typeRegistry
     ) {
         this.stepProviderClass = stepProviderClass;
@@ -68,7 +83,9 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
      * @param index The index of the argument pair.
      * @return The argument pair at the specified index.
      */
-    public Pair<String, String> get(int index) {
+    public Pair<String, String> get(
+            int index
+    ) {
         return argumentMap.get(index);
     }
 
@@ -155,15 +172,18 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
      * @param index The index of the argument to validate.
      * @return An error message if validation fails, or null if the argument is valid.
      */
-    protected String validateArgument(int index) {
+    protected String validateArgument(
+            int index
+    ) {
+        String message = "(expected %s)";
         String error = null;
         if (argumentMap.get(index).value().equals(Backend.DOCUMENT_ARG)) {
             if (!methodArgTypes[index].equals(Document.class)) {
-                error = "(expected " + Document.class + ")";
+                error = message.replace("%s", Document.class.toString());
             }
         } else if (argumentMap.get(index).value().equals(Backend.DATATABLE_ARG)) {
             if (!methodArgTypes[index].equals(DataTable.class)) {
-                error = "(expected " + DataTable.class + ")";
+                error = message.replace("%s", DataTable.class.toString());
             }
         } else {
             final String typeName = argumentMap.get(index).value();
@@ -172,7 +192,7 @@ public class BackendArguments implements Iterable<Pair<String, String>> {
                 throwWrongStepDefinitionException("Type {} not registered.", typeName);
             }
             if (!type.getJavaType().equals(methodArgTypes[index])) {
-                error = "(expected " + type.getJavaType() + ")";
+                error = message.replace("%s", type.getJavaType().toString());
             }
         }
         return error;

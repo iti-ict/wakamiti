@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,10 @@
 package es.iti.wakamiti.junit;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.After;
 import org.junit.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class ProfileSelectorTest {
@@ -75,14 +77,23 @@ public class ProfileSelectorTest {
         assertThat(ProfileSelector.isEnabled(ProfileB.class)).isTrue();
     }
 
-    static class WithoutProfile {}
+    static class WithoutProfile {
+
+    }
 
     @Profile("A")
-    static class ProfileA {}
+    static class ProfileA {
+
+    }
 
     @Profile("B")
-    static class ProfileB {}
+    static class ProfileB {
+
+    }
 
     @Profile("C")
-    static class ProfileC {}
+    static class ProfileC {
+
+    }
+
 }

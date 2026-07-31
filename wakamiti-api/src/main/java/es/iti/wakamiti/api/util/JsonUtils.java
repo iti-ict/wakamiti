@@ -1,10 +1,15 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.api.util;
 
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,25 +29,19 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 
 /**
  * Utility class for working with JSON data.
  *
  * <p>This class provides methods for converting JSON strings, InputStreams, and objects into {@link JsonNode}.
  * It also includes a method for reading string values from a JsonNode based on a JSONPath expression.</p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
-public class JsonUtils {
+public final class JsonUtils {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-            ;
+            .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
     private static final Configuration CONFIG = Configuration.builder()
             .jsonProvider(new JacksonJsonNodeJsonProvider())
             .mappingProvider(new JacksonMappingProvider(MAPPER))
@@ -50,7 +49,6 @@ public class JsonUtils {
             .build();
 
     private JsonUtils() {
-
     }
 
     /**
@@ -61,7 +59,9 @@ public class JsonUtils {
      * @throws JsonRuntimeException     If there is an issue parsing the JSON string.
      * @throws IllegalArgumentException If the JSON string represents a single value.
      */
-    public static JsonNode json(String input) {
+    public static JsonNode json(
+            String input
+    ) {
         try {
             JsonNode result = MAPPER.readTree(input);
             if (result instanceof ValueNode) {
@@ -81,7 +81,9 @@ public class JsonUtils {
      * @throws JsonRuntimeException     If there is an issue reading or parsing the JSON content.
      * @throws IllegalArgumentException If the JSON content represents a single value.
      */
-    public static JsonNode json(InputStream input) {
+    public static JsonNode json(
+            InputStream input
+    ) {
         try {
             JsonNode result = MAPPER.readTree(input);
             if (result instanceof ValueNode) {
@@ -101,7 +103,9 @@ public class JsonUtils {
      * @throws JsonRuntimeException     If there is an issue converting or parsing the JSON string.
      * @throws IllegalArgumentException If the JSON string represents a single value.
      */
-    public static JsonNode json(Object input) {
+    public static JsonNode json(
+            Object input
+    ) {
         try {
             return json(MAPPER.writeValueAsString(input));
         } catch (JsonProcessingException e) {
@@ -116,24 +120,69 @@ public class JsonUtils {
      * @param expression The JSONPath expression specifying the value to read.
      * @return The string value read from the JsonNode.
      */
-    public static String readStringValue(JsonNode obj, String expression) {
+    public static String readStringValue(
+            JsonNode obj,
+            String expression
+    ) {
         return read(obj, expression, String.class);
     }
 
-    public static <T> T read(JsonNode obj, String expression, Class<T> type) {
+    /**
+     * Reads and converts a value selected from JSON.
+     * <p>
+     * Expressions beginning with {@code $} use JSONPath; other expressions
+     * use Groovy property/index navigation.
+     * </p>
+     *
+     * @param obj        source JSON tree
+     * @param expression JSONPath or Groovy-style navigation expression
+     * @param type       target Java class
+     * @param <T>        target value type
+     * @return the selected and converted value, or {@code null} when the
+     * configured JSONPath suppresses a missing result
+     */
+    public static <T> T read(
+            JsonNode obj,
+            String expression,
+            Class<T> type
+    ) {
         if (expression.startsWith("$")) {
             return JsonPath.using(CONFIG).parse(obj).read(expression, type);
         } else {
             return read(obj, expression, TypeFactory.defaultInstance().constructType(type));
-
         }
     }
 
-    public static <T> T read(JsonNode obj, String expression) {
-        return read(obj, expression, new TypeRef<>() {});
+    /**
+     * Reads a selected JSON value while preserving its inferred generic type.
+     *
+     * @param obj        source JSON tree
+     * @param expression JSONPath or Groovy-style navigation expression
+     * @param <T>        inferred target value type
+     * @return the selected value converted through Jackson
+     */
+    public static <T> T read(
+            JsonNode obj,
+            String expression
+    ) {
+        return read(obj, expression, new TypeRef<>() {
+        });
     }
 
-    public static <T> T read(JsonNode obj, String expression, TypeRef<T> type) {
+    /**
+     * Reads and converts a selected JSON value using a generic type token.
+     *
+     * @param obj        source JSON tree
+     * @param expression JSONPath or Groovy-style navigation expression
+     * @param type       token retaining the complete generic target type
+     * @param <T>        target value type
+     * @return the selected and converted value
+     */
+    public static <T> T read(
+            JsonNode obj,
+            String expression,
+            TypeRef<T> type
+    ) {
         if (expression.startsWith("$")) {
             return JsonPath.using(CONFIG).parse(obj).read(expression, type);
         } else {
@@ -141,22 +190,50 @@ public class JsonUtils {
         }
     }
 
-    public static <T> T read(JsonNode obj, Class<T> type) {
+    /**
+     * Converts an entire JSON tree to a Java value.
+     *
+     * @param obj  source JSON tree
+     * @param type target Java class
+     * @param <T>  target value type
+     * @return the converted value
+     */
+    public static <T> T read(
+            JsonNode obj,
+            Class<T> type
+    ) {
         return MAPPER.convertValue(obj, type);
     }
 
-    public static <T> T read(JsonNode obj, TypeRef<T> type) {
+    /**
+     * Converts an entire JSON tree using a generic type token.
+     *
+     * @param obj  source JSON tree
+     * @param type token retaining the complete generic target type
+     * @param <T>  target value type
+     * @return the converted value
+     */
+    public static <T> T read(
+            JsonNode obj,
+            TypeRef<T> type
+    ) {
         return MAPPER.convertValue(obj, MAPPER.getTypeFactory().constructType(type.getType()));
     }
 
-    private static <T> T read(JsonNode obj, String expression, JavaType type) {
+    private static <T> T read(
+            JsonNode obj,
+            String expression,
+            JavaType type
+    ) {
         Binding binding = new Binding();
         binding.setVariable("obj", obj.toString());
         binding.setVariable("exp", expression);
         GroovyShell shell = new GroovyShell(binding);
         String exp = (obj.isArray() && expression.startsWith("[") ? "'x'" : "'x.'") + " + exp";
         Object result = shell.evaluate("Eval.x(new groovy.json.JsonSlurper().parseText(obj), " + exp + ")");
-        if (result == null) return null;
+        if (result == null) {
+            return null;
+        }
         return MAPPER.convertValue(result, type);
     }
 
@@ -165,13 +242,19 @@ public class JsonUtils {
      */
     public static class JsonRuntimeException extends RuntimeException {
 
-        JsonRuntimeException(String message, Throwable cause) {
+        JsonRuntimeException(
+                String message,
+                Throwable cause
+        ) {
             super(message, cause);
         }
 
-        JsonRuntimeException(Throwable cause) {
+        JsonRuntimeException(
+                Throwable cause
+        ) {
             super(cause);
         }
+
     }
 
 }

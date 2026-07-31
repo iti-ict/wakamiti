@@ -1,21 +1,26 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.core.gherkin.parser;
 
+
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
-import es.iti.wakamiti.core.gherkin.parser.Location;
-import es.iti.wakamiti.core.gherkin.parser.ParserException;
 import es.iti.wakamiti.core.gherkin.parser.internal.ResourceLoader;
 
+
+/**
+ * Provides Gherkin Dialect services to the surrounding component.
+ */
 @SuppressWarnings("unchecked")
 public class GherkinDialectProvider {
 
@@ -23,20 +28,50 @@ public class GherkinDialectProvider {
 
     private final String defaultDialect;
 
-
-    public GherkinDialectProvider(String defaultDialect) {
+    /**
+     * Creates a provider with a caller-selected fallback dialect.
+     *
+     * @param defaultDialect language code used when a document has no language
+     *                       directive
+     */
+    public GherkinDialectProvider(
+            String defaultDialect
+    ) {
         this.defaultDialect = defaultDialect;
     }
 
+    /**
+     * Creates a provider whose default dialect is English.
+     */
     public GherkinDialectProvider() {
         this("en");
     }
 
+    /**
+     * Loads the configured fallback dialect.
+     *
+     * @return a dialect built from its bundled JSON definition
+     * @throws ParserException.NoSuchLanguageException if no bundled definition
+     *                                                exists
+     */
     public es.iti.wakamiti.core.gherkin.parser.GherkinDialect getDefaultDialect() {
         return getDialect(defaultDialect, null);
     }
 
-    public es.iti.wakamiti.core.gherkin.parser.GherkinDialect getDialect(String language, Location location) {
+    /**
+     * Loads a dialect by language code, caching its raw keyword definition.
+     *
+     * @param language Gherkin language code
+     * @param location source coordinate used when reporting an unsupported
+     *                 language; may be {@code null}
+     * @return a new dialect view over the cached definition
+     * @throws ParserException.NoSuchLanguageException if the dialect resource
+     *                                                cannot be loaded
+     */
+    public es.iti.wakamiti.core.gherkin.parser.GherkinDialect getDialect(
+            String language,
+            Location location
+    ) {
         Map<String, List<String>> map = DIALECTS.computeIfAbsent(language, this::readDialect);
         if (map == null) {
             throw new ParserException.NoSuchLanguageException(language, location);
@@ -45,23 +80,30 @@ public class GherkinDialectProvider {
         return new es.iti.wakamiti.core.gherkin.parser.GherkinDialect(language, map);
     }
 
-
-    public GherkinDialect getDialect(Locale locale) {
-        return getDialect(locale.toLanguageTag(),null);
+    /**
+     * Loads a dialect from a locale's BCP 47 language tag.
+     *
+     * @param locale locale identifying the requested language
+     * @return the corresponding Gherkin dialect
+     * @throws ParserException.NoSuchLanguageException if no definition exists
+     */
+    public GherkinDialect getDialect(
+            Locale locale
+    ) {
+        return getDialect(locale.toLanguageTag(), null);
     }
 
-
-
-    private Map<String, List<String>> readDialect(String language) {
-    	try (var reader = ResourceLoader.openReader(
-			GherkinDialectProvider.class,
-			"gherkin-dialect_"+language+".json"
-		)) {
-    		return new ObjectMapper().readValue(reader, Map.class);
-		} catch (IOException e) {
-			return null;
-		}
+    private Map<String, List<String>> readDialect(
+            String language
+    ) {
+        try (var reader = ResourceLoader.openReader(
+                GherkinDialectProvider.class,
+                "gherkin-dialect_" + language + ".json"
+        )) {
+            return new ObjectMapper().readValue(reader, Map.class);
+        } catch (IOException e) {
+            return null;
+        }
     }
-
 
 }

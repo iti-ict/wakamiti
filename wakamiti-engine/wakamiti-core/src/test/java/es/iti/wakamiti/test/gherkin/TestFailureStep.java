@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,23 +8,30 @@
 package es.iti.wakamiti.test.gherkin;
 
 
-import es.iti.wakamiti.api.plan.*;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.core.JsonPlanSerializer;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.gherkin.GherkinResourceType;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Test;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.PlanSerializer;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.JsonPlanSerializer;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 
 
 public class TestFailureStep {
@@ -31,7 +40,6 @@ public class TestFailureStep {
 
     @Test
     public void testInvalidStep() throws IOException {
-
         Map<String, String> properties = new HashMap<>();
         properties.put(RESOURCE_TYPES, GherkinResourceType.NAME);
         properties.put(
@@ -62,7 +70,7 @@ public class TestFailureStep {
                 .descendants()
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
                 .filter(node -> node.result().filter(it -> it == Result.FAILED).isPresent())
-                .collect(Collectors.toList());
+                .toList();
 
         for (PlanNode testCase : testCases) {
             String testCaseSerial = serializer.serialize(new PlanNodeSnapshot(testCase).withoutChildren());
@@ -72,8 +80,6 @@ public class TestFailureStep {
             }
             assertThat(testCaseSerial).contains("\"errorClassifier\" : \"test\"");
         }
-
-
     }
 
 }

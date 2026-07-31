@@ -1,22 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.core;
 
-
-import es.iti.wakamiti.api.ClasspathAgent;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.core.maven.FetchedArtifact;
-import es.iti.wakamiti.core.maven.MavenFetchRequest;
-import es.iti.wakamiti.core.maven.MavenFetchResult;
-import es.iti.wakamiti.core.maven.MavenFetcher;
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
-import org.slf4j.Logger;
-import org.slf4j.helpers.NOPLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,23 +20,41 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.helpers.NOPLogger;
+
+import es.iti.wakamiti.api.ClasspathAgent;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.core.maven.FetchedArtifact;
+import es.iti.wakamiti.core.maven.MavenFetchRequest;
+import es.iti.wakamiti.core.maven.MavenFetchResult;
+import es.iti.wakamiti.core.maven.MavenFetcher;
+import net.harawata.appdirs.AppDirs;
+import net.harawata.appdirs.AppDirsFactory;
+
 
 /**
- * This class provides functionality for fetching Maven dependencies.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * Resolves plugin/module artifacts from Maven repositories and appends fetched
+ * JARs to the runtime classpath.
  */
 public class WakamitiFetcher {
 
     private final Logger logger;
     private final Configuration conf;
 
-
+    /**
+     * Creates a fetcher using Wakamiti's logger and default Maven
+     * configuration.
+     */
     public WakamitiFetcher() {
         this(Wakamiti.LOGGER, Wakamiti.defaultConfiguration());
     }
 
-    protected WakamitiFetcher(Logger logger, Configuration mavenFetcherConfiguration) {
+    protected WakamitiFetcher(
+            Logger logger,
+            Configuration mavenFetcherConfiguration
+    ) {
         this.logger = logger;
         this.conf = mavenFetcherConfiguration;
     }
@@ -57,21 +65,30 @@ public class WakamitiFetcher {
      * @param mavenFetcherConfiguration The configuration to be used by the new fetcher.
      * @return A new WakamitiFetcher instance with the specified configuration.
      */
-    public WakamitiFetcher withConfiguration(Configuration mavenFetcherConfiguration) {
+    public WakamitiFetcher withConfiguration(
+            Configuration mavenFetcherConfiguration
+    ) {
         return new WakamitiFetcher(logger, mavenFetcherConfiguration);
     }
 
     /**
-     * Fetches Maven dependencies for the specified modules.
+     * Fetches dependencies for requested modules.
+     * <p>
+     * When {@code mustClean} is true, the Wakamiti local cache is deleted
+     * before download. Successfully fetched JAR files are appended to the
+     * process classpath.
+     * </p>
      *
-     * @param modules   The list of modules to fetch.
-     * @param mustClean Flag indicating whether to clean the local Maven repository before fetching.
-     * @return A list of paths to the fetched artifacts.
-     * @throws WakamitiException If an error occurs during the fetching process.
+     * @param modules   Maven coordinates to resolve
+     * @param mustClean whether cached artifacts should be removed first
+     * @return artifact paths reported by the fetcher
+     * @throws WakamitiException when fetching or cache preparation fails
      */
-    public List<Path> fetch(List<String> modules, boolean mustClean) {
+    public List<Path> fetch(
+            List<String> modules,
+            boolean mustClean
+    ) {
         try {
-
             if (modules.isEmpty()) {
                 logger.info("Nothing to fetch");
                 return Collections.emptyList();
@@ -111,11 +128,10 @@ public class WakamitiFetcher {
             List<Path> paths = fetchedArtifacts
                     .allArtifacts()
                     .map(FetchedArtifact::path)
-                    .collect(Collectors.toList());
+                    .toList();
 
             updateClasspath(paths);
             return paths;
-
         } catch (RuntimeException | IOException e) {
             logger.error("Error fetching dependencies");
             throw new WakamitiException(e);
@@ -125,10 +141,12 @@ public class WakamitiFetcher {
     /**
      * Cleans the local Maven repository cache.
      *
-     * @param mavenRepo     The path to the local Maven repository.
-     * @throws IOException  If an I/O error occurs during the cache cleaning process.
+     * @param mavenRepo The path to the local Maven repository.
+     * @throws IOException If an I/O error occurs during the cache cleaning process.
      */
-    private void cleanCache(Path mavenRepo) throws IOException {
+    private void cleanCache(
+            Path mavenRepo
+    ) throws IOException {
         try (Stream<Path> walker = Files.walk(mavenRepo)) {
             walker
                     .sorted(Comparator.reverseOrder())
@@ -138,11 +156,17 @@ public class WakamitiFetcher {
     }
 
     /**
-     * Updates the classpath with the specified artifacts.
+     * Appends fetched JAR files to the current process classpath.
+     * <p>
+     * Invalid or missing JAR files are logged and skipped; remaining artifacts
+     * continue to be processed.
+     * </p>
      *
-     * @param artifacts     The list of paths to the fetched artifacts.
+     * @param artifacts resolved artifact paths
      */
-    private void updateClasspath(List<Path> artifacts) {
+    private void updateClasspath(
+            List<Path> artifacts
+    ) {
         for (Path artifact : artifacts) {
             if (artifact.toString().endsWith(".jar")) {
                 if (!artifact.toFile().exists()) {
@@ -163,4 +187,5 @@ public class WakamitiFetcher {
             }
         }
     }
+
 }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,11 +8,12 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.datatypes.Assertion;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
+
+import es.iti.wakamiti.api.datatypes.Assertion;
 
 
 /**
@@ -18,13 +21,20 @@ import org.hamcrest.StringDescription;
  * {@link Matcher}.
  *
  * @param <T> The type of the value being asserted.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class MatcherAssertion<T> implements Assertion<T> {
 
     private final Matcher<T> matcher;
 
-    public MatcherAssertion(Matcher<T> matcher) {
+    /**
+     * Creates an assertion backed by a Hamcrest matcher.
+     *
+     * @param matcher the matcher that evaluates values and describes
+     *                mismatches
+     */
+    public MatcherAssertion(
+            Matcher<T> matcher
+    ) {
         this.matcher = matcher;
     }
 
@@ -35,18 +45,24 @@ public class MatcherAssertion<T> implements Assertion<T> {
      * @param assertion The assertion to be converted.
      * @return A Hamcrest Matcher representing the given assertion.
      */
-    public static <T> Matcher<T> asMatcher(Assertion<T> assertion) {
+    public static <T> Matcher<T> asMatcher(
+            Assertion<T> assertion
+    ) {
         if (assertion instanceof MatcherAssertion) {
             return ((MatcherAssertion<T>) assertion).matcher;
         } else {
             return new BaseMatcher<>() {
                 @Override
-                public boolean matches(Object actual) {
+                public boolean matches(
+                        Object actual
+                ) {
                     return assertion.test(actual);
                 }
 
                 @Override
-                public void describeTo(Description description) {
+                public void describeTo(
+                        Description description
+                ) {
                     description.appendText(assertion.description());
                 }
             };
@@ -62,7 +78,9 @@ public class MatcherAssertion<T> implements Assertion<T> {
      * condition, {@code false} otherwise.
      */
     @Override
-    public boolean test(Object actualValue) {
+    public boolean test(
+            Object actualValue
+    ) {
         return matcher.matches(actualValue);
     }
 
@@ -85,7 +103,9 @@ public class MatcherAssertion<T> implements Assertion<T> {
      * @return A string describing the failure.
      */
     @Override
-    public String describeFailure(Object actualValue) {
+    public String describeFailure(
+            Object actualValue
+    ) {
         StringDescription description = new StringDescription();
         matcher.describeMismatch(actualValue, description);
         return description.toString();

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,25 +8,7 @@
 package es.iti.wakamiti.jacoco;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.extensions.EventObserver;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.jacoco.core.analysis.Analyzer;
-import org.jacoco.core.analysis.CoverageBuilder;
-import org.jacoco.core.analysis.IBundleCoverage;
-import org.jacoco.core.analysis.IClassCoverage;
-import org.jacoco.core.data.ExecutionDataStore;
-import org.jacoco.core.tools.ExecDumpClient;
-import org.jacoco.core.tools.ExecFileLoader;
-import org.jacoco.report.*;
-import org.jacoco.report.csv.CSVFormatter;
-import org.jacoco.report.html.HTMLFormatter;
-import org.jacoco.report.xml.XMLFormatter;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.util.StringUtils.format;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,10 +23,42 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static es.iti.wakamiti.api.util.StringUtils.format;
+import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.analysis.CoverageBuilder;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.tools.ExecDumpClient;
+import org.jacoco.core.tools.ExecFileLoader;
+import org.jacoco.report.DirectorySourceFileLocator;
+import org.jacoco.report.FileMultiReportOutput;
+import org.jacoco.report.IReportVisitor;
+import org.jacoco.report.ISourceFileLocator;
+import org.jacoco.report.MultiReportVisitor;
+import org.jacoco.report.MultiSourceFileLocator;
+import org.jacoco.report.csv.CSVFormatter;
+import org.jacoco.report.html.HTMLFormatter;
+import org.jacoco.report.xml.XMLFormatter;
+import org.slf4j.Logger;
+
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.extensions.EventObserver;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "jacoco-reporter", version = "2.6", priority = 6)
+/**
+ * Reports Jacoco execution information.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "jacoco-reporter",
+        version = "2.13",
+        priority = Extension.NORMAL_PRIORITY + 1
+)
 public class JacocoReporter implements EventObserver {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(JacocoReporter.class);
@@ -62,66 +78,101 @@ public class JacocoReporter implements EventObserver {
     private ExecFileLoader fileLoader;
     private ExecDumpClient dumpClient;
 
+    /**
+     * @param host host name or address of the JaCoCo TCP dump agent
+     */
     public void setHost(
             String host
     ) {
         this.host = host;
     }
 
+    /**
+     * @param port TCP port exposed by the JaCoCo agent
+     */
     public void setPort(
             String port
     ) {
         this.port = port;
     }
 
+    /**
+     * @param retries connection retries allowed when dumping execution data
+     */
     public void setRetries(
             int retries
     ) {
         this.retries = retries;
     }
 
+    /**
+     * @param output directory receiving per-test-case {@code .exec} files
+     */
     public void setOutput(
             Path output
     ) {
         this.output = output;
     }
 
+    /**
+     * @param xml directory receiving per-test-case JaCoCo XML reports
+     */
     public void setXml(
             Path xml
     ) {
         this.xml = xml;
     }
 
+    /**
+     * @param csv directory receiving per-test-case JaCoCo CSV reports
+     */
     public void setCsv(
             Path csv
     ) {
         this.csv = csv;
     }
 
+    /**
+     * Sets the path used to produce the final aggregate HTML report.
+     *
+     * @param html aggregate execution-data/report path
+     */
     public void setHtml(
             Path html
     ) {
         this.html = html;
     }
 
+    /**
+     * @param classes root directory searched recursively for analyzed {@code .class} files
+     */
     public void setClasses(
             Path classes
     ) {
         this.classes = classes;
     }
 
+    /**
+     * @param sources root directory searched for Java sources linked in reports
+     */
     public void setSources(
             Path sources
     ) {
         this.sources = sources;
     }
 
+    /**
+     * @param tabwidth tab width used to calculate source-report columns
+     */
     public void setTabwidth(
             int tabwidth
     ) {
         this.tabwidth = tabwidth;
     }
 
+    /**
+     * @param name display name assigned to generated JaCoCo bundles
+     */
     public void setName(
             String name
     ) {
@@ -145,7 +196,6 @@ public class JacocoReporter implements EventObserver {
         if (Event.AFTER_WRITE_OUTPUT_FILES.equals(event.type())) {
             Optional.ofNullable(html).ifPresent(x -> executeFinal());
         }
-
     }
 
     @Override
@@ -292,7 +342,9 @@ public class JacocoReporter implements EventObserver {
         }
     }
 
-    private IReportVisitor createReportVisitor(String id) throws IOException {
+    private IReportVisitor createReportVisitor(
+            String id
+    ) throws IOException {
         final List<IReportVisitor> visitors = new ArrayList<>();
         if (xml != null) {
             final XMLFormatter formatter = new XMLFormatter();

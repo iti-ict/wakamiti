@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,16 +8,23 @@
 package es.iti.wakamiti.api;
 
 
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.util.Either;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
-
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.util.Either;
+import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
 /**
@@ -23,17 +32,15 @@ import java.util.stream.Collectors;
  * It provides methods for generating regular expressions based on
  * translated step definitions and performing pattern matching on
  * model step names.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-public class ExpressionMatcher {
+public final class ExpressionMatcher {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(ExpressionMatcher.class);
 
     private static final String NAMED_ARGUMENT_REGEX = "\\{(\\w++):(\\w+?-?+\\w++)\\}";
     private static final String UNNAMED_ARGUMENT_REGEX = "\\{(\\w+?-?+\\w++)\\}";
 
-    private static final Map<ExpressionMatcher, String> cache = new HashMap<>();
+    private static final Map<ExpressionMatcher, String> CACHE = new HashMap<>();
 
     private final String translatedDefinition;
     private final WakamitiDataTypeRegistry typeRegistry;
@@ -67,7 +74,7 @@ public class ExpressionMatcher {
         ExpressionMatcher matcher = new ExpressionMatcher(
                 translatedDefinition, typeRegistry, locale
         );
-        String regex = cache.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);
+        String regex = CACHE.computeIfAbsent(matcher, ExpressionMatcher::computeRegularExpression);
         return Pattern.compile(regex).matcher(modelStep.mapValueOrFallback(PlanNode::name));
     }
 
@@ -77,7 +84,9 @@ public class ExpressionMatcher {
      * @param translatedExpression The translated expression for which to compute the regular expression.
      * @return The computed regular expression.
      */
-    public static String computeRegularExpression(String translatedExpression) {
+    public static String computeRegularExpression(
+            String translatedExpression
+    ) {
         String regex = regexPriorAdjustments(translatedExpression);
         regex = regexFinalAdjustments(regex);
         LOGGER.trace("Expression Matcher: {} ==> {}", translatedExpression, regex);
@@ -90,7 +99,9 @@ public class ExpressionMatcher {
      * @param sourceExpression The source expression to adjust.
      * @return The adjusted regular expression.
      */
-    protected static String regexPriorAdjustments(String sourceExpression) {
+    protected static String regexPriorAdjustments(
+            String sourceExpression
+    ) {
         String regex = sourceExpression;
         // a|b|c -> (a|b|c)
         regex = regex.replaceAll("[^ |(]*?(\\|[^ |)]+)++", "($0)");
@@ -104,7 +115,9 @@ public class ExpressionMatcher {
         return regex;
     }
 
-    private static String regexBracketedAdjustments(String regex) {
+    private static String regexBracketedAdjustments(
+            String regex
+    ) {
         Pattern bracketed = Pattern.compile("(?<x>\\((?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)\\))");
         Pattern nested = Pattern.compile("(?<!\\\\)\\((?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)"
                 + bracketed.pattern() + "(?:(?!(?<!\\\\)[()]).)*+(?<!\\\\)\\)");
@@ -127,7 +140,10 @@ public class ExpressionMatcher {
         return regex.replace("[", "(").replace("]", ")");
     }
 
-    private static String regexBracketedAdjustments(String regex, List<String> texts) {
+    private static String regexBracketedAdjustments(
+            String regex,
+            List<String> texts
+    ) {
         texts = texts.stream().distinct().collect(Collectors.toList());
         Collections.reverse(texts);
         for (String text : texts) {
@@ -158,7 +174,9 @@ public class ExpressionMatcher {
      * @param computingRegex The intermediate regular expression.
      * @return The final adjusted regular expression.
      */
-    protected static String regexFinalAdjustments(String computingRegex) {
+    protected static String regexFinalAdjustments(
+            String computingRegex
+    ) {
         String regex = computingRegex;
         regex = regex.replace(" $", "$");
         regex = regex.replace("((?!\\).)$", "\1\\s*$");
@@ -184,7 +202,9 @@ public class ExpressionMatcher {
      * @param computingRegex The intermediate regular expression.
      * @return The final regular expression with arguments substituted.
      */
-    protected String regexArgumentSubstitution(String computingRegex) {
+    protected String regexArgumentSubstitution(
+            String computingRegex
+    ) {
         String regex = computingRegex;
         // unnamed arguments
         Matcher unnamedArgs = Pattern.compile(UNNAMED_ARGUMENT_REGEX).matcher(regex);
@@ -223,7 +243,9 @@ public class ExpressionMatcher {
      *
      * @param type The type that is not registered.
      */
-    protected void throwTypeNotRegistered(String type) {
+    protected void throwTypeNotRegistered(
+            String type
+    ) {
         throw new WakamitiException(
                 "Wrong step definition '{}' : unknown argument type '{}'\nAvailable types are: {}",
                 translatedDefinition, type,
@@ -248,13 +270,15 @@ public class ExpressionMatcher {
      * @return {@code true} if equal, {@code false} otherwise.
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ExpressionMatcher) {
-            ExpressionMatcher other = (ExpressionMatcher) obj;
-            return other.typeRegistry == this.typeRegistry &&
-                    other.locale.equals(this.locale) &&
-                    other.translatedDefinition.equals(this.translatedDefinition);
+    public boolean equals(
+            Object obj
+    ) {
+        if (obj instanceof ExpressionMatcher other) {
+            return other.typeRegistry == this.typeRegistry
+                    && other.locale.equals(this.locale)
+                    && other.translatedDefinition.equals(this.translatedDefinition);
         }
         return false;
     }
+
 }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,20 +8,17 @@
 package es.iti.wakamiti.core.util;
 
 
-import io.cucumber.tagexpressions.Expression;
-import io.cucumber.tagexpressions.TagExpressionParser;
-
 import java.util.Collection;
 import java.util.stream.Collectors;
+
+import io.cucumber.tagexpressions.Expression;
+import io.cucumber.tagexpressions.TagExpressionParser;
 
 
 /**
  * The TagFilter class provides a mechanism to filter a collection
  * of tags based on a tag expression. It uses the Cucumber tag expressions
  * library to parse and evaluate tag expressions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
- * @author María Galbis Calomarde - mgalbis@iti.es
  */
 public class TagFilter {
 
@@ -30,9 +29,10 @@ public class TagFilter {
      *
      * @param tagExpression The tag expression to be parsed and used for filtering.
      */
-    public TagFilter(String tagExpression) {
-        TagExpressionParser tagExpressionParser = new TagExpressionParser();
-        this.tagParsedExpression = tagExpressionParser.parse(
+    public TagFilter(
+            String tagExpression
+    ) {
+        this.tagParsedExpression = TagExpressionParser.parse(
                 tagExpression.replace("@", "").toLowerCase());
     }
 
@@ -46,7 +46,9 @@ public class TagFilter {
      * @param tags The collection of tags to be filtered.
      * @return {@code true} if the collection of tags satisfies the expression, {@code false} otherwise.
      */
-    public boolean filter(Collection<String> tags) {
+    public boolean filter(
+            Collection<String> tags
+    ) {
         return tagParsedExpression.evaluate(
                 tags.stream()
                         .map(String::toLowerCase)

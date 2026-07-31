@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -15,7 +17,6 @@ import java.util.regex.Matcher;
  * Represents a data type in the context of Wakamiti.
  *
  * @param <T> The Java type associated with the Wakamiti data type.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public interface WakamitiDataType<T> {
 
@@ -42,7 +43,9 @@ public interface WakamitiDataType<T> {
      * @return The regular expression for the data type in
      * the specified locale.
      */
-    String getRegex(Locale locale);
+    String getRegex(
+            Locale locale
+    );
 
     /**
      * Gets a list of hints associated with the data type
@@ -52,7 +55,9 @@ public interface WakamitiDataType<T> {
      * @return A list of hints for the data type in the specified
      * locale.
      */
-    List<String> getHints(Locale locale);
+    List<String> getHints(
+            Locale locale
+    );
 
     /**
      * Parse a string value into an object of the data type for
@@ -63,7 +68,10 @@ public interface WakamitiDataType<T> {
      * @return An object of the data type parsed from the input
      * string.
      */
-    T parse(Locale locale, String value);
+    T parse(
+            Locale locale,
+            String value
+    );
 
     /**
      * Create and return a matcher for performing matches with the
@@ -75,7 +83,9 @@ public interface WakamitiDataType<T> {
      * @return A matcher for the data type in the specified character
      * sequence.
      */
-    Matcher matcher(Locale locale, CharSequence value);
-
+    Matcher matcher(
+            Locale locale,
+            CharSequence value
+    );
 
 }

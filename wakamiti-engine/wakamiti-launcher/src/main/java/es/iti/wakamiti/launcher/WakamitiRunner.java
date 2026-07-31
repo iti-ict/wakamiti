@@ -1,10 +1,14 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.launcher;
 
+
+import java.net.URISyntaxException;
 
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.imconfig.Configuration;
@@ -13,16 +17,12 @@ import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.Wakamiti;
 
-import java.net.URISyntaxException;
-
 
 /**
  * Utility class to run the Wakamiti application based on the provided command-line arguments.
  *
  * <p>This class initializes Wakamiti with the provided configuration and executes the test plan.
  * It also retrieves and displays contributions if needed.</p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiRunner {
 
@@ -33,7 +33,9 @@ public class WakamitiRunner {
      *
      * @param arguments The command-line arguments provided to the application.
      */
-    public WakamitiRunner(CliArguments arguments) {
+    public WakamitiRunner(
+            CliArguments arguments
+    ) {
         this.arguments = arguments;
     }
 
@@ -84,7 +86,9 @@ public class WakamitiRunner {
      * @return The configuration for Wakamiti.
      * @throws URISyntaxException If there is an issue with URI syntax.
      */
-    private Configuration readConfiguration(CliArguments arguments) throws URISyntaxException {
+    private Configuration readConfiguration(
+            CliArguments arguments
+    ) throws URISyntaxException {
         Configuration argumentConfiguration = arguments.wakamitiConfiguration();
         Configuration configuration = Wakamiti.defaultConfiguration()
                 .append(argumentConfiguration);

@@ -1,15 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.core.datatypes.assertion;
 
-
-import es.iti.wakamiti.api.util.Pair;
-import es.iti.wakamiti.api.util.ThrowableFunction;
-import es.iti.wakamiti.api.datatypes.AbstractProvider;
-import org.hamcrest.Matcher;
 
 import java.text.ParseException;
 import java.util.List;
@@ -18,15 +15,22 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import org.hamcrest.Matcher;
+
+import es.iti.wakamiti.api.datatypes.AbstractProvider;
+import es.iti.wakamiti.api.util.Pair;
+import es.iti.wakamiti.api.util.ThrowableFunction;
+
 
 /**
  * Serves as the base for assertion providers.
  * Provides functionality for retrieving and creating matchers from expressions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public abstract class AbstractAssertProvider extends AbstractProvider {
 
+    /**
+     * Resource-bundle base name containing localized matcher expressions.
+     */
     public static final String MATCHERS_RESOURCE = "iti_wakamiti_core-matchers";
 
     protected AbstractAssertProvider() {
@@ -40,8 +44,11 @@ public abstract class AbstractAssertProvider extends AbstractProvider {
      * @param prefix The prefix used to filter expressions.
      * @return A list of expressions with the specified prefix.
      */
-    public static List<String> getAllExpressions(Locale locale, String prefix) {
-        ResourceBundle bundle = resourceLoader.resourceBundle(MATCHERS_RESOURCE, locale);
+    public static List<String> getAllExpressions(
+            Locale locale,
+            String prefix
+    ) {
+        ResourceBundle bundle = RESOURCE_LOADER.resourceBundle(MATCHERS_RESOURCE, locale);
         return bundle.keySet().stream()
                 .filter(key -> key.startsWith(prefix))
                 .map(bundle::getString)
@@ -55,7 +62,10 @@ public abstract class AbstractAssertProvider extends AbstractProvider {
      * @param expression The expression used to create the matcher.
      * @return An optional containing the matcher if one is created, or empty otherwise.
      */
-    public Optional<Matcher<?>> matcherFromExpression(Locale locale, String expression) {
+    public Optional<Matcher<?>> matcherFromExpression(
+            Locale locale,
+            String expression
+    ) {
         ThrowableFunction<Pair<String, String>, Matcher<?>> mapper = p -> createMatcher(locale, p.key(), p.value());
         return fromExpression(locale, expression).map(mapper);
     }

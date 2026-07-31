@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,20 +8,18 @@
 package es.iti.wakamiti.api.extensions;
 
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import es.iti.commons.jext.ExtensionPoint;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
-
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
 
 /**
  * Defines a contract for configuring any component with the global configuration settings.
  *
  * @param <T> The class of the component to configure
- * @author Luis Iñesta Gelabert - linesta@iti.es
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @ExtensionPoint
 public interface ConfigContributor<T> extends Contributor {
@@ -32,7 +32,9 @@ public interface ConfigContributor<T> extends Contributor {
      * @return {@code true} if the configurator is capable of configuring the given object,
      * {@code false} otherwise
      */
-    default boolean accepts(Object contributor) {
+    default boolean accepts(
+            Object contributor
+    ) {
         for (Type thisInterface : this.getClass().getGenericInterfaces()) {
             if (thisInterface instanceof ParameterizedType
                     && ((ParameterizedType) thisInterface).getRawType() == ConfigContributor.class) {

@@ -1,12 +1,34 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.xray.test;
+
+
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static es.iti.wakamiti.xray.XrayConfigContributor.JIRA_BASE_URL;
+import static es.iti.wakamiti.xray.XrayConfigContributor.JIRA_CREDENTIALS;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_ATTACHMENTS;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_BASE_URL;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_CREATE_ITEMS_IF_ABSENT;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_CREDENTIALS_CLIENT_ID;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_CREDENTIALS_CLIENT_SECRET;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_ENABLED;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_PLAN;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_PLAN_ID;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_PLAN_SUMMARY;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_PROJECT;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_SUITE_BASE;
+import static es.iti.wakamiti.xray.XrayConfigContributor.XRAY_TEST_CASE_PER_FEATURE;
 
 import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
 import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import org.junit.runner.RunWith;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static es.iti.wakamiti.xray.XrayConfigContributor.*;
 
 @AnnotatedConfiguration({
         @Property(key = NON_REGISTERED_STEP_PROVIDERS, value = "es.iti.wakamiti.xray.test.MockSteps"),
@@ -31,4 +53,3 @@ import static es.iti.wakamiti.xray.XrayConfigContributor.*;
 public class TestRunConfig {
 
 }
-

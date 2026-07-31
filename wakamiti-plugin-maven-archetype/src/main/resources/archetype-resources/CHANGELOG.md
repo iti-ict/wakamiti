@@ -6,10 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [unreleased]
+## [Unreleased]
 
-- Initial release
+### Added
+- Initial plugin skeleton.
 
+### Changed
+- Generate Java 17 classpath-based plugins with automatic module metadata.
+- Use `wakamiti-junit` and `slf4j-simple` in the generated test setup.
 
 
 

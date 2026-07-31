@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,22 +8,20 @@
 package es.iti.wakamiti.core.util;
 
 
-import es.iti.wakamiti.api.util.Pair;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import es.iti.wakamiti.api.util.Pair;
 
 
 /**
  * Provides utility methods for calculating the distance between strings.
  * It includes a method to find closer strings from a collection based on
  * a reference string.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-public class StringDistance {
+public final class StringDistance {
 
     private StringDistance() {
         // avoid instantiation
@@ -70,7 +70,10 @@ public class StringDistance {
      * @return The similarity percentage between the two strings.
      * @see Simil
      */
-    private static double calculateDistance(String string, String candidate) {
+    private static double calculateDistance(
+            String string,
+            String candidate
+    ) {
         return new Simil(string).getSimilarityInPercentFor(candidate);
     }
 

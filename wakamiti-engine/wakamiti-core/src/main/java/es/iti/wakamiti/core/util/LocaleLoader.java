@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -15,10 +17,8 @@ import java.util.Locale;
  *
  * <p>This class is designed to work with language strings that follow the BCP
  * 47-language tag format.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-public class LocaleLoader {
+public final class LocaleLoader {
 
     private LocaleLoader() {
         // avoid instantiation
@@ -36,27 +36,21 @@ public class LocaleLoader {
      * @return A Locale instance based on the provided language string.
      * @throws IllegalArgumentException If the language string is malformed.
      */
-    public static Locale forLanguage(String language) {
+    public static Locale forLanguage(
+            String language
+    ) {
         Locale locale = null;
         if (language == null || language.isEmpty()) {
             return Locale.ENGLISH;
         }
         String[] segments = language.split("[-_]");
-        switch (segments.length) {
-        case 1:
-            locale = new Locale(segments[0]);
-            break;
-        case 2:
-            locale = new Locale(segments[0], segments[1]);
-            break;
-        case 3:
-            locale = new Locale(segments[0], segments[1], segments[2]);
-            break;
-        default:
-            throw new IllegalArgumentException("Malformed language name :" + language);
-        }
+        locale = switch (segments.length) {
+            case 1 -> new Locale(segments[0]);
+            case 2 -> new Locale(segments[0], segments[1]);
+            case 3 -> new Locale(segments[0], segments[1], segments[2]);
+            default -> throw new IllegalArgumentException("Malformed language name :" + language);
+        };
         return locale;
-
     }
 
 }

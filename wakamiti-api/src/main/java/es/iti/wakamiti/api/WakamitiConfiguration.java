@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -16,23 +18,31 @@ import es.iti.wakamiti.api.imconfig.Configurer;
  * Configuration contributor for Wakamiti API.
  * This class provides default configurations and accepts specific contributors.
  * Configurations include various settings related to Wakamiti's behavior.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(name = "core-properties", provider =  "es.iti.wakamiti")
+@Extension(
+        name = "core-properties",
+        provider = "es.iti.wakamiti"
+)
 public class WakamitiConfiguration implements ConfigContributor<Void> {
 
+    /**
+     * Prefix for configuration properties
+     */
     public static final String PREFIX = "wakamiti";
 
-    /** Types of resources to be discovered and processed */
+    /**
+     * Types of resources to be discovered and processed
+     */
     public static final String RESOURCE_TYPES = "resourceTypes";
 
-
-    /** Default name of configuration file */
+    /**
+     * Default name of configuration file
+     */
     public static final String DEFAULT_CONF_FILE = "wakamiti.yaml";
 
-
-    /** Language used by a resource */
+    /**
+     * Language used by a resource
+     */
     public static final String LANGUAGE = "language";
 
     /**
@@ -40,7 +50,9 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
      */
     public static final String RESOURCE_PATH = "resourcePath";
 
-    /** List of names of the modules required */
+    /**
+     * List of names of the modules required
+     */
     public static final String MODULES = "modules";
 
     /**
@@ -49,45 +61,74 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
      */
     public static final String NON_REGISTERED_STEP_PROVIDERS = "nonRegisteredStepProviders";
 
-    /** List of hidden properties values in output file */
+    /**
+     * List of hidden properties values in output file
+     */
     public static final String PROPERTIES_HIDDEN = "properties.hidden";
 
-    /** Check if generate output file */
+    /**
+     * Check if generate output file
+     */
     public static final String GENERATE_OUTPUT_FILE = "generateOutputFile";
 
-    /** Output file path */
+    /**
+     * Output file path
+     */
     public static final String OUTPUT_FILE_PATH = "outputFilePath";
 
-    /** Whether the output would be a single file or a collection of files per test case */
+    /**
+     * Whether the output would be a single file or a collection of files per test case
+     */
     public static final String OUTPUT_FILE_PER_TEST_CASE = "outputFilePerTestCase";
 
-    /** The path to be used when outputFilePerTestCase is enabled */
+    /**
+     * The path to be used when outputFilePerTestCase is enabled
+     */
     public static final String OUTPUT_FILE_PER_TEST_CASE_PATH = "outputFilePerTestCasePath";
 
-    /** Ensure that every test case within a plan has a unique ID */
+    /**
+     * Ensure that every test case within a plan has a unique ID
+     */
     public static final String STRICT_TEST_CASE_ID = "strictTestCaseID";
 
-    /** Report sources */
+    /**
+     * Report sources
+     */
     public static final String REPORT_SOURCE = "report.source";
 
-    /** Enable / disable the report generation */
+    /**
+     * Enable / disable the report generation
+     */
     public static final String REPORT_GENERATION = "report.generation";
 
-    /** Tag Expression filter */
+    /**
+     * Tag Expression filter
+     */
     public static final String TAG_FILTER = "tagFilter";
 
+    /**
+     * Dry run flag
+     */
     public static final String DRY_RUN = "dryRun";
 
-    /** Whether filtered tests should be included in the plan, as SKIPPED */
+    /**
+     * Whether filtered tests should be included in the plan, as SKIPPED
+     */
     public static final String INCLUDE_FILTERED_TEST_CASES = "includeFilteredTestCases";
 
-    /** Pattern for use specific tag as an identifier */
+    /**
+     * Pattern for use specific tag as an identifier
+     */
     public static final String ID_TAG_PATTERN = "idTagPattern";
 
-    /** Override locale for data formatting */
+    /**
+     * Override locale for data formatting
+     */
     public static final String DATA_FORMAT_LANGUAGE = "dataFormatLanguage";
 
-    /** Set if the redefinition feature is enabled */
+    /**
+     * Set if the redefinition feature is enabled
+     */
     public static final String REDEFINITION_ENABLED = "redefinition.enabled";
 
     /**
@@ -96,41 +137,65 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
      */
     public static final String REDEFINITION_STEP_MAP = "redefinition.stepMap";
 
-    /** Tag used for annotate a feature as a definition */
+    /**
+     * Tag used for annotate a feature as a definition
+     */
     public static final String REDEFINITION_DEFINITION_TAG = "redefinition.definitionTag";
 
-    /** Tag used for annotate a feature as an implementation */
+    /**
+     * Tag used for annotate a feature as an implementation
+     */
     public static final String REDEFINITION_IMPLEMENTATION_TAG = "redefinition.implementationTag";
 
-    /** Use Ansi characters in the logs */
+    /**
+     * Use Ansi characters in the logs
+     */
     public static final String LOGS_ANSI_ENABLED = "logs.ansi.enabled";
 
-    /** Use Ansi styles in the logs */
+    /**
+     * Use Ansi styles in the logs
+     */
     public static final String LOGS_ANSI_STYLES = "logs.ansi.styles";
 
-    /** Show the Wakamiti logo in the logs */
+    /**
+     * Show the Wakamiti logo in the logs
+     */
     public static final String LOGS_SHOW_LOGO = "logs.showLogo";
 
-    /** Show the source for each step in the logs */
+    /**
+     * Show the source for each step in the logs
+     */
     public static final String LOGS_SHOW_STEP_SOURCE = "logs.showStepSource";
 
-    /** Show the elapsed time for each step in the logs */
+    /**
+     * Show the elapsed time for each step in the logs
+     */
     public static final String LOGS_SHOW_ELAPSED_TIME = "logs.showElapsedTime";
 
-    /** Set if the steps are treated as tests. */
+    /**
+     * Set if the steps are treated as tests.
+     */
     public static final String TREAT_STEPS_AS_TESTS = "junit.treatStepsAsTests";
 
-    /** Set specific execution ID, otherwise a unique execution ID will be autogenerated */
+    /**
+     * Set specific execution ID, otherwise a unique execution ID will be autogenerated
+     */
     public static final String EXECUTION_ID = "executionID";
 
-    /** Set the working directory to be used when paths are not absolute. If not specified,
-     *  it will use the current directory */
+    /**
+     * Set the working directory to be used when paths are not absolute. If not specified,
+     * it will use the current directory
+     */
     public static final String WORKING_DIR = "workingDir";
 
-
-
+    /**
+     * Faint style
+     */
     private static final String FAINT = "faint";
 
+    /**
+     * Default configuration values
+     */
     public static final Configuration DEFAULTS = Configuration.factory()
             .fromEnvironment()
             .appendFromSystem()
@@ -166,21 +231,22 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
                     "logs.ansi.styles.stepResult.ERROR", "red,bold"
             );
 
-
     @Override
     public Configuration defaultConfiguration() {
         return DEFAULTS;
     }
 
-
     @Override
-    public boolean accepts(Object contributor) {
+    public boolean accepts(
+            Object contributor
+    ) {
         return false;
     }
 
-
     @Override
     public Configurer<Void> configurer() {
-        return (x, y) -> {};
+        return (x, y) -> {
+        };
     }
+
 }

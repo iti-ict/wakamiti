@@ -1,10 +1,17 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.junit5;
 
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.platform.engine.UniqueId;
 
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
@@ -13,10 +20,6 @@ import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import org.junit.platform.engine.UniqueId;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -41,11 +44,14 @@ class PlanNodeStepJUnitRunner extends PlanNodeJUnitRunner {
 
     @Override
     protected NodeType[] target() {
-        return new NodeType[] {NodeType.STEP, NodeType.VIRTUAL_STEP};
+        return new NodeType[]{NodeType.STEP, NodeType.VIRTUAL_STEP};
     }
 
     @Override
-    protected PlanNodeRunner newContainerRunner(PlanNode node, String nodePath) {
+    protected PlanNodeRunner newContainerRunner(
+            PlanNode node,
+            String nodePath
+    ) {
         return new PlanNodeStepJUnitRunner(
                 node, configuration(), backendFactory(), getBackend(), getLogger(), nodePath,
                 classUniqueId, resourceRoots

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,21 +8,22 @@
 package es.iti.wakamiti.junit;
 
 
-import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.api.BackendFactory;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiSkippedException;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import es.iti.wakamiti.api.imconfig.Configuration;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.junit.internal.runners.model.EachTestNotifier;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 
-import java.util.Objects;
-import java.util.Optional;
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiSkippedException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
+import es.iti.wakamiti.core.runner.PlanNodeRunner;
 
 
 /**
@@ -34,11 +37,10 @@ import java.util.Optional;
  * <p>It handles the execution of targeted plan nodes, managing the notifications
  * and results using JUnit's RunNotifier and EachTestNotifier. Additionally, it
  * provides descriptions for the tests to be displayed in the test report.</p>
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlanNodeRunner {
 
+    private final String testClassName;
     private Description description;
 
     PlanNodeTargetRunner(
@@ -47,9 +49,11 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
             BackendFactory backendFactory,
             Optional<Backend> backend,
             PlanNodeLogger logger,
-            String nodePath
+            String nodePath,
+            String testClassName
     ) {
         super(node, configuration, backendFactory, backend, logger, false, nodePath);
+        this.testClassName = testClassName;
     }
 
     /**
@@ -57,7 +61,9 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
      *
      * @param notifier The EachTestNotifier to notify the test result.
      */
-    protected void notifyResult(EachTestNotifier notifier) {
+    protected void notifyResult(
+            EachTestNotifier notifier
+    ) {
         Exception notExecuted = new WakamitiException("Test case not executed due to unknown reasons");
         Optional<Result> result = getNode().result();
         if (result.isPresent()) {
@@ -74,7 +80,6 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         } else {
             notifier.addFailure(notExecuted);
         }
-
     }
 
     /**
@@ -83,7 +88,9 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
      * @param notifier The RunNotifier to notify the test execution.
      * @return The result of the test execution.
      */
-    public Result run(RunNotifier notifier) {
+    public Result run(
+            RunNotifier notifier
+    ) {
         EachTestNotifier testNotifier = new EachTestNotifier(notifier, this.getDescription());
         Result result;
         try {
@@ -117,7 +124,7 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
     @Override
     public Description getDescription() {
         if (description == null) {
-            description = Description.createTestDescription("", junitDisplayName());
+            description = Description.createTestDescription(testClassName, junitDisplayName());
         }
         return description;
     }
@@ -131,7 +138,9 @@ public class PlanNodeTargetRunner extends PlanNodeRunner implements WakamitiPlan
         return String.format("%s [%s]", displayName, discriminator);
     }
 
-    private boolean isSkippedExecution(Result result) {
+    private boolean isSkippedExecution(
+            Result result
+    ) {
         return result == Result.SKIPPED || getNode().errors().anyMatch(WakamitiSkippedException.class::isInstance);
     }
 

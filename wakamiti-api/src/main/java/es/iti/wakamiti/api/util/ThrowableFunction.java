@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,9 +8,9 @@
 package es.iti.wakamiti.api.util;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-
 import java.util.function.Function;
+
+import es.iti.wakamiti.api.WakamitiException;
 
 
 /**
@@ -17,7 +19,6 @@ import java.util.function.Function;
  *
  * @param <T> The type of the input to the function.
  * @param <R> The type of the result of the function.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @FunctionalInterface
 public interface ThrowableFunction<T, R> extends Function<T, R> {
@@ -30,7 +31,9 @@ public interface ThrowableFunction<T, R> extends Function<T, R> {
      * @param <R>               The type of the result of the function.
      * @return An unchecked version of the given ThrowableFunction.
      */
-    static <T, R> Function<T, R> unchecked(ThrowableFunction<T, R> throwableFunction) {
+    static <T, R> Function<T, R> unchecked(
+            ThrowableFunction<T, R> throwableFunction
+    ) {
         return throwableFunction;
     }
 
@@ -44,7 +47,9 @@ public interface ThrowableFunction<T, R> extends Function<T, R> {
      *                           the function application.
      */
     @Override
-    default R apply(T t) {
+    default R apply(
+            T t
+    ) {
         try {
             return applyThrowable(t);
         } catch (Exception e) {
@@ -61,7 +66,9 @@ public interface ThrowableFunction<T, R> extends Function<T, R> {
      * @throws Exception If an exception occurs during the
      *                   function application.
      */
-    R applyThrowable(T t) throws Exception;
+    R applyThrowable(
+            T t
+    ) throws Exception;
 
     /**
      * Returns a composed function that first applies this
@@ -75,7 +82,9 @@ public interface ThrowableFunction<T, R> extends Function<T, R> {
      * @return A composed function that first applies this function
      * and then applies the chainFunction.
      */
-    default <U> ThrowableFunction<T, U> andThen(ThrowableFunction<R, U> chainFunction) {
+    default <U> ThrowableFunction<T, U> andThen(
+            ThrowableFunction<R, U> chainFunction
+    ) {
         return t -> chainFunction.apply(this.apply(t));
     }
 

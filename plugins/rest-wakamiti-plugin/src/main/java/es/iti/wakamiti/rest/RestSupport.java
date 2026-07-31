@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,12 +8,37 @@
 package es.iti.wakamiti.rest;
 
 
+import static es.iti.wakamiti.api.util.http.oauth.Oauth2Provider.ACCESS_TOKEN;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.io.File;
+import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.apache.xmlbeans.XmlObject;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
-import es.iti.wakamiti.api.util.*;
+import es.iti.wakamiti.api.util.JsonUtils;
+import es.iti.wakamiti.api.util.ResourceLoader;
+import es.iti.wakamiti.api.util.ThrowableSupplier;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.api.util.XmlUtils;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
@@ -22,36 +49,22 @@ import io.restassured.http.Header;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
-import org.apache.xmlbeans.XmlObject;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.slf4j.Logger;
 
-import java.io.File;
-import java.net.URL;
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static es.iti.wakamiti.api.util.http.oauth.Oauth2Provider.ACCESS_TOKEN;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Provides the Rest Support functionality used by Wakamiti.
  */
 public class RestSupport {
 
+    /** Successful HTTP status code. */
+    private static final int HTTP_OK = 200;
+    /** Shared logger category for REST request, response and assertion diagnostics. */
     public static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.rest");
-
 
     protected final Map<ContentType, ContentTypeHelper> contentTypeValidators = WakamitiAPI.instance()
             .extensionManager()
             .getExtensions(ContentTypeHelper.class)
             .collect(Collectors.toMap(ContentTypeHelper::contentType, Function.identity()));
-
 
     protected URL baseURL;
     protected String path;
@@ -64,7 +77,9 @@ public class RestSupport {
     protected Optional<Consumer<RequestSpecification>> authSpecification = Optional.empty();
     protected List<Consumer<RequestSpecification>> specifications = new LinkedList<>();
 
-    protected static void config(RestAssuredConfig config) {
+    protected static void config(
+            RestAssuredConfig config
+    ) {
         RestAssured.config = config;
     }
 
@@ -80,7 +95,9 @@ public class RestSupport {
         return attachLogger(request);
     }
 
-    private RequestSpecification attachLogger(RequestSpecification request) {
+    private RequestSpecification attachLogger(
+            RequestSpecification request
+    ) {
         RestAssuredLogger logFilter = new RestAssuredLogger();
         if (LOGGER.isDebugEnabled()) {
             request.log().all().filter(logFilter);
@@ -92,14 +109,18 @@ public class RestSupport {
         return request;
     }
 
-    protected void checkURL(URL url) {
+    protected void checkURL(
+            URL url
+    ) {
         if (!isBlank(url.getQuery())) {
             throw new WakamitiException("Query parameters are not allowed here. Please, use steps for that purpose.");
         }
     }
 
     protected String uri() {
-        if (baseURL == null) throw new WakamitiException("Missing required base URL.");
+        if (baseURL == null) {
+            throw new WakamitiException("Missing required base URL.");
+        }
         String base = baseURL.toString();
         if (base.endsWith("/")) {
             base = base.substring(0, base.length() - 1);
@@ -114,24 +135,30 @@ public class RestSupport {
         return url.toString();
     }
 
-    protected ValidatableResponse commonResponseAssertions(Response response) {
+    protected ValidatableResponse commonResponseAssertions(
+            Response response
+    ) {
         return response.then()
                 .statusCode(httpCodeAssertion);
     }
 
-    protected String retrieveOauthToken(Oauth2ProviderConfig oauth2ProviderConfig) {
+    protected String retrieveOauthToken(
+            Oauth2ProviderConfig oauth2ProviderConfig
+    ) {
         RequestSpecification request = RestAssured.given().contentType(ContentType.URLENC)
                 .auth().preemptive()
                 .basic(oauth2ProviderConfig.clientId(), oauth2ProviderConfig.clientSecret())
                 .formParams(oauth2ProviderConfig.parameters());
         return attachLogger(request)
                 .with().post(oauth2ProviderConfig.url())
-                .then().statusCode(200)
+                .then().statusCode(HTTP_OK)
                 .body(ACCESS_TOKEN, Matchers.notNullValue())
                 .extract().body().jsonPath().getString(ACCESS_TOKEN);
     }
 
-    protected void executeRequest(BiFunction<RequestSpecification, String, Response> function) {
+    protected void executeRequest(
+            BiFunction<RequestSpecification, String, Response> function
+    ) {
         this.response = function.apply(newRequest(), uri());
         this.validatableResponse = commonResponseAssertions(response);
     }
@@ -144,7 +171,9 @@ public class RestSupport {
         this.validatableResponse = commonResponseAssertions(response);
     }
 
-    protected void assertFileExists(File file) {
+    protected void assertFileExists(
+            File file
+    ) {
         if (!file.exists()) {
             throw new WakamitiException("File '{}' not found", file.getAbsolutePath());
         }
@@ -156,7 +185,9 @@ public class RestSupport {
         }
     }
 
-    protected Map<String, String> tableToMap(DataTable dataTable) {
+    protected Map<String, String> tableToMap(
+            DataTable dataTable
+    ) {
         if (dataTable.columns() != 2) {
             throw new WakamitiException("Table must have 2 columns [name, value]");
         }
@@ -167,7 +198,11 @@ public class RestSupport {
         return map;
     }
 
-    protected RequestSpecification header(RequestSpecification req, String header, String value) {
+    protected RequestSpecification header(
+            RequestSpecification req,
+            String header,
+            String value
+    ) {
         return req.headers(Map.of(header, List.of(value.split(";"))));
     }
 
@@ -192,7 +227,10 @@ public class RestSupport {
     }
 
     @SuppressWarnings("unchecked")
-    private Object collectIfDuplicated(Object oldObj, Object newObj) {
+    private Object collectIfDuplicated(
+            Object oldObj,
+            Object newObj
+    ) {
         if (oldObj instanceof List) {
             ((List<Object>) oldObj).add(newObj);
         } else {
@@ -201,7 +239,9 @@ public class RestSupport {
         return oldObj;
     }
 
-    private Object doTry(ThrowableSupplier<?>... suppliers) {
+    private Object doTry(
+            ThrowableSupplier<?>... suppliers
+    ) {
         for (ThrowableSupplier<?> supplier : suppliers) {
             try {
                 Object result = supplier.get();
@@ -228,27 +268,43 @@ public class RestSupport {
         return helper;
     }
 
-    protected void assertContentIs(Document expected, MatchMode matchMode) {
+    protected void assertContentIs(
+            Document expected,
+            MatchMode matchMode
+    ) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContent(expected, validatableResponse.extract(), matchMode);
     }
 
-    protected void assertContentIs(File expected, MatchMode matchMode) {
+    protected void assertContentIs(
+            File expected,
+            MatchMode matchMode
+    ) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContent(readFile(expected), validatableResponse.extract(), matchMode);
     }
 
-    protected <T> void assertBodyFragment(String fragment, Assertion<T> assertion, Class<T> dataType) {
+    protected <T> void assertBodyFragment(
+            String fragment,
+            Assertion<T> assertion,
+            Class<T> dataType
+    ) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertFragment(fragment, validatableResponse, dataType, assertion);
     }
 
-    protected void assertBodyFragment(String fragment, String expected, MatchMode matchMode) {
+    protected void assertBodyFragment(
+            String fragment,
+            String expected,
+            MatchMode matchMode
+    ) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContent(fragment, expected, validatableResponse.extract(), matchMode);
     }
 
-    protected ContentType parseContentType(String contentType) {
+    protected ContentType parseContentType(
+            String contentType
+    ) {
         try {
             return ContentType.valueOf(contentType.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -260,25 +316,31 @@ public class RestSupport {
         }
     }
 
-    protected void assertContentSchema(String expectedSchema) {
+    protected void assertContentSchema(
+            String expectedSchema
+    ) {
         ContentTypeHelper helper = contentTypeHelperForResponse();
         helper.assertContentSchema(expectedSchema, validatableResponse.extract().asString());
     }
 
-    protected void assertSubtype(String subtype) {
+    protected void assertSubtype(
+            String subtype
+    ) {
         List<String> subtypes = Stream.of(ContentType.MULTIPART.getContentTypeStrings())
-                .map(contentType -> contentType.split("/")[1]).collect(Collectors.toList());
+                .map(contentType -> contentType.split("/")[1]).toList();
         if (!subtypes.contains(subtype)) {
             throw new WakamitiException("'{}' is not a valid subtype. Possible values: {}", subtype, subtypes);
         }
     }
 
-    String readFile(File file) {
+    String readFile(
+            File file
+    ) {
         return resourceLoader().readFileAsString(file);
     }
-
 
     protected ResourceLoader resourceLoader() {
         return WakamitiAPI.instance().resourceLoader();
     }
+
 }

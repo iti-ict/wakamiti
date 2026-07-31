@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [1.1.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine and MockServer.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [1.0.0] - 2025-02-27
 
 Initial release.  

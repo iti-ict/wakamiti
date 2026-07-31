@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,38 +8,58 @@
 package es.iti.wakamiti.azure;
 
 
+import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
+import static org.apache.commons.collections4.CollectionUtils.isEmpty;
+
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.azure.api.BaseApi;
 import es.iti.wakamiti.azure.api.AzureApi;
-import es.iti.wakamiti.azure.api.model.*;
+import es.iti.wakamiti.azure.api.BaseApi;
+import es.iti.wakamiti.azure.api.model.PointAssignment;
+import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestPlan;
+import es.iti.wakamiti.azure.api.model.TestResult;
+import es.iti.wakamiti.azure.api.model.TestRun;
+import es.iti.wakamiti.azure.api.model.TestSuite;
 import es.iti.wakamiti.azure.internal.Mapper;
 import es.iti.wakamiti.azure.internal.Util;
 import es.iti.wakamiti.azure.internal.WakamitiAzureException;
-import org.slf4j.Logger;
-
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.azure.AzureConfigContributor.AZURE_ENABLED;
-import static org.apache.commons.collections4.CollectionUtils.isEmpty;
 
 
-@Extension(provider = "es.iti.wakamiti", name = "azure-reporter", version = "2.7", priority = 10)
+/**
+ * Synchronizes Azure data with the configured external system.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "azure-reporter",
+        version = "2.13",
+        priority = Extension.NORMAL_PRIORITY * 2
+)
 public class AzureSynchronizer implements EventObserver {
 
+    /** Mapper mode that publishes one Azure Test Case per Gherkin feature. */
     public static final String GHERKIN_TYPE_FEATURE = "feature";
+    /** Mapper mode that publishes one Azure Test Case per Gherkin scenario. */
     public static final String GHERKIN_TYPE_SCENARIO = "scenario";
+
     private static final Logger LOGGER = WakamitiLogger.forClass(AzureSynchronizer.class);
     private final Set<String> attachments = new LinkedHashSet<>();
+
     private boolean enabled;
     private URL baseURL;
     private String organization;
@@ -51,7 +73,6 @@ public class AzureSynchronizer implements EventObserver {
     private String configuration;
 
     private AzureApi api;
-
     private TestRun run;
     private List<TestResult> testResults;
 
@@ -59,59 +80,144 @@ public class AzureSynchronizer implements EventObserver {
         throw new WakamitiException("Authentication is needed");
     };
 
-    public void enabled(boolean enabled) {
+    /**
+     * @param enabled whether synchronization reacts to execution events
+     */
+    public void enabled(
+            boolean enabled
+    ) {
         this.enabled = enabled;
     }
 
-    public void baseURL(URL baseURL) {
+    /**
+     * @param baseURL Azure DevOps service base URL
+     */
+    public void baseURL(
+            URL baseURL
+    ) {
         this.baseURL = baseURL;
     }
 
-    public void organization(String organization) {
+    /**
+     * @param organization Azure DevOps organization name
+     */
+    public void organization(
+            String organization
+    ) {
         this.organization = organization;
     }
 
-    public void project(String project) {
+    /**
+     * @param project Azure DevOps project containing the test plan
+     */
+    public void project(
+            String project
+    ) {
         this.project = project;
     }
 
-    public void version(String version) {
+    /**
+     * @param version Azure DevOps REST API version
+     */
+    public void version(
+            String version
+    ) {
         this.version = version;
     }
 
-    public void testPlan(TestPlan testPlan) {
+    /**
+     * @param testPlan plan identity and classification paths to synchronize
+     */
+    public void testPlan(
+            TestPlan testPlan
+    ) {
         this.testPlan = testPlan;
     }
 
-    public void suiteBase(String suiteBase) {
+    /**
+     * @param suiteBase base suite path beneath which Wakamiti creates suites
+     */
+    public void suiteBase(
+            String suiteBase
+    ) {
         this.suiteBase = suiteBase;
     }
 
-    public void setCredentialsAuthenticator(String user, String password) {
+    /**
+     * Configures HTTP Basic authentication for subsequent Azure API clients.
+     *
+     * @param user     Azure DevOps user name
+     * @param password password or compatible personal access token
+     */
+    public void setCredentialsAuthenticator(
+            String user,
+            String password
+    ) {
         this.authenticator = client -> client.basicAuth(user, password);
     }
 
-    public void setTokenAuthenticator(String token) {
+    /**
+     * Configures bearer-token authentication for subsequent Azure API clients.
+     *
+     * @param token access token sent to Azure DevOps
+     */
+    public void setTokenAuthenticator(
+            String token
+    ) {
         this.authenticator = client -> client.tokenAuth(token);
     }
 
-    public void configuration(String configuration) {
+    /**
+     * @param configuration Azure test-configuration name assigned to test points
+     */
+    public void configuration(
+            String configuration
+    ) {
         this.configuration = configuration;
     }
 
-    public void testCasePerFeature(boolean testCasePerFeature) {
+    /**
+     * Selects synchronization granularity.
+     *
+     * @param testCasePerFeature {@code true} for one Test Case per feature;
+     *                           {@code false} for one per scenario
+     */
+    public void testCasePerFeature(
+            boolean testCasePerFeature
+    ) {
         this.testCasePerFeature = testCasePerFeature;
     }
 
-    public void createItemsIfAbsent(boolean createItemsIfAbsent) {
+    /**
+     * @param createItemsIfAbsent whether missing plans, suites and cases may be created
+     */
+    public void createItemsIfAbsent(
+            boolean createItemsIfAbsent
+    ) {
         this.createItemsIfAbsent = createItemsIfAbsent;
     }
 
-    public void removeOrphans(boolean removeOrphans) {
+    /**
+     * Sets whether remote items without a corresponding Wakamiti node should
+     * be removed during synchronization.
+     *
+     * @param removeOrphans orphan-removal policy
+     */
+    public void removeOrphans(
+            boolean removeOrphans
+    ) {
         this.removeOrphans = removeOrphans;
     }
 
-    public void attachments(Set<String> attachments) {
+    /**
+     * Adds path glob patterns for report files uploaded to the current run.
+     * Existing patterns are retained.
+     *
+     * @param attachments patterns matched against report output paths
+     */
+    public void attachments(
+            Set<String> attachments
+    ) {
         this.attachments.addAll(attachments);
     }
 
@@ -124,17 +230,33 @@ public class AzureSynchronizer implements EventObserver {
         return api;
     }
 
+    /**
+     * Handles Azure synchronization lifecycle events.
+     * <p>
+     * On {@link Event#PLAN_RUN_STARTED}, the local plan is synchronized and a
+     * remote run is opened. On {@link Event#PLAN_RUN_FINISHED}, results are
+     * pushed and the run is completed. Matching report files are uploaded as
+     * attachments when {@link Event#REPORT_OUTPUT_FILE_WRITTEN} is received.
+     * The Azure API client is closed after each handled event.
+     * </p>
+     *
+     * @param event received runtime event
+     */
     @Override
-    public void eventReceived(Event event) {
-        if (!enabled) return;
+    public void eventReceived(
+            Event event
+    ) {
+        if (!enabled) {
+            return;
+        }
 
         if (Event.PLAN_RUN_STARTED.equals(event.type())) {
             try {
                 LOGGER.info("Synchronising test plan with Azure...");
                 syncAndStart((PlanNodeSnapshot) event.data());
             } catch (Exception e) {
-                throw new WakamitiException("The test plan could not be synchronized. " +
-                        "You can disable the plugin with the '{}' option to continue.", AZURE_ENABLED, e);
+                throw new WakamitiException("The test plan could not be synchronized. "
+                        + "You can disable the plugin with the '{}' option to continue.", AZURE_ENABLED, e);
             }
         }
 
@@ -159,14 +281,28 @@ public class AzureSynchronizer implements EventObserver {
         api().close();
     }
 
+    /**
+     * Declares the event types consumed by this observer.
+     *
+     * @param eventType event type identifier
+     * @return {@code true} for plan start/finish and report file events
+     */
     @Override
-    public boolean acceptType(String eventType) {
+    public boolean acceptType(
+            String eventType
+    ) {
         return List.of(Event.PLAN_RUN_STARTED, Event.PLAN_RUN_FINISHED, Event.REPORT_OUTPUT_FILE_WRITTEN)
                 .contains(eventType);
     }
 
-
-    private void syncAndStart(PlanNodeSnapshot plan) {
+    /**
+     * Synchronizes plan metadata and starts a remote Azure run.
+     *
+     * @param plan executed plan snapshot used to map suites/tests
+     */
+    private void syncAndStart(
+            PlanNodeSnapshot plan
+    ) {
         testPlan = api().getTestPlan(testPlan, createItemsIfAbsent);
         LOGGER.debug("Remote plan #{} ready to sync", testPlan.id());
 
@@ -204,7 +340,14 @@ public class AzureSynchronizer implements EventObserver {
         LOGGER.debug("{} remote test results ready to sync", testResults.size());
     }
 
-    private void uploadExecution(PlanNodeSnapshot plan) {
+    /**
+     * Maps local execution results to Azure test results and completes the run.
+     *
+     * @param plan executed plan snapshot containing final outcomes
+     */
+    private void uploadExecution(
+            PlanNodeSnapshot plan
+    ) {
         if (isEmpty(testResults)) {
             return;
         }
@@ -221,7 +364,9 @@ public class AzureSynchronizer implements EventObserver {
         api().updateRun(run.errorMessage(plan.getErrorMessage()).state(TestRun.Status.COMPLETED));
     }
 
-    private void uploadAttachment(Path file) {
+    private void uploadAttachment(
+            Path file
+    ) {
         api().attachFile(run, file);
         LOGGER.debug("Attachment '{}' uploaded", file.getFileName());
     }

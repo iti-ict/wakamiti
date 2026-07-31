@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,24 +8,28 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.database.exception.SQLRuntimeException;
+import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
+import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.function.IntConsumer;
 
-import static es.iti.wakamiti.database.jdbc.LogUtils.debugRows;
-import static es.iti.wakamiti.database.jdbc.LogUtils.traceSQL;
+import es.iti.wakamiti.database.exception.SQLRuntimeException;
 
 
 /**
  * Represents a database update operation, used to execute SQL statements
  * that modify data in a database.
  */
-public class Update extends Sentence<PreparedStatement> {
+public final class Update extends Sentence<PreparedStatement> {
 
-    private Update(String sql, Database db, PreparedStatement statement) {
+    private Update(
+            String sql,
+            Database db,
+            PreparedStatement statement
+    ) {
         super(db, statement, sql);
     }
 
@@ -43,12 +49,16 @@ public class Update extends Sentence<PreparedStatement> {
      * @param action The action to perform with the result count
      * @return The Update instance
      */
-    public Update execute(IntConsumer action) {
+    public Update execute(
+            IntConsumer action
+    ) {
         try {
             traceSQL(sql);
             int result = statement.executeUpdate();
             debugRows(result);
-            if (action != null) action.accept(result);
+            if (action != null) {
+                action.accept(result);
+            }
             return this;
         } catch (SQLException e) {
             throw new SQLRuntimeException(e);
@@ -63,7 +73,10 @@ public class Update extends Sentence<PreparedStatement> {
         private final Database db;
         private final String sql;
 
-        Builder(Database db, String sql) {
+        Builder(
+                Database db,
+                String sql
+        ) {
             this.db = db;
             this.sql = sql;
         }
@@ -97,7 +110,9 @@ public class Update extends Sentence<PreparedStatement> {
          * @param action The action to perform with the result count
          * @return The Update instance after execution
          */
-        public Update execute(IntConsumer action) {
+        public Update execute(
+                IntConsumer action
+        ) {
             return prepare().execute(action);
         }
 

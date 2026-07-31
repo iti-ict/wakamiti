@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,20 +8,23 @@
 package es.iti.wakamiti.database.it;
 
 
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
+import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.MySQLContainer;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
-import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 
 
 @AnnotatedConfiguration({
@@ -36,7 +41,7 @@ import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 @RunWith(WakamitiJUnitRunner.class)
 public class MySqlDatabaseTest {
 
-    public static final MySQLContainer<?> container = new MySQLContainer<>("mysql:5.7.34")
+    public static final MySQLContainer<?> CONTAINER = new MySQLContainer<>("mysql:5.7.34")
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
@@ -49,14 +54,15 @@ public class MySqlDatabaseTest {
     @BeforeClass
     public static void setUp() {
         System.out.println("Creating container. Please, be patient... ");
-        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(container);
+        TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
         System.out.println(message("\rContainer [MySQLContainer] started with [url={}, username={}, password={}]",
-                container.getJdbcUrl(), container.getUsername(), container.getPassword()));
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
     }
 
     @AfterClass
     public static void shutdown() {
-        container.stop();
-        container.close();
+        CONTAINER.stop();
+        CONTAINER.close();
     }
+
 }

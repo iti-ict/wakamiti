@@ -1,10 +1,26 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.core.datatypes.assertion;
 
+
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.hamcrest.Matcher;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiDataType;
@@ -16,23 +32,12 @@ import es.iti.wakamiti.core.datatypes.WakamitiDataTypeBase;
 import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
-import org.hamcrest.Matcher;
-
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.TemporalAccessor;
-import java.util.*;
 
 
 /**
  * A contributor for Wakamiti data types related to assertions.
  * It provides various assertion types for functional and Java
  * data types, such as integer, decimal, and text assertions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Extension(provider = "es.iti.wakamiti", name = "assertion-types")
 public class WakamitiAssertTypes implements DataTypeContributor {
@@ -99,9 +104,9 @@ public class WakamitiAssertTypes implements DataTypeContributor {
     /**
      * Creates a binary duration assertion data type.
      *
-     * @param name            The name of the data type.
-     * @param mapper          The mapper function for the assertion.
-     * @param <T>             The type of the assertion.
+     * @param name   The name of the data type.
+     * @param mapper The mapper function for the assertion.
+     * @param <T>    The type of the assertion.
      * @return The created data type.
      */
     @SuppressWarnings("rawtypes")
@@ -117,6 +122,15 @@ public class WakamitiAssertTypes implements DataTypeContributor {
         );
     }
 
+    /**
+     * Creates a localized binary assertion data type for temporal values.
+     *
+     * @param name     expression type name registered in Wakamiti
+     * @param dateType target temporal class, which controls accepted date/time
+     *                 components
+     * @param <T>      comparable temporal value type
+     * @return the configured assertion data type
+     */
     @SuppressWarnings("rawtypes")
     public static <T extends Comparable<T> & TemporalAccessor> WakamitiDataTypeBase<Assertion> binaryDateAssert(
             String name,
@@ -137,7 +151,9 @@ public class WakamitiAssertTypes implements DataTypeContributor {
      * @return The created data type.
      */
     @SuppressWarnings("rawtypes")
-    public static WakamitiDataTypeBase<Assertion> binaryStringAssert(String name) {
+    public static WakamitiDataTypeBase<Assertion> binaryStringAssert(
+            String name
+    ) {
         return new WakamitiAssertDataType(
                 name,
                 "matcher.string",
@@ -175,7 +191,9 @@ public class WakamitiAssertTypes implements DataTypeContributor {
      * @param <T>     The type of the matcher.
      * @return The adapted Assertion.
      */
-    private static <T> Assertion<T> adapt(Matcher<T> matcher) {
+    private static <T> Assertion<T> adapt(
+            Matcher<T> matcher
+    ) {
         return new MatcherAssertion<>(matcher);
     }
 
@@ -211,6 +229,7 @@ public class WakamitiAssertTypes implements DataTypeContributor {
      */
     @SuppressWarnings("rawtypes")
     private static class WakamitiAssertDataType extends WakamitiDataTypeBase<Assertion> {
+
         public WakamitiAssertDataType(
                 String name,
                 String prefix,
@@ -230,6 +249,7 @@ public class WakamitiAssertTypes implements DataTypeContributor {
                     parseProvider(matcherProviders)
             );
         }
+
     }
 
 }

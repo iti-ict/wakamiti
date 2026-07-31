@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,26 @@
 package es.iti.wakamiti.core.gherkin;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.extensions.PlanTransformer;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeBuilder;
-import es.iti.wakamiti.core.gherkin.parser.Examples;
-import es.iti.wakamiti.core.gherkin.parser.Feature;
-import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
-import es.iti.wakamiti.core.plan.RuleBasedPlanTransformer;
-import es.iti.wakamiti.api.imconfig.Configuration;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_SCENARIO_OUTLINE;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.PlanNodeBuilderRule;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.anyNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.anyOtherNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.childOf;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.copyProperties;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.forEachNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.removeNode;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.sharing;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withAnyAncestor;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withNoneAncestor;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withNoneDescendant;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withProperty;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withTag;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withType;
+import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.withoutChildren;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,30 +35,50 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.*;
-import static es.iti.wakamiti.core.plan.PlanNodeBuilderRules.*;
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.PlanTransformer;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeBuilder;
+import es.iti.wakamiti.core.gherkin.parser.Examples;
+import es.iti.wakamiti.core.gherkin.parser.Feature;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioOutline;
+import es.iti.wakamiti.core.plan.RuleBasedPlanTransformer;
 
 
 /**
- * Represents a transformer for Gherkin-based test plans that allows
- * redefining certain aspects of the plan structure.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * Rewrites paired Gherkin definition/implementation plans into an executable
+ * merged structure.
+ * <p>
+ * Rules remove definition-only nodes, attach implementation steps and
+ * backgrounds to definition scenarios, expand scenario outlines and convert
+ * empty aggregators into virtual steps to preserve execution traceability.
+ * </p>
  */
-@Extension(provider = "es.iti.wakamiti", name = "gherkin-redefinition-transformer", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "gherkin-redefinition-transformer",
+        version = "2.6"
+)
 public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
         implements PlanTransformer {
 
     /**
-     * {@inheritDoc}
+     * Builds the ordered rule set used to reshape the plan tree.
      * <p>
-     * This method creates a list of rules for transforming Gherkin-based test plans.
+     * Rule order is significant because later operations depend on nodes created
+     * or modified by earlier steps.
+     * </p>
      *
-     * @param configuration The configuration for the Gherkin redefinition transformer.
-     * @return A list of plan node builder rules.
+     * @param configuration transformer configuration (tags, parser behavior)
+     * @return ordered transformation rules
      */
     @Override
-    protected List<PlanNodeBuilderRule> createRules(Configuration configuration) {
+    protected List<PlanNodeBuilderRule> createRules(
+            Configuration configuration
+    ) {
         GherkinRedefinitionRules rules = new GherkinRedefinitionRules(configuration);
         return Arrays.asList(
 
@@ -106,7 +137,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          *
          * @param configuration The configuration for Gherkin redefinition.
          */
-        public GherkinRedefinitionRules(Configuration configuration) {
+        public GherkinRedefinitionRules(
+                Configuration configuration
+        ) {
             gherkinPlanBuilder = new GherkinPlanBuilder();
             gherkinPlanBuilder.configure(configuration);
             implementationTag = implementationTag(configuration);
@@ -358,7 +391,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param configuration The configuration for Gherkin redefinition.
          * @return The definition tag.
          */
-        private String definitionTag(Configuration configuration) {
+        private String definitionTag(
+                Configuration configuration
+        ) {
             return configuration
                     .get(WakamitiConfiguration.REDEFINITION_DEFINITION_TAG, String.class)
                     .orElseThrow();
@@ -370,7 +405,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param configuration The configuration for Gherkin redefinition.
          * @return The implementation tag.
          */
-        private String implementationTag(Configuration configuration) {
+        private String implementationTag(
+                Configuration configuration
+        ) {
             return configuration
                     .get(WakamitiConfiguration.REDEFINITION_IMPLEMENTATION_TAG, String.class)
                     .orElseThrow();
@@ -382,7 +419,9 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param gherkinType The Gherkin type to check.
          * @return A predicate for checking Gherkin type.
          */
-        private Predicate<PlanNodeBuilder> withGherkinType(String gherkinType) {
+        private Predicate<PlanNodeBuilder> withGherkinType(
+                String gherkinType
+        ) {
             return withProperty(GHERKIN_PROPERTY, gherkinType);
         }
 
@@ -429,7 +468,10 @@ public class GherkinRedefinitionPlanTransformer extends RuleBasedPlanTransformer
          * @param implNode       The implementation node.
          * @return The step map.
          */
-        private int[] computeStepMap(int numDefChildren, PlanNodeBuilder implNode) {
+        private int[] computeStepMap(
+                int numDefChildren,
+                PlanNodeBuilder implNode
+        ) {
             int[] stepMap = new int[numDefChildren];
             String stepMapProperty = implNode.properties()
                     .get(WakamitiConfiguration.REDEFINITION_STEP_MAP);

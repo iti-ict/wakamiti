@@ -1,10 +1,15 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.junit5;
 
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +20,6 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
-
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class WakamitiRunnerProfileReportingTest {
@@ -43,7 +44,9 @@ public class WakamitiRunnerProfileReportingTest {
         assertThat(summary.getTestsFailedCount()).isZero();
     }
 
-    private TestExecutionSummary runPlan(Class<?> planClass) {
+    private TestExecutionSummary runPlan(
+            Class<?> planClass
+    ) {
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(planClass))
                 .filters(EngineFilter.includeEngines(WakamitiTestEngine.ENGINE_ID))
@@ -54,4 +57,5 @@ public class WakamitiRunnerProfileReportingTest {
         launcher.execute(request);
         return summaryListener.getSummary();
     }
+
 }

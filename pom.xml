@@ -4,12 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
+    <parent>
+        <groupId>es.iti.wakamiti</groupId>
+        <artifactId>wakamiti-starter</artifactId>
+        <version>1.3.0</version>
+        <relativePath>wakamiti-starter</relativePath>
+    </parent>
     <!--
         This POM is used as an aggregator in order to build all the components at the same time.
      -->
 
-    <groupId>es.iti.wakamiti</groupId>
     <artifactId>wakamiti-aggregator</artifactId>
     <packaging>pom</packaging>
     <!-- This version number is for this specific pom, is not relevant for the rest of the components -->
@@ -21,20 +25,71 @@
 
     <modules>
 
+        <module>wakamiti-checkstyle</module>
         <module>wakamiti-starter</module>
         <module>wakamiti-plugin-starter</module>
-        <module>wakamiti-plugin-maven-archetype</module>
         <module>wakamiti-api</module>
         <module>wakamiti-engine</module>
         <module>plugins</module>
+        <module>wakamiti-plugin-maven-archetype</module>
         <module>jext</module>
         <module>jext-spring</module>
-        <!--        <module>wakamiti-server-quarkus</module>-->
 
     </modules>
+
+    <profiles>
+        <profile>
+            <id>tests</id>
+            <activation>
+                <property>
+                    <name>!skipTests</name>
+                </property>
+            </activation>
+            <modules>
+                <module>examples/junit-launcher-example</module>
+                <module>examples/spring-junit-example</module>
+                <module>examples/spring-verify-example</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>merge-jacoco-execution-data</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.basedir}</directory>
+                                    <includes>
+                                        <include>**/target/jacoco.exec</include>
+                                        <include>**/target/jacoco-it.exec</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>target/jacoco.exec</exclude>
+                                    </excludes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/jacoco.exec</destFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

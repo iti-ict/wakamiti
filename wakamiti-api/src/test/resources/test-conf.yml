@@ -5,6 +5,7 @@ properties:
       strings:
        - Properties Array Value 1
        - Properties Array Value 2
+       - Properties Array Value 1
       string_number: "0543"
       bool: true
       bools:
@@ -16,28 +17,40 @@ properties:
        - 77
        - 79
        - 83
+       - 77
       long: 54353
       longs:
        - 54353
        - 65256
        - 98432
+       - 54353
       double: 3.45
       doubles:
        - 3.45
        - 6.76
        - 9.32
+       - 3.45
       float: 6.98
       floats:
        - 6.98
        - 2.23
        - 1.24
+       - 6.98
       bigdecimal: 755.87
       bigdecimals:
        - 755.87
        - 876.43
-       - 908.32       
+       - 908.32
+       - 755.87
       biginteger: 123456789
       bigintegers:
        - 123456789
        - 543987532
-       - 549874348 
+       - 549874348
+       - 123456789
+      datetime: "2026-07-07 07:41:01"
+      datetimes:
+       - "2026-07-07 07:41:01"
+       - "2026-07-08 08:42:02"
+       - "2026-07-09 09:43:03"
+       - "2026-07-07 07:41:01"

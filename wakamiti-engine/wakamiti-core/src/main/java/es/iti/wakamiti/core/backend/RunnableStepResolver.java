@@ -1,16 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.core.backend;
 
-
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.util.Either;
-import es.iti.wakamiti.api.util.Pair;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,18 +15,21 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.util.Either;
+import es.iti.wakamiti.api.util.Pair;
+
 
 /**
  * This class is responsible for resolving RunnableSteps during test execution.
  * It helps locate the appropriate RunnableStep based on a given step definition.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class RunnableStepResolver {
 
     private final WakamitiDataTypeRegistry typeRegistry;
     private final List<RunnableStep> runnableSteps;
-
 
     RunnableStepResolver(
             WakamitiDataTypeRegistry typeRegistry,
@@ -50,7 +49,10 @@ public class RunnableStepResolver {
      * @throws UndefinedStepException If the step cannot be matched with
      *                                any defined step or matches more than one defined step.
      */
-    Pair<RunnableStep, Matcher> locateRunnableStep(PlanNode step, StepHinter hinter) {
+    Pair<RunnableStep, Matcher> locateRunnableStep(
+            PlanNode step,
+            StepHinter hinter
+    ) {
         Locale stepLocale = Locale.forLanguageTag(step.language());
         Locale dataLocale = Locale.forLanguageTag(
                 step.properties().getOrDefault(WakamitiConfiguration.DATA_FORMAT_LANGUAGE, step.language())
@@ -99,7 +101,6 @@ public class RunnableStepResolver {
             Locale dataLocale,
             StepHinter hinter
     ) {
-
         Function<RunnableStep, Matcher> matcher = runnableStep -> runnableStep
                 .matcher(step, stepLocale, dataLocale, typeRegistry);
 
@@ -140,11 +141,13 @@ public class RunnableStepResolver {
      * @return An Optional containing the located RunnableStep, or an empty
      * Optional if not found.
      */
-    Optional<RunnableStep> obtainRunnableStepByDefinition(String stepDefinition, Locale stepLocale) {
+    Optional<RunnableStep> obtainRunnableStepByDefinition(
+            String stepDefinition,
+            Locale stepLocale
+    ) {
         return runnableSteps.stream()
                 .filter(runnableStep -> stepDefinition.equals(runnableStep.getTranslatedDefinition(stepLocale)))
                 .findAny();
     }
-
 
 }

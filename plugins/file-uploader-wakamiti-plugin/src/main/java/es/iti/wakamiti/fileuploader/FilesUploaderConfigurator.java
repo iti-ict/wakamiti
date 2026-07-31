@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,25 @@
 package es.iti.wakamiti.fileuploader;
 
 
+import static java.lang.String.format;
+
+import java.util.Arrays;
+
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 
-import java.util.Arrays;
 
-import static java.lang.String.format;
-
-@Extension(provider = "es.iti.wakamiti", name = "file-uploader-configurator", version = "2.6",
-        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor")
+/**
+ * Provides the Files Uploader Configurator functionality used by Wakamiti.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "file-uploader-configurator",
+        version = "2.13",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class FilesUploaderConfigurator implements ConfigContributor<AbstractFilesUploader> {
 
     private static final String PREFIX = "fileUploader";
@@ -41,7 +51,10 @@ public class FilesUploaderConfigurator implements ConfigContributor<AbstractFile
         return this::configure;
     }
 
-    private void configure(AbstractFilesUploader filesUploader, Configuration configuration) {
+    private void configure(
+            AbstractFilesUploader filesUploader,
+            Configuration configuration
+    ) {
         Configuration global = configuration.inner(PREFIX);
         Configuration spec = global.inner(filesUploader.category());
         if (spec.isEmpty()) {

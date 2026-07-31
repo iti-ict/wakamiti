@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.1.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, MockServer and Apache Commons Collections.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+- Use an ephemeral port for MockServer integration tests.
+
+
 ## [3.0.2] - 2025-08-29
 
 ### Fixed

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -11,15 +13,15 @@ package es.iti.commons.jext;
  * {@code <major>.<minor>}. It provides methods for extracting the major and minor
  * components, checking compatibility with another version, and generating a
  * string representation.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 class ExtensionVersion {
 
     private final int major;
     private final int minor;
 
-    ExtensionVersion(String version) {
+    public ExtensionVersion(
+            String version
+    ) {
         String[] str = version.split("\\.");
         if (str.length != 2) {
             throw new IllegalArgumentException("Not valid version number " + version);
@@ -48,7 +50,9 @@ class ExtensionVersion {
      * @param otherVersion The other version to compare with.
      * @return {@code true} if compatible, {@code false} otherwise.
      */
-    public boolean isCompatibleWith(ExtensionVersion otherVersion) {
+    public boolean isCompatibleWith(
+            ExtensionVersion otherVersion
+    ) {
         return (major == otherVersion.major && minor >= otherVersion.minor);
     }
 

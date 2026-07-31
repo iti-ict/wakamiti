@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,19 +8,17 @@
 package es.iti.wakamiti.api.imconfig;
 
 
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
 
 
 public class ConfigurationFactoryDefinitionsTest {
 
-
     private final ConfigurationFactory factory = ConfigurationFactory.instance();
     private final Path definitionPath = Path.of("src", "test", "resources", "definition.yaml");
-
 
     @Test
     public void testBuildEmptyConfigurationWithDefinitionFromURI() {
@@ -32,13 +32,11 @@ public class ConfigurationFactoryDefinitionsTest {
         assertConfiguration(conf);
     }
 
-
     @Test
     public void testAttachDefinitionFromURI() {
         var conf = factory.empty().accordingDefinitionsFromURI(definitionPath.toUri());
         assertConfiguration(conf);
     }
-
 
     @Test
     public void testAttachDefinitionFromPath() {
@@ -46,18 +44,18 @@ public class ConfigurationFactoryDefinitionsTest {
         assertConfiguration(conf);
     }
 
-
     @Test
     public void testConfigurationValidation() {
         var conf = factory
-            .fromPairs("defined.property.min-max-number", "6")
-            .accordingDefinitionsFromPath(definitionPath);
+                .fromPairs("defined.property.min-max-number", "6")
+                .accordingDefinitionsFromPath(definitionPath);
         assertThat(conf.validations("defined.property.min-max-number"))
-        .contains("Invalid value '6', expected: Integer number between 2 and 3");
+                .contains("Invalid value '6', expected: Integer number between 2 and 3");
     }
 
-
-    private void assertConfiguration(Configuration conf) {
+    private void assertConfiguration(
+            Configuration conf
+    ) {
         assertThat(conf.getDefinitions()).hasSize(6);
         assertThat(conf.getDefinition("defined.property.required")).isNotEmpty();
         assertThat(conf.getDefinition("defined.property.with-default-value")).isNotEmpty();

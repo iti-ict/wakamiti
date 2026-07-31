@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,9 +8,21 @@
 package es.iti.wakamiti.database;
 
 
+import static es.iti.wakamiti.api.util.StringUtils.format;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import es.iti.wakamiti.database.jdbc.DatabaseType;
 import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.expression.DoubleValue;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.StringValue;
@@ -23,25 +37,11 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.Values;
 import net.sf.jsqlparser.statement.update.UpdateSet;
 import net.sf.jsqlparser.util.cnfexpression.MultiAndExpression;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Optional;
-
-import static es.iti.wakamiti.api.util.StringUtils.format;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 
 public class SQLParseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.test");
-
 
     @Test
     public void testParseStatementsWhenSqlIsOkWithSuccess() throws JSQLParserException {
@@ -156,7 +156,6 @@ public class SQLParseTest {
         assertThat(result).isPresent().get()
                 .hasToString("SELECT * FROM T WHERE (A = 1 AND B = NOW())");
     }
-
 
     @Test
     public void testToSelectWhenIsUpdateWithSuccess() throws JSQLParserException {
@@ -286,12 +285,6 @@ public class SQLParseTest {
                 .hasToString("(A = 'abc' AND B = 1)");
     }
 
-
-
-
-
-
-
     @Test
     public void testSqlSelectCountWhenTableFromWithSuccess() {
         Select result = parser(false).sqlSelectCountFrom("T");
@@ -312,22 +305,22 @@ public class SQLParseTest {
         Statement result = SQLParser.parseStatement(sql);
         LOGGER.debug("Result query: {}", result);
         assertThat(result).hasToString(
-                "SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAY, 'YYYYMMDD') " +
-                        "FROM \"table1\" WHERE col2 = 'DAYS'");
+                "SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAY, 'YYYYMMDD') "
+                        + "FROM \"table1\" WHERE col2 = 'DAYS'");
 
-        sql = "SELECT * FROM table1 WHERE " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTES) AND " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND " +
-                "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)";
+        sql = "SELECT * FROM table1 WHERE "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTES) AND "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP AND "
+                + "TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)";
         result = SQLParser.parseStatement(sql);
         LOGGER.debug("Result query: {}", result);
         assertThat(result)
-                .hasToString("SELECT * FROM table1 " +
-                        "WHERE TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP " +
-                        "AND TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE) " +
-                        "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP " +
-                        "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)");
+                .hasToString("SELECT * FROM table1 "
+                        + "WHERE TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') <= CURRENT_TIMESTAMP "
+                        + "AND TO_TIMESTAMP(TO_CHAR(FECHA1), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE) "
+                        + "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') <= CURRENT_TIMESTAMP "
+                        + "AND TO_TIMESTAMP(TO_CHAR(FECHA2), 'YYYYMMDD') >= (CURRENT_TIMESTAMP - 1 MINUTE)");
     }
 
     @Test
@@ -338,7 +331,9 @@ public class SQLParseTest {
         assertThat(result).hasToString(sql);
     }
 
-    private SQLParser parser(boolean autoTrim) {
+    private SQLParser parser(
+            boolean autoTrim
+    ) {
         return new SQLParser(DatabaseType.OTHER, autoTrim);
     }
 

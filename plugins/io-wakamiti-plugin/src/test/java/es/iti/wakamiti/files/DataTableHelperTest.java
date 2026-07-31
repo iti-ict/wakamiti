@@ -1,22 +1,26 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.files;
 
 
-import es.iti.wakamiti.api.plan.DataTable;
+import java.time.temporal.ValueRange;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.temporal.ValueRange;
+import es.iti.wakamiti.api.plan.DataTable;
+
 
 public class DataTableHelperTest {
 
-    private static Logger log = LoggerFactory.getLogger( "es.iti.wakamiti.test");
+    private static Logger log = LoggerFactory.getLogger("es.iti.wakamiti.test");
 
     @Test
     public void newInstanceWithSuccess() {
@@ -27,6 +31,9 @@ public class DataTableHelperTest {
         DataTableHelper helper = new DataTableHelper(dataTable);
         log.debug("Result: {}", helper);
 
+        // assert
+        Assert.assertEquals(3, helper.count());
+        Assert.assertEquals("aaa", helper.getExpectedValue(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -80,6 +87,9 @@ public class DataTableHelperTest {
         // act
         ValueRange result = helper.getRange(0);
         log.debug("Result: {}", result);
+
+        // assert
+        Assert.assertEquals(ValueRange.of(6, 7), result);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -96,4 +106,5 @@ public class DataTableHelperTest {
             throw e;
         }
     }
+
 }

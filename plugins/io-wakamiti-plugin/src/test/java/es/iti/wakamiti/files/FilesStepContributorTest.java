@@ -1,18 +1,17 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.files;
 
-import es.iti.wakamiti.api.plan.DataTable;
-import es.iti.wakamiti.api.plan.Document;
-import org.apache.commons.io.FileExistsException;
-import org.apache.commons.io.FileUtils;
-import org.junit.*;
-import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static com.sun.jna.Platform.isWindows;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,14 +20,24 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 
-import static com.sun.jna.Platform.isWindows;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assume.assumeTrue;
+import org.apache.commons.io.FileExistsException;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ComparisonFailure;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.plan.Document;
+
 
 public class FilesStepContributorTest {
 
-    private static final Logger log = LoggerFactory.getLogger("es.iti.wakamiti.test");
+    private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.test");
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -63,8 +72,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToDir(srcDir, new File(link, "dest"));
-        log.debug("Destination folder {}: {}", destDir, destDir.list());
-        log.debug("Source folder {}: {}", srcDir, srcDir.list());
+        LOGGER.debug("Destination folder {}: {}", destDir, destDir.list());
+        LOGGER.debug("Source folder {}: {}", srcDir, srcDir.list());
 
         // check
         assertTrue(new File(destDir, file).exists());
@@ -85,8 +94,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.moveToDir(srcDir, destDir);
-        log.debug("Destination folder {}: {}", destDir, destDir.list());
-        log.debug("Source folder {}: {}", srcDir, srcDir.list());
+        LOGGER.debug("Destination folder {}: {}", destDir, destDir.list());
+        LOGGER.debug("Source folder {}: {}", srcDir, srcDir.list());
 
         // check
         assertTrue(new File(destDir, file).exists());
@@ -107,8 +116,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.moveToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source folder {}: {}", src, src.list());
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source folder {}: {}", src, src.list());
 
         // check
         assertTrue(new File(dest, file).exists());
@@ -126,8 +135,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.moveToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source folder {}: {}", src, src.list());
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source folder {}: {}", src, src.list());
 
         // check
         assertTrue(dest.exists());
@@ -144,7 +153,7 @@ public class FilesStepContributorTest {
         try {
             contributor.moveToDir(src, dest);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -161,8 +170,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.moveToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source folder {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source folder {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(new File(dest, file).exists());
@@ -182,8 +191,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.moveToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(new File(dest, file).exists());
@@ -202,8 +211,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.moveToFile(src, dest);
-        log.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
-        log.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
+        LOGGER.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(dest.exists());
@@ -223,8 +232,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.moveToFile(src, dest);
-        log.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
-        log.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
+        LOGGER.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(dest.exists());
@@ -241,7 +250,7 @@ public class FilesStepContributorTest {
         try {
             contributor.moveToFile(src, dest);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -258,7 +267,7 @@ public class FilesStepContributorTest {
         try {
             contributor.moveToFile(src, dest);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -273,7 +282,7 @@ public class FilesStepContributorTest {
         try {
             contributor.moveToFile(src, dest);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -291,8 +300,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToDir(srcDir, destDir);
-        log.debug("Destination folder {}: {}", destDir, destDir.list());
-        log.debug("Source folder {}: {}", srcDir, srcDir.list());
+        LOGGER.debug("Destination folder {}: {}", destDir, destDir.list());
+        LOGGER.debug("Source folder {}: {}", srcDir, srcDir.list());
 
         // check
         assertTrue(new File(destDir, file).exists());
@@ -312,8 +321,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source folder {}: {}", src, src.list());
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source folder {}: {}", src, src.list());
 
         // check
         assertTrue(new File(dest, file).exists());
@@ -331,8 +340,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source folder {}: {}", src, src.list());
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source folder {}: {}", src, src.list());
 
         // check
         assertTrue(dest.exists());
@@ -349,7 +358,7 @@ public class FilesStepContributorTest {
         try {
             contributor.copyToDir(src, dest);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -366,8 +375,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source folder {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source folder {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(new File(dest, file).exists());
@@ -387,8 +396,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToDir(src, dest);
-        log.debug("Destination folder {}: {}", dest, dest.list());
-        log.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination folder {}: {}", dest, dest.list());
+        LOGGER.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(new File(dest, file).exists());
@@ -407,8 +416,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToFile(src, dest);
-        log.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
-        log.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
+        LOGGER.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(dest.exists());
@@ -427,8 +436,8 @@ public class FilesStepContributorTest {
 
         // act
         contributor.copyToFile(src, dest);
-        log.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
-        log.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
+        LOGGER.debug("Destination file {}: {}", dest, dest.exists() ? "exists" : "not exists");
+        LOGGER.debug("Source file {}: {}", src, src.exists() ? "exists" : "not exists");
 
         // check
         assertTrue(dest.exists());
@@ -445,7 +454,7 @@ public class FilesStepContributorTest {
         try {
             contributor.copyToFile(src, dest);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -460,7 +469,7 @@ public class FilesStepContributorTest {
         try {
             contributor.copyToFile(src, dest);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -499,7 +508,7 @@ public class FilesStepContributorTest {
         try {
             contributor.delete(src);
         } catch (Exception e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
@@ -595,8 +604,9 @@ public class FilesStepContributorTest {
         try {
             contributor.checkContainsTable(src, new DataTable(table));
         } catch (ComparisonFailure e) {
-            log.debug(e.getMessage());
+            LOGGER.debug(e.getMessage());
             throw e;
         }
     }
+
 }

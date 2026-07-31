@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.4.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Make the extension annotation processor support the latest source version provided by the running JDK.
+- Upgrade `wakamiti-starter` and the Maven build plugins.
+
+
 ## [1.3.0] - 2024-09-09
 
 ### Changed

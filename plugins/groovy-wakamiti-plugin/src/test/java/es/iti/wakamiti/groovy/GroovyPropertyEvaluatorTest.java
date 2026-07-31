@@ -1,16 +1,16 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.groovy;
 
-import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
-import es.iti.wakamiti.api.extensions.PropertyEvaluator;
-import org.junit.Before;
-import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -18,9 +18,14 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
+
 
 public class GroovyPropertyEvaluatorTest {
 
@@ -54,4 +59,5 @@ public class GroovyPropertyEvaluatorTest {
     public void testWithError() {
         evaluator.eval("${=assert false}");
     }
+
 }

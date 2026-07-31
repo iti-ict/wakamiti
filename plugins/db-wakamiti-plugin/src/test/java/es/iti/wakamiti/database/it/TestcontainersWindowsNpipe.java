@@ -1,14 +1,18 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.database.it;
 
+
+import java.util.Locale;
+
 import org.junit.AssumptionViolatedException;
 import org.testcontainers.lifecycle.Startable;
 
-import java.util.Locale;
 
 final class TestcontainersWindowsNpipe {
 
@@ -25,7 +29,9 @@ final class TestcontainersWindowsNpipe {
     private TestcontainersWindowsNpipe() {
     }
 
-    static void startOrSkipOnWindowsNpipeFailure(Startable container) {
+    static void startOrSkipOnWindowsNpipeFailure(
+            Startable container
+    ) {
         try {
             container.start();
         } catch (RuntimeException e) {
@@ -42,7 +48,9 @@ final class TestcontainersWindowsNpipe {
         return osName.toLowerCase(Locale.ROOT).contains("win");
     }
 
-    static boolean isWindowsNpipeConnectionError(Throwable throwable) {
+    static boolean isWindowsNpipeConnectionError(
+            Throwable throwable
+    ) {
         Throwable current = throwable;
         while (current != null) {
             String message = current.getMessage();
@@ -58,4 +66,5 @@ final class TestcontainersWindowsNpipe {
         }
         return false;
     }
+
 }

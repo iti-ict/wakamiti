@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,22 @@
 package es.iti.wakamiti.core.runner;
 
 
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.model.ExecutionState;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
@@ -17,23 +31,16 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.imconfig.Configuration;
-
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 
 /**
- * The PlanNodeRunner class is responsible for executing a given
- * PlanNode and managing its lifecycle.
- * It provides methods to run a node, handle pre- and post-execution
- * actions, and create child runners for nested nodes.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * Executes one {@link PlanNode} and coordinates its descendants.
+ * <p>
+ * A runner can execute only once. During execution it publishes start/finish
+ * node events, lazily resolves a backend for test-case nodes, propagates
+ * execution to children and aggregates child results. In dry-run mode, steps
+ * are validated through backend dry-run hooks instead of being executed.
+ * </p>
  */
 public class PlanNodeRunner {
 
@@ -48,6 +55,15 @@ public class PlanNodeRunner {
     private Optional<Backend> backend;
     private State state;
 
+    /**
+     * Creates a runner with an already selected backend.
+     *
+     * @param node           node to execute
+     * @param configuration  effective node configuration
+     * @param backendFactory factory used for descendant test cases
+     * @param backend        backend inherited by compatible descendants
+     * @param logger         execution logger
+     */
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -78,6 +94,14 @@ public class PlanNodeRunner {
         this.dryRun = dryRun;
     }
 
+    /**
+     * Creates a normal-execution runner that resolves backends as required.
+     *
+     * @param node           node to execute
+     * @param configuration  effective node configuration
+     * @param backendFactory factory used to create test-case backends
+     * @param logger         execution logger
+     */
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -87,6 +111,19 @@ public class PlanNodeRunner {
         this(node, configuration, backendFactory, Optional.empty(), logger, false, "0");
     }
 
+    /**
+     * Creates a runner with explicit dry-run behavior.
+     * <p>
+     * Dry runs resolve and validate steps without invoking contributor
+     * implementations.
+     * </p>
+     *
+     * @param node           node to execute or validate
+     * @param configuration  effective node configuration
+     * @param backendFactory factory used to create test-case backends
+     * @param logger         execution logger
+     * @param dryRun         {@code true} to validate without executing steps
+     */
     public PlanNodeRunner(
             PlanNode node,
             Configuration configuration,
@@ -122,7 +159,9 @@ public class PlanNodeRunner {
         return nodePath;
     }
 
-    protected String childNodePath(int childIndex) {
+    protected String childNodePath(
+            int childIndex
+    ) {
         return String.format("%s/%d", nodePath, childIndex);
     }
 
@@ -146,10 +185,10 @@ public class PlanNodeRunner {
     }
 
     /**
-     * Runs the associated PlanNode and returns the result.
+     * Executes this node according to its type and lifecycle state.
      *
-     * @return The result of the node execution.
-     * @throws IllegalStateException If the run() method is invoked more than once.
+     * @return node result, or {@code null} when no executable branch applies
+     * @throws IllegalStateException when invoked more than once
      */
     protected Result runNode() {
         if (state != State.PREPARED) {
@@ -188,17 +227,17 @@ public class PlanNodeRunner {
                     testCasePreExecution(node);
                 } catch (WakamitiException e) {
                     results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+                            .toList().stream(); // prevent lazy stream
                 }
             }
             results = Stream.concat(results, runChildren())
-                    .collect(Collectors.toList()).stream(); // prevent lazy stream
+                    .toList().stream(); // prevent lazy stream
             if (!dryRun) {
                 try {
                     testCasePostExecution(node);
                 } catch (WakamitiException e) {
                     results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .collect(Collectors.toList()).stream(); // prevent lazy stream
+                            .toList().stream(); // prevent lazy stream
                 }
             }
             result = aggregatorFinish(results);
@@ -207,7 +246,9 @@ public class PlanNodeRunner {
         return result;
     }
 
-    private Result aggregatorFinish(Stream<Pair<Instant, Result>> results) {
+    private Result aggregatorFinish(
+            Stream<Pair<Instant, Result>> results
+    ) {
         Pair<Instant, Result> aux = results
                 .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
                 .orElse(new Pair<>(Instant.now(), Result.FAILED));
@@ -216,6 +257,13 @@ public class PlanNodeRunner {
         return result;
     }
 
+    /**
+     * Executes child runners in encounter order and timestamps each resulting
+     * outcome.
+     *
+     * @return stream of child execution timestamps and results, excluding
+     *         children with a {@code null} result
+     */
     protected Stream<Pair<Instant, Result>> runChildren() {
         return getChildren().stream()
                 .map(PlanNodeRunner::runNode)
@@ -223,6 +271,16 @@ public class PlanNodeRunner {
                 .map(result -> new Pair<>(Instant.now(), result));
     }
 
+    /**
+     * Executes a step node using the resolved backend.
+     * <p>
+     * Runtime failures are converted into {@link Result#ERROR} on the node
+     * execution state. Post-step hooks are always invoked.
+     * </p>
+     *
+     * @return recorded node result, or {@code null} when backend execution did
+     *         not produce state
+     */
     protected Result runStep() {
         stepPreExecution(node);
         try {
@@ -243,7 +301,10 @@ public class PlanNodeRunner {
         return node.executionState().flatMap(ExecutionState::result).orElse(null);
     }
 
-    private void doNotImplemented(PlanNode node, Result result) {
+    private void doNotImplemented(
+            PlanNode node,
+            Result result
+    ) {
         Instant startInstant = Instant.now();
 
         node.children().forEach(c -> {
@@ -255,14 +316,16 @@ public class PlanNodeRunner {
         node.prepareExecution().markFinished(startInstant, result);
     }
 
-    private void markFilteredTestCase(PlanNode node) {
+    private void markFilteredTestCase(
+            PlanNode node
+    ) {
         Instant startInstant = Instant.now();
         node.prepareExecution().markStarted(startInstant);
         node.prepareExecution().markFinished(startInstant, Result.SKIPPED);
     }
 
     protected List<PlanNodeRunner> createChildren() {
-        List<PlanNode> childNodes = node.children().collect(Collectors.toList());
+        List<PlanNode> childNodes = node.children().toList();
         return IntStream.range(0, childNodes.size())
                 .mapToObj(index -> new PlanNodeRunner(
                         childNodes.get(index),
@@ -276,32 +339,82 @@ public class PlanNodeRunner {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Returns the executable node whose state is managed by this runner.
+     *
+     * @return the underlying plan node
+     */
     public PlanNode getNode() {
         return node;
     }
 
-    protected void testCasePreExecution(PlanNode node) {
+    /**
+     * Hook executed before a test-case node runs its descendants.
+     * <p>
+     * Default behavior logs the test-case header and invokes backend
+     * {@link Backend#setUp()}.
+     * </p>
+     *
+     * @param node test-case node about to execute
+     */
+    protected void testCasePreExecution(
+            PlanNode node
+    ) {
         logger.logTestCaseHeader(node);
         getBackend().ifPresent(Backend::setUp);
     }
 
-    protected void testCasePostExecution(PlanNode node) {
+    /**
+     * Hook executed after a test-case node finishes descendant execution.
+     * <p>
+     * Default behavior invokes backend {@link Backend#tearDown()}.
+     * </p>
+     *
+     * @param node executed test-case node
+     */
+    protected void testCasePostExecution(
+            PlanNode node
+    ) {
         getBackend().ifPresent(Backend::tearDown);
     }
 
-    protected void stepPreExecution(PlanNode step) {
+    /**
+     * Hook executed immediately before backend step invocation.
+     *
+     * @param step step node about to execute
+     */
+    protected void stepPreExecution(
+            PlanNode step
+    ) {
         /* nothing by default */
     }
 
-    protected void stepPostExecution(PlanNode step) {
+    /**
+     * Hook executed after backend step invocation, even when the step failed.
+     *
+     * @param step executed step node
+     */
+    protected void stepPostExecution(
+            PlanNode step
+    ) {
         logger.logStepResult(step);
     }
 
+    /**
+     * Internal runner lifecycle.
+     */
     protected enum State {
-        PREPARED, RUNNING, FINISHED
+
+        PREPARED,
+        RUNNING,
+        FINISHED
+
     }
 
-    private static String stableUniqueId(String nodePath, PlanNode node) {
+    private static String stableUniqueId(
+            String nodePath,
+            PlanNode node
+    ) {
         String stableKey = String.join("|",
                 nodePath,
                 Objects.toString(node.nodeType(), ""),

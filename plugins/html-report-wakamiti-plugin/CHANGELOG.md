@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.10.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, FreeMarker, XMLUnit, Commons Collections and Hamcrest.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [2.9.0] - 2026-06-16
 
 ### Added

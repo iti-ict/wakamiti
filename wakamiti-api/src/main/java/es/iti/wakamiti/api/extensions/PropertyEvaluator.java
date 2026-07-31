@@ -1,14 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.api.extensions;
 
-
-import es.iti.commons.jext.ExtensionPoint;
-import es.iti.commons.jext.LoadStrategy;
-import es.iti.wakamiti.api.WakamitiAPI;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,13 +16,15 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import es.iti.commons.jext.ExtensionPoint;
+import es.iti.commons.jext.LoadStrategy;
+import es.iti.wakamiti.api.WakamitiAPI;
+
 
 /**
  * This interface allows using dynamic properties to make easier the passing of
  * information to the Scenario execution through the syntax
  * {@code ${[property description]}}.
- *
- * @author Maria Galbis Calomarde - mgalbis@iti.es
  */
 @ExtensionPoint(loadStrategy = LoadStrategy.SINGLETON)
 public abstract class PropertyEvaluator implements Contributor {
@@ -36,7 +36,10 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param action The evaluation action.
      * @return The result with the evaluations and the given string evaluated.
      */
-    private static Result makeEval(String value, BiFunction<PropertyEvaluator, String, Result> action) {
+    private static Result makeEval(
+            String value,
+            BiFunction<PropertyEvaluator, String, Result> action
+    ) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         AtomicReference<String> result = new AtomicReference<>(value);
         WakamitiAPI.instance().extensionManager().getExtensions(PropertyEvaluator.class)
@@ -55,7 +58,9 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param value The string to evaluate.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public static Result makeEval(String value) {
+    public static Result makeEval(
+            String value
+    ) {
         return makeEval(value, PropertyEvaluator::eval);
     }
 
@@ -67,7 +72,9 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param value The string to evaluate.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public static Result makeEvalIfCan(String value) {
+    public static Result makeEvalIfCan(
+            String value
+    ) {
         return makeEval(value, (evaluator, currentValue) -> evaluator.evalOr(currentValue, p -> p));
     }
 
@@ -84,7 +91,9 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param value The string to evaluate.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public final Result eval(String value) {
+    public final Result eval(
+            String value
+    ) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         Matcher matcher = pattern().matcher(value);
         while (matcher.find()) {
@@ -104,7 +113,10 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param propertyAlternative The alternative for handling unresolved properties.
      * @return The result with the evaluations and the given string evaluated.
      */
-    public final Result evalOr(String value, UnaryOperator<String> propertyAlternative) {
+    public final Result evalOr(
+            String value,
+            UnaryOperator<String> propertyAlternative
+    ) {
         Map<String, String> evaluations = new LinkedHashMap<>();
         Matcher matcher = pattern().matcher(value);
         while (matcher.find()) {
@@ -128,31 +140,60 @@ public abstract class PropertyEvaluator implements Contributor {
      * @param matcher  The {@link Matcher} of the global string.
      * @return The evaluated property result.
      */
-    protected abstract String evalProperty(String property, Matcher matcher);
+    protected abstract String evalProperty(
+            String property,
+            Matcher matcher
+    );
 
     /**
      * This container provides the evaluation value and a record of all
      * evaluations carried out in the process.
      */
     public static class Result {
+
+        /** Maps each original property expression to the value that replaced it. */
         Map<String, String> evaluations;
+        /** Final text after every supported property expression has been evaluated. */
         String value;
 
-        public static Result of(Map<String, String> evaluations, String value) {
+        /**
+         * Creates an evaluation result from the replacement trace and final
+         * value.
+         *
+         * @param evaluations mappings from original expressions to their
+         *                    resolved values, in evaluation order
+         * @param value       the fully evaluated text
+         * @return a result containing the supplied map and value
+         */
+        public static Result of(
+                Map<String, String> evaluations,
+                String value
+        ) {
             Result result = new Result();
             result.evaluations = evaluations;
             result.value = value;
             return result;
         }
 
+        /**
+         * Returns the replacements performed while evaluating the text.
+         *
+         * @return a map from each encountered property expression to its
+         * replacement value
+         */
         public Map<String, String> evaluations() {
             return evaluations;
         }
 
+        /**
+         * Returns the text produced after applying every evaluator.
+         *
+         * @return the evaluated value
+         */
         public String value() {
             return value;
         }
+
     }
 
 }
-

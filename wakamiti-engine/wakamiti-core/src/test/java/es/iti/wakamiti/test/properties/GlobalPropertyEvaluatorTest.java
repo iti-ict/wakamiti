@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,16 +8,17 @@
 package es.iti.wakamiti.test.properties;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.extensions.PropertyEvaluator;
-import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
 
 
 public class GlobalPropertyEvaluatorTest {
@@ -73,4 +76,5 @@ public class GlobalPropertyEvaluatorTest {
     public void testResolveWhenPropertyIsNotPresentWithError() {
         resolver.eval("'${other}'");
     }
+
 }

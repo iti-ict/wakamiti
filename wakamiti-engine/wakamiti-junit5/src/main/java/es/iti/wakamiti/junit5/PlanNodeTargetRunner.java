@@ -1,10 +1,22 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.junit5;
 
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.junit.platform.engine.EngineExecutionListener;
+import org.junit.platform.engine.TestDescriptor;
+import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.UniqueId;
+import org.opentest4j.TestAbortedException;
 
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
@@ -15,15 +27,6 @@ import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
-import org.junit.platform.engine.TestDescriptor;
-import org.opentest4j.TestAbortedException;
-import org.junit.platform.engine.EngineExecutionListener;
-import org.junit.platform.engine.TestExecutionResult;
-import org.junit.platform.engine.UniqueId;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 /**
@@ -66,7 +69,9 @@ class PlanNodeTargetRunner extends PlanNodeRunner implements NodeExecution {
     }
 
     @Override
-    public Result execute(EngineExecutionListener listener) {
+    public Result execute(
+            EngineExecutionListener listener
+    ) {
         listener.executionStarted(descriptor());
         Result result;
         try {
@@ -104,7 +109,9 @@ class PlanNodeTargetRunner extends PlanNodeRunner implements NodeExecution {
         return TestExecutionResult.failed(error);
     }
 
-    private boolean isSkippedExecution(Result result) {
+    private boolean isSkippedExecution(
+            Result result
+    ) {
         return result == Result.SKIPPED
                 || getNode().errors().anyMatch(WakamitiSkippedException.class::isInstance);
     }

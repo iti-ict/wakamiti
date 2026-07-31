@@ -1,14 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.launcher;
 
-
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.apache.commons.cli.*;
 
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -20,6 +18,17 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.Configuration;
+
 
 /**
  * Class representing command-line arguments for the WakamitiLauncher.
@@ -30,10 +39,9 @@ import java.util.stream.Stream;
  */
 public class CliArguments {
 
+    /** Short option used to request the list of available Wakamiti modules. */
     public static final String ARG_LIST = "l";
-    public static final String ARG_API_DOCS = "D";
-    public static final String ARG_AI_TOKEN = "t";
-    public static final String ARG_FEATURE_GENERATION_PATH = "p";
+    /** Short option used to select the ISO 639-1 execution language. */
     public static final String ARG_LANGUAGE = "L";
 
     private static final String DEFAULT_CONF_FILE = "wakamiti.yaml";
@@ -45,10 +53,14 @@ public class CliArguments {
     private static final String ARG_NO_EXECUTION = "n";
     private static final String ARG_WAKAMITI_PROPERTY = "K";
     private static final String ARG_MAVEN_PROPERTY = "M";
-    private static final String ARG_AI = "a";
     private final Options cliOptions;
     private CommandLine cliCommand;
 
+    /**
+     * Creates the command-line model and registers every launcher option.
+     * <p>
+     * Call {@link #parse(String...)} before reading option-dependent values.
+     */
     public CliArguments() {
         this.cliOptions = new Options();
         cliOptions.addOption(ARG_HELP, "help", false, "Show this help screen");
@@ -57,11 +69,6 @@ public class CliArguments {
         cliOptions.addOption(ARG_FILE, "file", true, "Configuration file to use (./wakamiti.yaml by default)");
         cliOptions.addOption(ARG_MODULES, "modules", true, "Comma-separated modules, in format group:artifact:version");
         cliOptions.addOption(ARG_NO_EXECUTION, "dry-run", false, "Generates report without execution");
-
-        cliOptions.addOption(ARG_AI, "ai", false, "Activate feature generator mode");
-        cliOptions.addOption(ARG_API_DOCS, "apiDocs", true, "Api docs url or json file");
-        cliOptions.addOption(ARG_AI_TOKEN, "token", true, "Token for chat-gpt");
-        cliOptions.addOption(ARG_FEATURE_GENERATION_PATH, "path", true, "Feature Generator path");
         cliOptions.addOption(ARG_LANGUAGE, "language", true, "ISO 639-1 language code");
 
         cliOptions.addOption(
@@ -70,7 +77,7 @@ public class CliArguments {
                         .numberOfArgs(2)
                         .valueSeparator('=')
                         .desc("Set a Wakamiti-specific property")
-                        .build()
+                        .get()
         );
         cliOptions.addOption(
                 Option.builder(ARG_MAVEN_PROPERTY)
@@ -78,7 +85,7 @@ public class CliArguments {
                         .numberOfArgs(2)
                         .valueSeparator('=')
                         .desc("Set a MavenFetcher-specific property")
-                        .build()
+                        .get()
         );
         cliOptions.addOption(ARG_LIST, "list", false, "Show all available modules");
     }
@@ -90,7 +97,9 @@ public class CliArguments {
      * @return The CliArguments instance for method chaining.
      * @throws ParseException If a parsing exception occurs.
      */
-    public CliArguments parse(String... args) throws ParseException {
+    public CliArguments parse(
+            String... args
+    ) throws ParseException {
         CommandLineParser cliParser = new DefaultParser();
         this.cliCommand = cliParser.parse(cliOptions, args, false);
         return this;
@@ -104,10 +113,10 @@ public class CliArguments {
     }
 
     /**
-     * Retrieves the Wakamiti-specific configuration based on the parsed command-line arguments.
+     * Builds launcher-side configuration for the {@code wakamiti} namespace.
      *
-     * @return The Wakamiti-specific configuration.
-     * @throws URISyntaxException If a URI syntax exception occurs.
+     * @return effective Wakamiti configuration
+     * @throws URISyntaxException when launcher location cannot be resolved
      */
     public Configuration wakamitiConfiguration() throws URISyntaxException {
         Properties properties = cliCommand.getOptionProperties(ARG_WAKAMITI_PROPERTY);
@@ -117,10 +126,11 @@ public class CliArguments {
     }
 
     /**
-     * Retrieves the MavenFetcher-specific configuration based on the parsed command-line arguments.
+     * Builds launcher-side configuration for the {@code mavenFetcher}
+     * namespace.
      *
-     * @return The MavenFetcher-specific configuration.
-     * @throws URISyntaxException If a URI syntax exception occurs.
+     * @return effective Maven fetcher configuration
+     * @throws URISyntaxException when launcher location cannot be resolved
      */
     public Configuration mavenFetcherConfiguration() throws URISyntaxException {
         Properties properties = cliCommand.getOptionProperties(ARG_MAVEN_PROPERTY);
@@ -164,7 +174,6 @@ public class CliArguments {
         return cliCommand.hasOption(ARG_LIST);
     }
 
-
     /**
      * Checks if the noExecution option is specified in the command-line arguments.
      *
@@ -175,32 +184,42 @@ public class CliArguments {
     }
 
     /**
-     * Checks if the feature generator options are specified in the command-line arguments.
-     *
-     * @return {@code true} if the feature generator options are specified, {@code false} otherwise.
-     */
-    public boolean isFeatureGeneratorEnabled() {
-        return cliCommand.hasOption(ARG_AI)
-                && cliCommand.hasOption(ARG_API_DOCS)
-                && cliCommand.hasOption(ARG_AI_TOKEN)
-                && cliCommand.hasOption(ARG_FEATURE_GENERATION_PATH);
-    }
-
-    /**
      * Retrieves the list of modules specified in the command-line arguments.
      *
      * @return The list of modules, or an empty list if not specified.
      */
     public List<String> modules() {
-        return cliCommand.hasOption(ARG_MODULES) ?
-                Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(",")) :
-                List.of();
+        return cliCommand.hasOption(ARG_MODULES)
+                ? Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(","))
+                : List.of();
     }
 
-    public String getValue(String key) {
+    /**
+     * Returns the parsed value of an option.
+     *
+     * @param key short or long option name, such as {@link #ARG_LANGUAGE}
+     * @return option value, or an empty string when the option was not supplied
+     */
+    public String getValue(
+            String key
+    ) {
         return cliCommand.getOptionValue(key, "");
     }
 
+    /**
+     * Merges configuration sources for one launcher qualifier.
+     * <p>
+     * Merge precedence is:
+     * launcher.properties < project file < command-line properties.
+     * Missing files are ignored.
+     * </p>
+     *
+     * @param confFileName project configuration file path
+     * @param arguments    command-line properties for the qualifier
+     * @param qualifier    top-level configuration namespace to extract
+     * @return merged configuration for the qualifier
+     * @throws URISyntaxException when launcher folder cannot be resolved
+     */
     private Configuration buildConfiguration(
             String confFileName,
             Properties arguments,

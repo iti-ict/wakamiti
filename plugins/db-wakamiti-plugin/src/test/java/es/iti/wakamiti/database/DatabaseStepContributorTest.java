@@ -1,10 +1,34 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.database;
 
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.hamcrest.Matchers.comparesEqualTo;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.util.List;
+import java.util.Locale;
+
+import org.h2.tools.RunScript;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -19,24 +43,6 @@ import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
 import es.iti.wakamiti.database.jdbc.Database;
 import es.iti.wakamiti.database.jdbc.Select;
-import org.h2.tools.RunScript;
-import org.junit.*;
-import org.slf4j.Logger;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.time.Duration;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.hamcrest.Matchers.comparesEqualTo;
 
 
 public class DatabaseStepContributorTest {
@@ -146,7 +152,6 @@ public class DatabaseStepContributorTest {
             assertThat(e.getMessage()).isEqualTo("There is no default connection");
             throw e;
         }
-
     }
 
     @Test
@@ -315,7 +320,6 @@ public class DatabaseStepContributorTest {
         // Act
         contributor.selectData(new Document(sql));
 
-
         // Check
         // Exception is thrown
     }
@@ -342,7 +346,6 @@ public class DatabaseStepContributorTest {
         assertThat(contributor.connection().parameters().url()).isEqualTo("jdbc:h2:mem:test2");
     }
 
-
     @Test
     public void testInsertFromDataTableWhenSingleRow() {
         // Prepare
@@ -366,7 +369,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"2", "Ester", "Colero", "true", "2000-02-01", null}
@@ -397,7 +400,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"2", "Ester", "Colero", null, "2000-02-01", "2024-07-22 13:00:00.000"}
@@ -429,7 +432,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"2", "Ester", "Colero", "true", "2000-02-01", null},
@@ -488,7 +491,7 @@ public class DatabaseStepContributorTest {
                 .isEqualTo("true");
 
         try (Select<String[]> select = db.select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).doesNotContain(
                     new String[]{"2", "Ester", "Colero", "true", "2000-02-01"},
@@ -567,7 +570,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -596,7 +599,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -626,7 +629,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -700,7 +703,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -727,7 +730,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -774,7 +777,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isEmpty();
         }
     }
@@ -801,7 +804,7 @@ public class DatabaseStepContributorTest {
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -861,18 +864,18 @@ public class DatabaseStepContributorTest {
 
         // Act
         String script =
-                "INSERT INTO client (id, first_name, second_name, birth_date) VALUES (2, 'Ester', 'Colero', '2000-01-02');" +
-                        "INSERT INTO city (id, name, latitude, longitude) " +
-                        "SELECT 2, 'Madrid', 40.416775, -3.703790;" +
-                        "UPDATE client SET active = 0 WHERE id = 1;" +
-                        "INSERT INTO client_city (clientid, cityid) VALUES (2, 2);" +
-                        "INSERT INTO client_city (clientid, cityid) VALUES (2, 1);";
+                "INSERT INTO client (id, first_name, second_name, birth_date) VALUES (2, 'Ester', 'Colero', '2000-01-02');"
+                        + "INSERT INTO city (id, name, latitude, longitude) "
+                        + "SELECT 2, 'Madrid', 40.416775, -3.703790;"
+                        + "UPDATE client SET active = 0 WHERE id = 1;"
+                        + "INSERT INTO client_city (clientid, cityid) VALUES (2, 2);"
+                        + "INSERT INTO client_city (clientid, cityid) VALUES (2, 1);";
         contributor.executeSQLScript(new Document(script));
 
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).contains(
                     new String[]{"1", "Rosa", "Melano", "false", "1980-12-25", "2024-07-22 12:34:56.000"},
@@ -880,7 +883,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Valencia", "39.469906", "-0.376288"},
@@ -888,7 +891,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client_city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactlyInAnyOrder(
                     new String[]{"1", "1"},
@@ -913,19 +916,19 @@ public class DatabaseStepContributorTest {
 
         // Act
         String script =
-                "INSERT INTO client (id, first_name, second_name, birth_date) VALUES (2, 'Ester', 'Colero', '2000-01-02');" +
-                        "INSERT INTO city (id, name, latitude, longitude) " +
-                        "SELECT 2, 'Madrid', 40.416775, -3.703790;" +
-                        "UPDATE client SET active = 0 WHERE id = 1;" +
-                        "INSERT INTO client_city (clientid, cityid) WITH a AS (SELECT 2 as num) SELECT num, num FROM a;" +
-                        "INSERT INTO client_city (clientid, cityid) VALUES (2, 1);";
+                "INSERT INTO client (id, first_name, second_name, birth_date) VALUES (2, 'Ester', 'Colero', '2000-01-02');"
+                        + "INSERT INTO city (id, name, latitude, longitude) "
+                        + "SELECT 2, 'Madrid', 40.416775, -3.703790;"
+                        + "UPDATE client SET active = 0 WHERE id = 1;"
+                        + "INSERT INTO client_city (clientid, cityid) WITH a AS (SELECT 2 as num) SELECT num, num FROM a;"
+                        + "INSERT INTO client_city (clientid, cityid) VALUES (2, 1);";
         contributor.executeSQLScript(new Document(script));
         contributor.cleanUp();
 
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Rosa", "Melano", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
@@ -933,7 +936,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "Valencia", "39.469906", "-0.376288"}
@@ -941,7 +944,7 @@ public class DatabaseStepContributorTest {
         }
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM client_city").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "1"}
@@ -1007,14 +1010,15 @@ public class DatabaseStepContributorTest {
         createContext(config);
 
         // Act
-        String script = "WITH a AS (SELECT 47 num) DELETE FROM other WHERE something IN (SELECT num FROM a)";
+        String script = "DELETE FROM other WHERE something IN "
+                + "(WITH a AS (SELECT 47 num) SELECT num FROM a)";
         contributor.executeSQLScript(new Document(script));
         contributor.cleanUp();
 
         // Check
         try (Select<String[]> select = Database.from(contributor.connection())
                 .select("SELECT * FROM other").get(DatabaseHelper::format)) {
-            List<String[]> result = select.stream().collect(Collectors.toList());
+            List<String[]> result = select.stream().toList();
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"47"}
@@ -1283,43 +1287,6 @@ public class DatabaseStepContributorTest {
     }
 
     @Test(expected = WakamitiException.class)
-    public void testAssertRowExistsByOneColumnWhenNotExist() {
-        // Prepare
-        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
-                "database.connection.url", URL,
-                "database.connection.username", USER,
-                "database.connection.password", PASS,
-                "database.metadata.healthcheck", "false",
-                "database.enableCleanupUponCompletion", "true"
-        );
-        configContributor.configurer().configure(contributor, config);
-        createContext(config);
-        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
-
-        try {
-            // Act
-            contributor.assertRowExistsByOneColumn("second_name", "Melano", "client");
-
-            // Check
-        } catch (AssertionError e) {
-            Database db = Database.from(contributor.connection());
-            String table = db.table("client");
-            assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
-                            db.column(table, "second_name"));
-            throw new WakamitiException();
-        }
-    }
-
-    @Test(expected = WakamitiException.class)
     public void testAssertRowExistsByOneColumnWhenNotExistWithClosestRecord() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
@@ -1342,15 +1309,15 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "second_name"));
             throw new WakamitiException();
         }
@@ -1538,15 +1505,15 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%1$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "second_name"));
             throw new WakamitiException();
         }
@@ -2437,19 +2404,20 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
-                                    "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
-                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", "
+                                    + "\"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator()
+                                    + "    \"%2$s\"=\"Melano\"," + System.lineSeparator()
+                                    + "    \"%3$s\"=\"true\"," + System.lineSeparator()
+                                    + "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator()
+                                    + "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2614,18 +2582,18 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
-                                    "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator()
+                                    + "    \"%2$s\"=\"Melano\"," + System.lineSeparator()
+                                    + "    \"%3$s\"=\"true\"," + System.lineSeparator()
+                                    + "    \"%4$s\"=\"1980-12-25\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -2939,7 +2907,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
+                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} "
+                                    + "exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3026,7 +2995,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} exist in table %s, but <0L> was less than <1L>",
+                            "It was expected some record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25} "
+                                    + "exist in table %s, but <0L> was less than <1L>",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3103,19 +3073,20 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
-                                    "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
-                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", "
+                                    + "\"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator()
+                                    + "    \"%2$s\"=\"Melano\"," + System.lineSeparator()
+                                    + "    \"%3$s\"=\"true\"," + System.lineSeparator()
+                                    + "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator()
+                                    + "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3226,19 +3197,20 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
-                                    "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
-                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", "
+                                    + "\"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator()
+                                    + "    \"%2$s\"=\"Melano\"," + System.lineSeparator()
+                                    + "    \"%3$s\"=\"true\"," + System.lineSeparator()
+                                    + "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator()
+                                    + "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3327,7 +3299,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3363,7 +3336,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3420,7 +3394,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3456,7 +3431,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3534,19 +3510,20 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
-                                    "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
-                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", "
+                                    + "\"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator()
+                                    + "    \"%2$s\"=\"Melano\"," + System.lineSeparator()
+                                    + "    \"%3$s\"=\"true\"," + System.lineSeparator()
+                                    + "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator()
+                                    + "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3657,19 +3634,20 @@ public class DatabaseStepContributorTest {
             Database db = Database.from(contributor.connection());
             String table = db.table("client");
             assertThat(e)
-                    .hasMessage("[The closest record] " + System.lineSeparator() +
-                                    "Expecting actual:" + System.lineSeparator() +
-                                    "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", \"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator() +
-                                    "to contain exactly (and in same order):" + System.lineSeparator() +
-                                    "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator() +
-                                    "    \"%2$s\"=\"Melano\"," + System.lineSeparator() +
-                                    "    \"%3$s\"=\"true\"," + System.lineSeparator() +
-                                    "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator() +
-                                    "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator() +
-                                    "but some elements were not found:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator() +
-                                    "and others were not expected:" + System.lineSeparator() +
-                                    "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
+                    .hasMessage("[The closest record] " + System.lineSeparator()
+                                    + "Expecting actual:" + System.lineSeparator()
+                                    + "  {\"%3$s\"=\"true\", \"%4$s\"=\"1980-12-25\", \"%5$s\"=\"2024-07-22 12:34:56.000\", "
+                                    + "\"%1$s\"=\"Rosa\", \"%2$s\"=\"Melano     \"}" + System.lineSeparator()
+                                    + "to contain exactly (and in same order):" + System.lineSeparator()
+                                    + "  [\"%1$s\"=\"Rosa\"," + System.lineSeparator()
+                                    + "    \"%2$s\"=\"Melano\"," + System.lineSeparator()
+                                    + "    \"%3$s\"=\"true\"," + System.lineSeparator()
+                                    + "    \"%4$s\"=\"1980-12-25\"," + System.lineSeparator()
+                                    + "    \"%5$s\"=\"2024-07-22 12:34:56.000\"]" + System.lineSeparator()
+                                    + "but some elements were not found:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano\"]" + System.lineSeparator()
+                                    + "and others were not expected:" + System.lineSeparator()
+                                    + "  [\"%2$s\"=\"Melano     \"]" + System.lineSeparator(),
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3758,7 +3736,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3794,7 +3773,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3850,7 +3830,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -3886,7 +3867,8 @@ public class DatabaseStepContributorTest {
             String table = db.table("client");
             assertThat(e)
                     .hasMessage(String.format(
-                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, %s=2024-07-22 12:34:56.000} exist in table %s, but it does",
+                            "It was expected no record satisfying {%s=Rosa, %s=Melano, %s=true, %s=1980-12-25, "
+                                    + "%s=2024-07-22 12:34:56.000} exist in table %s, but it does",
                             db.column(table, "first_name"),
                             db.column(table, "second_name"),
                             db.column(table, "active"),
@@ -4129,13 +4111,16 @@ public class DatabaseStepContributorTest {
         }
     }
 
-
-    private File resource(String resourceName) {
+    private File resource(
+            String resourceName
+    ) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(classLoader.getResource(resourceName).getFile());
     }
 
-    private void createContext(Configuration configuration) {
+    private void createContext(
+            Configuration configuration
+    ) {
         WakamitiStepRunContext.set(new WakamitiStepRunContext(
                 configuration,
                 Wakamiti.instance().newBackendFactory().createNonRunnableBackend(configuration),
@@ -4153,7 +4138,10 @@ public class DatabaseStepContributorTest {
         private final String table;
         private final String[] columns;
 
-        Table(String table, String... columns) {
+        Table(
+                String table,
+                String... columns
+        ) {
             this.table = table;
             this.columns = columns;
         }
@@ -4165,5 +4153,7 @@ public class DatabaseStepContributorTest {
         public String[] columns() {
             return columns;
         }
+
     }
+
 }

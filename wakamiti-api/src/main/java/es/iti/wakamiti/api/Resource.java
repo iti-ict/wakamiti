@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -11,7 +13,6 @@ package es.iti.wakamiti.api;
  * and associated content.
  *
  * @param <T> The type of content held by the resource.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class Resource<T> {
 
@@ -19,7 +20,18 @@ public class Resource<T> {
     private final String relativePath;
     private final T content;
 
-    public Resource(String absolutePath, String relativePath, T content) {
+    /**
+     * Creates a resource descriptor.
+     *
+     * @param absolutePath the fully resolved source location
+     * @param relativePath the location relative to the resource search root
+     * @param content      the loaded or parsed resource content
+     */
+    public Resource(
+            String absolutePath,
+            String relativePath,
+            T content
+    ) {
         this.absolutePath = absolutePath;
         this.relativePath = relativePath;
         this.content = content;
@@ -52,7 +64,15 @@ public class Resource<T> {
         return content;
     }
 
+    /**
+     * Returns a diagnostic representation containing both resource paths.
+     * Content is deliberately omitted to avoid logging large or sensitive
+     * payloads.
+     *
+     * @return a path-based resource description
+     */
     public String toString() {
         return "Resource[absolutePath=" + absolutePath + ", relativePath=" + relativePath + "]";
     }
+
 }

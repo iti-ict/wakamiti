@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -25,7 +27,12 @@ public class InlineDataSet extends DataSet {
      * @param values     The array of values.
      * @param nullSymbol The symbol representing {@code null} values.
      */
-    public InlineDataSet(String table, String[] columns, Object[] values, String nullSymbol) {
+    public InlineDataSet(
+            String table,
+            String[] columns,
+            Object[] values,
+            String nullSymbol
+    ) {
         super(table, "inline values", nullSymbol);
         this.columns = columns;
         this.values = values;
@@ -62,7 +69,9 @@ public class InlineDataSet extends DataSet {
      * @return The value of the specified column in the current row.
      */
     @Override
-    public Object rowValue(int columnIndex) {
+    public Object rowValue(
+            int columnIndex
+    ) {
         return nullIfMatchNullSymbol(values[columnIndex]);
     }
 

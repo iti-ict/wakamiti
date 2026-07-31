@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>es.iti.wakamiti</groupId>
+    <artifactId>wakamiti-starter</artifactId>
+    <version>1.3.0</version>
+    <relativePath>../wakamiti-starter</relativePath>
+  </parent>
   <!--
         This POM is used as an aggregator in order to build all the plugins at the same time.
      -->
-  <groupId>es.iti.wakamiti</groupId>
   <artifactId>wakamiti-plugin-aggregator</artifactId>
   <packaging>pom</packaging>
   <!-- This version number is for this specific pom, is not relevant for the rest of the components -->

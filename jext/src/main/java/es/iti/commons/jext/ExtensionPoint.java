@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -25,8 +27,6 @@ import java.lang.annotation.Target;
  * order to avoid runtime errors. Otherwise, increment the minor part of the
  * version in order to state the previous methods are still valid.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -35,12 +35,15 @@ public @interface ExtensionPoint {
     /**
      * The version of the extension point in form of
      * {@code <majorVersion>.<minorVersion>}.
+     *
+     * @return the extension point version
      */
     String version() default "1.0";
 
-
     /**
      * The load strategy used when an extension is requested
+     *
+     * @return the extension load strategy
      */
     LoadStrategy loadStrategy() default LoadStrategy.UNDEFINED;
 

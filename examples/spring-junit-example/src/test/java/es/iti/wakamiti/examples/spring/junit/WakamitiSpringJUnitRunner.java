@@ -1,4 +1,12 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.examples.spring.junit;
+
 
 import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -15,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
 /**
  * Runner variant that bootstraps Spring before Wakamiti initialization.
  */
@@ -23,6 +32,18 @@ public class WakamitiSpringJUnitRunner extends WakamitiJUnitRunner {
     private static final Map<Class<?>, ConfigurableApplicationContext> SPRING_CONTEXTS = new ConcurrentHashMap<>();
     private final Class<?> configurationClass;
 
+    /**
+     * Creates a Spring-aware runner for one JUnit configuration class.
+     * <p>
+     * A Spring application context is cached per configuration class and reused
+     * across this runner instance lifecycle, then closed in
+     * {@link #withAfterClasses(Statement)}.
+     * </p>
+     *
+     * @param configurationClass JUnit class that declares Spring bootstrap
+     *                           annotations
+     * @throws InitializationError when bootstrap preconditions are invalid
+     */
     public WakamitiSpringJUnitRunner(Class<?> configurationClass) throws InitializationError {
         super(bootstrapSpring(configurationClass));
         this.configurationClass = configurationClass;
@@ -115,12 +136,18 @@ public class WakamitiSpringJUnitRunner extends WakamitiJUnitRunner {
     }
 
     private static final class SpringBootstrapConfig {
+
         private final Class<?>[] sources;
         private final String[] profiles;
         private final String[] properties;
         private final String[] args;
 
-        private SpringBootstrapConfig(Class<?>[] sources, String[] profiles, String[] properties, String[] args) {
+        private SpringBootstrapConfig(
+                Class<?>[] sources,
+                String[] profiles,
+                String[] properties,
+                String[] args
+        ) {
             this.sources = sources;
             this.profiles = profiles;
             this.properties = properties;
@@ -142,5 +169,7 @@ public class WakamitiSpringJUnitRunner extends WakamitiJUnitRunner {
         private String[] args() {
             return args;
         }
+
     }
+
 }

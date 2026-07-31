@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,18 @@
 package es.iti.wakamiti.test.core.types;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Locale;
+
 import org.assertj.core.api.Assertions;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.slf4j.Logger;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Locale;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 
 
 /**
@@ -50,14 +53,12 @@ public class TestWakamitiDateTypeEs {
                 .isEqualTo(LocalDate.of(2018, 5, 30));
     }
 
-
     @Test
     public void testLocalizedDate2() {
         Assertions.assertThat(DATE_TYPE.matcher(LOCALE, "30 de mayo de 2018").matches()).isTrue();
         Assertions.assertThat(DATE_TYPE.parse(LOCALE, "30 de mayo de 2018"))
                 .isEqualTo(LocalDate.of(2018, 5, 30));
     }
-
 
     @Test
     public void testLocalizedDate3() {
@@ -70,12 +71,10 @@ public class TestWakamitiDateTypeEs {
                 .isEqualTo(LocalDate.of(2018, 5, 30));
     }
 
-
     @Test
     public void testLocalizedDate4() {
         Assertions.assertThat(DATE_TYPE.matcher(LOCALE, "5630/18").matches()).isFalse();
     }
-
 
     @Test
     public void testLocalizedTime1() {
@@ -83,19 +82,16 @@ public class TestWakamitiDateTypeEs {
         Assertions.assertThat(TIME_TYPE.parse(LOCALE, "17:35")).isEqualTo(LocalTime.of(17, 35));
     }
 
-
     @Test
     public void testLocalizedTime2() {
         Assertions.assertThat(TIME_TYPE.matcher(LOCALE, "5:35").matches()).isTrue();
         Assertions.assertThat(TIME_TYPE.parse(LOCALE, "5:35")).isEqualTo(LocalTime.of(5, 35));
     }
 
-
     @Test
     public void testLocalizedTime3() {
         Assertions.assertThat(TIME_TYPE.matcher(LOCALE, "555:66").matches()).isFalse();
     }
-
 
     @Test
     public void testLocalizedDateTime1() {
@@ -103,7 +99,6 @@ public class TestWakamitiDateTypeEs {
         Assertions.assertThat(DATETIME_TYPE.parse(LOCALE, "30/05/18 17:35"))
                 .isEqualTo(LocalDateTime.of(2018, 5, 30, 17, 35));
     }
-
 
     @Test
     public void testLocalizedDateTime2() {

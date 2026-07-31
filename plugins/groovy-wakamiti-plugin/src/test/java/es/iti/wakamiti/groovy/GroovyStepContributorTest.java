@@ -1,24 +1,28 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.groovy;
 
-import es.iti.wakamiti.api.Backend;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
-import es.iti.wakamiti.api.plan.Document;
-import org.junit.Before;
-import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.Backend;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.plan.Document;
 
 
 public class GroovyStepContributorTest {
@@ -38,8 +42,8 @@ public class GroovyStepContributorTest {
     @Test
     public void testExecute() {
         Object result = contributor.execute(new Document(
-                "def result = 2 + 2;" +
-                        "result + 2 as String"
+                "def result = 2 + 2;"
+                        + "result + 2 as String"
         ));
         assertThat(result).isEqualTo("6");
     }

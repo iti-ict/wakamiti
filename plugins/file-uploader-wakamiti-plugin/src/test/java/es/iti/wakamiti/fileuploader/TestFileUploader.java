@@ -1,12 +1,15 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.fileuploader;
 
 
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.apache.ftpserver.ftplet.FtpException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -14,8 +17,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
+
 
 public class TestFileUploader {
 
@@ -35,7 +44,6 @@ public class TestFileUploader {
         ftpServer.stop();
     }
 
-
     @Test
     public void testStandardOutputFileUploader() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
@@ -52,7 +60,6 @@ public class TestFileUploader {
         produceEvents(c, filesUploader, configurator, Event.STANDARD_OUTPUT_FILE_WRITTEN);
         assertTrue(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
-
 
     @Test
     public void testTestCasedOutputFileUploader() throws URISyntaxException {
@@ -71,7 +78,6 @@ public class TestFileUploader {
         assertTrue(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
 
-
     @Test
     public void testReportOutputFileUploader() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
@@ -89,7 +95,6 @@ public class TestFileUploader {
         assertTrue(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
 
-
     @Test
     public void testStandardOutputFileUploaderDisabledByDefault() throws URISyntaxException {
         Configuration c = Configuration.factory().fromPairs(
@@ -106,7 +111,6 @@ public class TestFileUploader {
         assertFalse(Files.exists(ftpServer.getTmpDir().resolve("dira/dirb/dirc/file.txt")));
     }
 
-
     private void produceEvents(
             Configuration c,
             AbstractFilesUploader filesUploader,
@@ -120,6 +124,5 @@ public class TestFileUploader {
         filesUploader.eventReceived(new Event(eventType, Instant.now(), path));
         filesUploader.eventReceived(new Event(Event.AFTER_WRITE_OUTPUT_FILES, Instant.now(), null));
     }
-
 
 }

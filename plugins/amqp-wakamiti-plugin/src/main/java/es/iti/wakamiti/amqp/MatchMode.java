@@ -1,9 +1,10 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.amqp;
 
 
@@ -12,8 +13,11 @@ package es.iti.wakamiti.amqp;
  */
 public enum MatchMode {
 
+    /** Requires the actual JSON structure and array order to match exactly. */
     STRICT,
+    /** Requires exact JSON content while allowing array elements in any order. */
     STRICT_ANY_ORDER,
+    /** Accepts additional fields in the actual JSON while checking expected content. */
     LOOSE
 
 }

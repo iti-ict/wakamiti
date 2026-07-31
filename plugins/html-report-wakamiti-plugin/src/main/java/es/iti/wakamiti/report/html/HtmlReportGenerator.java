@@ -1,10 +1,35 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.report.html;
 
+
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.CSS_FILE;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.EXTRA_INFO;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.OUTPUT_FILE;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.PREFIX;
+import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.TITLE;
+
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+
+import org.slf4j.Logger;
 
 import ch.simschla.minify.css.CssMin;
 import ch.simschla.minify.js.JsMin;
@@ -25,21 +50,16 @@ import es.iti.wakamiti.report.html.factory.SumAllMethod;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-import org.slf4j.Logger;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.function.UnaryOperator;
-
-import static es.iti.wakamiti.report.html.HtmlReportGeneratorConfig.*;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Provides the Html Report Generator functionality used by Wakamiti.
  */
-@Extension(provider = "es.iti.wakamiti", name = "html-report", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "html-report",
+        version = "2.13"
+)
 public class HtmlReportGenerator implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(HtmlReportGenerator.class);
@@ -54,6 +74,13 @@ public class HtmlReportGenerator implements Reporter {
     private String title;
     private Map<String, Object> parameters;
 
+    /**
+     * Creates a generator with a hardened FreeMarker configuration.
+     * <p>
+     * Templates are loaded from the context class loader using UTF-8, template
+     * failures are propagated to the report boundary, and the custom
+     * {@code duration} number format is registered.
+     */
     public HtmlReportGenerator() {
         templateConfiguration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_29);
         templateConfiguration.setDefaultEncoding("UTF-8");
@@ -70,19 +97,36 @@ public class HtmlReportGenerator implements Reporter {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    void setCssFile(String cssFile) {
+    void setCssFile(
+            String cssFile
+    ) {
         this.cssFile = cssFile;
     }
 
-    void setOutputFile(String outputFile) {
+    void setOutputFile(
+            String outputFile
+    ) {
         this.outputFile = outputFile;
     }
 
-    void setTitle(String title) {
+    void setTitle(
+            String title
+    ) {
         this.title = title;
     }
 
-    public void setConfiguration(Configuration configuration) {
+    /**
+     * Applies report paths, title and arbitrary template parameters.
+     * <p>
+     * Values under the HTML report prefix are exposed directly to FreeMarker;
+     * values under the extra-info prefix are grouped in the
+     * {@code extra_info} template variable.
+     *
+     * @param configuration complete Wakamiti configuration
+     */
+    public void setConfiguration(
+            Configuration configuration
+    ) {
         configuration.get(CSS_FILE, String.class).ifPresent(this::setCssFile);
         configuration.get(OUTPUT_FILE, String.class).ifPresent(this::setOutputFile);
         configuration.get(TITLE, String.class).ifPresent(this::setTitle);
@@ -93,7 +137,9 @@ public class HtmlReportGenerator implements Reporter {
     }
 
     @Override
-    public void report(PlanNodeSnapshot rootNode) {
+    public void report(
+            PlanNodeSnapshot rootNode
+    ) {
         try {
             var resourceLoader = WakamitiAPI.instance().resourceLoader();
             Path output = resourceLoader.absolutePath(PathUtil.replaceTemporalPlaceholders(Path.of(Objects.requireNonNull(
@@ -121,12 +167,10 @@ public class HtmlReportGenerator implements Reporter {
             try (var writer = new BufferedWriter(new FileWriter(output.toFile(), StandardCharsets.UTF_8))) {
                 template("report.ftl").process(templateParameters, writer);
                 WakamitiAPI.instance().publishEvent(Event.REPORT_OUTPUT_FILE_WRITTEN, output);
-
             }
         } catch (IOException | TemplateException e) {
             LOGGER.error("Error generating HTML report: {}", e.getMessage(), e);
         }
-
     }
 
     private String readStyles() {
@@ -152,7 +196,9 @@ public class HtmlReportGenerator implements Reporter {
         return localCss;
     }
 
-    private String readJavascript(String resource) {
+    private String readJavascript(
+            String resource
+    ) {
         try (InputStream is = resource(resource)) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -168,15 +214,21 @@ public class HtmlReportGenerator implements Reporter {
         }
     }
 
-    private Template template(String resource) throws IOException {
+    private Template template(
+            String resource
+    ) throws IOException {
         return templateConfiguration.getTemplate(resource);
     }
 
-    private InputStream resource(String resource) {
+    private InputStream resource(
+            String resource
+    ) {
         return Objects.requireNonNull(classLoader().getResourceAsStream(resource), "Resource not found: " + resource);
     }
 
-    private String asSafeEmbeddedJson(Object value) throws IOException {
+    private String asSafeEmbeddedJson(
+            Object value
+    ) throws IOException {
         return OBJECT_MAPPER.writeValueAsString(value)
                 .replace("<", "\\u003C")
                 .replace(">", "\\u003E")

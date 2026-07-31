@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -24,7 +26,15 @@ public class FetchedArtifact {
     private final Path path;
     private final List<FetchedArtifact> dependencies;
 
-
+    /**
+     * Creates a resolved artifact and its direct dependency tree.
+     *
+     * @param groupId      Maven group identifier
+     * @param artifactId   Maven artifact identifier
+     * @param version      resolved artifact version
+     * @param path         physical file in the local repository
+     * @param dependencies direct resolved dependencies in collection order
+     */
     public FetchedArtifact(
             String groupId,
             String artifactId,
@@ -39,12 +49,27 @@ public class FetchedArtifact {
         this.dependencies = dependencies;
     }
 
-    public FetchedArtifact(String coordinates, FetchedArtifact... dependencies) {
+    /**
+     * Creates a lightweight artifact tree from compact coordinates, primarily
+     * for tests and expected-result construction.
+     *
+     * @param coordinates Maven coordinates in
+     *                    {@code groupId:artifactId:version} form
+     * @param dependencies direct dependencies
+     * @throws ArrayIndexOutOfBoundsException if coordinates omit a required
+     *                                       component
+     */
+    public FetchedArtifact(
+            String coordinates,
+            FetchedArtifact... dependencies
+    ) {
         this(coordinates.split(":")[0], coordinates.split(":")[1], coordinates.split(":")[2], null, List.of(dependencies));
     }
 
     /**
      * The group id
+     *
+     * @return the resulting value
      */
     public String groupId() {
         return groupId;
@@ -52,6 +77,8 @@ public class FetchedArtifact {
 
     /**
      * The artifact id
+     *
+     * @return the resulting value
      */
     public String artifactId() {
         return artifactId;
@@ -59,6 +86,8 @@ public class FetchedArtifact {
 
     /**
      * The version of the artifact
+     *
+     * @return the resulting value
      */
     public String version() {
         return version;
@@ -66,6 +95,8 @@ public class FetchedArtifact {
 
     /**
      * Full coordinates text, in form of {@literal <groupId>:<artifactId>:<version>}
+     *
+     * @return the resulting value
      */
     public String coordinates() {
         return groupId() + ":" + artifactId() + ":" + version();
@@ -73,14 +104,17 @@ public class FetchedArtifact {
 
     /**
      * The fetched artifacts that are direct dependencies of this artifact
+     *
+     * @return the resulting value
      */
     public Stream<FetchedArtifact> dependencies() {
         return dependencies.stream();
     }
 
-
     /**
      * The fetched artifacts that are direct or inherited dependencies of this artifact
+     *
+     * @return the resulting value
      */
     public Stream<FetchedArtifact> allDependencies() {
         return Stream.concat(
@@ -89,9 +123,10 @@ public class FetchedArtifact {
         );
     }
 
-
     /**
      * The path of the physical file in the local repository
+     *
+     * @return the resulting value
      */
     public Path path() {
         return path;
@@ -102,7 +137,10 @@ public class FetchedArtifact {
         return toString(0, new StringBuilder()).toString();
     }
 
-    private StringBuilder toString(int level, StringBuilder string) {
+    private StringBuilder toString(
+            int level,
+            StringBuilder string
+    ) {
         string.append("   ".repeat(Math.max(0, level)));
         string.append("|- ").append(coordinates()).append("  [").append(path).append("]").append("\n");
         for (FetchedArtifact child : dependencies) {
@@ -112,9 +150,15 @@ public class FetchedArtifact {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof FetchedArtifact)) return false;
+    public boolean equals(
+            Object o
+    ) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FetchedArtifact)) {
+            return false;
+        }
         return this.hashCode() == o.hashCode();
     }
 
@@ -122,4 +166,5 @@ public class FetchedArtifact {
     public int hashCode() {
         return Objects.hash(groupId, artifactId, version, dependencies);
     }
+
 }

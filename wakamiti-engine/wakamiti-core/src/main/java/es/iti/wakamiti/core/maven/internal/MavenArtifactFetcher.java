@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,26 +8,43 @@
 package es.iti.wakamiti.core.maven.internal;
 
 
-import es.iti.wakamiti.core.maven.MavenFetchException;
-import es.iti.wakamiti.core.maven.MavenFetchRequest;
-import es.iti.wakamiti.core.maven.MavenFetchResult;
+import static java.util.Objects.requireNonNull;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.eclipse.aether.collection.*;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.collection.CollectResult;
+import org.eclipse.aether.collection.DependencyCollectionContext;
+import org.eclipse.aether.collection.DependencyCollectionException;
+import org.eclipse.aether.collection.DependencySelector;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.Exclusion;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.*;
+import org.eclipse.aether.resolution.ArtifactDescriptorException;
+import org.eclipse.aether.resolution.ArtifactDescriptorRequest;
+import org.eclipse.aether.resolution.ArtifactDescriptorResult;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.VersionRequest;
+import org.eclipse.aether.resolution.VersionResolutionException;
 import org.eclipse.aether.transfer.ArtifactNotFoundException;
 import org.slf4j.Logger;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
+import es.iti.wakamiti.core.maven.MavenFetchException;
+import es.iti.wakamiti.core.maven.MavenFetchRequest;
+import es.iti.wakamiti.core.maven.MavenFetchResult;
 
 
 public class MavenArtifactFetcher implements DependencySelector {
@@ -40,6 +59,17 @@ public class MavenArtifactFetcher implements DependencySelector {
     private List<Artifact> artifacts;
     private List<Exclusion> exclusions;
 
+    /**
+     * Creates a fetcher from a high-level request, parsing requested artifacts
+     * and exclusions into Maven Resolver model objects.
+     *
+     * @param system             repository-system service
+     * @param remoteRepositories repositories searched in priority order
+     * @param session            resolver session and local-repository context
+     * @param fetchRequest       requested coordinates, scopes, and exclusions
+     * @param listener           listener collecting failed transfers
+     * @param logger             destination for repository diagnostics
+     */
     public MavenArtifactFetcher(
             RepositorySystem system,
             List<RemoteRepository> remoteRepositories,
@@ -58,6 +88,21 @@ public class MavenArtifactFetcher implements DependencySelector {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Creates a dependency selector/fetcher from fully prepared resolver state.
+     * This constructor is also used to derive child selectors with merged
+     * exclusions.
+     *
+     * @param system             repository-system service
+     * @param remoteRepositories repositories searched in priority order
+     * @param session            active resolver session
+     * @param scopes             dependency scopes eligible for retrieval
+     * @param retrieveOptionals  whether optional dependencies are included
+     * @param exclusions         artifact exclusion patterns
+     * @param artifacts          root artifacts to fetch
+     * @param listener           transfer-failure collector
+     * @param logger             destination for diagnostics
+     */
     public MavenArtifactFetcher(
             RepositorySystem system,
             List<RemoteRepository> remoteRepositories,
@@ -80,7 +125,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         this.listener = listener;
     }
 
-    private Exclusion exclusionFromCoordinates(String coordinates) {
+    private Exclusion exclusionFromCoordinates(
+            String coordinates
+    ) {
         var parts = coordinates.split(":");
         if (parts.length >= 2) {
             var groupId = parts[0];
@@ -93,6 +140,16 @@ public class MavenArtifactFetcher implements DependencySelector {
         }
     }
 
+    /**
+     * Resolves descriptors, collects dependency graphs, and downloads every
+     * configured root artifact.
+     *
+     * @return a result backed by the collected dependency graphs
+     * @throws DependencyCollectionException if a dependency graph cannot be
+     *                                      collected
+     * @throws ArtifactDescriptorException if an artifact descriptor cannot be
+     *                                     read
+     */
     public MavenFetchResult fetch() throws DependencyCollectionException, ArtifactDescriptorException {
         if (logger.isInfoEnabled()) {
             logger.info("Using the following repositories:");
@@ -111,7 +168,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         return new MavenFetchResultImpl(results, session);
     }
 
-    private CollectResult collectResult(Artifact artifact)
+    private CollectResult collectResult(
+            Artifact artifact
+    )
             throws ArtifactDescriptorException,
             DependencyCollectionException {
         ArtifactDescriptorRequest descriptorRequest = new ArtifactDescriptorRequest();
@@ -133,7 +192,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         return result;
     }
 
-    private DefaultArtifact artifactFromCoordinates(String coordinates) {
+    private DefaultArtifact artifactFromCoordinates(
+            String coordinates
+    ) {
         try {
             return new DefaultArtifact(coordinates);
         } catch (IllegalArgumentException e) {
@@ -156,7 +217,9 @@ public class MavenArtifactFetcher implements DependencySelector {
         }
     }
 
-    private void retrieveDependency(DependencyNode node) {
+    private void retrieveDependency(
+            DependencyNode node
+    ) {
         if (node.getArtifact() != null) {
             try {
                 ArtifactRequest request = new ArtifactRequest(
@@ -175,10 +238,12 @@ public class MavenArtifactFetcher implements DependencySelector {
     }
 
     @Override
-    public boolean selectDependency(Dependency dependency) {
+    public boolean selectDependency(
+            Dependency dependency
+    ) {
         requireNonNull(dependency, "dependency cannot be null");
-        if ((dependency.isOptional() && !retrieveOptionals) ||
-                (!dependency.getScope().isEmpty() && !scopes.contains(dependency.getScope()))
+        if ((dependency.isOptional() && !retrieveOptionals)
+                || (!dependency.getScope().isEmpty() && !scopes.contains(dependency.getScope()))
         ) {
             return false;
         }
@@ -190,7 +255,10 @@ public class MavenArtifactFetcher implements DependencySelector {
         return true;
     }
 
-    private boolean matches(Exclusion exclusion, Artifact artifact) {
+    private boolean matches(
+            Exclusion exclusion,
+            Artifact artifact
+    ) {
         if (!matches(exclusion.getArtifactId(), artifact.getArtifactId())) {
             return false;
         }
@@ -203,12 +271,17 @@ public class MavenArtifactFetcher implements DependencySelector {
         return matches(exclusion.getClassifier(), artifact.getClassifier());
     }
 
-    private boolean matches(String pattern, String value) {
+    private boolean matches(
+            String pattern,
+            String value
+    ) {
         return "*".equals(pattern) || pattern.equals(value);
     }
 
     @Override
-    public DependencySelector deriveChildSelector(DependencyCollectionContext context) {
+    public DependencySelector deriveChildSelector(
+            DependencyCollectionContext context
+    ) {
         Objects.requireNonNull(context, "context cannot be null");
         Dependency dependency = context.getDependency();
         Collection<Exclusion> newExclusions = dependency != null ? dependency.getExclusions() : null;
@@ -232,9 +305,12 @@ public class MavenArtifactFetcher implements DependencySelector {
         }
     }
 
-    private static class ExclusionComparator implements Comparator<Exclusion> {
+    private static final class ExclusionComparator implements Comparator<Exclusion> {
 
-        public int compare(Exclusion e1, Exclusion e2) {
+        public int compare(
+                Exclusion e1,
+                Exclusion e2
+        ) {
             if (e1 == null) {
                 return (e2 == null) ? 0 : 1;
             } else if (e2 == null) {
@@ -252,5 +328,7 @@ public class MavenArtifactFetcher implements DependencySelector {
             }
             return rel;
         }
+
     }
+
 }

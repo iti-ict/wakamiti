@@ -1,12 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.core.datatypes;
 
-
-import es.iti.wakamiti.api.util.ThrowableFunction;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -15,12 +15,13 @@ import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Locale;
 
+import es.iti.wakamiti.api.util.ThrowableFunction;
+
 
 /**
  * Class representing a data type for numeric values in Wakamiti.
  *
  * @param <T> Type of numeric data.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
 
@@ -34,7 +35,10 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param converter       Converter function for converting from Number to the specified type.
      */
     protected WakamitiNumberDataType(
-            String name, Class<T> javaType, boolean includeDecimals, boolean useBigDecimal,
+            String name,
+            Class<T> javaType,
+            boolean includeDecimals,
+            boolean useBigDecimal,
             ThrowableFunction<Number, T> converter
     ) {
         super(
@@ -106,6 +110,7 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param locale          The locale for parsing.
      * @param includeDecimals Indicates whether the data type should include decimal values.
      * @param converter       Converter function for converting from Number to the specified type.
+     * @param <T>             The parsed number type.
      * @return TypeParser instance for parsing numeric values.
      */
     public static <T> TypeParser<T> parser(
@@ -127,7 +132,10 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param useBigDecimal Indicates whether to use BigDecimal for conversion.
      * @return DecimalFormat instance for formatting numeric values.
      */
-    public static DecimalFormat decimalFormat(Locale locale, boolean useBigDecimal) {
+    public static DecimalFormat decimalFormat(
+            Locale locale,
+            boolean useBigDecimal
+    ) {
         DecimalFormat format;
         if (useBigDecimal) {
             format = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -145,7 +153,10 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
      * @param includeDecimals Indicates whether the data type should include decimal values.
      * @return Numeric regex pattern.
      */
-    public static String numericRegexPattern(Locale locale, boolean includeDecimals) {
+    public static String numericRegexPattern(
+            Locale locale,
+            boolean includeDecimals
+    ) {
         final DecimalFormat format = decimalFormat(locale, includeDecimals);
         final DecimalFormatSymbols symbols = format.getDecimalFormatSymbols();
         final StringBuilder pattern = new StringBuilder("-?");
@@ -155,7 +166,7 @@ public class WakamitiNumberDataType<T> extends WakamitiDataTypeBase<T> {
         if (includeDecimals) {
             pattern.append("\\").append(symbols.getDecimalSeparator()).append("\\d+?");
         }
-        return "("+pattern + "|" + WakamitiCoreTypes.PROPERTY_REGEX+")";
+        return "(" + pattern + "|" + WakamitiCoreTypes.PROPERTY_REGEX + ")";
     }
 
 }

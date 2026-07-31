@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -21,7 +23,6 @@ var currentExecutionView: CurrentExecutionView;
 var languageClient: WakamitiLanguageClient;
 
 
-
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Activating Wakamiti VSCode extension...');
 	languageClient = new WakamitiLanguageClient(context, reconnectLanguageServer.id);
@@ -34,15 +35,9 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 
-
-
 export function deactivate() {
 	console.log('Wakamiti VSCode extension deactivated.');
 }
-
-
-
-
 
 
 function registerCommands(context: vscode.ExtensionContext) {
@@ -60,7 +55,6 @@ function registerCommands(context: vscode.ExtensionContext) {
 			vscode.commands.registerCommand(it.id, it.action)
 		)
 	);
-
 
 
 }

@@ -1,206 +1,245 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.lsp.internal;
 
-import java.util.*;
-import java.util.stream.*;
 
-import es.iti.wakamiti.core.gherkin.parser.ParserException;
-import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
-import org.eclipse.lsp4j.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.eclipse.lsp4j.CodeAction;
+import org.eclipse.lsp4j.CodeActionKind;
+import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.DiagnosticRelatedInformation;
+import org.eclipse.lsp4j.DiagnosticSeverity;
 import org.eclipse.lsp4j.Location;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.TextDocumentEdit;
+import org.eclipse.lsp4j.TextEdit;
+import org.eclipse.lsp4j.VersionedTextDocumentIdentifier;
+import org.eclipse.lsp4j.WorkspaceEdit;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 
-import es.iti.wakamiti.core.gherkin.parser.*;
+import es.iti.wakamiti.core.gherkin.parser.ParserException;
 import es.iti.wakamiti.core.gherkin.parser.ParserException.CompositeParserException;
+import es.iti.wakamiti.core.gherkin.parser.ScenarioDefinition;
 
+
+/**
+ * Provides the Document Diagnostic Helper functionality used by Wakamiti.
+ */
 public class DocumentDiagnosticHelper {
 
+    private final GherkinDocumentAssessor assessor;
+    private final Map<Range, List<CodeAction>> quickFixes = new HashMap<>();
 
-	private final GherkinDocumentAssessor assessor;
-	private final Map<Range,List<CodeAction>> quickFixes = new HashMap<>();
+    /**
+     * Creates a diagnostic service tied to one document assessor.
+     *
+     * @param assessor assessor supplying parsed content, configuration and step
+     *                 hints
+     */
+    public DocumentDiagnosticHelper(
+            GherkinDocumentAssessor assessor
+    ) {
+        this.assessor = assessor;
+    }
 
-
-
-	public DocumentDiagnosticHelper(GherkinDocumentAssessor assessor) {
-		this.assessor = assessor;
-	}
-
-
-	public List<Diagnostic> collectDiagnostics() {
-		quickFixes.clear();
+    /**
+     * Recomputes diagnostics and their associated quick fixes.
+     * <p>
+     * Parser failures are reported first and prevent semantic assessment.
+     * Otherwise the method reports undefined steps, missing scenario IDs and
+     * documents without scenarios. Previously registered quick fixes are
+     * discarded so they always correspond to the returned diagnostics.
+     *
+     * @return current diagnostics for the assessor's document
+     */
+    public List<Diagnostic> collectDiagnostics() {
+        quickFixes.clear();
         List<Diagnostic> diagnostics = new ArrayList<>();
         if (assessor.parsingError != null) {
             collectDiagnosticsFromError(diagnostics);
         } else {
-        	collectDiagnosticsFromContent(diagnostics);
+            collectDiagnosticsFromContent(diagnostics);
         }
         return diagnostics;
     }
 
+    /**
+     * Returns quick fixes registered for a diagnostic's exact source range.
+     *
+     * @param errorDiagnostic diagnostic previously returned by
+     *                        {@link #collectDiagnostics()}
+     * @return replacement or insertion actions, or an empty list when the
+     *         diagnostic has no registered fix
+     */
+    public List<CodeAction> retrieveQuickFixes(
+            Diagnostic errorDiagnostic
+    ) {
+        return quickFixes.getOrDefault(errorDiagnostic.getRange(), List.of());
+    }
 
-	public List<CodeAction> retrieveQuickFixes(Diagnostic errorDiagnostic) {
-		return quickFixes.getOrDefault(errorDiagnostic.getRange(), List.of());
-	}
-
-
-
-	private void collectDiagnosticsFromError(List<Diagnostic> diagnostics) {
-        if (assessor.parsingError instanceof ParserException) {
-            collectDiagnosticsFromParserException((ParserException)assessor.parsingError, diagnostics);
+    private void collectDiagnosticsFromError(
+            List<Diagnostic> diagnostics
+    ) {
+        if (assessor.parsingError instanceof ParserException ex) {
+            collectDiagnosticsFromParserException(ex, diagnostics);
         } else {
             Range errorRange = new Range(
-                new Position(0,0),
-                new Position(assessor.documentMap.document().numberOfLines(),0)
+                    new Position(0, 0),
+                    new Position(assessor.documentMap.document().numberOfLines(), 0)
             );
             diagnostics.add(diagnostic(
-        		DiagnosticSeverity.Error,
-        		uri(),
-        		errorRange,
-        		assessor.parsingError.toString()
-    		));
+                    DiagnosticSeverity.Error,
+                    uri(),
+                    errorRange,
+                    assessor.parsingError.toString()
+            ));
         }
     }
 
-
-    private void collectDiagnosticsFromContent(List<Diagnostic> diagnostics) {
-    	collectDiagnosticsFromUndefinedSteps(diagnostics);
-    	collectDiagnosticsFromMissingId(diagnostics);
+    private void collectDiagnosticsFromContent(
+            List<Diagnostic> diagnostics
+    ) {
+        collectDiagnosticsFromUndefinedSteps(diagnostics);
+        collectDiagnosticsFromMissingId(diagnostics);
         if (assessor.parsedDocument != null) {
-        	var numScenarios = assessor.parsedDocument.getFeature().getChildren().stream()
-    			.filter(ScenarioDefinition.class::isInstance)
-    			.count();
-        	if (numScenarios == 0L) {
-        		diagnostics.add(diagnostic(
-    				DiagnosticSeverity.Warning,
-    				uri(),
-    				emptyRange(),
-    				"No scenarios defined"
-				));
-        	}
+            var numScenarios = assessor.parsedDocument.getFeature().getChildren().stream()
+                    .filter(ScenarioDefinition.class::isInstance)
+                    .count();
+            if (numScenarios == 0L) {
+                diagnostics.add(diagnostic(
+                        DiagnosticSeverity.Warning,
+                        uri(),
+                        emptyRange(),
+                        "No scenarios defined"
+                ));
+            }
         }
     }
 
-
-
-	private void collectDiagnosticsFromUndefinedSteps(List<Diagnostic> diagnostics) {
-
-		var additionalInfo = assessor.additionalInfo;
-		var documentMap = assessor.documentMap;
-		var hinter = assessor.hinter;
+    private void collectDiagnosticsFromUndefinedSteps(
+            List<Diagnostic> diagnostics
+    ) {
+        var additionalInfo = assessor.additionalInfo;
+        var documentMap = assessor.documentMap;
+        var hinter = assessor.hinter;
 
         if (additionalInfo.hasRedefinitionDefinitionTag) {
-        	return;
+            return;
         }
 
-        String [] lines = documentMap.document().extractLines();
+        String[] lines = documentMap.document().extractLines();
         for (int lineNumber = 0; lineNumber < lines.length; lineNumber++) {
             String line = lines[lineNumber];
             String stripLine = line.strip();
             if (line.isBlank() || !documentMap.isStep(lineNumber, stripLine)) {
-            	continue;
+                continue;
             }
             int marginLeft = line.length() - line.stripLeading().length();
             var step = documentMap.removeKeyword(lineNumber, stripLine);
             if (!hinter.isValidStep(step)) {
                 var errorRange = new Range(
-                    new Position(lineNumber, marginLeft),
-                    new Position(lineNumber, line.length())
+                        new Position(lineNumber, marginLeft),
+                        new Position(lineNumber, line.length())
                 );
                 var stepDiagnostics = diagnostic(
-            		DiagnosticSeverity.Error,
-            		uri(),
-            		errorRange,
-            		"Undefined step",
-            		step
-        		);
+                        DiagnosticSeverity.Error,
+                        uri(),
+                        errorRange,
+                        "Undefined step",
+                        step
+                );
                 diagnostics.add(stepDiagnostics);
                 registerUndefinedStepQuickFixes(step, stepDiagnostics, errorRange);
             }
         }
     }
 
+    private void collectDiagnosticsFromMissingId(
+            List<Diagnostic> diagnostics
+    ) {
+        var additionalInfo = assessor.additionalInfo;
+        var documentMap = assessor.documentMap;
 
-
-	private void collectDiagnosticsFromMissingId(List<Diagnostic> diagnostics) {
-
-		var additionalInfo = assessor.additionalInfo;
-		var documentMap = assessor.documentMap;
-
-        String [] lines = documentMap.document().extractLines();
+        String[] lines = documentMap.document().extractLines();
 
         int lastScenarioLineNumber = -1;
         for (int lineNumber = 0; lineNumber < lines.length; lineNumber++) {
             String line = lines[lineNumber];
             String stripLine = line.strip();
             if (line.isBlank()) {
-            	continue;
+                continue;
             }
             int marginLeft = line.length() - line.stripLeading().length();
 
             if (!documentMap.detectScenarioKeyword(lineNumber, stripLine).isEmpty()) {
-            	var ids = documentMap.segmentsInLines(
-        			lastScenarioLineNumber+1,
-        			lineNumber-1,
-        			additionalInfo.idTagPattern,
-        			1
-    			);
-            	if (ids.isEmpty()) {
-            		var range = wholeLineRange(lineNumber, marginLeft);
-            		var diagnostic = diagnostic(
-        				DiagnosticSeverity.Warning,
-        				uri(),
-        				range,
-        				"This scenario should have an ID tag"
-    				);
-            		diagnostics.add(diagnostic);
-            		registerMissingIdQuickFix(diagnostic);
-            	}
-            	lastScenarioLineNumber = lineNumber;
+                var ids = documentMap.segmentsInLines(
+                        lastScenarioLineNumber + 1,
+                        lineNumber - 1,
+                        additionalInfo.idTagPattern,
+                        1
+                );
+                if (ids.isEmpty()) {
+                    var range = wholeLineRange(lineNumber, marginLeft);
+                    var diagnostic = diagnostic(
+                            DiagnosticSeverity.Warning,
+                            uri(),
+                            range,
+                            "This scenario should have an ID tag"
+                    );
+                    diagnostics.add(diagnostic);
+                    registerMissingIdQuickFix(diagnostic);
+                }
+                lastScenarioLineNumber = lineNumber;
             }
         }
     }
 
-
-
-
-
-
-	private void collectDiagnosticsFromParserException(
-        ParserException parsingError,
-        List<Diagnostic> results
+    private void collectDiagnosticsFromParserException(
+            ParserException parsingError,
+            List<Diagnostic> results
     ) {
-        if (parsingError instanceof CompositeParserException) {
-            for (ParserException e : ((CompositeParserException)parsingError).getErrors()) {
-                collectDiagnosticsFromParserException(e,results);
+        if (parsingError instanceof CompositeParserException ex) {
+            for (ParserException e : ex.getErrors()) {
+                collectDiagnosticsFromParserException(e, results);
             }
         } else {
             int lineNumber = parsingError.getLocation().getLine();
             int column = parsingError.getLocation().getColumn();
-            Range range = (column == 0 ?
-                emptyRange(lineNumber, column) :
-                wholeLineRange(lineNumber-1, column-1)
+            Range range = (column == 0
+                    ? emptyRange(lineNumber, column)
+                    : wholeLineRange(lineNumber - 1, column - 1)
             );
-            results.add(diagnostic(DiagnosticSeverity.Error,uri(),range,parsingError.getMessage()));
+            results.add(diagnostic(DiagnosticSeverity.Error, uri(), range, parsingError.getMessage()));
         }
     }
 
-
-    private void registerUndefinedStepQuickFixes(String step, Diagnostic diagnostic, Range range) {
-        var codeActions = quickFixes.computeIfAbsent(range, x->new ArrayList<>());
+    private void registerUndefinedStepQuickFixes(
+            String step,
+            Diagnostic diagnostic,
+            Range range
+    ) {
+        var codeActions = quickFixes.computeIfAbsent(range, x -> new ArrayList<>());
         var hinter = assessor.hinter;
         for (String hint : hinter.getHintsForInvalidStep(step, assessor.maxSuggestions, true)) {
             TextEdit textEdit = new TextEdit(range, hint);
-            var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(),null);
+            var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(), null);
             TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
             textDocumentEdit.setTextDocument(textDocument);
-            textDocumentEdit.setEdits(List.of(textEdit));
+            textDocumentEdit.setEdits(List.of(Either.forLeft(textEdit)));
             WorkspaceEdit edit = new WorkspaceEdit(List.of(Either.forLeft(textDocumentEdit)));
-            CodeAction codeAction = new CodeAction("Replace step with: "+hint);
+            CodeAction codeAction = new CodeAction("Replace step with: " + hint);
             codeAction.setIsPreferred(Boolean.TRUE);
             codeAction.setDiagnostics(List.of(diagnostic));
             codeAction.setEdit(edit);
@@ -209,19 +248,20 @@ public class DocumentDiagnosticHelper {
         }
     }
 
-
-    private void registerMissingIdQuickFix(Diagnostic diagnostic) {
-    	Range range = diagnostic.getRange();
-		var codeActions = quickFixes.computeIfAbsent(range, x->new ArrayList<>());
+    private void registerMissingIdQuickFix(
+            Diagnostic diagnostic
+    ) {
+        Range range = diagnostic.getRange();
+        var codeActions = quickFixes.computeIfAbsent(range, x -> new ArrayList<>());
         int marginLeft = range.getStart().getCharacter();
         String id = assessor.additionalInfo.idTagGenerator.generate();
-		TextEdit textEdit = new TextEdit(
-    		startPositionRange(range),
-    		id+"\n"+" ".repeat(marginLeft)
-		);
-		var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(),null);
+        TextEdit textEdit = new TextEdit(
+                startPositionRange(range),
+                id + "\n" + " ".repeat(marginLeft)
+        );
+        var textDocument = new VersionedTextDocumentIdentifier(assessor.uri(), null);
         TextDocumentEdit textDocumentEdit = new TextDocumentEdit();
-        textDocumentEdit.setEdits(List.of(textEdit));
+        textDocumentEdit.setEdits(List.of(Either.forLeft(textEdit)));
         textDocumentEdit.setTextDocument(textDocument);
         WorkspaceEdit edit = new WorkspaceEdit(List.of(Either.forLeft(textDocumentEdit)));
         CodeAction codeAction = new CodeAction("Add ID tag to this scenario");
@@ -232,14 +272,26 @@ public class DocumentDiagnosticHelper {
         codeActions.add(codeAction);
     }
 
-
-
+    /**
+     * Creates a protocol diagnostic with Wakamiti as its source.
+     * <p>
+     * Each additional string is attached as related information at the same
+     * location. This is used, for example, to retain the unmatched step text
+     * separately from the user-facing diagnostic message.
+     *
+     * @param severity diagnostic severity shown by the client
+     * @param uri URI of the affected document
+     * @param range affected source range
+     * @param warning primary diagnostic message
+     * @param extra optional related-information messages
+     * @return a fully initialized LSP diagnostic
+     */
     public static Diagnostic diagnostic(
-    		DiagnosticSeverity severity,
-    		String uri,
-    		Range range,
-    		String warning,
-    		String... extra
+            DiagnosticSeverity severity,
+            String uri,
+            Range range,
+            String warning,
+            String... extra
     ) {
         var location = new Location(uri, range);
         var diagnostic = new Diagnostic();
@@ -248,42 +300,44 @@ public class DocumentDiagnosticHelper {
         diagnostic.setSeverity(severity);
         diagnostic.setSource("wakamiti-language-server");
         diagnostic.setRelatedInformation(
-    		Stream.of(extra).map(data->new DiagnosticRelatedInformation(location, data))
-    		.collect(Collectors.toList())
-    	);
+                Stream.of(extra).map(data -> new DiagnosticRelatedInformation(location, data))
+                        .collect(Collectors.toList())
+        );
         return diagnostic;
     }
 
-
-
     private Range emptyRange() {
-		return new Range(new Position(0, 0), new Position(0, 0));
-	}
+        return new Range(new Position(0, 0), new Position(0, 0));
+    }
 
-
-    private Range wholeLineRange(int lineNumber, int columnFrom) {
+    private Range wholeLineRange(
+            int lineNumber,
+            int columnFrom
+    ) {
         return new Range(
-            new Position(lineNumber,columnFrom),
-            new Position(lineNumber,assessor.documentMap.document().extractLine(lineNumber).length())
+                new Position(lineNumber, columnFrom),
+                new Position(lineNumber, assessor.documentMap.document().extractLine(lineNumber).length())
         );
     }
 
-
-    private Range emptyRange(int lineNumber, int column) {
+    private Range emptyRange(
+            int lineNumber,
+            int column
+    ) {
         return new Range(
-            new Position(lineNumber,column),
-            new Position(lineNumber,column)
+                new Position(lineNumber, column),
+                new Position(lineNumber, column)
         );
     }
 
-
-    private Range startPositionRange(Range range) {
+    private Range startPositionRange(
+            Range range
+    ) {
         return new Range(range.getStart(), range.getStart());
     }
 
-
     private String uri() {
-    	return assessor.uri();
+        return assessor.uri();
     }
 
 }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,18 @@
 package es.iti.wakamiti.amqp;
 
 
-import es.iti.wakamiti.amqp.client.AmqpClient;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.plan.Document;
-import org.junit.Test;
-
-import java.lang.reflect.Field;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import java.lang.reflect.Field;
+
+import org.junit.Test;
+
+import es.iti.wakamiti.amqp.client.AmqpClient;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.Document;
 
 
 public class AmqpConfigContributorTest {
@@ -85,10 +88,13 @@ public class AmqpConfigContributorTest {
         assertEquals(AmqpProtocol.AMQP_1_0, steps.protocol);
     }
 
-    private static void setClient(AmqpStepContributor steps, AmqpClient client) throws Exception {
+    private static void setClient(
+            AmqpStepContributor steps,
+            AmqpClient client
+    ) throws Exception {
         Field field = AmqpSupport.class.getDeclaredField("client");
         field.setAccessible(true);
         field.set(steps, client);
     }
-}
 
+}

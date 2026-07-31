@@ -1,29 +1,41 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.files;
 
-
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.Configurer;
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.extensions.ConfigContributor;
 
 import java.nio.file.Path;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Extension(provider =  "es.iti.wakamiti", name = "files-step-config", version = "2.6")
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.extensions.ConfigContributor;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
+
+
+/**
+ * Provides the Files Step Configurator functionality used by Wakamiti.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "files-step-config",
+        version = "2.13"
+)
 public class FilesStepConfigurator implements ConfigContributor<FilesStepContributor> {
 
     private static final String ENTRY_SEPARATOR = "=";
 
-    public static String FILES_ACCESS_TIMEOUT = "files.timeout";
-    public static String FILES_LINKS = "files.links";
-    public static String FILES_ENABLE_CLEANUP_UPON_COMPLETION = "files.enableCleanupUponCompletion";
+    /** Configuration key for file-watch timeout in seconds. */
+    public static final String FILES_ACCESS_TIMEOUT = "files.timeout";
+    /** Configuration key mapping symbolic-link paths to their targets. */
+    public static final String FILES_LINKS = "files.links";
+    /** Configuration key enabling restoration of file operations at teardown. */
+    public static final String FILES_ENABLE_CLEANUP_UPON_COMPLETION = "files.enableCleanupUponCompletion";
 
     @Override
     public Configuration defaultConfiguration() {
@@ -38,8 +50,18 @@ public class FilesStepConfigurator implements ConfigContributor<FilesStepContrib
         return this::configure;
     }
 
-    public void configure(FilesStepContributor contributor, Configuration configuration) {
-
+    /**
+     * Applies timeout, cleanup and symbolic-link settings to a contributor.
+     * Link entries accept comma or semicolon separation and use
+     * {@code link=target} syntax.
+     *
+     * @param contributor file-step contributor to configure
+     * @param configuration effective Wakamiti configuration
+     */
+    public void configure(
+            FilesStepContributor contributor,
+            Configuration configuration
+    ) {
         configuration.get(FILES_ACCESS_TIMEOUT, Long.class)
                 .ifPresent(contributor::setTimeout);
         configuration.get(FILES_ENABLE_CLEANUP_UPON_COMPLETION, Boolean.class)

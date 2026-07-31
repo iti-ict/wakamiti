@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -14,13 +16,31 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 
+/**
+ * Utility methods for working with Util.
+ */
 public abstract class Util {
 
     private Util() {
         // prevent instantiation
     }
 
-    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+    /**
+     * Creates a stateful predicate that accepts only the first value for each key.
+     * <p>
+     * The backing key set is concurrent, so the predicate can be used safely in a
+     * parallel stream. For example,
+     * {@code tests.stream().filter(distinctByKey(TestCase::getIssueId))} retains
+     * the first test for every issue identifier.
+     *
+     * @param keyExtractor function that obtains the identity key for each value
+     * @param <T> type of value tested by the predicate
+     * @return a predicate returning {@code true} once for each distinct key and
+     *         {@code false} for subsequent occurrences
+     */
+    public static <T> Predicate<T> distinctByKey(
+            Function<? super T, ?> keyExtractor
+    ) {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
@@ -32,7 +52,11 @@ public abstract class Util {
      * @param glob the glob pattern to match files against.
      * @return {@code true} if the file matches with glob, {@code false} otherwise.
      */
-    public static boolean match(Path file, String glob) {
+    public static boolean match(
+            Path file,
+            String glob
+    ) {
         return FileSystems.getDefault().getPathMatcher("glob:" + glob).matches(file);
     }
+
 }

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.10.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, Commons Net, JSch, Apache FTP Server and Apache SSHD.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [2.9.0] - 2024-12-11
 
 ### Changed

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,45 +8,70 @@
 package es.iti.wakamiti.api.imconfig.internal;
 
 
-import es.iti.wakamiti.api.imconfig.*;
-
-import java.net.URI;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+import java.net.URI;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.imconfig.PropertyDefinition;
+
+
+/**
+ * Stores the configuration used by the Abstract Configuration component.
+ */
 public abstract class AbstractConfiguration implements Configuration {
 
     protected final ConfigurationFactory builder;
     protected final Map<String, PropertyDefinition> definitions;
 
-    protected AbstractConfiguration(ConfigurationFactory builder, Map<String, PropertyDefinition> definitions) {
+    protected AbstractConfiguration(
+            ConfigurationFactory builder,
+            Map<String, PropertyDefinition> definitions
+    ) {
         this.builder = builder;
         this.definitions = definitions;
     }
 
     @Override
-    public Configuration append(Configuration otherConfiguration) {
+    public Configuration append(
+            Configuration otherConfiguration
+    ) {
         return builder.merge(this, otherConfiguration);
     }
 
     @Override
-    public Configuration appendFromAnnotation(Class<?> configuredClass) {
+    public Configuration appendFromAnnotation(
+            Class<?> configuredClass
+    ) {
         return builder.merge(this, builder.fromAnnotation(configuredClass));
     }
 
     @Override
-    public Configuration appendFromAnnotation(AnnotatedConfiguration annotation) {
+    public Configuration appendFromAnnotation(
+            AnnotatedConfiguration annotation
+    ) {
         return builder.merge(this, builder.fromAnnotation(annotation));
     }
 
     @Override
-    public Configuration appendFromResource(String resourcePath, ClassLoader classLoader) {
+    public Configuration appendFromResource(
+            String resourcePath,
+            ClassLoader classLoader
+    ) {
         return builder.merge(this, builder.fromResource(resourcePath, classLoader));
     }
 
@@ -59,27 +86,38 @@ public abstract class AbstractConfiguration implements Configuration {
     }
 
     @Override
-    public Configuration appendFromMap(Map<String, ?> propertyMap) {
+    public Configuration appendFromMap(
+            Map<String, ?> propertyMap
+    ) {
         return builder.merge(this, builder.fromMap(propertyMap));
     }
 
     @Override
-    public Configuration appendFromPath(Path path) {
+    public Configuration appendFromPath(
+            Path path
+    ) {
         return builder.merge(this, builder.fromPath(path));
     }
 
     @Override
-    public Configuration appendFromProperties(Properties properties) {
+    public Configuration appendFromProperties(
+            Properties properties
+    ) {
         return builder.merge(this, builder.fromProperties(properties));
     }
 
     @Override
-    public Configuration appendFromURI(URI uri) {
+    public Configuration appendFromURI(
+            URI uri
+    ) {
         return builder.merge(this, builder.fromURI(uri));
     }
 
     @Override
-    public Configuration appendProperty(String property, String value) {
+    public Configuration appendProperty(
+            String property,
+            String value
+    ) {
         Map<String, String> singlePropertyMap = new HashMap<>();
         singlePropertyMap.put(property, value);
         return builder.merge(this, builder.fromMap(singlePropertyMap));
@@ -91,24 +129,35 @@ public abstract class AbstractConfiguration implements Configuration {
     }
 
     @Override
-    public Optional<PropertyDefinition> getDefinition(String key) {
+    public Optional<PropertyDefinition> getDefinition(
+            String key
+    ) {
         return Optional.ofNullable(definitions.get(key));
     }
 
     @Override
-    public boolean hasDefinition(String key) {
+    public boolean hasDefinition(
+            String key
+    ) {
         return definitions.containsKey(key);
     }
 
     @Override
-    public List<String> validations(String key) {
-        return getDefinition(key).map(definition -> validations(key, definition)).orElseGet(List::of);
+    public List<String> validations(
+            String key
+    ) {
+        return getDefinition(key)
+                .map(definition -> validations(key, definition))
+                .orElseGet(List::of);
     }
 
-    private List<String> validations(String key, PropertyDefinition definition) {
-        List<String> values = definition.multivalue() ?
-                getList(key, String.class) :
-                get(key, String.class).map(List::of).orElseGet(List::of);
+    private List<String> validations(
+            String key,
+            PropertyDefinition definition
+    ) {
+        List<String> values = definition.multivalue()
+                ? getList(key, String.class)
+                : get(key, String.class).map(List::of).orElseGet(List::of);
         return values
                 .stream()
                 .map(definition::validate)
@@ -148,22 +197,31 @@ public abstract class AbstractConfiguration implements Configuration {
     }
 
     @Override
-    public Configuration accordingDefinitions(Collection<PropertyDefinition> definitions) {
+    public Configuration accordingDefinitions(
+            Collection<PropertyDefinition> definitions
+    ) {
         return builder.merge(this, builder.accordingDefinitions(definitions));
     }
 
     @Override
-    public Configuration accordingDefinitionsFromPath(Path path) {
+    public Configuration accordingDefinitionsFromPath(
+            Path path
+    ) {
         return builder.merge(this, builder.accordingDefinitionsFromPath(path));
     }
 
     @Override
-    public Configuration accordingDefinitionsFromURI(URI uri) {
+    public Configuration accordingDefinitionsFromURI(
+            URI uri
+    ) {
         return builder.merge(this, builder.accordingDefinitionsFromURI(uri));
     }
 
     @Override
-    public Configuration accordingDefinitionsFromResource(String resource, ClassLoader classLoader) {
+    public Configuration accordingDefinitionsFromResource(
+            String resource,
+            ClassLoader classLoader
+    ) {
         return builder.merge(
                 this,
                 builder.accordingDefinitionsFromResource(resource, classLoader)

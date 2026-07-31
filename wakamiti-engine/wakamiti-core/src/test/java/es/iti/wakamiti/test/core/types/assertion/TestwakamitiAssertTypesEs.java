@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,7 @@
 package es.iti.wakamiti.test.core.types.assertion;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -22,7 +21,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
 
 
 @SuppressWarnings("rawtypes")
@@ -30,10 +33,8 @@ public class TestwakamitiAssertTypesEs {
 
     private final Locale locale = Locale.forLanguageTag("es");
 
-
     @Test
     public void testInteger() throws ParseException {
-
         WakamitiDataType<Assertion> intAssertion = WakamitiAssertTypes
                 .binaryNumberAssert("int-assert", false, Number::intValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -61,13 +62,10 @@ public class TestwakamitiAssertTypesEs {
 
         intAssertion.parse(locale, "es nulo").test(null);
         intAssertion.parse(locale, "no es nulo").test(7);
-
     }
-
 
     @Test
     public void testLong() throws ParseException {
-
         WakamitiDataType<Assertion> longAssertion = WakamitiAssertTypes
                 .binaryNumberAssert("long-assert", false, Number::longValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -95,13 +93,10 @@ public class TestwakamitiAssertTypesEs {
 
         longAssertion.parse(locale, "es nulo").test(null);
         longAssertion.parse(locale, "no es nulo").test(7L);
-
     }
-
 
     @Test
     public void testDouble() throws ParseException {
-
         WakamitiDataType<Assertion> doubleAssertion = WakamitiAssertTypes
                 .binaryNumberAssert("double-assert", true, Number::doubleValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -124,10 +119,8 @@ public class TestwakamitiAssertTypesEs {
         }
     }
 
-
     @Test
     public void testBigDecimal() throws ParseException {
-
         WakamitiDataType<Assertion> bigDecimalAssertion = WakamitiAssertTypes
                 .binaryBigDecimalAssert("bigdecimal-assert", true, x -> x);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -310,4 +303,5 @@ public class TestwakamitiAssertTypesEs {
                     .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
     }
+
 }

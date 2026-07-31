@@ -1,10 +1,16 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.rest.helpers;
 
+
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
+
+import org.hamcrest.MatcherAssert;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import es.iti.commons.jext.Extension;
@@ -16,22 +22,18 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import org.hamcrest.MatcherAssert;
-
-import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Provides the JSONHelper functionality used by Wakamiti.
  */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-json-helper",
-        version = "2.6",
+        version = "2.13",
         extensionPoint = "es.iti.wakamiti.rest.ContentTypeHelper"
 )
 public class JSONHelper implements ContentTypeHelper {
-
 
     private final JsonXmlDiff diff = new JsonXmlDiff(ContentType.JSON);
 
@@ -41,7 +43,11 @@ public class JSONHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContent(String expected, String actual, MatchMode matchMode) {
+    public void assertContent(
+            String expected,
+            String actual,
+            MatchMode matchMode
+    ) {
         diff.assertContent(expected, actual, matchMode);
     }
 
@@ -66,7 +72,10 @@ public class JSONHelper implements ContentTypeHelper {
     }
 
     @Override
-    public void assertContentSchema(String expectedSchema, String content) {
+    public void assertContentSchema(
+            String expectedSchema,
+            String content
+    ) {
         MatcherAssert.assertThat(content, matchesJsonSchema(expectedSchema));
     }
 

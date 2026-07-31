@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,11 +8,11 @@
 package es.iti.wakamiti.api.matcher;
 
 
+import static org.hamcrest.Matchers.equalTo;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-
-import static org.hamcrest.Matchers.equalTo;
 
 
 /**
@@ -28,8 +30,12 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
      * <pre>assertThat("myStringOfNote", length(lessThan(15))))</pre>
      *
      * @param lengthMatcher the matcher to apply to the examined {@link CharSequence}
+      *
+      * @return the resulting value
      */
-    public static CharSequenceLengthMatcher length(Matcher<? super Integer> lengthMatcher) {
+    public static CharSequenceLengthMatcher length(
+            Matcher<? super Integer> lengthMatcher
+    ) {
         return new CharSequenceLengthMatcher(lengthMatcher);
     }
 
@@ -42,29 +48,51 @@ public class CharSequenceLengthMatcher extends TypeSafeMatcher<CharSequence> {
      *
      * @param length the length that the returned matcher will expect any
      *               examined string to have
+      *
+      * @return the resulting value
      */
-    public static CharSequenceLengthMatcher length(int length) {
+    public static CharSequenceLengthMatcher length(
+            int length
+    ) {
         return length(equalTo(length));
     }
 
     private final Matcher<? super Integer> lengthMatcher;
 
-    public CharSequenceLengthMatcher(Matcher<? super Integer> lengthMatcher) {
+    /**
+     * Creates a length matcher backed by an arbitrary integer matcher.
+     *
+     * @param lengthMatcher matcher evaluated against the examined character
+     *                      sequence's length
+     */
+    public CharSequenceLengthMatcher(
+            Matcher<? super Integer> lengthMatcher
+    ) {
         this.lengthMatcher = lengthMatcher;
     }
 
     @Override
-    protected boolean matchesSafely(CharSequence text) {
+    protected boolean matchesSafely(
+            CharSequence text
+    ) {
         return lengthMatcher.matches(text != null ? text.length() : 0);
     }
 
     @Override
-    public void describeMismatchSafely(CharSequence item, Description mismatchDescription) {
-        mismatchDescription.appendText("was length \"").appendText(item == null ? null : String.valueOf(item.length())).appendText("\"");
+    public void describeMismatchSafely(
+            CharSequence item,
+            Description mismatchDescription
+    ) {
+        mismatchDescription.appendText("was length \"")
+                .appendText(item == null ? null : String.valueOf(item.length()))
+                .appendText("\"");
     }
 
     @Override
-    public void describeTo(Description description) {
+    public void describeTo(
+            Description description
+    ) {
         description.appendText("has string length ").appendDescriptionOf(lengthMatcher);
     }
+
 }

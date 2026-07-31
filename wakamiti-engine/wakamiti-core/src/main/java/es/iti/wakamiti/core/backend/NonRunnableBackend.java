@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,23 +8,28 @@
 package es.iti.wakamiti.core.backend;
 
 
-import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.imconfig.Configuration;
-
 import java.util.List;
+
+import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.PlanNode;
 
 
 /**
  * Implementation of the Backend interface that does not allow running tests.
  * Its main purpose is to provide information about available steps to
  * third-party components, such as completion tools.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class NonRunnableBackend extends AbstractBackend {
 
-
+    /**
+     * Creates a discovery-only backend.
+     *
+     * @param configuration effective backend configuration
+     * @param typeRegistry  data types used to parse step expressions
+     * @param steps         runnable-step descriptors exposed for matching and
+     *                      completion, although execution remains disabled
+     */
     public NonRunnableBackend(
             Configuration configuration,
             WakamitiDataTypeRegistry typeRegistry,
@@ -40,7 +47,9 @@ public class NonRunnableBackend extends AbstractBackend {
      * @throws UnsupportedOperationException Always thrown, as running steps is not supported.
      */
     @Override
-    public void runStep(PlanNode step) {
+    public void runStep(
+            PlanNode step
+    ) {
         throw new UnsupportedOperationException();
     }
 

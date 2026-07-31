@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,22 +8,34 @@
 package es.iti.wakamiti.maven;
 
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.*;
-import org.apache.maven.plugins.annotations.*;
-import org.apache.maven.plugins.annotations.Mojo;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.AbstractMojoExecutionException;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 /**
@@ -44,7 +58,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code false}
      */
     @Parameter(defaultValue = "false")
-    public boolean skipTests;
+    boolean skipTests;
 
     /**
      * Use project dependencies.
@@ -59,7 +73,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code false}
      */
     @Parameter(defaultValue = "false")
-    public boolean includeProjectDependencies;
+    boolean includeProjectDependencies;
 
     /**
      * Sets wakamiti properties as {@link Map}.
@@ -74,7 +88,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * }</pre></blockquote>
      */
     @Parameter
-    public Map<String, String> properties = new LinkedHashMap<>();
+    Map<String, String> properties = new LinkedHashMap<>();
 
     /**
      * Sets wakamiti configuration files.
@@ -87,7 +101,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * }</pre></blockquote>
      */
     @Parameter
-    public List<String> configurationFiles = new LinkedList<>();
+    List<String> configurationFiles = new LinkedList<>();
 
     /**
      * Sets wakamiti log level.
@@ -103,7 +117,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code info}
      */
     @Parameter(defaultValue = "info")
-    public String logLevel;
+    String logLevel;
 
     /**
      * Set this to {@code true} to ignore a failure during testing. Its use is
@@ -119,7 +133,7 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
      * Default value is {@code false}
      */
     @Parameter(property = "maven.test.failure.ignore", defaultValue = "false")
-    public boolean testFailureIgnore;
+    boolean testFailureIgnore;
 
     /**
      * The current build session instance.
@@ -134,14 +148,17 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
     private List<String> projectDependencies;
 
     /**
-     * Executes the plugin.
+     * Executes Wakamiti plan creation and execution for the Maven build.
+     * <p>
+     * Failures in executed tests are reported as build failures unless
+     * {@code testFailureIgnore} is enabled.
+     * </p>
      *
-     * @throws MojoExecutionException If an unexpected problem occurs during execution.
-     * @throws MojoFailureException   If a failure is encountered during execution.
+     * @throws MojoExecutionException when configuration or runtime errors occur
+     * @throws MojoFailureException   when tests fail and failure is not ignored
      */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-
         System.setProperty("log4j2.loggerContextFactory", "org.apache.logging.log4j.simple.SimpleLoggerContextFactory");
         System.setProperty("org.slf4j.simpleLogger.log.es.iti.wakamiti", logLevel);
 
@@ -184,22 +201,39 @@ public class WakamitiVerifyMojo extends AbstractMojo implements WakamitiConfigur
                     new MojoExecutionException("Wakamiti configuration error: " + e.getMessage(), e);
             errorControl(exception);
         }
-
     }
 
-    private void errorControl(AbstractMojoExecutionException exception)
+    /**
+     * Decides whether a raised execution exception should fail the build,
+     * be ignored, or be deferred to the {@code control} goal.
+     *
+     * @param exception error detected during verify execution
+     * @throws MojoExecutionException when execution errors must fail immediately
+     * @throws MojoFailureException   when test failures must fail immediately
+     */
+    private void errorControl(
+            AbstractMojoExecutionException exception
+    )
             throws MojoExecutionException, MojoFailureException {
-        if (testFailureIgnore) return;
+        if (testFailureIgnore) {
+            return;
+        }
         if (mojoExecution.getPlugin().getExecutions().stream()
                 .noneMatch(execution -> execution.getGoals().contains("control"))) {
-            if (exception instanceof MojoExecutionException) throw (MojoExecutionException) exception;
-            if (exception instanceof MojoFailureException) throw (MojoFailureException) exception;
+            if (exception instanceof MojoExecutionException) {
+                throw (MojoExecutionException) exception;
+            }
+            if (exception instanceof MojoFailureException) {
+                throw (MojoFailureException) exception;
+            }
         }
         MojoResult.setError(exception);
     }
 
     private void resolvePluginDependencies() {
-        if (!includeProjectDependencies) return;
+        if (!includeProjectDependencies) {
+            return;
+        }
         try {
             Set<URL> urls = new HashSet<>();
             for (String element : projectDependencies) {

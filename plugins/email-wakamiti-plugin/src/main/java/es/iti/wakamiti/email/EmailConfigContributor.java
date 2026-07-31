@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.email;
 
 
@@ -7,15 +14,28 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 
 
-@Extension(provider =  "es.iti.wakamiti", name = "email-step-config", version = "2.6",
-    extensionPoint =  "es.iti.wakamiti.api.extensions.ConfigContributor")
+/**
+ * Provides the Email Config Contributor functionality used by Wakamiti.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "email-step-config",
+        version = "2.13",
+        extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
+)
 public class EmailConfigContributor implements ConfigContributor<EmailStepContributor> {
 
+    /** Configuration key for the incoming-mail server host. */
     public static final String STORE_HOST = "email.store.host";
+    /** Configuration key for the incoming-mail server port. */
     public static final String STORE_PORT = "email.store.port";
+    /** Configuration key for the Jakarta Mail store protocol, such as IMAP. */
     public static final String STORE_PROTOCOL = "email.store.protocol";
+    /** Configuration key for the mailbox account address or login name. */
     public static final String ADDRESS = "email.address";
+    /** Configuration key for the mailbox account password. */
     public static final String PASSWORD = "email.password";
+    /** Configuration key for the mailbox folder searched by email steps. */
     public static final String STORE_FOLDER = "email.store.folder";
 
     @Override
@@ -28,13 +48,16 @@ public class EmailConfigContributor implements ConfigContributor<EmailStepContri
         return this::configure;
     }
 
-    private void configure(EmailStepContributor contributor, Configuration configuration) {
-        configuration.get(STORE_PROTOCOL,String.class).ifPresent(contributor::setStoreProtocol);
-        configuration.get(STORE_HOST,String.class).ifPresent(contributor::setHost);
-        configuration.get(STORE_PORT,Integer.class).ifPresent(contributor::setPort);
-        configuration.get(ADDRESS,String.class).ifPresent(contributor::setAddress);
-        configuration.get(PASSWORD,String.class).ifPresent(contributor::setPassword);
-        configuration.get(STORE_FOLDER,String.class).ifPresent(contributor::setFolder);
+    private void configure(
+            EmailStepContributor contributor,
+            Configuration configuration
+    ) {
+        configuration.get(STORE_PROTOCOL, String.class).ifPresent(contributor::setStoreProtocol);
+        configuration.get(STORE_HOST, String.class).ifPresent(contributor::setHost);
+        configuration.get(STORE_PORT, Integer.class).ifPresent(contributor::setPort);
+        configuration.get(ADDRESS, String.class).ifPresent(contributor::setAddress);
+        configuration.get(PASSWORD, String.class).ifPresent(contributor::setPassword);
+        configuration.get(STORE_FOLDER, String.class).ifPresent(contributor::setFolder);
     }
 
 }

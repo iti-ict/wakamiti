@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,10 @@
 package es.iti.wakamiti.database.jdbc;
 
 
-import es.iti.wakamiti.database.exception.SQLRuntimeException;
-
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import es.iti.wakamiti.database.exception.SQLRuntimeException;
 
 
 /**
@@ -30,7 +32,11 @@ public class Sentence<T extends Statement> implements AutoCloseable {
      * @param statement The SQL statement object
      * @param sql       The SQL statement string
      */
-    public Sentence(Database db, T statement, String sql) {
+    public Sentence(
+            Database db,
+            T statement,
+            String sql
+    ) {
         this.db = db;
         this.statement = statement;
         this.sql = sql;

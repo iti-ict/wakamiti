@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,8 @@
 package es.iti.wakamiti.core.datatypes;
 
 
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.extensions.DataTypeContributor;
+import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromBigDecimal;
+import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromNumber;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -21,26 +21,36 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromBigDecimal;
-import static es.iti.wakamiti.core.datatypes.WakamitiNumberDataType.createFromNumber;
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.extensions.DataTypeContributor;
 
 
 /**
  * A contributor for Wakamiti core data types. It provides
  * various core data types for functional and Java types.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
-@Extension(provider = "es.iti.wakamiti", name = "core-types", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "core-types",
+        version = "2.6"
+)
 public class WakamitiCoreTypes implements DataTypeContributor {
 
+    /** Regular expression matching a complete Wakamiti property placeholder. */
     public static final String PROPERTY_REGEX = "(\\$\\{.+\\})";
+    /** Regular expression matching a single- or double-quoted escaped string. */
     public static final String STRING_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
+    /** Regular expression matching a word that may contain a property placeholder. */
     public static final String WORD_REGEX = "[\\w-]+|[\\w-]*" + PROPERTY_REGEX + "[\\w-]*";
+    /** Regular expression matching an identifier that may contain a property placeholder. */
     public static final String IDENTIFIER_REGEX = "[\\w|\\d_]+|[\\w|\\d_]*" + PROPERTY_REGEX + "[\\w|\\d_]*";
+    /** Regular expression matching a quoted filesystem path. */
     public static final String FILE_REGEX = "\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)'";
-    public static final String URL_REGEX = "(http|ftp|https):\\/\\/(([\\w+?\\.\\w+])+|" + PROPERTY_REGEX + ")" +
-            "(([\\w\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]|" + PROPERTY_REGEX + ")*)?|"
+    /** Regular expression matching an HTTP, HTTPS or FTP URL, including placeholders. */
+    public static final String URL_REGEX = "(http|ftp|https):\\/\\/(([\\w+?\\.\\w+])+|" + PROPERTY_REGEX + ")"
+            + "(([\\w\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)_\\-\\=\\+\\\\\\/\\?\\.\\:\\;\\'\\,]|" + PROPERTY_REGEX + ")*)?|"
             + PROPERTY_REGEX;
 
     private static final WakamitiDataTypeBase.LocaleHintProvider PATH_HINT = locale -> List.of("<path/file>");
@@ -57,7 +67,9 @@ public class WakamitiCoreTypes implements DataTypeContributor {
      * @param input The input string.
      * @return The prepared string.
      */
-    private static String prepareString(String input) {
+    private static String prepareString(
+            String input
+    ) {
         return input.substring(1, input.length() - 1).replace("\\\"", "\"")
                 .replace("\\'", "'");
     }

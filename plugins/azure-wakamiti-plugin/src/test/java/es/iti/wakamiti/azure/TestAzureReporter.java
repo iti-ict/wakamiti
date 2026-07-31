@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,14 +8,15 @@
 package es.iti.wakamiti.azure;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.net.URL;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 public class TestAzureReporter {
@@ -33,7 +36,10 @@ public class TestAzureReporter {
                 .hasFieldOrPropertyWithValue("createItemsIfAbsent", true);
     }
 
-    private void configure(AzureSynchronizer reporter, String resource) {
+    private void configure(
+            AzureSynchronizer reporter,
+            String resource
+    ) {
         AzureConfigContributor azureConfig = new AzureConfigContributor();
         Configuration config = WakamitiConfiguration.DEFAULTS
                 .append(azureConfig.defaultConfiguration())

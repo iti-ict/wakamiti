@@ -1,96 +1,193 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.lsp.internal;
 
-import static java.util.stream.Collectors.*;
 
-import java.util.*;
-import java.util.stream.*;
+import static java.util.stream.Collectors.toList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.eclipse.lsp4j.CodeAction;
+import org.eclipse.lsp4j.CompletionItem;
+import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.DocumentSymbol;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.Range;
+import org.yaml.snakeyaml.Yaml;
 
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.util.Pair;
-import org.eclipse.lsp4j.*;
-import org.yaml.snakeyaml.Yaml;
-
 
 
 public class GherkinWorkspace {
 
-
     final Map<String, GherkinDocumentAssessor> documentAssessors = new HashMap<>();
     final int baseIndex;
     final Yaml yaml = new Yaml();
-    final Map<String, Pair<DocumentSegment,DocumentSegment>> linkMap = new HashMap<>();
+    final Map<String, Pair<DocumentSegment, DocumentSegment>> linkMap = new HashMap<>();
     final WorkspaceDiagnosticHelper diagnosticHelper;
 
     private String configurationUri;
     private TextDocument configurationDocument;
 
-    public GherkinWorkspace(int baseIndex) {
+    /**
+     * Creates an empty workspace using the position base expected by its
+     * connected client.
+     * <p>
+     * Document positions are stored internally as zero-based coordinates. The
+     * base index is subtracted when client positions are converted for
+     * completion operations.
+     *
+     * @param baseIndex coordinate offset used by the client protocol
+     */
+    public GherkinWorkspace(
+            int baseIndex
+    ) {
         this.baseIndex = baseIndex;
         this.diagnosticHelper = new WorkspaceDiagnosticHelper(this);
     }
 
-    public Stream<DocumentDiagnostics> addGherkin(String uri, String content) {
-        documentAssessors.computeIfAbsent(uri, x-> new GherkinDocumentAssessor(uri,content));
+    /**
+     * Adds a Gherkin document if its URI is not already registered and
+     * reassesses the complete workspace.
+     *
+     * @param uri stable document identifier
+     * @param content complete Gherkin source
+     * @return diagnostics for all registered documents
+     */
+    public Stream<DocumentDiagnostics> addGherkin(
+            String uri,
+            String content
+    ) {
+        documentAssessors.computeIfAbsent(uri, x -> new GherkinDocumentAssessor(uri, content));
         return computeAllDiagnostics();
-
-
     }
 
-
-    public Stream<DocumentDiagnostics> addConfiguration(String uri, String content) {
+    /**
+     * Sets the workspace configuration document and reassesses every Gherkin
+     * document against it.
+     *
+     * @param uri stable configuration document identifier
+     * @param content complete YAML configuration source
+     * @return diagnostics produced with the new effective configuration
+     */
+    public Stream<DocumentDiagnostics> addConfiguration(
+            String uri,
+            String content
+    ) {
         this.configurationUri = uri;
         this.configurationDocument = new TextDocument(content);
         return computeWorkspaceDiagnostics();
     }
 
-
-    public void addGherkinWithoutDiagnostics(String uri, String content) {
-        documentAssessors.computeIfAbsent(uri, x-> new GherkinDocumentAssessor(uri,content));
+    /**
+     * Adds a Gherkin document without running assessment.
+     * <p>
+     * This is useful during bulk initialization, when diagnostics will be
+     * computed once after all files have been registered.
+     *
+     * @param uri stable document identifier
+     * @param content complete Gherkin source
+     */
+    public void addGherkinWithoutDiagnostics(
+            String uri,
+            String content
+    ) {
+        documentAssessors.computeIfAbsent(uri, x -> new GherkinDocumentAssessor(uri, content));
     }
 
-
-    public void addConfigurationWithoutDiagnostics(String uri, String content) {
+    /**
+     * Sets the YAML configuration document without recalculating diagnostics.
+     *
+     * @param uri stable configuration document identifier
+     * @param content complete YAML configuration source
+     */
+    public void addConfigurationWithoutDiagnostics(
+            String uri,
+            String content
+    ) {
         this.configurationUri = uri;
         this.configurationDocument = new TextDocument(content);
     }
 
-
-
-
-    public Stream<DocumentDiagnostics> updateConfiguration(TextRange range, String text) {
+    /**
+     * Applies an incremental edit to the configuration and recomputes
+     * workspace diagnostics.
+     *
+     * @param range half-open, zero-based source range to replace
+     * @param text replacement text
+     * @return diagnostics produced with the updated configuration
+     */
+    public Stream<DocumentDiagnostics> updateConfiguration(
+            TextRange range,
+            String text
+    ) {
         this.configurationDocument.replaceRange(range, text);
         return computeWorkspaceDiagnostics();
     }
 
-    public DocumentDiagnostics computeDiagnostics(String uri) {
+    /**
+     * Reassesses one Gherkin document against the current workspace state.
+     *
+     * @param uri identifier of the document to assess
+     * @return diagnostics grouped with the assessed document
+     */
+    public DocumentDiagnostics computeDiagnostics(
+            String uri
+    ) {
         return document(uri).collectDiagnostics();
     }
 
-
+    /**
+     * Rebuilds the effective configuration and assesses every Gherkin
+     * document.
+     * <p>
+     * If the YAML configuration cannot be parsed, this pass returns an empty
+     * stream because no reliable effective configuration can be applied.
+     *
+     * @return diagnostics for all documents, or an empty stream on
+     *         configuration parsing failure
+     */
     public Stream<DocumentDiagnostics> computeWorkspaceDiagnostics() {
         try {
             var workspaceConfiguration = Configuration.factory().fromMap(
-                yaml.load(configurationDocument.rawText())
+                    yaml.load(configurationDocument.rawText())
             );
             documentAssessors.values().forEach(
-                document->document.setWorkspaceConfiguration(workspaceConfiguration)
+                    document -> document.setWorkspaceConfiguration(workspaceConfiguration)
             );
             return computeAllDiagnostics();
-
         } catch (RuntimeException e) {
             return Stream.empty();
         }
     }
 
-
-
-    public Stream<DocumentDiagnostics> update(String uri, TextRange range, String text) {
+    /**
+     * Applies an incremental edit and recomputes all affected diagnostics.
+     * <p>
+     * Edits to the registered configuration are handled as configuration
+     * changes; every other URI is treated as a Gherkin document.
+     *
+     * @param uri identifier of the edited document
+     * @param range half-open, zero-based source range to replace
+     * @param text replacement text
+     * @return current diagnostics for the workspace
+     */
+    public Stream<DocumentDiagnostics> update(
+            String uri,
+            TextRange range,
+            String text
+    ) {
         if (uri.equals(configurationUri)) {
             return updateConfiguration(range, text);
         } else {
@@ -99,97 +196,137 @@ public class GherkinWorkspace {
         }
     }
 
-
-    public List<CodeAction> obtainCodeActions(String uri, List<Diagnostic> diagnostics) {
+    /**
+     * Produces quick fixes for selected diagnostics.
+     * <p>
+     * The result combines actions local to the selected document with actions
+     * that require knowledge of other workspace documents.
+     *
+     * @param uri identifier of the document containing the diagnostics
+     * @param diagnostics diagnostics selected by the client
+     * @return applicable code actions
+     */
+    public List<CodeAction> obtainCodeActions(
+            String uri,
+            List<Diagnostic> diagnostics
+    ) {
         var document = document(uri);
 
         Stream<CodeAction> codeActionsFromDocument = diagnostics.stream()
-            .map(document::retrieveQuickFixes)
-            .flatMap(List::stream);
+                .map(document::retrieveQuickFixes)
+                .flatMap(List::stream);
 
         Stream<CodeAction> codeActionsFromWorkspace = diagnosticHelper
-            .retrieveCodeActions(uri, diagnostics);
+                .retrieveCodeActions(uri, diagnostics);
 
         return Stream
-            .concat(codeActionsFromDocument, codeActionsFromWorkspace)
-            .collect(Collectors.toList());
+                .concat(codeActionsFromDocument, codeActionsFromWorkspace)
+                .collect(Collectors.toList());
     }
 
-
-
-    public List<CompletionItem> computeCompletions(String uri, Position position) {
+    /**
+     * Computes completion candidates at a client position.
+     *
+     * @param uri identifier of the Gherkin document
+     * @param position client position adjusted by {@code baseIndex} before
+     *                 analysis
+     * @return completion candidates valid at the requested position
+     */
+    public List<CompletionItem> computeCompletions(
+            String uri,
+            Position position
+    ) {
         return document(uri).collectCompletions(
-            position.getLine()- baseIndex,
-            position.getCharacter() - baseIndex
+                position.getLine() - baseIndex,
+                position.getCharacter() - baseIndex
         );
     }
 
-
-
-    public List<DocumentSymbol> documentSymbols(String uri) {
+    /**
+     * Collects the Gherkin symbols exposed in a document outline.
+     *
+     * @param uri identifier of the Gherkin document
+     * @return document symbols in source order
+     */
+    public List<DocumentSymbol> documentSymbols(
+            String uri
+    ) {
         return document(uri).collectSymbols();
     }
 
-
-
     private Stream<DocumentDiagnostics> computeAllDiagnostics() {
         var documentDiagnostics = documentAssessors.values().stream()
-            .map(GherkinDocumentAssessor::collectDiagnostics)
-            .collect(toList());
+                .map(GherkinDocumentAssessor::collectDiagnostics)
+                .collect(toList());
         return diagnosticHelper.computeInterDocumentDiagnostics(documentDiagnostics);
     }
 
-
-
-
-
-
-
-
-
-
-    public Optional<DocumentSegment> resolveImplementationLink(String uri, Position position) {
+    /**
+     * Resolves the implementation linked from a definition-side position.
+     *
+     * @param uri identifier of a definition document
+     * @param position position inside a linked identifier
+     * @return the implementation segment, or an empty optional when the
+     *         document is not a definition or no link has been indexed
+     */
+    public Optional<DocumentSegment> resolveImplementationLink(
+            String uri,
+            Position position
+    ) {
         return Optional.of(document(uri))
-            .filter(GherkinDocumentAssessor::isDefinition)
-            .flatMap(document -> document.obtainIdAt(position))
-            .map(TextSegment::content)
-            .map(linkMap::get)
-            .map(Pair::value);
+                .filter(GherkinDocumentAssessor::isDefinition)
+                .flatMap(document -> document.obtainIdAt(position))
+                .map(TextSegment::content)
+                .map(linkMap::get)
+                .map(Pair::value);
     }
 
-
-    public Optional<DocumentSegment> resolveDefinitionLink(String uri, Position position) {
+    /**
+     * Resolves the definition linked from an implementation-side position.
+     *
+     * @param uri identifier of an implementation document
+     * @param position position inside a linked identifier
+     * @return the definition segment, or an empty optional when the document is
+     *         not an implementation or no link has been indexed
+     */
+    public Optional<DocumentSegment> resolveDefinitionLink(
+            String uri,
+            Position position
+    ) {
         return Optional.of(document(uri))
-            .filter(GherkinDocumentAssessor::isImplementation)
-            .flatMap(document -> document.obtainIdAt(position))
-            .map(TextSegment::content)
-            .map(linkMap::get)
-            .map(Pair::key);
+                .filter(GherkinDocumentAssessor::isImplementation)
+                .flatMap(document -> document.obtainIdAt(position))
+                .map(TextSegment::content)
+                .map(linkMap::get)
+                .map(Pair::key);
     }
 
-
-    public Pair<Range, String> format(String uri, int tabSize) {
+    /**
+     * Formats an entire Gherkin document.
+     *
+     * @param uri identifier of the document to format
+     * @param tabSize number of spaces used for each indentation level
+     * @return the range covering the current document paired with its complete
+     *         formatted replacement text
+     */
+    public Pair<Range, String> format(
+            String uri,
+            int tabSize
+    ) {
         var document = document(uri);
         int numberOfLines = document.documentMap.document().numberOfLines();
-        int lastPosition = document.documentMap.document().extractLine(numberOfLines-1).length();
-        Range range = new Range(new Position(0,0), new Position(numberOfLines, lastPosition));
+        int lastPosition = numberOfLines == 0
+                ? 0
+                : document.documentMap.document().extractLine(numberOfLines - 1).length();
+        Range range = new Range(new Position(0, 0), new Position(numberOfLines, lastPosition));
         String formatted = GherkinFormatter.format(document.documentMap, tabSize);
-        return new Pair<>(range,formatted);
+        return new Pair<>(range, formatted);
     }
 
-
-
-    GherkinDocumentAssessor document(String uri) {
-        return documentAssessors.computeIfAbsent(uri, x-> new GherkinDocumentAssessor(uri,""));
+    GherkinDocumentAssessor document(
+            String uri
+    ) {
+        return documentAssessors.computeIfAbsent(uri, x -> new GherkinDocumentAssessor(uri, ""));
     }
-
-
-
-
-
-
-
-
-
 
 }

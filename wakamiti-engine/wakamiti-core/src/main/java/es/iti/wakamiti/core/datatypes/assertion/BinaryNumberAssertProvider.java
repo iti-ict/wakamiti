@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,45 +8,65 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.not;
+
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
 import es.iti.wakamiti.api.ExpressionMatcher;
 import es.iti.wakamiti.api.util.ThrowableBiFunction;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import es.iti.wakamiti.core.datatypes.WakamitiDateDataType;
 import es.iti.wakamiti.core.datatypes.WakamitiNumberDataType;
 import es.iti.wakamiti.core.datatypes.duration.WakamitiDurationDataType;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.temporal.TemporalAccessor;
-import java.util.*;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.hamcrest.Matchers.*;
 
 
 /**
  * A provider for binary number assertions.
  *
  * @param <T> The type of numbers to compare.
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * @param <R> The assertion result type.
  */
 public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends AbstractAssertProvider {
 
+    /** Localization key for numeric equality. */
     public static final String EQUALS = "matcher.number.equals";
+    /** Localization key for a strictly greater numeric comparison. */
     public static final String GREATER = "matcher.number.greater";
+    /** Localization key for a strictly smaller numeric comparison. */
     public static final String LESS = "matcher.number.less";
+    /** Localization key for a greater-than-or-equal numeric comparison. */
     public static final String GREATER_EQUALS = "matcher.number.greater.equals";
+    /** Localization key for a less-than-or-equal numeric comparison. */
     public static final String LESS_EQUALS = "matcher.number.less.equals";
 
+    /** Localization key for numeric inequality. */
     public static final String NOT_EQUALS = "matcher.number.not.equals";
+    /** Localization key for negating a strictly greater numeric comparison. */
     public static final String NOT_GREATER = "matcher.number.not.greater";
+    /** Localization key for negating a strictly smaller numeric comparison. */
     public static final String NOT_LESS = "matcher.number.not.less";
+    /** Localization key for negating a greater-than-or-equal comparison. */
     public static final String NOT_GREATER_EQUALS = "matcher.number.not.greater.equals";
+    /** Localization key for negating a less-than-or-equal comparison. */
     public static final String NOT_LESS_EQUALS = "matcher.number.not.less.equals";
 
     private final Map<String, Function<T, Matcher<T>>> matchers = map(
@@ -138,6 +160,18 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends Abst
         );
     }
 
+    /**
+     * Creates a binary assertion provider for date/time values.
+     * <p>
+     * The target temporal class determines whether date, time, or both
+     * components are accepted and which temporal query performs conversion.
+     * </p>
+     *
+     * @param regexProvider locale-specific expression provider
+     * @param dateType      temporal target class
+     * @param <T>           comparable temporal value type
+     * @return a provider that parses and compares the selected temporal type
+     */
     public static <T extends Comparable<T> & TemporalAccessor>
     BinaryNumberAssertProvider<T, ? extends TemporalAccessor> createFromDate(
             ThrowableFunction<Locale, String> regexProvider,
@@ -156,7 +190,9 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends Abst
      * {@inheritDoc}
      */
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions()) {
             translatedExpressions.put(
@@ -181,7 +217,9 @@ public class BinaryNumberAssertProvider<T extends Comparable<T>, R> extends Abst
      * {@inheritDoc}
      */
     @Override
-    public LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .map(exp -> exp.replace(VALUE_WILDCARD, numberRegexProvider.apply(locale)))

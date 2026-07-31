@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -13,8 +15,6 @@ import es.iti.wakamiti.api.util.Either;
 
 /**
  * Exception thrown when a step cannot be matched with any defined step.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class UndefinedStepException extends WakamitiException {
 
@@ -29,7 +29,11 @@ public class UndefinedStepException extends WakamitiException {
      *                  exception.
      * @param extraInfo Additional information about the exception.
      */
-    public UndefinedStepException(PlanNode step, String message, String extraInfo) {
+    public UndefinedStepException(
+            PlanNode step,
+            String message,
+            String extraInfo
+    ) {
         this(Either.of(step), message, extraInfo);
     }
 
@@ -42,7 +46,11 @@ public class UndefinedStepException extends WakamitiException {
      *                  exception.
      * @param extraInfo Additional information about the exception.
      */
-    public UndefinedStepException(Either<PlanNode, String> step, String message, String extraInfo) {
+    public UndefinedStepException(
+            Either<PlanNode, String> step,
+            String message,
+            String extraInfo
+    ) {
         super(
                 step
                         .value()
@@ -61,7 +69,10 @@ public class UndefinedStepException extends WakamitiException {
      *                exception.
      * @param args    Optional arguments to be included in the message.
      */
-    public UndefinedStepException(String message, Object... args) {
+    public UndefinedStepException(
+            String message,
+            Object... args
+    ) {
         super(message, args);
     }
 

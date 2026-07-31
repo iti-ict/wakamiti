@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,25 +8,36 @@
 package es.iti.wakamiti.api;
 
 
-import es.iti.wakamiti.api.imconfig.Configuration;
-
 import java.util.Locale;
+
+import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 /**
- * Represents the context in which a Wakamiti step is run. This context includes information
- * such as the configuration, backend, step locale, data locale, and the type registry.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * Execution context used while resolving and running a single Wakamiti step.
+ * <p>
+ * The static accessors are backed by a {@link ThreadLocal}. Each execution
+ * thread must install a context with {@link #set(WakamitiStepRunContext)} and
+ * release it with {@link #clear()} to avoid leaking state between test runs.
+ * </p>
  */
 public class WakamitiStepRunContext {
 
-    private static final ThreadLocal<WakamitiStepRunContext> singleton = new ThreadLocal<>();
+    private static final ThreadLocal<WakamitiStepRunContext> SINGLETON = new ThreadLocal<>();
     private final Configuration configuration;
     private final Backend backend;
     private final Locale stepLocale;
     private final Locale dataLocale;
 
+    /**
+     * Creates the complete context required to convert arguments and execute a
+     * step.
+     *
+     * @param configuration effective configuration for the current execution
+     * @param backend       backend providing step definitions and data types
+     * @param stepLocale    locale used to match localized step definitions
+     * @param dataLocale    locale used to parse values embedded in step text
+     */
     public WakamitiStepRunContext(
             Configuration configuration,
             Backend backend,
@@ -38,70 +51,78 @@ public class WakamitiStepRunContext {
     }
 
     /**
-     * Sets the current WakamitiStepRunContext for the current thread.
+     * Sets the current context for the calling thread.
      *
-     * @param context The WakamitiStepRunContext to set.
+     * @param context context to bind to the current thread, or {@code null} to
+     *                clear the association
      */
-    public static void set(WakamitiStepRunContext context) {
-        singleton.set(context);
+    public static void set(
+            WakamitiStepRunContext context
+    ) {
+        SINGLETON.set(context);
     }
 
     /**
-     * Retrieves the current WakamitiStepRunContext for the current thread.
+     * Gets the context currently bound to the calling thread.
      *
-     * @return The current WakamitiStepRunContext.
+     * @return current thread context, or {@code null} when no context has been
+     *         installed
      */
     public static WakamitiStepRunContext current() {
-        return singleton.get();
+        return SINGLETON.get();
     }
 
     /**
-     * Clears the WakamitiStepRunContext for the current thread.
+     * Removes the context bound to the calling thread.
+     * <p>
+     * This method should typically be called in a {@code finally} block after
+     * step execution to guarantee cleanup.
+     * </p>
      */
     public static void clear() {
-        singleton.remove();
+        SINGLETON.remove();
     }
 
     /**
-     * Gets the configuration associated with this step run.
+     * Gets the effective configuration for this step execution.
      *
-     * @return The configuration.
+     * @return step configuration
      */
     public Configuration configuration() {
         return configuration;
     }
 
     /**
-     * Gets the locale associated with the step.
+     * Gets the locale used to match localized step definitions.
      *
-     * @return The step locale.
+     * @return step locale
      */
     public Locale stepLocale() {
         return stepLocale;
     }
 
     /**
-     * Gets the locale associated with the data.
+     * Gets the locale used to parse data values embedded in step text.
      *
-     * @return The data locale.
+     * @return data locale
      */
     public Locale dataLocale() {
         return dataLocale;
     }
 
     /**
-     * Gets the type registry associated with the backend.
+     * Gets the data type registry exposed by the selected backend.
      *
-     * @return The type registry.
+     * @return backend data type registry
      */
     public WakamitiDataTypeRegistry typeRegistry() {
         return backend.getTypeRegistry();
     }
 
     /**
-     * Gets the backend associated with this step run.
+     * Gets the backend associated with this step execution.
      *
-     * @return The backend.
+     * @return backend instance
      */
     public Backend backend() {
         return this.backend;

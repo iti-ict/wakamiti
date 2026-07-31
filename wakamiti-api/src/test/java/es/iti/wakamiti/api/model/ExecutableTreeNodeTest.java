@@ -1,15 +1,14 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.api.model;
 
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.Result;
-import org.junit.Before;
-import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -18,7 +17,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Before;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.Result;
+
 
 public class ExecutableTreeNodeTest {
 

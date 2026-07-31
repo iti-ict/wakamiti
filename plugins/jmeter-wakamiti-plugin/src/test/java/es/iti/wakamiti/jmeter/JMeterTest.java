@@ -1,20 +1,28 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.jmeter;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
+import static es.iti.wakamiti.jmeter.TestUtil.prepare;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+
+import java.io.IOException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.mockserver.configuration.ConfigurationProperties;
 import org.mockserver.integration.ClientAndServer;
 
-import java.io.IOException;
-
-import static es.iti.wakamiti.jmeter.TestUtil.prepare;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 
 
 @AnnotatedConfiguration({
@@ -36,20 +44,17 @@ import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 @RunWith(WakamitiJUnitRunner.class)
 public class JMeterTest {
 
-    public static final ClientAndServer client = startClientAndServer(8888);
-
+    public static final ClientAndServer CLIENT = startClientAndServer(8888);
 
     @BeforeClass
     public static void setupServer() throws IOException {
         ConfigurationProperties.logLevel("OFF");
-        prepare(client, "wakamiti/server", media -> true);
+        prepare(CLIENT, "wakamiti/server", media -> true);
     }
-
 
     @AfterClass
     public static void teardownServer() {
-        client.close();
+        CLIENT.close();
     }
-
 
 }

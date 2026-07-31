@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,24 +8,10 @@
 package es.iti.wakamiti.junit5;
 
 
-import es.iti.wakamiti.api.BackendFactory;
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.core.Wakamiti;
-import es.iti.wakamiti.core.runner.PlanNodeLogger;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.platform.engine.EngineExecutionListener;
-import org.junit.platform.engine.TestExecutionResult;
-import org.junit.platform.engine.UniqueId;
-import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
-import org.junit.platform.engine.support.descriptor.ClassSource;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.WakamitiConfiguration.EXECUTION_ID;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -37,10 +25,25 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.EXECUTION_ID;
-import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
-import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE_PATH;
-import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.platform.engine.EngineExecutionListener;
+import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.engine.UniqueId;
+import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor;
+import org.junit.platform.engine.support.descriptor.ClassSource;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.runner.PlanNodeLogger;
 
 
 /**
@@ -65,7 +68,10 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
     private WakamitiNodeDescriptor beforeClassDescriptor;
     private WakamitiNodeDescriptor afterClassDescriptor;
 
-    WakamitiClassDescriptor(UniqueId uniqueId, Class<?> testClass) {
+    WakamitiClassDescriptor(
+            UniqueId uniqueId,
+            Class<?> testClass
+    ) {
         super(uniqueId, testClass.getSimpleName(), ClassSource.from(testClass));
         this.testClass = testClass;
         this.profileEnabled = ProfileSelector.isEnabled(testClass);
@@ -98,18 +104,20 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
             String nodePath = String.format("0/%d", index);
             PlanNodeJUnitRunner runner = treatStepsAsTests
                     ? new PlanNodeStepJUnitRunner(
-                            node, featureConfiguration, backendFactory, Optional.empty(),
-                            planNodeLogger, nodePath, getUniqueId(), resourceRoots)
+                    node, featureConfiguration, backendFactory, Optional.empty(),
+                    planNodeLogger, nodePath, getUniqueId(), resourceRoots)
                     : new PlanNodeJUnitRunner(
-                            node, featureConfiguration, backendFactory, Optional.empty(),
-                            planNodeLogger, nodePath, getUniqueId(), resourceRoots);
+                    node, featureConfiguration, backendFactory, Optional.empty(),
+                    planNodeLogger, nodePath, getUniqueId(), resourceRoots);
             featureRunners.add(runner);
             addChild(runner.descriptor());
         });
         addChild(afterClassDescriptor);
     }
 
-    void execute(EngineExecutionListener listener) {
+    void execute(
+            EngineExecutionListener listener
+    ) {
         if (!profileEnabled) {
             listener.executionSkipped(this, profileSkipReason());
             return;
@@ -133,7 +141,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
         listener.executionFinished(this, result);
     }
 
-    private WakamitiNodeDescriptor lifecycleDescriptor(String name) {
+    private WakamitiNodeDescriptor lifecycleDescriptor(
+            String name
+    ) {
         return new WakamitiNodeDescriptor(
                 getUniqueId().append("lifecycle", name),
                 name,
@@ -175,7 +185,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
         wakamiti.generateReports(configuration, snapshot);
     }
 
-    private void invokeLifecycleHooks(Class<? extends Annotation> annotation) {
+    private void invokeLifecycleHooks(
+            Class<? extends Annotation> annotation
+    ) {
         for (Method method : testClass.getMethods()) {
             if (method.isAnnotationPresent(annotation) && Modifier.isStatic(method.getModifiers())) {
                 try {
@@ -194,7 +206,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
         }
     }
 
-    private Configuration retrieveConfiguration(Class<?> testedClass) throws ConfigurationException {
+    private Configuration retrieveConfiguration(
+            Class<?> testedClass
+    ) throws ConfigurationException {
         Configuration config = Wakamiti.defaultConfiguration();
         Optional<String> altDir = Optional.ofNullable(testedClass.getClassLoader().getResource("."))
                 .map(u -> {
@@ -230,7 +244,9 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
 
     @FunctionalInterface
     private interface LifecycleAction {
+
         void run() throws Throwable;
+
     }
 
 }

@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -35,7 +37,11 @@ public abstract class DataSet implements Closeable {
      * @param origin     The origin of the data set.
      * @param nullSymbol The {@code null} symbol used in the data set.
      */
-    public DataSet(String table, String origin, String nullSymbol) {
+    public DataSet(
+            String table,
+            String origin,
+            String nullSymbol
+    ) {
         this.table = table;
         this.origin = origin;
         this.nullSymbol = nullSymbol;
@@ -48,7 +54,10 @@ public abstract class DataSet implements Closeable {
      * @param string The string to find.
      * @return {@code true} if the list contains the string-ignoring case, {@code false} otherwise.
      */
-    protected static boolean containsIgnoringCase(List<String> list, String string) {
+    protected static boolean containsIgnoringCase(
+            List<String> list,
+            String string
+    ) {
         for (String item : list) {
             if (item.equalsIgnoreCase(string)) {
                 return true;
@@ -99,7 +108,9 @@ public abstract class DataSet implements Closeable {
      * @param delimiter The delimiter to use.
      * @return A string containing all columns separated by the delimiter.
      */
-    public String collectColumns(CharSequence delimiter) {
+    public String collectColumns(
+            CharSequence delimiter
+    ) {
         return String.join(delimiter, columns);
     }
 
@@ -110,7 +121,10 @@ public abstract class DataSet implements Closeable {
      * @param delimiter    The delimiter to use.
      * @return A string containing all mapped columns separated by the delimiter.
      */
-    public String collectColumns(UnaryOperator<String> columnMapper, CharSequence delimiter) {
+    public String collectColumns(
+            UnaryOperator<String> columnMapper,
+            CharSequence delimiter
+    ) {
         return Stream.of(columns).map(columnMapper).collect(Collectors.joining(delimiter));
     }
 
@@ -120,7 +134,9 @@ public abstract class DataSet implements Closeable {
      * @param index The index of the column.
      * @return The name of the column at the specified index.
      */
-    public String column(int index) {
+    public String column(
+            int index
+    ) {
         return columns[index];
     }
 
@@ -161,7 +177,9 @@ public abstract class DataSet implements Closeable {
      * @param columnName The name of the column.
      * @return The index of the column, or {@code -1} if not found.
      */
-    public int columnIndex(String columnName) {
+    public int columnIndex(
+            String columnName
+    ) {
         for (int index = 0; index < columns.length; index++) {
             if (columns[index].equalsIgnoreCase(columnName)) {
                 return index;
@@ -176,7 +194,9 @@ public abstract class DataSet implements Closeable {
      * @param columnName The name of the column.
      * @return The value of the column.
      */
-    public Object rowValue(String columnName) {
+    public Object rowValue(
+            String columnName
+    ) {
         int columnIndex = columnIndex(columnName);
         if (columnIndex == -1) {
             throw new IllegalArgumentException(
@@ -200,7 +220,9 @@ public abstract class DataSet implements Closeable {
      * @param columns The columns to check.
      * @return {@code true} if all columns are present, {@code false} otherwise.
      */
-    public boolean containColumns(Iterable<String> columns) {
+    public boolean containColumns(
+            Iterable<String> columns
+    ) {
         for (String column : columns) {
             if (columnIndex(column) == -1) {
                 return false;
@@ -215,7 +237,9 @@ public abstract class DataSet implements Closeable {
      * @param columns The columns to check.
      * @return {@code true} if all columns are present, {@code false} otherwise.
      */
-    public boolean containColumns(String... columns) {
+    public boolean containColumns(
+            String... columns
+    ) {
         return containColumns(Arrays.asList(columns));
     }
 
@@ -232,7 +256,9 @@ public abstract class DataSet implements Closeable {
      * @param columnIndex The index of the column.
      * @return The value of the column.
      */
-    public abstract Object rowValue(int columnIndex);
+    public abstract Object rowValue(
+            int columnIndex
+    );
 
     /**
      * Creates a copy of the data set.
@@ -248,7 +274,9 @@ public abstract class DataSet implements Closeable {
      * @param value The value to check.
      * @return The original value or null if it matches the {@code null} symbol.
      */
-    protected Object nullIfMatchNullSymbol(Object value) {
+    protected Object nullIfMatchNullSymbol(
+            Object value
+    ) {
         if (value instanceof String && nullSymbol.equals(value)) {
             return null;
         }

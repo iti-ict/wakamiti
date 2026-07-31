@@ -1,22 +1,12 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.report.allure;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import es.iti.commons.jext.Extension;
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.extensions.Reporter;
-import es.iti.wakamiti.api.plan.NodeType;
-import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
-import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -34,8 +24,28 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
 
-@Extension(provider = "es.iti.wakamiti", name = "allure-report", version = "2.6")
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import es.iti.commons.jext.Extension;
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.extensions.Reporter;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+
+
+/**
+ * Reports Allure execution information.
+ */
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "allure-report",
+        version = "2.13"
+)
 public class AllureReporter implements Reporter {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AllureReporter.class);
@@ -45,6 +55,15 @@ public class AllureReporter implements Reporter {
 
     private Path outputDir = Path.of("allure-results");
 
+    /**
+     * Sets the directory in which Allure result JSON and attachments are
+     * written.
+     * <p>
+     * Relative paths are resolved by Wakamiti and the directory is created
+     * when reporting begins.
+     *
+     * @param outputDir result directory, defaulting to {@code allure-results}
+     */
     public void setOutputDir(
             Path outputDir
     ) {
@@ -280,20 +299,13 @@ public class AllureReporter implements Reporter {
         if (result == null) {
             return "unknown";
         }
-        switch (result) {
-            case PASSED:
-                return "passed";
-            case FAILED:
-                return "failed";
-            case ERROR:
-            case UNDEFINED:
-                return "broken";
-            case SKIPPED:
-            case NOT_IMPLEMENTED:
-                return "skipped";
-            default:
-                return "unknown";
-        }
+        return switch (result) {
+            case PASSED -> "passed";
+            case FAILED -> "failed";
+            case ERROR, UNDEFINED -> "broken";
+            case SKIPPED, NOT_IMPLEMENTED -> "skipped";
+            default -> "unknown";
+        };
     }
 
     private Long toEpochMillis(
@@ -382,8 +394,14 @@ public class AllureReporter implements Reporter {
         }
     }
 
+    /**
+     * Provides the Test Case Context functionality used by Wakamiti.
+     */
     private static final class TestCaseContext {
+
+        /** Feature ancestor used to populate Allure suite and feature labels. */
         private final PlanNodeSnapshot feature;
+        /** Scenario or example node converted into one Allure test-case result. */
         private final PlanNodeSnapshot testCase;
 
         private TestCaseContext(
@@ -393,5 +411,7 @@ public class AllureReporter implements Reporter {
             this.feature = feature;
             this.testCase = testCase;
         }
+
     }
+
 }

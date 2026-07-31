@@ -1,24 +1,45 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-
 package es.iti.wakamiti.lsp;
 
+
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.URISyntaxException;
 
 import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.*;
-import org.apache.logging.log4j.core.config.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.eclipse.lsp4j.launch.LSPLauncher;
 
 
-public class Launcher {
+/**
+ * Provides the Launcher functionality used by Wakamiti.
+ */
+public final class Launcher {
 
-    public static void main(String[] args) throws ParseException, IOException {
+    private Launcher() {
+    }
 
+    /**
+     * Starts the language server using command-line options.
+     * <p>
+     * TCP mode listens on the requested port and creates a server per client.
+     * Otherwise the server communicates over standard input and output, with
+     * console logging disabled to avoid corrupting the LSP message stream.
+     *
+     * @param args command-line options; use {@code --help} to print usage
+     * @throws ParseException if an option or value is invalid
+     * @throws IOException if logging or server transport initialization fails
+     */
+    public static void main(
+            String[] args
+    ) throws ParseException, IOException {
         CliArguments arguments = new CliArguments().parse(args);
         if (arguments.isHelpActive()) {
             arguments.printUsage();
@@ -26,43 +47,40 @@ public class Launcher {
         }
 
         if (arguments.isTcpServer()) {
-        	if (arguments.debugEnabled()) {
-        		enableDebugLogs();
-        	}
-        	InetSocketAddress address = new InetSocketAddress(arguments.port());
-			var server = new TcpSocketLanguageServer(address , arguments.positionBase());
-			server.start();
+            if (arguments.debugEnabled()) {
+                enableDebugLogs();
+            }
+            InetSocketAddress address = new InetSocketAddress(arguments.port());
+            var server = new TcpSocketLanguageServer(address, arguments.positionBase());
+            server.start();
         } else {
-        	disableConsoleLogs();
-          	if (arguments.debugEnabled()) {
-        		enableDebugLogs();
-        	}
-        	var server = new WakamitiLanguageServer(arguments.positionBase());
+            disableConsoleLogs();
+            if (arguments.debugEnabled()) {
+                enableDebugLogs();
+            }
+            var server = new WakamitiLanguageServer(arguments.positionBase());
             var launcher = LSPLauncher.createServerLauncher(
-                server,
-                System.in,
-                System.out
+                    server,
+                    System.in,
+                    System.out
             );
             server.connect(launcher.getRemoteProxy());
             launcher.startListening();
         }
     }
 
+    private static void disableConsoleLogs() throws IOException {
+        try {
+            Configurator.reconfigure(
+                    Thread.currentThread().getContextClassLoader().getResource("log4j2-noconsole.xml").toURI()
+            );
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
+    }
 
-	private static void disableConsoleLogs() throws IOException {
-		try {
-			Configurator.reconfigure(
-				Thread.currentThread().getContextClassLoader().getResource("log4j2-noconsole.xml").toURI()
-			);
-		} catch (URISyntaxException e) {
-			throw new IOException(e);
-		}
-	}
-
-
-	private static void enableDebugLogs() {
-		Configurator.setRootLevel(Level.DEBUG);
-
-	}
+    private static void enableDebugLogs() {
+        Configurator.setRootLevel(Level.DEBUG);
+    }
 
 }

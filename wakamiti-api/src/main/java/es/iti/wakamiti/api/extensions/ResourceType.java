@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,19 +8,18 @@
 package es.iti.wakamiti.api.extensions;
 
 
-import es.iti.commons.jext.ExtensionPoint;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
+
+import es.iti.commons.jext.ExtensionPoint;
 
 
 /**
  * This interface defines a contract for handling different resource types.
  *
  * @param <T> The type of content that the resource represents.
- * @author Luis Iñesta Gelabert - linesta@iti.es
  * @implNote Implementations should provide logic for parsing different types of inputs
  * (e.g., InputStream, Reader) and specify the content type they handle.
  */
@@ -47,7 +48,10 @@ public interface ResourceType<T> extends Contributor {
      * @return The parsed content of the resource.
      * @throws IOException If an I/O error occurs during parsing.
      */
-    T parse(InputStream stream, Charset charset) throws IOException;
+    T parse(
+            InputStream stream,
+            Charset charset
+    ) throws IOException;
 
     /**
      * Parse the reader to obtain the content.
@@ -56,7 +60,9 @@ public interface ResourceType<T> extends Contributor {
      * @return The parsed content of the resource.
      * @throws IOException If an I/O error occurs during parsing.
      */
-    T parse(Reader reader) throws IOException;
+    T parse(
+            Reader reader
+    ) throws IOException;
 
     /**
      * Check if the resource type accepts the given filename.
@@ -64,6 +70,8 @@ public interface ResourceType<T> extends Contributor {
      * @param filename The filename to check.
      * @return True if the resource type accepts the filename, false otherwise.
      */
-    boolean acceptsFilename(String filename);
+    boolean acceptsFilename(
+            String filename
+    );
 
 }

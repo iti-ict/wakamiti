@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -10,23 +12,30 @@ import java.util.List;
 import java.util.Optional;
 
 
+/**
+ * Stores the configuration used by the Defined Configuration component.
+ */
 public interface DefinedConfiguration extends Configuration {
-
 
     /**
      * Check whether the current value for the given property is valid according its definition.
      * If the property definition is multivalued, it will return a different validation for each value
+     *
      * @param key The property key
      * @return The validation message, or empty if the value(s) is(are) valid
      */
-    List<String> validations(String key);
-
+    List<String> validations(
+            String key
+    );
 
     /**
      * Retrieve the property definition for a given property
+      *
+      * @param key the key value
+      * @return the resulting value
      */
-    Optional<PropertyDefinition> getDefinition(String key);
-
-
+    Optional<PropertyDefinition> getDefinition(
+            String key
+    );
 
 }

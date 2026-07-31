@@ -1,19 +1,28 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.xray.test;
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.event.Event;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import es.iti.wakamiti.core.JsonPlanSerializer;
-import es.iti.wakamiti.xray.XRaySynchronizer;
-import es.iti.wakamiti.xray.XrayConfigContributor;
-import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.Instant;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.event.Event;
+import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.xray.XRaySynchronizer;
+import es.iti.wakamiti.xray.XrayConfigContributor;
+
 
 public class TestXRayReporter {
 
@@ -30,10 +39,12 @@ public class TestXRayReporter {
                 .hasFieldOrPropertyWithValue("testCasePerFeature", true)
                 .hasFieldOrPropertyWithValue("createItemsIfAbsent", false)
                 .hasFieldOrPropertyWithValue("tag", "XRay");
-
     }
 
-    private void configure(XRaySynchronizer reporter, String resource) {
+    private void configure(
+            XRaySynchronizer reporter,
+            String resource
+    ) {
         XrayConfigContributor xrayConfig = new XrayConfigContributor();
         Configuration config = WakamitiConfiguration.DEFAULTS
                 .append(xrayConfig.defaultConfiguration())
@@ -47,11 +58,16 @@ public class TestXRayReporter {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    private InputStream resource(String resource) {
+    private InputStream resource(
+            String resource
+    ) {
         return classLoader().getResourceAsStream(resource);
     }
 
-    private Event event(String type, Object data) {
+    private Event event(
+            String type,
+            Object data
+    ) {
         return new Event(type, Instant.now(), data);
     }
 

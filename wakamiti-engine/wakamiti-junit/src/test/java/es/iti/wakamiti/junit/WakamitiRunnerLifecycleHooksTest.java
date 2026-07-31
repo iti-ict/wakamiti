@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,11 @@
 package es.iti.wakamiti.junit;
 
 
-import es.iti.wakamiti.api.WakamitiConfiguration;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.core.gherkin.GherkinResourceType;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -18,10 +21,10 @@ import org.junit.runner.RunWith;
 import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 
 
 public class WakamitiRunnerLifecycleHooksTest {
@@ -42,7 +45,7 @@ public class WakamitiRunnerLifecycleHooksTest {
 
         new WakamitiJUnitRunner(HookAwareRunner.class).run(notifier);
 
-        assertThat(HookAwareRunner.hookContexts).containsExactly(
+        assertThat(HookAwareRunner.HOOK_CONTEXTS).containsExactly(
                 "before:beforeClass",
                 "after:afterClass"
         );
@@ -56,33 +59,42 @@ public class WakamitiRunnerLifecycleHooksTest {
     @RunWith(WakamitiJUnitRunner.class)
     public static class HookAwareRunner {
 
-        private static final List<String> hookContexts = new ArrayList<>();
+        private static final List<String> HOOK_CONTEXTS = new ArrayList<>();
 
         @BeforeClass
         public static void beforeClassHook() {
-            hookContexts.add("before:" + currentTestName);
+            HOOK_CONTEXTS.add("before:" + currentTestName);
         }
 
         @AfterClass
         public static void afterClassHook() {
-            hookContexts.add("after:" + currentTestName);
+            HOOK_CONTEXTS.add("after:" + currentTestName);
         }
 
         private static void clearHooks() {
-            hookContexts.clear();
+            HOOK_CONTEXTS.clear();
         }
+
     }
 
-    private static class RecordingListener extends RunListener {
+    private static final class RecordingListener extends RunListener {
 
         @Override
-        public void testStarted(org.junit.runner.Description description) {
+        public void testStarted(
+                org.junit.runner
+                        .Description description
+        ) {
             currentTestName = description.getMethodName();
         }
 
         @Override
-        public void testFinished(org.junit.runner.Description description) {
+        public void testFinished(
+                org.junit.runner
+                        .Description description
+        ) {
             currentTestName = null;
         }
+
     }
+
 }

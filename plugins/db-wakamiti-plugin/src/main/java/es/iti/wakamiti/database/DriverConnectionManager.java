@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -17,7 +19,11 @@ import es.iti.commons.jext.Extension;
 /**
  * Manages JDBC connections using a driver-based approach.
  */
-@Extension(provider =  "es.iti.wakamiti", name = "database-driver-connection", version = "2.6")
+@Extension(
+        provider = "es.iti.wakamiti",
+        name = "database-driver-connection",
+        version = "2.13"
+)
 public class DriverConnectionManager implements ConnectionManager {
 
     /**
@@ -28,7 +34,9 @@ public class DriverConnectionManager implements ConnectionManager {
      * @throws SQLException If an SQL exception occurs
      */
     @Override
-    public Connection obtainConnection(ConnectionParameters parameters) throws SQLException {
+    public Connection obtainConnection(
+            ConnectionParameters parameters
+    ) throws SQLException {
         validateParameters(parameters);
         if (parameters.driver() != null) {
             try {
@@ -39,10 +47,13 @@ public class DriverConnectionManager implements ConnectionManager {
         } else {
             parameters.driver(DriverManager.getDriver(parameters.url()).getClass().getName());
         }
-        return init(DriverManager.getConnection(parameters.url(), parameters.username(), parameters.password()),  parameters);
+        return init(DriverManager.getConnection(parameters.url(), parameters.username(), parameters.password()), parameters);
     }
 
-    private Connection init(Connection connection, ConnectionParameters parameters) throws SQLException {
+    private Connection init(
+            Connection connection,
+            ConnectionParameters parameters
+    ) throws SQLException {
         Optional<Boolean> autoCommit = Optional.ofNullable(parameters.autoCommit());
         if (autoCommit.isPresent()) {
             connection.setAutoCommit(autoCommit.get());
@@ -57,7 +68,9 @@ public class DriverConnectionManager implements ConnectionManager {
      * @throws SQLException If an SQL exception occurs
      */
     @Override
-    public void releaseConnection(Connection connection) throws SQLException {
+    public void releaseConnection(
+            Connection connection
+    ) throws SQLException {
         try {
             if (!connection.isClosed()) {
                 connection.close();
@@ -73,7 +86,9 @@ public class DriverConnectionManager implements ConnectionManager {
      * @param parameters The connection parameters to validate
      * @throws IllegalArgumentException If any of the connection parameters are null
      */
-    private void validateParameters(ConnectionParameters parameters) {
+    private void validateParameters(
+            ConnectionParameters parameters
+    ) {
         if (parameters == null) {
             throw new IllegalArgumentException("Database connection parameters have not been set");
         }

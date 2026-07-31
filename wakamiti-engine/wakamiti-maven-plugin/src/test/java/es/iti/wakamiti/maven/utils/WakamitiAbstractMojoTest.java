@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,7 +8,15 @@
 package es.iti.wakamiti.maven.utils;
 
 
-import es.iti.wakamiti.core.Wakamiti;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.Mojo;
@@ -15,14 +25,7 @@ import org.apache.maven.plugin.testing.AbstractMojoTestCase;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import es.iti.wakamiti.core.Wakamiti;
 
 
 public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
@@ -43,12 +46,15 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
         Field instance = Wakamiti.class.getDeclaredField("instance");
         instance.setAccessible(true);
         instance.set(null, wakamiti);
-        Field instantiated = Wakamiti.class.getDeclaredField("instantiated");
+        Field instantiated = Wakamiti.class.getDeclaredField("INSTANTIATED");
         instantiated.setAccessible(true);
         ((AtomicBoolean) instantiated.get(null)).set(true);
     }
 
-    protected Mojo executeMojo(MavenSession session, String goal) throws Exception {
+    protected Mojo executeMojo(
+            MavenSession session,
+            String goal
+    ) throws Exception {
         MojoExecution execution = newMojoExecution(goal);
         Plugin plugin = session.getCurrentProject().getPlugin(execution.getMojoDescriptor()
                 .getPluginDescriptor().getPluginLookupKey());
@@ -64,14 +70,20 @@ public abstract class WakamitiAbstractMojoTest extends AbstractMojoTestCase {
         return mojo;
     }
 
-    protected Map<String, String> getProjectProperties(MavenProject project) {
+    protected Map<String, String> getProjectProperties(
+            MavenProject project
+    ) {
         Plugin plugin = project.getBuildPlugins().get(0);
         return Arrays.stream(((Xpp3Dom) plugin.getConfiguration()).getChild("properties").getChildren())
                 .collect(Collectors.toMap(Xpp3Dom::getName, Xpp3Dom::getValue));
     }
 
-    protected String getProjectConfig(MavenProject project, String property) {
+    protected String getProjectConfig(
+            MavenProject project,
+            String property
+    ) {
         Plugin plugin = project.getBuildPlugins().get(0);
         return ((Xpp3Dom) plugin.getConfiguration()).getChild(property).getValue();
     }
+
 }

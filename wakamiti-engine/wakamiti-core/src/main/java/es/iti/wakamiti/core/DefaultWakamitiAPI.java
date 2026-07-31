@@ -1,14 +1,21 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.core;
 
+
+import java.nio.file.Path;
 
 import es.iti.commons.jext.ExtensionManager;
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiContributors;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanSerializer;
 import es.iti.wakamiti.api.util.ResourceLoader;
-import es.iti.wakamiti.api.imconfig.Configuration;
-
-import java.nio.file.Path;
 
 
 /**
@@ -57,7 +64,10 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
      * {@inheritDoc}
      */
     @Override
-    public void publishEvent(String eventType, Object data) {
+    public void publishEvent(
+            String eventType,
+            Object data
+    ) {
         Wakamiti.instance().publishEvent(eventType, data);
     }
 
@@ -73,7 +83,9 @@ public class DefaultWakamitiAPI implements WakamitiAPI {
      * {@inheritDoc}
      */
     @Override
-    public Path workingDir(Configuration configuration) {
+    public Path workingDir(
+            Configuration configuration
+    ) {
         return Wakamiti.workingDir(configuration);
     }
 

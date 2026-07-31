@@ -18,14 +18,14 @@
 
 
     <artifactId>modbus-wakamiti-plugin</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <name>[Wakamiti Plugin] Modbus steps</name>
     <description>Modbus steps for Wakamiti</description>
     <inceptionYear>2025</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.11.0</wakamiti-engine.version>
+        <wakamiti-engine.version>2.13.0</wakamiti-engine.version>
     </properties>
 
     <dependencies>
@@ -34,6 +34,12 @@
             <groupId>com.intelligt.modbus</groupId>
             <artifactId>jlibmodbus</artifactId>
             <version>1.2.9.11</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.android.things</groupId>
+                    <artifactId>androidthings</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -52,7 +58,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.21.4</version>
+            <version>2.0.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>

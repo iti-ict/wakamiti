@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.10.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade Wakamiti Engine, REST Assured, MockServer and Mockito.
+- Align the Rhino and Guava runtime dependencies with the upgraded REST stack.
+- Publish an automatic module name instead of an explicit JPMS descriptor.
+
+
 ## [2.9.4] - 2026-05-22
 
 ### Fixed

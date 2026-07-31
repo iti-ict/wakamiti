@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,44 +8,75 @@
 package es.iti.wakamiti.core.datatypes.assertion;
 
 
-import es.iti.wakamiti.api.ExpressionMatcher;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
+import static es.iti.wakamiti.api.util.MapUtils.entry;
+import static es.iti.wakamiti.api.util.MapUtils.mapEntries;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.endsWithIgnoringCase;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalToCompressingWhiteSpace;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.startsWithIgnoringCase;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static es.iti.wakamiti.api.util.MapUtils.*;
-import static org.hamcrest.Matchers.*;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+import es.iti.wakamiti.api.ExpressionMatcher;
 
 
 /**
  * A provider for binary string assertions.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class BinaryStringAssertProvider extends AbstractAssertProvider {
 
+    /** Localization key for case-sensitive string equality. */
     public static final String EQUALS = "matcher.string.equals";
+    /** Localization key for case-insensitive string equality. */
     public static final String EQUALS_IGNORE_CASE = "matcher.string.equals.ignore.case";
+    /** Localization key for equality after insignificant whitespace is ignored. */
     public static final String EQUALS_IGNORE_WHITESPACE = "matcher.string.equals.ignore.whitespace";
+    /** Localization key for a case-sensitive prefix comparison. */
     public static final String STARTS_WITH = "matcher.string.starts.with";
+    /** Localization key for a case-insensitive prefix comparison. */
     public static final String STARTS_WITH_IGNORE_CASE = "matcher.string.starts.with.ignore.case";
+    /** Localization key for a case-sensitive suffix comparison. */
     public static final String ENDS_WITH = "matcher.string.ends.with";
+    /** Localization key for a case-insensitive suffix comparison. */
     public static final String ENDS_WITH_IGNORE_CASE = "matcher.string.ends.with.ignore.case";
+    /** Localization key for a case-sensitive substring comparison. */
     public static final String CONTAINS = "matcher.string.contains";
+    /** Localization key for a case-insensitive substring comparison. */
     public static final String CONTAINS_IGNORE_CASE = "matcher.string.contains.ignore.case";
 
+    /** Localization key for case-sensitive string inequality. */
     public static final String NOT_EQUALS = "matcher.string.not.equals";
+    /** Localization key for case-insensitive string inequality. */
     public static final String NOT_EQUALS_IGNORE_CASE = "matcher.string.not.equals.ignore.case";
+    /** Localization key for inequality after insignificant whitespace is ignored. */
     public static final String NOT_EQUALS_IGNORE_WHITESPACE = "matcher.string.not.equals.ignore.whitespace";
+    /** Localization key requiring a value not to start with a case-sensitive prefix. */
     public static final String NOT_STARTS_WITH = "matcher.string.not.starts.with";
+    /** Localization key requiring a value not to start with a prefix, ignoring case. */
     public static final String NOT_STARTS_WITH_IGNORE_CASE = "matcher.string.not.starts.with.ignore.case";
+    /** Localization key requiring a value not to end with a case-sensitive suffix. */
     public static final String NOT_ENDS_WITH = "matcher.string.not.ends.with";
+    /** Localization key requiring a value not to end with a suffix, ignoring case. */
     public static final String NOT_ENDS_WITH_IGNORE_CASE = "matcher.string.not.ends.with.ignore.case";
+    /** Localization key requiring absence of a case-sensitive substring. */
     public static final String NOT_CONTAINS = "matcher.string.not.contains";
+    /** Localization key requiring absence of a substring when case is ignored. */
     public static final String NOT_CONTAINS_IGNORE_CASE = "matcher.string.not.contains.ignore.case";
 
     private final Map<String, Function<String, Matcher<String>>> matchers = mapEntries(
@@ -74,7 +107,9 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
      * @param input The input string.
      * @return The prepared string.
      */
-    private static String prepareString(String input) {
+    private static String prepareString(
+            String input
+    ) {
         return input
                 .substring(1, input.length() - 1)
                 .replace("\\\"", "\"")
@@ -93,7 +128,9 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    protected LinkedHashMap<String, Pattern> translatedExpressions(Locale locale) {
+    protected LinkedHashMap<String, Pattern> translatedExpressions(
+            Locale locale
+    ) {
         LinkedHashMap<String, Pattern> translatedExpressions = new LinkedHashMap<>();
         for (String expression : expressions()) {
             translatedExpressions.put(
@@ -114,7 +151,9 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
      * {@inheritDoc}
      */
     @Override
-    public LinkedList<String> regex(Locale locale) {
+    public LinkedList<String> regex(
+            Locale locale
+    ) {
         return Arrays.stream(expressions())
                 .map(exp -> ExpressionMatcher.computeRegularExpression(bundle(locale).getString(exp)))
                 .map(exp -> exp.replace(VALUE_WILDCARD, "(\"([^\"\\\\]*(\\\\.[^\"\\\\]*)*)\"|'([^'\\\\]*(\\\\.[^'\\\\]*)*)')"))
@@ -133,4 +172,5 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
         value = prepareString(value);
         return matchers.get(key).apply(value);
     }
+
 }

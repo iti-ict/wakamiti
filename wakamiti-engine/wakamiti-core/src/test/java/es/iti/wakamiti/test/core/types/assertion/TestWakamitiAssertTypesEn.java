@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,7 @@
 package es.iti.wakamiti.test.core.types.assertion;
 
 
-import es.iti.wakamiti.api.WakamitiDataType;
-import es.iti.wakamiti.api.datatypes.Assertion;
-import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -22,7 +21,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.Test;
+
+import es.iti.wakamiti.api.WakamitiDataType;
+import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.core.datatypes.assertion.WakamitiAssertTypes;
 
 
 @SuppressWarnings("rawtypes")
@@ -30,10 +33,8 @@ public class TestWakamitiAssertTypesEn {
 
     private final Locale locale = Locale.ENGLISH;
 
-
     @Test
     public void testInteger() throws ParseException {
-
         WakamitiDataType<Assertion> intMatcher = WakamitiAssertTypes
                 .binaryNumberAssert("int-assert", false, Number::intValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -59,13 +60,10 @@ public class TestWakamitiAssertTypesEn {
 
         intMatcher.parse(locale, "is null").test(null);
         intMatcher.parse(locale, "is not null").test(7);
-
     }
-
 
     @Test
     public void testLong() throws ParseException {
-
         WakamitiDataType<Assertion> longMatcher = WakamitiAssertTypes
                 .binaryNumberAssert("long-assert", false, Number::longValue);
         Map<String, Object> exp = new LinkedHashMap<>();
@@ -91,9 +89,7 @@ public class TestWakamitiAssertTypesEn {
 
         longMatcher.parse(locale, "is null").test(null);
         longMatcher.parse(locale, "is not null").test(7L);
-
     }
-
 
     @Test
     public void testDouble() throws ParseException {
@@ -116,7 +112,6 @@ public class TestWakamitiAssertTypesEn {
                     .as("failed match for: " + e.getKey() + " with " + e.getValue()).isTrue();
         }
     }
-
 
     @Test
     public void testBigDecimal() throws ParseException {

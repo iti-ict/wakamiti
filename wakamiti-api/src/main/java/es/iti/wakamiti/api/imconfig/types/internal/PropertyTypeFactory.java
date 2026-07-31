@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,43 @@
 package es.iti.wakamiti.api.imconfig.types.internal;
 
 
-import es.iti.wakamiti.api.imconfig.ConfigurationException;
-import es.iti.wakamiti.api.imconfig.PropertyType;
-import es.iti.wakamiti.api.imconfig.types.*;
-
 import java.util.List;
 import java.util.Map;
 
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
+import es.iti.wakamiti.api.imconfig.PropertyType;
+import es.iti.wakamiti.api.imconfig.types.BooleanPropertyType;
+import es.iti.wakamiti.api.imconfig.types.DecimalPropertyType;
+import es.iti.wakamiti.api.imconfig.types.EnumPropertyType;
+import es.iti.wakamiti.api.imconfig.types.IntegerPropertyType;
+import es.iti.wakamiti.api.imconfig.types.TextPropertyType;
 
+
+/**
+ * Creates and configures Property Type instances.
+ */
 public final class PropertyTypeFactory {
 
-    public PropertyType create(String type, Map<String, Object> arguments) {
+    /**
+     * Creates a built-in property type from its serialized name and arguments.
+     * <p>
+     * Supported names are {@code text}, {@code integer}, {@code decimal},
+     * {@code enum}, and {@code boolean}. Recognized arguments depend on the
+     * type; for example numeric types accept {@code min} and {@code max}, while
+     * enumerations require {@code values}.
+     * </p>
+     *
+     * @param type      the built-in type name
+     * @param arguments type-specific constructor arguments; {@code null} is
+     *                  treated as an empty map
+     * @return the configured property type
+     * @throws ConfigurationException if the type is absent or unknown, or its
+     *                                arguments are invalid
+     */
+    public PropertyType create(
+            String type,
+            Map<String, Object> arguments
+    ) {
         if (type == null) {
             throw new ConfigurationException("type must be defined");
         }
@@ -32,9 +60,11 @@ public final class PropertyTypeFactory {
         }
     }
 
-
     @SuppressWarnings("unchecked")
-    private PropertyType createrPropertyType(String type, Map<String, ?> arguments) {
+    private PropertyType createrPropertyType(
+            String type,
+            Map<String, ?> arguments
+    ) {
         if ("text".equals(type)) {
             return new TextPropertyType((String) arguments.get("pattern"));
         }

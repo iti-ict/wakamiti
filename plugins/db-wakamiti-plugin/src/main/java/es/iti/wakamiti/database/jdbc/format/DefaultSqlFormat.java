@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,12 +8,8 @@
 package es.iti.wakamiti.database.jdbc.format;
 
 
-import com.mdimension.jchronic.Chronic;
-import com.mdimension.jchronic.Options;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.WakamitiStepRunContext;
-import es.iti.wakamiti.database.jdbc.WakamitiTimestamp;
-import org.apache.commons.lang3.BooleanUtils;
+import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
+import static java.util.Objects.isNull;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -21,63 +19,85 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
-import static es.iti.wakamiti.database.DatabaseHelper.DATE_TIME_FORMATTER;
-import static java.util.Objects.isNull;
+import org.apache.commons.lang3.BooleanUtils;
+
+import com.mdimension.jchronic.Chronic;
+import com.mdimension.jchronic.Options;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.database.jdbc.WakamitiTimestamp;
 
 
+/**
+ * Provides the Default Sql Format functionality used by Wakamiti.
+ */
 public class DefaultSqlFormat implements SqlFormat {
 
-    public Object formatValue(String value, JDBCType type) {
-        if (isNull(value)) return null;
-        switch (type) {
-            case BIT:
-            case BOOLEAN:
-                return formatBoolean(value);
-            case TINYINT:
-            case BIGINT:
-            case INTEGER:
-            case SMALLINT:
-                return formatInteger(value);
-            case DECIMAL:
-            case DOUBLE:
-            case FLOAT:
-            case NUMERIC:
-            case REAL:
-                return formatDecimal(value);
-            case DATE:
-                return formatDate(value);
-            case TIMESTAMP:
-            case TIME:
-            case TIME_WITH_TIMEZONE:
-            case TIMESTAMP_WITH_TIMEZONE:
-                return formatDateTime(value);
-            default:
-                return value;
+    /**
+     * Converts textual test data to a value appropriate for a JDBC type.
+     * <p>
+     * Boolean, numeric and temporal types receive semantic conversion; unknown
+     * or character types retain the original string. A {@code null} input is
+     * preserved.
+     *
+     * @param value textual value to convert
+     * @param type target JDBC type
+     * @return converted JDBC value, the original text or {@code null}
+     */
+    @Override
+    public Object formatValue(
+            String value,
+            JDBCType type
+    ) {
+        if (isNull(value)) {
+            return null;
         }
+        return switch (type) {
+            case BIT, BOOLEAN -> formatBoolean(value);
+            case TINYINT, BIGINT, INTEGER, SMALLINT -> formatInteger(value);
+            case DECIMAL, DOUBLE, FLOAT, NUMERIC, REAL -> formatDecimal(value);
+            case DATE -> formatDate(value);
+            case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE -> formatDateTime(value);
+            default -> value;
+        };
     }
 
-    protected Object formatBoolean(String value) {
-        if (value.contains(".")) value = String.valueOf(Float.valueOf(value).intValue());
+    protected Object formatBoolean(
+            String value
+    ) {
+        if (value.contains(".")) {
+            value = String.valueOf(Float.valueOf(value).intValue());
+        }
         return BooleanUtils.toBooleanObject(value);
     }
 
-    protected Object formatInteger(String value) {
+    protected Object formatInteger(
+            String value
+    ) {
         if (!isNull(BooleanUtils.toBooleanObject(value))) {
             value = BooleanUtils.toIntegerObject(BooleanUtils.toBooleanObject(value)).toString();
         }
-        if (value.contains(".")) return new BigDecimal(value).toBigInteger();
+        if (value.contains(".")) {
+            return new BigDecimal(value).toBigInteger();
+        }
         return new BigInteger(value);
     }
 
-    protected Object formatDecimal(String value) {
+    protected Object formatDecimal(
+            String value
+    ) {
         if (!isNull(BooleanUtils.toBooleanObject(value))) {
             value = BooleanUtils.toIntegerObject(BooleanUtils.toBooleanObject(value)).toString();
         }
-        if (!value.contains(".")) return new BigInteger(value);
+        if (!value.contains(".")) {
+            return new BigInteger(value);
+        }
         return new BigDecimal(value);
     }
 
-    protected Object formatDate(String value) {
+    protected Object formatDate(
+            String value
+    ) {
         Calendar calendar = Chronic.parse(value, new Options(false)).getBeginCalendar();
         return WakamitiTimestamp.valueOf(
                 LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId())
@@ -85,7 +105,9 @@ public class DefaultSqlFormat implements SqlFormat {
         );
     }
 
-    protected Object formatDateTime(String value) {
+    protected Object formatDateTime(
+            String value
+    ) {
         try {
             LocalDateTime dateTime = parse(value, LocalDateTime.class);
             value = DATE_TIME_FORMATTER.format(dateTime);
@@ -106,10 +128,14 @@ public class DefaultSqlFormat implements SqlFormat {
      * @throws WakamitiException if no type registry is found for the specified class.
      */
     @SuppressWarnings("unchecked")
-    private <T> T parse(String expression, Class<T> type) {
+    private <T> T parse(
+            String expression,
+            Class<T> type
+    ) {
         WakamitiStepRunContext ctx = WakamitiStepRunContext.current();
         return (T) ctx.typeRegistry().findTypesForJavaType(type).findFirst()
                 .orElseThrow(() -> new WakamitiException("No type registry found for Class '{}'", type))
                 .parse(ctx.stepLocale(), expression);
     }
+
 }

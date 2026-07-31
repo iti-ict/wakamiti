@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.9.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade `wakamiti-starter`, Jackson, SnakeYAML, Apache Commons Configuration and the remaining managed dependencies.
+- Use standard `ServiceLoader` provider instantiation for `ConfigurationFactory`.
+- Align scalar and generic configuration conversion with Apache Commons Configuration.
+
+### Fixed
+- Preserve repeated string, boolean, numeric and date values when loading multi-valued properties from JSON, YAML, XML, properties, maps and annotations.
+- Preserve duplicate scalar values while still preventing infinite recursion in cyclic configuration containers.
+- Resolve `classpath:` configuration resources with the requested class loader and report missing resources clearly.
+
+
 ## [2.8.0] - 2026-06-16
 
 ### Added

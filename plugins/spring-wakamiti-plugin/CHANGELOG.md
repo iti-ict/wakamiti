@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.9.0] - 2026-07-31
+
+### Changed
+- Require Java 17.
+- Upgrade to Spring Boot 4.1 and the current Wakamiti Engine, database and REST plugins.
+- Use `wakamiti-junit` instead of the removed JUnit runner from `wakamiti-core`.
+
+
 ## [2.8.0] - 2026-06-16
 
 ### Changed

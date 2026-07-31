@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -14,24 +16,22 @@ import java.util.regex.Pattern;
 /**
  * Implementation of the Ratcliff/Obershelp Pattern Matching Algorithm as
  * described in the July 1988 issue of <a href=http://www.ddj.com/184407970?pgno=5>Dr. Dobbs Journal</a>
- *
- * @author Marco Petris
- * @author Luis Iñesta - luiinge@gmail.com (Additional tweaks and fixes)
  */
 public class Simil {
 
+    private static final double PERCENT_SCALE = 100.0;
     private final String upBaseInput;
-
 
     /**
      * Constructor.
      *
      * @param baseInput the basic input to compare against
      */
-    public Simil(String baseInput) {
+    public Simil(
+            String baseInput
+    ) {
         upBaseInput = baseInput.toUpperCase();
     }
-
 
     /**
      * This method takes two strings, one from each stack, and looks for the
@@ -46,8 +46,10 @@ public class Simil {
      * @return the size of the larges common substring of the two strings which
      * were on the tops of the incoming stacks.
      */
-    private int compare(Deque<String> baseInputStack, Deque<String> inputStack) {
-
+    private int compare(
+            Deque<String> baseInputStack,
+            Deque<String> inputStack
+    ) {
         String comp1 = baseInputStack.pop();
         String comp2 = inputStack.pop();
 
@@ -57,17 +59,14 @@ public class Simil {
         // loop over the decrementing size until we find
         // a common substring
         while (windowSize > 0) {
-
             // we start to compare substrings of the current window size
             // from the beginning of the base input fragment
             // and move forward with this window by one-character-steps until
             // we find a match
             int pos = 0;
             while (pos + windowSize - 1 < comp1.length()) {
-
                 // is this a common substring?
                 if (comp2.contains(comp1.substring(pos, pos + windowSize))) {
-
                     compareLength(baseInputStack, inputStack, comp1, comp2, windowSize, pos);
                     // this is the size of the first largest substring we could find
                     return windowSize;
@@ -82,7 +81,14 @@ public class Simil {
         return 0;
     }
 
-    private void compareLength(Deque<String> baseInputStack, Deque<String> inputStack, String comp1, String comp2, int windowSize, int pos) {
+    private void compareLength(
+            Deque<String> baseInputStack,
+            Deque<String> inputStack,
+            String comp1,
+            String comp2,
+            int windowSize,
+            int pos
+    ) {
         // yes, so we take the parts that do not belong to our matching
         // string and push them onto the stack for later examination
         String[] comp2Rest = comp2.split(Pattern.quote(comp1.substring(pos, pos + windowSize)), 2);
@@ -104,7 +110,6 @@ public class Simil {
         }
     }
 
-
     /**
      * Computes the similarity of the base input of this instance to the given
      * input and returns the computed value in percent.
@@ -112,7 +117,9 @@ public class Simil {
      * @param input the input to compare with the basic input of this instance
      * @return the percentage value of similarity
      */
-    public double getSimilarityInPercentFor(String input) {
+    public double getSimilarityInPercentFor(
+            String input
+    ) {
         String upInput = input.toUpperCase();
         Deque<String> inputStack = new ArrayDeque<>();
         Deque<String> baseInputStack = new ArrayDeque<>();
@@ -127,9 +134,7 @@ public class Simil {
         // the lengths of largest substrings
         // the stacks get filled when common substrings are found
         while (!inputStack.isEmpty() && !baseInputStack.isEmpty()) {
-
             compCount += compare(baseInputStack, inputStack);
-
         }
 
         // compute the percent value for the total length of the matching substrings
@@ -137,6 +142,7 @@ public class Simil {
         double percentVal = (compCount * 2);
         percentVal /= (upBaseInput.length() + upInput.length());
 
-        return (int) (Math.round(percentVal * 100.0));
+        return (int) (Math.round(percentVal * PERCENT_SCALE));
     }
+
 }

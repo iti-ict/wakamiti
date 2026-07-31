@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,10 +8,26 @@
 package es.iti.wakamiti.core.backend;
 
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+
+import org.slf4j.Logger;
+
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiSkippedException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.model.ExecutionState;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
@@ -20,26 +38,20 @@ import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.core.util.LocaleLoader;
-import es.iti.wakamiti.api.imconfig.Configuration;
-import org.slf4j.Logger;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.util.*;
-import java.util.regex.Matcher;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
- * Implementation of the Backend interface that allows running tests.
- * It provides the capability to execute individual test steps and
- * handle the setup and teardown operations.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
+ * Runnable {@link es.iti.wakamiti.api.Backend} implementation for test-case
+ * execution.
+ * <p>
+ * This backend resolves runnable steps, executes setup/teardown hooks,
+ * propagates per-step execution state and stores scenario-scoped extra
+ * properties.
+ * </p>
  */
 public class RunnableBackend extends AbstractBackend {
 
+    /** Engine logger shared by runnable backends for execution diagnostics. */
     public static final Logger LOGGER = Wakamiti.LOGGER;
     private static final List<String> DATA_ARG_ALTERNATIVES = List.of(DOCUMENT_ARG, DATATABLE_ARG);
 
@@ -92,7 +104,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param step The plan node representing the step to run.
      */
     @Override
-    public void runStep(PlanNode step) {
+    public void runStep(
+            PlanNode step
+    ) {
         runStep(step, () -> {
             Instant now = clock.instant();
             if (otherStepsHasErrors(step)) {
@@ -111,7 +125,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param step The plan node representing the step to validate.
      */
     @Override
-    public void dryRunStep(PlanNode step) {
+    public void dryRunStep(
+            PlanNode step
+    ) {
         runStep(step, () -> {
             Instant now = clock.instant();
             StepBackendData stepBackend = stepBackendData.get(step);
@@ -124,7 +140,10 @@ public class RunnableBackend extends AbstractBackend {
         });
     }
 
-    private void runStep(PlanNode step, Runnable runnable) {
+    private void runStep(
+            PlanNode step,
+            Runnable runnable
+    ) {
         validateStepFromTestCase(step);
         fetchStepBackendData();
         if (step.nodeType() == NodeType.VIRTUAL_STEP) {
@@ -146,7 +165,9 @@ public class RunnableBackend extends AbstractBackend {
      * @throws WakamitiException If the step is not of the expected type or not a
      *                           descendant of the test case.
      */
-    private void validateStepFromTestCase(PlanNode step) {
+    private void validateStepFromTestCase(
+            PlanNode step
+    ) {
         if (step.nodeType().isNoneOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             throw new WakamitiException(
                     "Plan node of type {} cannot be executed",
@@ -169,7 +190,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param modelStep The plan node representing the step.
      * @return {@code true} if other steps have errors, {@code false} otherwise.
      */
-    private boolean otherStepsHasErrors(PlanNode modelStep) {
+    private boolean otherStepsHasErrors(
+            PlanNode modelStep
+    ) {
         return (!stepsWithErrors.isEmpty() && !stepsWithErrors.contains(modelStep));
     }
 
@@ -179,7 +202,10 @@ public class RunnableBackend extends AbstractBackend {
      * @param modelStep The plan node representing the step to be skipped.
      * @param now       The timestamp when the skipping occurs.
      */
-    private void skipStep(PlanNode modelStep, Instant now) {
+    private void skipStep(
+            PlanNode modelStep,
+            Instant now
+    ) {
         ExecutionState<Result> execution = modelStep.prepareExecution();
         execution.markStarted(now);
         execution.markFinished(now, Result.SKIPPED);
@@ -220,7 +246,10 @@ public class RunnableBackend extends AbstractBackend {
      * @param type      The type of the operation for logging purposes.
      * @throws WakamitiException If an exception or error occurs during the execution of the operation.
      */
-    private void runMethod(ThrowableRunnable operation, String type) {
+    private void runMethod(
+            ThrowableRunnable operation,
+            String type
+    ) {
         try {
             Locale locale = LocaleLoader.forLanguage(testCase.language());
             WakamitiStepRunContext.set(
@@ -235,7 +264,9 @@ public class RunnableBackend extends AbstractBackend {
         } catch (Exception | Error e) {
             Throwable tr = e;
             while (isBlank(tr.getMessage())) {
-                if (tr.getCause() == null) break;
+                if (tr.getCause() == null) {
+                    break;
+                }
                 tr = tr.getCause();
             }
             LOGGER.error("Error running {} operation: {}", type, tr.getMessage());
@@ -250,7 +281,12 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     /**
-     * Fetches backend data associated with each step.
+     * Resolves and caches backend execution metadata for every step in the test
+     * case.
+     * <p>
+     * The cache is built lazily once; step-resolution errors are recorded so
+     * affected steps are marked with errors during execution.
+     * </p>
      */
     private void fetchStepBackendData() {
         if (stepBackendData.isEmpty()) {
@@ -272,7 +308,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param step The test step for which backend data is fetched.
      * @return The backend data for the given step.
      */
-    private StepBackendData fetchStepBackendData(PlanNode step) {
+    private StepBackendData fetchStepBackendData(
+            PlanNode step
+    ) {
         Locale stepLocale = LocaleLoader.forLanguage(step.language());
         Locale dataLocale = dataLocale(step, stepLocale);
         Pair<RunnableStep, Matcher> runnableStepData = resolver.locateRunnableStep(step, hinter);
@@ -296,13 +334,20 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     /**
-     * Runs a test step.
+     * Executes a resolved step implementation.
+     * <p>
+     * A {@link WakamitiStepRunContext} is installed for the current thread
+     * during execution and cleared in {@code finally}.
+     * </p>
      *
-     * @param step    The test step to be executed.
-     * @param instant The current instant.
+     * @param step    test step to execute
+     * @param instant execution start timestamp
      */
     @SuppressWarnings("unchecked")
-    protected void runStep(PlanNode step, Instant instant) {
+    protected void runStep(
+            PlanNode step,
+            Instant instant
+    ) {
         step.prepareExecution().markStarted(instant);
         StepBackendData stepBackend = stepBackendData.get(step);
         WakamitiStepRunContext.set(
@@ -344,7 +389,12 @@ public class RunnableBackend extends AbstractBackend {
      * @param e               The thrown exception.
      * @param errorClassifier The error classifier.
      */
-    protected void fillErrorState(PlanNode modelStep, Instant instant, Throwable e, String errorClassifier) {
+    protected void fillErrorState(
+            PlanNode modelStep,
+            Instant instant,
+            Throwable e,
+            String errorClassifier
+    ) {
         modelStep.prepareExecution().markFinished(instant, resultFromThrowable(e), e, errorClassifier);
         stepsWithErrors.add(modelStep);
     }
@@ -355,7 +405,9 @@ public class RunnableBackend extends AbstractBackend {
      * @param e The thrown exception.
      * @return The result type.
      */
-    protected Result resultFromThrowable(Throwable e) {
+    protected Result resultFromThrowable(
+            Throwable e
+    ) {
         Result result;
         if (e instanceof AssertionError) {
             result = Result.FAILED;
@@ -411,25 +463,30 @@ public class RunnableBackend extends AbstractBackend {
     }
 
     /**
-     * Gets the extra properties associated with this backend.
+     * Returns the mutable scenario context map.
+     * <p>
+     * The map always contains reserved keys {@code id} and {@code results}.
+     * </p>
      *
-     * @return The extra properties.
+     * @return scenario extra properties map
      */
     @Override
     public Map<String, Object> getExtraProperties() {
         return extraProperties;
     }
 
-
     /**
-     * The {@code ContextMap} class is a specialized map used to store
-     * extra properties associated with the backend.
-     * It prevents certain keys (like "results" and "id") from being
-     * used and allows cleaning them before putAll.
+     * Scenario context map with reserved system keys.
+     * <p>
+     * Clients may store custom values except for {@link #ID_PROP} and
+     * {@link #RESULTS_PROP}, which are managed by the backend.
+     * </p>
      */
     public class ContextMap extends LinkedHashMap<String, Object> {
 
+        /** Plan-node property that carries examples or execution-result rows. */
         public static final String RESULTS_PROP = "results";
+        /** Plan-node property that carries the stable identifier of an executable node. */
         public static final String ID_PROP = "id";
 
         ContextMap() {
@@ -438,7 +495,10 @@ public class RunnableBackend extends AbstractBackend {
         }
 
         @Override
-        public Object put(String key, Object value) {
+        public Object put(
+                String key,
+                Object value
+        ) {
             if (Arrays.asList(RESULTS_PROP, ID_PROP).contains(key)) {
                 throw new IllegalArgumentException(key);
             } else {
@@ -447,10 +507,14 @@ public class RunnableBackend extends AbstractBackend {
         }
 
         @Override
-        public void putAll(Map<? extends String, ?> m) {
+        public void putAll(
+                Map<? extends String, ?> m
+        ) {
             m.entrySet().stream()
                     .filter(e -> !List.of(ID_PROP, RESULTS_PROP).contains(e.getKey()))
                     .forEach(e -> put(e.getKey(), e.getValue()));
         }
+
     }
+
 }

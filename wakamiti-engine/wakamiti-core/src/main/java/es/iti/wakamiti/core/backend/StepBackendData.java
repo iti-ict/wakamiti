@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,19 +8,17 @@
 package es.iti.wakamiti.core.backend;
 
 
-import es.iti.wakamiti.api.plan.PlanNode;
-import es.iti.wakamiti.api.util.Argument;
-
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
+
+import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.util.Argument;
 
 
 /**
  * Holds data related to the execution of a step, including the step itself, locales,
  * runnable step instance, step matcher, invoking arguments, exception (if any), and classifier.
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 public class StepBackendData {
 
@@ -67,7 +67,10 @@ public class StepBackendData {
      * @param step      The plan node representing the step.
      * @param exception The exception thrown during step execution.
      */
-    public StepBackendData(PlanNode step, Exception exception) {
+    public StepBackendData(
+            PlanNode step,
+            Exception exception
+    ) {
         this.step = step;
         this.stepLocale = null;
         this.dataLocale = null;

@@ -1,10 +1,20 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 package es.iti.wakamiti.rest.log;
 
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.restassured.filter.Filter;
 import io.restassured.filter.FilterContext;
@@ -15,31 +25,35 @@ import io.restassured.internal.support.Prettifier;
 import io.restassured.response.Response;
 import io.restassured.specification.FilterableRequestSpecification;
 import io.restassured.specification.FilterableResponseSpecification;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
 /**
- * @author Luis Iñesta Gelabert - linesta@iti.es | luiinge@gmail.com
+ * Rest-Assured filter that logs HTTP responses in a readable format.
  */
 public class RestAssuredLogger implements Filter {
 
-    private static final Logger logger = LoggerFactory.getLogger( "es.iti.wakamiti.rest");
+    private static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.rest");
     private static final String HEADER_NAME_AND_VALUE_SEPARATOR = ": ";
     private static PrintStream printStream;
 
+    /**
+     * Returns the shared stream that forwards each printed line to the REST
+     * plugin logger.
+     * <p>
+     * The stream is initialized lazily and has automatic flushing enabled so
+     * REST Assured logging is emitted promptly.
+     *
+     * @return reusable logger-backed print stream
+     */
     public static PrintStream getPrintStream() {
         if (printStream == null) {
             printStream = new PrintStream(new ByteArrayOutputStream(), true) { // true: auto flush must be set!
 
                 @Override
-                public void println(String x) {
-                    logger.info(x);
+                public void println(
+                        String x
+                ) {
+                    LOGGER.info(x);
                 }
             };
         }
@@ -50,7 +64,8 @@ public class RestAssuredLogger implements Filter {
     public Response filter(
             FilterableRequestSpecification filterableReqSpecification,
             FilterableResponseSpecification filterableRespSpecification,
-            FilterContext ctx) {
+            FilterContext ctx
+    ) {
         Response response = ctx.next(filterableReqSpecification, filterableRespSpecification);
 
         final StringBuilder builder = new StringBuilder();
@@ -81,7 +96,9 @@ public class RestAssuredLogger implements Filter {
         return response;
     }
 
-    private String toString(Headers headers) {
+    private String toString(
+            Headers headers
+    ) {
         final StringBuilder builder = new StringBuilder();
         for (Header header : headers) {
             builder.append(header.getName())
@@ -92,4 +109,5 @@ public class RestAssuredLogger implements Filter {
         builder.delete(builder.length() - System.lineSeparator().length(), builder.length());
         return builder.toString();
     }
+
 }

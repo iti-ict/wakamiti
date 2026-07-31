@@ -75,9 +75,11 @@ jobs:
 
       - name: Publish Docker tagged version and latest version
         if: ${{ startsWith(needs.get-env.outputs.TAG_NAME, 'v') }}
+        env:
+          WAKAMITI_DOCKER_PWD: ${{ secrets.WAKAMITI_DOCKER_PWD }}
         run: |
           ./mvnw -B deploy -DskipTests -ntp -pl wakamiti-engine/wakamiti-docker -P release,-default \
-          -Ddocker.pwd=${{ secrets.WAKAMITI_DOCKER_PWD }}
+          -Ddocker.pwd=$WAKAMITI_DOCKER_PWD
 
       - name: Stage JARs into Maven Central Repository
         env:

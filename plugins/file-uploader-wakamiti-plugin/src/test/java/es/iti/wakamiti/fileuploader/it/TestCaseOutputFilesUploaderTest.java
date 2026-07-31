@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,17 +8,14 @@
 package es.iti.wakamiti.fileuploader.it;
 
 
-import es.iti.wakamiti.api.util.WakamitiLogger;
-import es.iti.wakamiti.fileuploader.AbstractFilesUploader;
-import es.iti.wakamiti.fileuploader.MockFtpServer;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
-import org.apache.ftpserver.ftplet.FtpException;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
+import static es.iti.wakamiti.api.WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.OUTPUT_FILE_PER_TEST_CASE;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
+import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +26,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.*;
-import static org.junit.Assert.*;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.fileuploader.AbstractFilesUploader;
+import es.iti.wakamiti.fileuploader.MockFtpServer;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 
 
 @AnnotatedConfiguration({
@@ -47,19 +56,19 @@ import static org.junit.Assert.*;
 public class TestCaseOutputFilesUploaderTest {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(AbstractFilesUploader.class);
-    private static final MockFtpServer ftpServer = new MockFtpServer(5432);
+    private static final MockFtpServer FTP_SERVER = new MockFtpServer(5432);
 
     @BeforeClass
     public static void setUp() throws FtpException, IOException {
-        ftpServer.start();
+        FTP_SERVER.start();
     }
 
     @AfterClass
     public static void tearDown() {
         if (LOGGER.isDebugEnabled()) {
-            System.out.println(printDirectoryTree(ftpServer.getTmpDir().toFile()));
+            System.out.println(printDirectoryTree(FTP_SERVER.getTmpDir().toFile()));
         }
-        Path resultsPath = ftpServer.getTmpDir().resolve("dira/dirb/");
+        Path resultsPath = FTP_SERVER.getTmpDir().resolve("dira/dirb/");
         File[] dateFiles = resultsPath.toFile().listFiles();
         assertNotNull(dateFiles);
         assertEquals(1, dateFiles.length);
@@ -70,7 +79,7 @@ public class TestCaseOutputFilesUploaderTest {
         assertEquals(2, jsonFiles.length);
         assertEquals("ID-1.json", jsonFiles[0].getName());
         assertEquals("ID-2.json", jsonFiles[1].getName());
-        ftpServer.stop();
+        FTP_SERVER.stop();
         System.out.println("FTP stopped");
     }
 
@@ -83,7 +92,9 @@ public class TestCaseOutputFilesUploaderTest {
      *
      * @param folder must be a folder.
      */
-    public static String printDirectoryTree(File folder) {
+    public static String printDirectoryTree(
+            File folder
+    ) {
         if (!folder.isDirectory()) {
             throw new IllegalArgumentException("folder is not a Directory");
         }
@@ -93,8 +104,11 @@ public class TestCaseOutputFilesUploaderTest {
         return sb.toString();
     }
 
-    private static void printDirectoryTree(File folder, int indent,
-                                           StringBuilder sb) {
+    private static void printDirectoryTree(
+            File folder,
+            int indent,
+            StringBuilder sb
+    ) {
         if (!folder.isDirectory()) {
             throw new IllegalArgumentException("folder is not a Directory");
         }
@@ -110,19 +124,25 @@ public class TestCaseOutputFilesUploaderTest {
                 printFile(file, indent + 1, sb);
             }
         }
-
     }
 
-    private static void printFile(File file, int indent, StringBuilder sb) {
+    private static void printFile(
+            File file,
+            int indent,
+            StringBuilder sb
+    ) {
         sb.append(getIndentString(indent));
         sb.append("+--");
         sb.append(file.getName());
         sb.append("\n");
     }
 
-    private static String getIndentString(int indent) {
+    private static String getIndentString(
+            int indent
+    ) {
         StringBuilder sb = new StringBuilder();
         sb.append("|  ".repeat(Math.max(0, indent)));
         return sb.toString();
     }
+
 }

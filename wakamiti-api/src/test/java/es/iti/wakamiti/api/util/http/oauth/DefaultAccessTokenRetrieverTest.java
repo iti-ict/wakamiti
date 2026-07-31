@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,9 +8,22 @@
 package es.iti.wakamiti.api.util.http.oauth;
 
 
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.http.oauth.GrantType;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
+import static es.iti.wakamiti.api.util.JsonUtils.json;
+import static es.iti.wakamiti.api.util.MapUtils.map;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockserver.integration.ClientAndServer.startClientAndServer;
+import static org.mockserver.model.HttpRequest.request;
+import static org.mockserver.model.HttpResponse.response;
+import static org.mockserver.model.Parameter.param;
+import static org.mockserver.model.ParameterBody.params;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.Base64;
+
+import javax.net.ssl.HttpsURLConnection;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,27 +38,15 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.Base64;
+import es.iti.wakamiti.api.WakamitiException;
 
-import static es.iti.wakamiti.api.util.JsonUtils.json;
-import static es.iti.wakamiti.api.util.MapUtils.map;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
-import static org.mockserver.model.Parameter.param;
-import static org.mockserver.model.ParameterBody.params;
 
 public class DefaultAccessTokenRetrieverTest {
 
     private static final Integer PORT = 4321;
     private static final String BASE_URL = MessageFormat.format("https://localhost:{0,number,#}", PORT);
 
-    private static final ClientAndServer client = startClientAndServer(PORT);
+    private static final ClientAndServer CLIENT = startClientAndServer(PORT);
 
     @BeforeClass
     public static void setup() {
@@ -55,12 +58,12 @@ public class DefaultAccessTokenRetrieverTest {
 
     @AfterClass
     public static void shutdown() {
-        client.close();
+        CLIENT.close();
     }
 
     @After
     public void tearDown() {
-        client.reset();
+        CLIENT.reset();
     }
 
     @Test
@@ -79,8 +82,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)).toString())
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -120,8 +122,7 @@ public class DefaultAccessTokenRetrieverTest {
                                         param(username, username),
                                         param(password, password)
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)).toString())
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -159,8 +160,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response(json(map("access_token", token)).toString())
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON)
@@ -259,8 +259,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response().withStatusCode(404)
         );
 
@@ -277,8 +276,8 @@ public class DefaultAccessTokenRetrieverTest {
         } catch (WakamitiException e) {
             // check
             assertThat(e).hasMessage("Error retrieving oauth2 authentication")
-                    .getCause().isExactlyInstanceOf(IllegalStateException.class)
-                    .hasMessage("404");
+                    .hasRootCauseInstanceOf(IllegalStateException.class)
+                    .hasRootCauseMessage("404");
             throw e;
         }
     }
@@ -298,8 +297,7 @@ public class DefaultAccessTokenRetrieverTest {
                                 params(
                                         param("grant_type", "client_credentials")
                                 )
-                        )
-                ,
+                        ),
                 response("A text message")
                         .withStatusCode(400)
                         .withContentType(MediaType.TEXT_PLAIN)
@@ -318,8 +316,8 @@ public class DefaultAccessTokenRetrieverTest {
         } catch (WakamitiException e) {
             // check
             assertThat(e).hasMessage("Error retrieving oauth2 authentication")
-                    .getCause().isExactlyInstanceOf(IllegalStateException.class)
-                    .hasMessage("400. A text message");
+                    .hasRootCauseInstanceOf(IllegalStateException.class)
+                    .hasRootCauseMessage("400. A text message");
             throw e;
         }
     }
@@ -330,7 +328,6 @@ public class DefaultAccessTokenRetrieverTest {
         String token = "1234567890";
         String clientId = "SOMETHING";
         String clientSecret = "s3cr3t";
-
 
         Oauth2Provider provider = new Oauth2Provider();
         provider.configuration()
@@ -362,7 +359,11 @@ public class DefaultAccessTokenRetrieverTest {
         }
     }
 
-    private void mockServer(HttpRequest expected, HttpResponse response) {
-        client.when(expected, Times.once()).respond(response);
+    private void mockServer(
+            HttpRequest expected,
+            HttpResponse response
+    ) {
+        CLIENT.when(expected, Times.once()).respond(response);
     }
+
 }

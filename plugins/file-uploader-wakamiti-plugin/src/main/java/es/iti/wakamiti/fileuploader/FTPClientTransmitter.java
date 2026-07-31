@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,24 +8,35 @@
 package es.iti.wakamiti.fileuploader;
 
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.WakamitiException;
-import es.iti.wakamiti.api.util.ResourceLoader;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPSClient;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPSClient;
 
+import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.ResourceLoader;
+
+
+/**
+ * Provides the FTPClient Transmitter functionality used by Wakamiti.
+ */
 public class FTPClientTransmitter implements FTPTransmitter {
 
     private final FTPClient ftpClient;
     private String home;
 
-    public FTPClientTransmitter(boolean secure) {
+    /**
+     * Creates an Apache Commons Net transmitter.
+     *
+     * @param secure {@code true} for FTPS; {@code false} for plain FTP
+     */
+    public FTPClientTransmitter(
+            boolean secure
+    ) {
         this.ftpClient = (secure ? new FTPSClient() : new FTPClient());
     }
 
@@ -33,7 +46,13 @@ public class FTPClientTransmitter implements FTPTransmitter {
     }
 
     @Override
-    public void connect(String username, String host, Integer port, String password, String identity) throws IOException {
+    public void connect(
+            String username,
+            String host,
+            Integer port,
+            String password,
+            String identity
+    ) throws IOException {
         if (port != null) {
             ftpClient.connect(host, port);
         } else {
@@ -52,7 +71,10 @@ public class FTPClientTransmitter implements FTPTransmitter {
     }
 
     @Override
-    public void transferFile(Path localFile, Path destinationFolder) throws IOException {
+    public void transferFile(
+            Path localFile,
+            Path destinationFolder
+    ) throws IOException {
         createDestinationDirectory(destinationFolder);
         ftpClient.changeWorkingDirectory(home);
         ftpClient.changeWorkingDirectory(destinationFolder.toString());
@@ -65,7 +87,9 @@ public class FTPClientTransmitter implements FTPTransmitter {
         ftpClient.changeWorkingDirectory(home);
     }
 
-    private void createDestinationDirectory(Path dirPath) throws IOException {
+    private void createDestinationDirectory(
+            Path dirPath
+    ) throws IOException {
         if (dirPath.getParent() != null) {
             createDestinationDirectory(dirPath.getParent());
         }

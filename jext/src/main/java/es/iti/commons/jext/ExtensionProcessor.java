@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,7 +8,21 @@
 package es.iti.commons.jext;
 
 
-import javax.annotation.processing.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -15,11 +31,6 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
 
 
 /**
@@ -31,11 +42,8 @@ import java.util.Map.Entry;
  * {@code META-INF/services/} directory to facilitate the service loading
  * mechanism.
  * </p>
- *
- * @author Luis Iñesta Gelabert - linesta@iti.es
  */
 @SupportedAnnotationTypes("es.iti.commons.jext.Extension")
-@SupportedSourceVersion(SourceVersion.RELEASE_11)
 public class ExtensionProcessor extends AbstractProcessor {
 
     /**
@@ -46,7 +54,10 @@ public class ExtensionProcessor extends AbstractProcessor {
      * @return {@code true} if the processor claims the annotations, {@code false} otherwise.
      */
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    public boolean process(
+            Set<? extends TypeElement> annotations,
+            RoundEnvironment roundEnv
+    ) {
         Map<String, List<String>> serviceImplementations = new LinkedHashMap<>();
         for (Element element : roundEnv.getElementsAnnotatedWith(Extension.class)) {
             validateAndRegisterExtension(element, serviceImplementations);
@@ -58,7 +69,14 @@ public class ExtensionProcessor extends AbstractProcessor {
         return false;
     }
 
-    private void validateExtensionPoint(Element element) {
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latest();
+    }
+
+    private void validateExtensionPoint(
+            Element element
+    ) {
         if (element.getKind() != ElementKind.CLASS && element.getKind() != ElementKind.INTERFACE) {
             log(
                     Kind.ERROR,
@@ -89,9 +107,9 @@ public class ExtensionProcessor extends AbstractProcessor {
         var extensionClassElement = (TypeElement) element;
         var extensionAnnotation = element.getAnnotation(Extension.class);
 
-        if (extensionAnnotation.externallyManaged() || // not handling externally managed extensions
-                !validateVersionFormat(extensionAnnotation.version(), element, "version") ||
-                !validateVersionFormat(
+        if (extensionAnnotation.externallyManaged() // not handling externally managed extensions
+                || !validateVersionFormat(extensionAnnotation.version(), element, "version")
+                || !validateVersionFormat(
                         extensionAnnotation.extensionPointVersion(),
                         element,
                         "extensionPointVersion"
@@ -99,7 +117,6 @@ public class ExtensionProcessor extends AbstractProcessor {
         ) {
             return;
         }
-
 
         String extensionPoint = extensionAnnotation.extensionPoint();
         if (extensionPoint.isEmpty()) {
@@ -135,8 +152,8 @@ public class ExtensionProcessor extends AbstractProcessor {
             hasError = true;
         }
 
-        if (!hasError &&
-                !isAssignable(
+        if (!hasError
+                && !isAssignable(
                         extensionClassElement.asType(),
                         extensionPointClassElement.asType()
                 )) {
@@ -155,10 +172,13 @@ public class ExtensionProcessor extends AbstractProcessor {
                     .computeIfAbsent(extensionPoint, x -> new ArrayList<>())
                     .add(extension);
         }
-
     }
 
-    private boolean validateVersionFormat(String version, Element element, String fieldName) {
+    private boolean validateVersionFormat(
+            String version,
+            Element element,
+            String fieldName
+    ) {
         boolean valid = version.matches("\\d+\\.\\d+");
         if (!valid) {
             log(
@@ -172,7 +192,10 @@ public class ExtensionProcessor extends AbstractProcessor {
         return valid;
     }
 
-    private boolean isAssignable(TypeMirror type, TypeMirror typeTo) {
+    private boolean isAssignable(
+            TypeMirror type,
+            TypeMirror typeTo
+    ) {
         if (nameWithoutGeneric(type).equals(nameWithoutGeneric(typeTo))) {
             return true;
         }
@@ -184,13 +207,17 @@ public class ExtensionProcessor extends AbstractProcessor {
         return false;
     }
 
-    private String nameWithoutGeneric(TypeMirror type) {
+    private String nameWithoutGeneric(
+            TypeMirror type
+    ) {
         int genericPosition = type.toString().indexOf('<');
         return genericPosition < 0 ? type.toString()
                 : type.toString().substring(0, genericPosition);
     }
 
-    private void writeOutputFiles(Map<String, List<String>> serviceImplementations) {
+    private void writeOutputFiles(
+            Map<String, List<String>> serviceImplementations
+    ) {
         Filer filer = this.processingEnv.getFiler();
         for (Entry<String, List<String>> mapEntry : serviceImplementations.entrySet()) {
             String extension = mapEntry.getKey();
@@ -216,11 +243,12 @@ public class ExtensionProcessor extends AbstractProcessor {
         allExtensions.addAll(entry.getValue());
         resourceFile = filer.createResource(StandardLocation.CLASS_OUTPUT, "", resourcePath);
         write(allExtensions, resourceFile);
-        //log(Kind.WARNING, "Generated service declaration file {}", resourceFile);
-        System.out.println("[jext] :: Generated service declaration file " + resourceFile.getName());
+        log(Kind.NOTE, "Generated service declaration file {}", resourceFile.getName());
     }
 
-    private Set<String> read(FileObject resourceFile) {
+    private Set<String> read(
+            FileObject resourceFile
+    ) {
         Set<String> lines = new LinkedHashSet<>();
         try {
             try (BufferedReader reader = new BufferedReader(resourceFile.openReader(true))) {
@@ -235,7 +263,10 @@ public class ExtensionProcessor extends AbstractProcessor {
         return lines;
     }
 
-    private void write(Set<String> lines, FileObject resourceFile) {
+    private void write(
+            Set<String> lines,
+            FileObject resourceFile
+    ) {
         try {
             try (BufferedWriter writer = new BufferedWriter(resourceFile.openWriter())) {
                 for (String line : lines) {
@@ -248,14 +279,23 @@ public class ExtensionProcessor extends AbstractProcessor {
         }
     }
 
-    private void log(Kind kind, String message, Object... messageArgs) {
+    private void log(
+            Kind kind,
+            String message,
+            Object... messageArgs
+    ) {
         processingEnv.getMessager().printMessage(
                 kind,
                 "[jext] :: " + String.format(message.replace("{}", "%s"), messageArgs)
         );
     }
 
-    private void log(Kind kind, Element element, String message, Object... messageArgs) {
+    private void log(
+            Kind kind,
+            Element element,
+            String message,
+            Object... messageArgs
+    ) {
         processingEnv.getMessager().printMessage(
                 kind,
                 "[jext] at " + element.asType().toString() + " :: " + String

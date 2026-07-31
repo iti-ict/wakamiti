@@ -1,10 +1,17 @@
+/*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 package es.iti.wakamiti.junit5;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 class ProfileSelectorTest {
@@ -71,17 +78,22 @@ class ProfileSelectorTest {
     }
 
     static class WithoutProfile {
+
     }
 
     @Profile("A")
     static class ProfileA {
+
     }
 
     @Profile("B")
     static class ProfileB {
+
     }
 
     @Profile("C")
     static class ProfileC {
+
     }
+
 }

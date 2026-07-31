@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2022-2026 Instituto Tecnológico de Informática (ITI)
+ *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -28,6 +30,17 @@ import es.iti.wakamiti.core.gherkin.parser.internal.TokenScanner;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Generated Gherkin parser that drives a {@link Builder} with matched tokens.
+ * <p>
+ * By default, parsing collects parser errors and throws a
+ * {@link ParserException.CompositeParserException} at the end. When
+ * {@link #stopAtFirstError} is {@code true}, parser and AST errors propagate
+ * immediately.
+ * </p>
+ *
+ * @param <T> final AST/result type produced by the builder
+ */
 public class Parser<T> {
     public enum TokenType {
         None,
@@ -90,6 +103,13 @@ public class Parser<T> {
 
     private final Builder<T> builder;
 
+    /**
+     * Controls parser error strategy.
+     * <p>
+     * {@code false}: accumulate errors and continue when possible.
+     * {@code true}: fail fast on first parser/AST error.
+     * </p>
+     */
     public boolean stopAtFirstError;
 
     class ParserContext {
@@ -106,30 +126,76 @@ public class Parser<T> {
         }
     }
 
+    /**
+     * Creates a parser bound to one AST builder.
+     *
+     * @param builder receiver of parser rule/token callbacks
+     */
     public Parser(Builder<T> builder) {
         this.builder = builder;
     }
 
+    /**
+     * Parses text content using a default token matcher.
+     *
+     * @param source full source text
+     * @return parser result built by {@link Builder#getResult()}
+     */
     public T parse(String source) {
         return parse(new StringReader(source));
     }
 
+    /**
+     * Parses character input using a default token matcher.
+     *
+     * @param source source reader
+     * @return parser result built by {@link Builder#getResult()}
+     */
     public T parse(Reader source) {
         return parse(new TokenScanner(source));
     }
 
+    /**
+     * Parses tokens from a scanner using the default matcher.
+     *
+     * @param tokenScanner scanner producing parser tokens
+     * @return parser result built by {@link Builder#getResult()}
+     */
     public T parse(ITokenScanner tokenScanner) {
         return parse(tokenScanner, new TokenMatcher());
     }
 
+    /**
+     * Parses text content using a custom token matcher.
+     *
+     * @param source source text
+     * @param tokenMatcher matcher used to classify tokens
+     * @return parser result built by {@link Builder#getResult()}
+     */
     public T parse(String source, ITokenMatcher tokenMatcher) {
         return parse(new StringReader(source), tokenMatcher);
     }
 
+    /**
+     * Parses character input using a custom token matcher.
+     *
+     * @param source source reader
+     * @param tokenMatcher matcher used to classify tokens
+     * @return parser result built by {@link Builder#getResult()}
+     */
     public T parse(Reader source, ITokenMatcher tokenMatcher) {
         return parse(new TokenScanner(source), tokenMatcher);
     }
 
+    /**
+     * Parses tokens from the supplied scanner/matcher pair.
+     *
+     * @param tokenScanner scanner producing tokens
+     * @param tokenMatcher matcher classifying token kinds
+     * @return parser result built by {@link Builder#getResult()}
+     * @throws ParserException.CompositeParserException when one or more parsing
+     *                                                  errors are collected
+     */
     public T parse(ITokenScanner tokenScanner, ITokenMatcher tokenMatcher) {
         builder.reset();
         tokenMatcher.reset();
