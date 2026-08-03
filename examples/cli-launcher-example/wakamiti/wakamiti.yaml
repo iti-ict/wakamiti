@@ -3,7 +3,7 @@ wakamiti:
     - gherkin
 
   log:
-    level: trace
+    level: info
 
   launcher:
     modules:
