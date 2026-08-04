@@ -79,4 +79,41 @@ public class TestWakamitiLauncher {
                         && Files.linesOf(file, Charset.defaultCharset()).stream().anyMatch(l -> l.contains("Test")));
     }
 
+    @Test
+    public void testRepeatedWakamitiArgumentIsAccumulated() throws Exception {
+        CliArguments result = new CliArguments().parse(
+                "-KresourcePath=path1",
+                "-KresourcePath=path2"
+        );
+        assertThat(result.wakamitiConfiguration().getList("resourcePath", String.class))
+                .containsExactly("path1", "path2");
+    }
+
+    @Test
+    public void testRepeatedScalarWakamitiArgumentIsAccumulated() throws Exception {
+        CliArguments result = new CliArguments().parse(
+                "-Krest.host=host1",
+                "-Krest.host=host2"
+        );
+        assertThat(result.wakamitiConfiguration().getList("rest.host", String.class))
+                .containsExactly("host1", "host2");
+    }
+
+    @Test
+    public void testSingleWakamitiArgumentKeepsCommaAsValue() throws Exception {
+        CliArguments result = new CliArguments().parse("-KresourcePath=path1,path2");
+        assertThat(result.wakamitiConfiguration().getList("resourcePath", String.class))
+                .containsExactly("path1,path2");
+    }
+
+    @Test
+    public void testRepeatedModulesAreAccumulated() throws Exception {
+        CliArguments result = new CliArguments().parse(
+                "-m", "module-a",
+                "-m", "module-b",
+                "-m", "module-c,module-d"
+        );
+        assertThat(result.modules()).containsExactly("module-a", "module-b", "module-c", "module-d");
+    }
+
 }

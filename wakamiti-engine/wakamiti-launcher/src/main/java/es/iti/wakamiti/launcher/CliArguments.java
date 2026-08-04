@@ -12,9 +12,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -119,10 +121,10 @@ public class CliArguments {
      * @throws URISyntaxException when launcher location cannot be resolved
      */
     public Configuration wakamitiConfiguration() throws URISyntaxException {
-        Properties properties = cliCommand.getOptionProperties(ARG_WAKAMITI_PROPERTY);
-        properties.setProperty(WakamitiConfiguration.DRY_RUN, String.valueOf(isNoExecution()));
+        Configuration argumentConf = argumentConfiguration(ARG_WAKAMITI_PROPERTY, true)
+                .appendProperty(WakamitiConfiguration.DRY_RUN, String.valueOf(isNoExecution()));
         String confFile = cliCommand.getOptionValue(ARG_FILE, DEFAULT_CONF_FILE);
-        return buildConfiguration(confFile, properties, "wakamiti");
+        return buildConfiguration(confFile, argumentConf, "wakamiti");
     }
 
     /**
@@ -133,9 +135,9 @@ public class CliArguments {
      * @throws URISyntaxException when launcher location cannot be resolved
      */
     public Configuration mavenFetcherConfiguration() throws URISyntaxException {
-        Properties properties = cliCommand.getOptionProperties(ARG_MAVEN_PROPERTY);
+        Configuration argumentConf = argumentConfiguration(ARG_MAVEN_PROPERTY, false);
         String confFile = cliCommand.getOptionValue(ARG_FILE, DEFAULT_CONF_FILE);
-        return buildConfiguration(confFile, properties, "mavenFetcher");
+        return buildConfiguration(confFile, argumentConf, "mavenFetcher");
     }
 
     /**
@@ -189,9 +191,15 @@ public class CliArguments {
      * @return The list of modules, or an empty list if not specified.
      */
     public List<String> modules() {
-        return cliCommand.hasOption(ARG_MODULES)
-                ? Arrays.asList(cliCommand.getOptionValue(ARG_MODULES, "").split(","))
-                : List.of();
+        String[] values = cliCommand.getOptionValues(ARG_MODULES);
+        if (values == null || values.length == 0) {
+            return List.of();
+        }
+        return Arrays.stream(values)
+                .flatMap(value -> Arrays.stream(value.split(",")))
+                .map(String::strip)
+                .filter(module -> !module.isEmpty())
+                .toList();
     }
 
     /**
@@ -222,7 +230,7 @@ public class CliArguments {
      */
     private Configuration buildConfiguration(
             String confFileName,
-            Properties arguments,
+            Configuration arguments,
             String qualifier
     ) throws URISyntaxException {
         Path launcherProperties = JarUtil.jarFolder().resolve("launcher.properties");
@@ -233,8 +241,31 @@ public class CliArguments {
         Configuration projectConf = (Files.exists(projectProperties))
                 ? Configuration.factory().fromPath(projectProperties).inner(qualifier)
                 : Configuration.factory().empty();
-        Configuration argumentConf = Configuration.factory().fromProperties(arguments);
-        return launcherConf.append(projectConf).append(argumentConf);
+        return launcherConf.append(projectConf).append(arguments);
+    }
+
+    private Configuration argumentConfiguration(
+            String argumentOption,
+            boolean accumulateByKey
+    ) {
+        String[] values = cliCommand.getOptionValues(argumentOption);
+        if (values == null || values.length == 0) {
+            return Configuration.factory().empty();
+        }
+
+        Map<String, Object> parsedValues = new LinkedHashMap<>();
+        Map<String, List<String>> accumulatedValues = new LinkedHashMap<>();
+        for (int i = 0; i + 1 < values.length; i += 2) {
+            String key = values[i];
+            String value = values[i + 1];
+            if (accumulateByKey) {
+                accumulatedValues.computeIfAbsent(key, ignored -> new ArrayList<>()).add(value);
+                continue;
+            }
+            parsedValues.put(key, value);
+        }
+        accumulatedValues.forEach((key, value) -> parsedValues.put(key, value.size() == 1 ? value.get(0) : value));
+        return Configuration.factory().fromMap(parsedValues);
     }
 
     /**
