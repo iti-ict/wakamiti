@@ -62,8 +62,14 @@
                         <configuration>
                             <commandlineArgs>
                                 run --rm -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test
-                                -K resourcePath=/wakamiti/rest.feature
-                                -m ${groupId}:rest-wakamiti-plugin:${rest.version},${groupId}:db-wakamiti-plugin:${db.version},${groupId}:amqp-wakamiti-plugin:${amqp.version},${groupId}:email-wakamiti-plugin:${email.version},${groupId}:groovy-wakamiti-plugin:${groovy.version},${groupId}:io-wakamiti-plugin:${io.version},${groupId}:html-report-wakamiti-plugin:${html.version}
+                                -KresourcePath=/wakamiti/steps -KresourcePath=/wakamiti/rest.feature
+                                -m ${groupId}:rest-wakamiti-plugin:${rest.version}
+                                -m ${groupId}:db-wakamiti-plugin:${db.version}
+                                -m ${groupId}:amqp-wakamiti-plugin:${amqp.version}
+                                -m ${groupId}:email-wakamiti-plugin:${email.version}
+                                -m ${groupId}:groovy-wakamiti-plugin:${groovy.version}
+                                -m ${groupId}:io-wakamiti-plugin:${io.version}
+                                -m ${groupId}:html-report-wakamiti-plugin:${html.version}
                             </commandlineArgs>
                         </configuration>
                     </execution>
@@ -76,8 +82,14 @@
                         <configuration>
                             <commandlineArgs>
                                 run --rm -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test
-                                -K resourcePath=/wakamiti/jmeter.feature
-                                -m ${groupId}:jmeter-wakamiti-plugin:${jmeter.version},${groupId}:db-wakamiti-plugin:${db.version},${groupId}:amqp-wakamiti-plugin:${amqp.version},${groupId}:email-wakamiti-plugin:${email.version},${groupId}:groovy-wakamiti-plugin:${groovy.version},${groupId}:io-wakamiti-plugin:${io.version},${groupId}:html-report-wakamiti-plugin:${html.version}
+                                -KresourcePath=/wakamiti/steps -KresourcePath=/wakamiti/jmeter.feature
+                                -m ${groupId}:jmeter-wakamiti-plugin:${jmeter.version}
+                                -m ${groupId}:db-wakamiti-plugin:${db.version}
+                                -m ${groupId}:amqp-wakamiti-plugin:${amqp.version}
+                                -m ${groupId}:email-wakamiti-plugin:${email.version}
+                                -m ${groupId}:groovy-wakamiti-plugin:${groovy.version}
+                                -m ${groupId}:io-wakamiti-plugin:${io.version}
+                                -m ${groupId}:html-report-wakamiti-plugin:${html.version}
                             </commandlineArgs>
                         </configuration>
                     </execution>

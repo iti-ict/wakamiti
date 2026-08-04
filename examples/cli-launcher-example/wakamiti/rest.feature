@@ -21,6 +21,7 @@ Característica: Pruebas de API REST con Spring Petclinic
         "status": "pending"
       }
       """
+    Y se suma 1 y 2
     Entonces el código de respuesta HTTP es 200
     Y la respuesta es parcialmente:
       """json
