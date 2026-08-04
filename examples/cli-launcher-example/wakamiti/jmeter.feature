@@ -20,6 +20,7 @@ Característica: Pruebas de API REST con Spring Petclinic
         "status": "pending"
       }
       """
+    Y se suma 1 y 2
     Entonces el siguiente fragmento JSON se recibe en 5 segundos:
       """json
       {

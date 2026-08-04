@@ -9,6 +9,9 @@ wakamiti:
     modules:
       - mysql:mysql-connector-java:8.0.28
 
+  nonRegisteredStepProviders:
+    - steps.CustomSteps
+
   outputFilePath: /result/report-%execID%.json
   htmlReport:
     output: /result/report-%execID%.html
