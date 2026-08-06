@@ -59,6 +59,8 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     public static final String CONTAINS = "matcher.string.contains";
     /** Localization key for a case-insensitive substring comparison. */
     public static final String CONTAINS_IGNORE_CASE = "matcher.string.contains.ignore.case";
+    /** Localization key for a regular expression match. */
+    public static final String MATCHES = "matcher.string.matches";
 
     /** Localization key for case-sensitive string inequality. */
     public static final String NOT_EQUALS = "matcher.string.not.equals";
@@ -78,6 +80,8 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
     public static final String NOT_CONTAINS = "matcher.string.not.contains";
     /** Localization key requiring absence of a substring when case is ignored. */
     public static final String NOT_CONTAINS_IGNORE_CASE = "matcher.string.not.contains.ignore.case";
+    /** Localization key for a regular expression mismatch. */
+    public static final String NOT_MATCHES = "matcher.string.not.matches";
 
     private final Map<String, Function<String, Matcher<String>>> matchers = mapEntries(
             entry(EQUALS, Matchers::equalTo),
@@ -89,6 +93,7 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
             entry(ENDS_WITH_IGNORE_CASE, Matchers::endsWithIgnoringCase),
             entry(CONTAINS, Matchers::containsString),
             entry(CONTAINS_IGNORE_CASE, Matchers::containsStringIgnoringCase),
+            entry(MATCHES, Matchers::matchesPattern),
             entry(NOT_EQUALS, value -> not(equalTo(value))),
             entry(NOT_EQUALS_IGNORE_CASE, value -> not(equalToIgnoringCase(value))),
             entry(NOT_EQUALS_IGNORE_WHITESPACE, value -> not(equalToCompressingWhiteSpace(value))),
@@ -97,7 +102,8 @@ public class BinaryStringAssertProvider extends AbstractAssertProvider {
             entry(NOT_ENDS_WITH, value -> not(endsWith(value))),
             entry(NOT_ENDS_WITH_IGNORE_CASE, value -> not(endsWithIgnoringCase(value))),
             entry(NOT_CONTAINS, value -> not(containsString(value))),
-            entry(NOT_CONTAINS_IGNORE_CASE, value -> not(containsStringIgnoringCase(value)))
+            entry(NOT_CONTAINS_IGNORE_CASE, value -> not(containsStringIgnoringCase(value))),
+            entry(NOT_MATCHES, value -> not(Matchers.matchesPattern(value)))
     );
 
     /**

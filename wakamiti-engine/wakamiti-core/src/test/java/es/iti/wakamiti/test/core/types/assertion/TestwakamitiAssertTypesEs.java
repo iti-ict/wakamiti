@@ -279,6 +279,7 @@ public class TestwakamitiAssertTypesEs {
         exp.put("acaba en 'thing' (sin distinguir mayúsculas)", "sometHing");
         exp.put("contiene 'omet'", "something");
         exp.put("contiene 'omet' (sin distinguir mayúsculas)", "somEthing");
+        exp.put("coincide con '^som.*ing$'", "something");
 
         exp.put("no es 'something'", "somEthing");
         exp.put("no es igual a 'something'", "someThing");
@@ -295,6 +296,7 @@ public class TestwakamitiAssertTypesEs {
         exp.put("no acaba en 'thin' (sin distinguir mayúsculas)", "sometHing");
         exp.put("no contiene 'things'", "something");
         exp.put("no contiene 'things' (sin distinguir mayúsculas)", "somEthing");
+        exp.put("no coincide con '^som.*ings$'", "something");
 
         for (Entry<String, String> e : exp.entrySet()) {
             Assertion<?> matcher = textMatcher.parse(locale, e.getKey());
