@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+### Added
 - Improved CLI argument parsing so repeated options are accumulated correctly, and module lists now support multiple 
   flags, comma-separated values, and whitespace trimming.
+- Enforced a maximum length of 128 characters for Feature and Scenario titles in the Gherkin parser.
 
 
 ## [2.13.0] - 2026-07-31

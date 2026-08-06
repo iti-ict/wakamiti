@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Objects;
 
 import org.junit.Test;
@@ -75,6 +76,53 @@ public class TestParser {
             GherkinDocument document = new GherkinParser().parse(reader);
             assertNotNull(document);
         }
+    }
+
+    @Test(expected = ParserException.CompositeParserException.class)
+    public void testParserErrorWhenFeatureTitleTooLong() {
+        String gherkin = "Feature: " + "a".repeat(129)
+                + "\n"
+                + "  Scenario: valid scenario"
+                + "\n"
+                + "    Given a step";
+        new GherkinParser().parse(new StringReader(gherkin));
+    }
+
+    @Test(expected = ParserException.CompositeParserException.class)
+    public void testParserErrorWhenScenarioTitleTooLong() {
+        String gherkin = "Feature: Valid feature"
+                + "\n"
+                + "  Scenario: " + "a".repeat(129)
+                + "\n"
+                + "    Given a step";
+        new GherkinParser().parse(new StringReader(gherkin));
+    }
+
+    @Test(expected = ParserException.CompositeParserException.class)
+    public void testParserErrorWhenScenarioOutlineTitleTooLong() {
+        String gherkin = "Feature: Valid feature"
+                + "\n"
+                + "  Scenario Outline: " + "a".repeat(129)
+                + "\n"
+                + "    Given a step"
+                + "\n"
+                + "  Examples:"
+                + "\n"
+                + "    | value |"
+                + "\n"
+                + "    | one   |";
+        new GherkinParser().parse(new StringReader(gherkin));
+    }
+
+    @Test
+    public void testParserWhenFeatureAndScenarioTitleLengthLimit() {
+        String gherkin = "Feature: " + "a".repeat(128)
+                + "\n"
+                + "  Scenario: " + "b".repeat(128)
+                + "\n"
+                + "    Given a step";
+        GherkinDocument document = new GherkinParser().parse(new StringReader(gherkin));
+        assertNotNull(document);
     }
 
 }
