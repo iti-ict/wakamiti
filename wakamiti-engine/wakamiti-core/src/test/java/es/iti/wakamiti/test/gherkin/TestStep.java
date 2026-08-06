@@ -104,6 +104,7 @@ public class TestStep {
                 NON_REGISTERED_STEP_PROVIDERS,
                 "es.iti.wakamiti.test.gherkin.WakamitiSteps"
         );
+        properties.put(OUTPUT_FILE_PATH, "target/wakamiti.json");
 
         Configuration configuration = Wakamiti.defaultConfiguration()
                 .appendFromMap(properties);
