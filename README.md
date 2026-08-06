@@ -118,7 +118,7 @@ See [wakamiti-vscode-extension/docs/guide.md](wakamiti-vscode-extension/docs/gui
 
 Requirements:
 
-- Java 11 or later for the main build
+- Java 17 or later for the main build
 - Maven 3.9+ through the provided wrapper
 
 Typical local build:
@@ -133,7 +133,7 @@ More specific setup notes are in [installation.md](installation.md).
 
 Open issues and pull requests in the main repository:
 
-- issues: <https://github.com/iti-ict/wakamiti/issues>
+- issues: <https://github.com/orgs/wakamiti/discussions>
 - source: <https://github.com/iti-ict/wakamiti>
 
 For plugin work, start from [plugin-development-guide.md](plugin-development-guide.md).
