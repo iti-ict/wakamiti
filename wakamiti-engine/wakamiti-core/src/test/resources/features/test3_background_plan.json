@@ -3,11 +3,12 @@
   "displayName" : "Test Plan",
   "children" : [ {
     "nodeType" : "AGGREGATOR",
+    "id" : "ID-Test3",
     "name" : "Test 3 - Backgrounds",
     "keyword" : "Feature",
     "language" : "en",
     "displayName" : "Feature: Test 3 - Backgrounds",
-    "tags" : [ "Test3" ],
+    "tags" : [ "ID-Test3" ],
     "properties" : {
       "encoding" : "UTF-8",
       "gherkinType" : "feature"
@@ -19,7 +20,7 @@
       "keyword" : "Scenario",
       "language" : "en",
       "displayName" : "[ID-Test3_Scenario1] Scenario: Test Scenario 1",
-      "tags" : [ "ID-Test3_Scenario1", "Test3" ],
+      "tags" : [ "ID-Test3_Scenario1", "ID-Test3" ],
       "properties" : {
         "encoding" : "UTF-8",
         "gherkinType" : "scenario",
@@ -29,7 +30,7 @@
         "nodeType" : "STEP_AGGREGATOR",
         "keyword" : "Background",
         "displayName" : "Background: ",
-        "tags" : [ "ID-Test3_Scenario1", "Test3" ],
+        "tags" : [ "ID-Test3_Scenario1", "ID-Test3" ],
         "properties" : {
           "encoding" : "UTF-8",
           "gherkinType" : "background"
@@ -83,7 +84,7 @@
       "keyword" : "Scenario",
       "language" : "en",
       "displayName" : "[ID-Test3_Scenario2] Scenario: Test Scenario 2",
-      "tags" : [ "ID-Test3_Scenario2", "Test3" ],
+      "tags" : [ "ID-Test3_Scenario2", "ID-Test3" ],
       "properties" : {
         "encoding" : "UTF-8",
         "gherkinType" : "scenario",
@@ -93,7 +94,7 @@
         "nodeType" : "STEP_AGGREGATOR",
         "keyword" : "Background",
         "displayName" : "Background: ",
-        "tags" : [ "ID-Test3_Scenario2", "Test3" ],
+        "tags" : [ "ID-Test3_Scenario2", "ID-Test3" ],
         "properties" : {
           "encoding" : "UTF-8",
           "gherkinType" : "background"
@@ -147,7 +148,7 @@
       "keyword" : "Scenario",
       "language" : "en",
       "displayName" : "[ID-Test3_Scenario3] Scenario: Test Scenario 3",
-      "tags" : [ "ID-Test3_Scenario3", "Test3" ],
+      "tags" : [ "ID-Test3_Scenario3", "ID-Test3" ],
       "properties" : {
         "encoding" : "UTF-8",
         "gherkinType" : "scenario",
@@ -157,7 +158,7 @@
         "nodeType" : "STEP_AGGREGATOR",
         "keyword" : "Background",
         "displayName" : "Background: ",
-        "tags" : [ "ID-Test3_Scenario3", "Test3" ],
+        "tags" : [ "ID-Test3_Scenario3", "ID-Test3" ],
         "properties" : {
           "encoding" : "UTF-8",
           "gherkinType" : "background"

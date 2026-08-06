@@ -1,5 +1,5 @@
 # encoding: UTF-8
-@Test3
+@ID-Test3
 Feature: Test 3 - Backgrounds
 
 Background:
