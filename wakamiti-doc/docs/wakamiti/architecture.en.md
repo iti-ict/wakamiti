@@ -174,6 +174,20 @@ wakamiti:
 ```
 
 
+### `wakamiti.stopExecutionOnError`
+- Type: `boolean`
+- Default: `false`
+
+Controls whether Wakamiti should stop the remaining execution when the engine records an internal `ERROR`.
+Application-level `FAILED` results do not trigger this early stop.
+
+Example:
+```yaml
+wakamiti:
+  stopExecutionOnError: false
+```
+
+
 ### `wakamiti.includeFilteredTestCases`
 - Type: `boolean`
 - Default: `false`

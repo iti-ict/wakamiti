@@ -175,6 +175,20 @@ wakamiti:
 ```
 
 
+### `wakamiti.stopExecutionOnError`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Indica si Wakamiti debe detener la ejecución pendiente cuando se produzca un `ERROR` interno del motor.
+Los resultados `FAILED` de aplicación no activan este corte anticipado.
+
+Ejemplo:
+```yaml
+wakamiti:
+  stopExecutionOnError: false
+```
+
+
 ### `wakamiti.includeFilteredTestCases`
 - Tipo: `boolean`
 - Por defecto: `false`
