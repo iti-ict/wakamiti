@@ -60,7 +60,9 @@ public class PlanRunnerErrorHandlingTest {
         AtomicInteger secondExecutions = new AtomicInteger();
         PlanRunner runner = new StubPlanRunner(
                 new PlanNode(NodeType.AGGREGATOR, List.of(firstNode, secondNode)),
-                Configuration.factory().fromPairs(STOP_EXECUTION_ON_ERROR, "true"),
+                WakamitiConfiguration.DEFAULTS.append(
+                    Configuration.factory().fromPairs(STOP_EXECUTION_ON_ERROR, "true")
+                ),
                 List.of(
                         fixedRunner(firstNode, Result.ERROR, firstExecutions),
                         fixedRunner(secondNode, Result.PASSED, secondExecutions)
@@ -105,7 +107,9 @@ public class PlanRunnerErrorHandlingTest {
         AtomicInteger secondExecutions = new AtomicInteger();
         TestablePlanNodeRunner runner = new TestablePlanNodeRunner(
                 new PlanNode(NodeType.AGGREGATOR, List.of(firstNode, secondNode)),
-                Configuration.factory().fromPairs(STOP_EXECUTION_ON_ERROR, "true"),
+                WakamitiConfiguration.DEFAULTS.append(
+                    Configuration.factory().fromPairs(STOP_EXECUTION_ON_ERROR, "true")
+                ),
                 List.of(
                         fixedRunner(firstNode, Result.ERROR, firstExecutions),
                         fixedRunner(secondNode, Result.PASSED, secondExecutions)
@@ -144,7 +148,9 @@ public class PlanRunnerErrorHandlingTest {
         AtomicInteger stepExecutions = new AtomicInteger();
         TestablePlanNodeRunner runner = new TestablePlanNodeRunner(
                 new PlanNode(NodeType.TEST_CASE, List.of(step)),
-                Configuration.factory().fromPairs(STOP_EXECUTION_ON_ERROR, "true"),
+                WakamitiConfiguration.DEFAULTS.append(
+                    Configuration.factory().fromPairs(STOP_EXECUTION_ON_ERROR, "true")
+                ),
                 List.of(fixedRunner(step, Result.PASSED, stepExecutions)),
                 true
         );

@@ -99,6 +99,10 @@ mavenFetcher.useDefaultRemoteRepository=true
 You can override Maven Fetcher settings there, for example custom repositories, local repository path or proxy
 configuration.
 
+Launcher logging is configured through `wakamiti.log.*`. Besides `wakamiti.log.path` and `wakamiti.log.level`,
+setting `wakamiti.log.perScenario=true` replaces the single execution log with one file per scenario named
+`wakamiti-{timestamp}-{scenarioId}.log`.
+
 The launcher caches downloaded artifacts in a platform-specific user data directory managed by `appdirs`. It no longer
 uses a `.wakamiti` folder in the current working directory.
 

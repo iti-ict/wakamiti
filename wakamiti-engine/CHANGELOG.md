@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added regex-based string assertions.
 - Added `wakamiti.stopExecutionOnError` configuration to control whether execution should stop after internal Wakamiti
   `ERROR` results.
+- Added launcher support for `wakamiti.log.perScenario` so file logging can generate one log file per scenario instead
+  of a single log for the whole execution.
 
 
 ## [2.13.0] - 2026-07-31

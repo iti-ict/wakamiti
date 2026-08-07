@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.slf4j.MDC;
+
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiConfiguration;
@@ -213,45 +215,52 @@ public class PlanNodeRunner {
     }
 
     private Result runTestCaseNode() {
-        Result result = null;
-        if (node.filtered()) {
-            result = Result.SKIPPED;
-            markFilteredTestCase(node);
-        } else if (node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
-            result = Result.NOT_IMPLEMENTED;
-            doNotImplemented(node, result);
-        } else if (!getChildren().isEmpty()) {
-            Stream<Pair<Instant, Result>> results = Stream.empty();
-            boolean continueExecution = true;
-            if (dryRun) {
-                logger.logTestCaseHeader(node);
-            } else {
-                try {
-                    testCasePreExecution(node);
-                } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .toList().stream(); // prevent lazy stream
-                    continueExecution = !stopExecutionOnError();
-                }
-            }
-            if (continueExecution) {
-                results = Stream.concat(results, runChildren())
-                        .toList().stream(); // prevent lazy stream
-            } else {
-                skipPendingChildren();
-            }
-            if (!dryRun) {
-                try {
-                    testCasePostExecution(node);
-                } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .toList().stream(); // prevent lazy stream
-                }
-            }
-            result = aggregatorFinish(results);
+        String previousScenarioId = MDC.get(ScenarioLogContext.KEY);
+        if (isPerScenarioLogEnabled()) {
+            MDC.put(ScenarioLogContext.KEY, scenarioLogId());
         }
-
-        return result;
+        Result result = null;
+        try {
+            if (node.filtered()) {
+                result = Result.SKIPPED;
+                markFilteredTestCase(node);
+            } else if (node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
+                result = Result.NOT_IMPLEMENTED;
+                doNotImplemented(node, result);
+            } else if (!getChildren().isEmpty()) {
+                Stream<Pair<Instant, Result>> results = Stream.empty();
+                boolean continueExecution = true;
+                if (dryRun) {
+                    logger.logTestCaseHeader(node);
+                } else {
+                    try {
+                        testCasePreExecution(node);
+                    } catch (WakamitiException e) {
+                        results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                                .toList().stream(); // prevent lazy stream
+                        continueExecution = !stopExecutionOnError();
+                    }
+                }
+                if (continueExecution) {
+                    results = Stream.concat(results, runChildren())
+                            .toList().stream(); // prevent lazy stream
+                } else {
+                    skipPendingChildren();
+                }
+                if (!dryRun) {
+                    try {
+                        testCasePostExecution(node);
+                    } catch (WakamitiException e) {
+                        results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
+                                .toList().stream(); // prevent lazy stream
+                    }
+                }
+                result = aggregatorFinish(results);
+            }
+            return result;
+        } finally {
+            restoreScenarioLoggingContext(previousScenarioId);
+        }
     }
 
     private Result aggregatorFinish(
@@ -434,6 +443,25 @@ public class PlanNodeRunner {
         return configuration.get(WakamitiConfiguration.STOP_EXECUTION_ON_ERROR, Boolean.class).get();
     }
 
+    private boolean isPerScenarioLogEnabled() {
+        return configuration.get(WakamitiConfiguration.LOGS_PER_SCENARIO, Boolean.class).get();
+    }
+
+    private String scenarioLogId() {
+        String scenarioId = node.id();
+        return scenarioId == null || scenarioId.isBlank() ? uniqueId : scenarioId;
+    }
+
+    private void restoreScenarioLoggingContext(
+            String previousScenarioId
+    ) {
+        if (previousScenarioId == null || previousScenarioId.isBlank()) {
+            MDC.remove(ScenarioLogContext.KEY);
+        } else {
+            MDC.put(ScenarioLogContext.KEY, previousScenarioId);
+        }
+    }
+
     private void skipPendingChildren() {
         skipPendingChildren(getChildren(), 0);
     }
@@ -486,6 +514,15 @@ public class PlanNodeRunner {
                 Objects.toString(node.name(), "")
         );
         return UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8)).toString();
+    }
+
+    static final class ScenarioLogContext {
+
+        private static final String KEY = "wakamiti.scenarioId";
+
+        private ScenarioLogContext() {
+        }
+
     }
 
 }
