@@ -317,6 +317,22 @@ wakamiti:
 ```
 
 
+### `wakamiti.log.perScenario`
+- Type: `boolean`
+- Default: `false`
+
+When enabled together with [`wakamiti.log.path`](#wakamitilogpath), Wakamiti creates one log file per scenario instead
+of a single execution log. Files are named `wakamiti-${yyyyMMddhhmmss}-${scenarioId}.log`.
+
+Example:
+```yaml
+wakamiti:
+  log:
+    path: results
+    perScenario: true
+```
+
+
 ### `wakamiti.log.level`
 - Type: `string`
 - Default: `info`

@@ -319,6 +319,23 @@ wakamiti:
 ```
 
 
+### `wakamiti.log.perScenario`
+- Tipo: `boolean`
+- por defecto: `false`
+
+Cuando está activado y también se ha definido [`wakamiti.log.path`](#wakamitilogpath), Wakamiti crea un fichero de
+log independiente por escenario en lugar de un único log de ejecución. Los ficheros se nombran como
+`wakamiti-${yyyyMMddhhmmss}-${scenarioId}.log`.
+
+Ejemplo:
+```yaml
+wakamiti:
+  log:
+    path: results
+    perScenario: true
+```
+
+
 ### `wakamiti.log.level`
 - Tipo: `string`
 - por defecto: `info`
