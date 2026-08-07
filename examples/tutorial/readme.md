@@ -38,12 +38,6 @@ docker logs -f app-petclinic
 docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti
 ```
 
-Generación de features desde OpenAPI:
-
-```shell
-docker run --rm -v "%cd%/wakamiti:/wakamiti" wakamiti/wakamiti -a -D http://host.docker.internal:9966/petclinic/v2/api-docs -p testgen -L es -t %TOKEN%
-```
-
 ### Linux
 
 ```shell
