@@ -182,7 +182,7 @@
                     <plugin>
                         <groupId>es.iti.wakamiti</groupId>
                         <artifactId>wakamiti-maven-plugin</artifactId>
-                        <version>2.13.0</version>
+                        <version>3.0.0-SNAPSHOT</version>
                         <executions>
                             <!-- Executed at integration-test phase -->
                             <execution>

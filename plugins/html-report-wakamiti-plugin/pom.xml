@@ -26,7 +26,7 @@
 
     <properties>
         <xmlunit.version>2.12.0</xmlunit.version>
-        <wakamiti-engine.version>2.13.0</wakamiti-engine.version>
+        <wakamiti-engine.version>3.0.0-SNAPSHOT</wakamiti-engine.version>
     </properties>
 
     <!-- dependencies -->
