@@ -112,6 +112,11 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
     public static final String DRY_RUN = "dryRun";
 
     /**
+     * Stop remaining execution as soon as Wakamiti records an ERROR result
+     */
+    public static final String STOP_EXECUTION_ON_ERROR = "stopExecutionOnError";
+
+    /**
      * Whether filtered tests should be included in the plan, as SKIPPED
      */
     public static final String INCLUDE_FILTERED_TEST_CASES = "includeFilteredTestCases";
@@ -209,6 +214,7 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
                     REPORT_GENERATION, Boolean.TRUE.toString(),
                     ID_TAG_PATTERN, "ID([\\w-]+)",
                     DRY_RUN, Boolean.FALSE.toString(),
+                    STOP_EXECUTION_ON_ERROR, Boolean.FALSE.toString(),
                     INCLUDE_FILTERED_TEST_CASES, Boolean.FALSE.toString(),
                     REDEFINITION_ENABLED, Boolean.TRUE.toString(),
                     REDEFINITION_DEFINITION_TAG, "definition",

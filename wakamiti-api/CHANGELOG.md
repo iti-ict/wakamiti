@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Support optional early termination of pending execution after internal Wakamiti `ERROR` results, controlled by
+  `wakamiti.stopExecutionOnError`.
+
 ### Fixed
 - Serialize JSON report timestamps `snapshotInstant`, `startInstant`, and `finishInstant` as real UTC ISO-8601 instants.
 - Preserve correct UTC instants when aggregating child snapshot timestamps and when normalizing legacy local timestamp 
