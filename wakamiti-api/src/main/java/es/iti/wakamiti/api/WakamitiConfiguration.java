@@ -194,6 +194,11 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
     public static final String WORKING_DIR = "workingDir";
 
     /**
+     * Write one launcher log file per scenario instead of a single execution log file
+     */
+    public static final String LOGS_PER_SCENARIO = "log.perScenario";
+
+    /**
      * Faint style
      */
     private static final String FAINT = "faint";
@@ -222,6 +227,7 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
                     LOGS_SHOW_LOGO, Boolean.TRUE.toString(),
                     LOGS_SHOW_STEP_SOURCE, Boolean.FALSE.toString(),
                     LOGS_SHOW_ELAPSED_TIME, Boolean.TRUE.toString(),
+                    LOGS_PER_SCENARIO, Boolean.FALSE.toString(),
                     TREAT_STEPS_AS_TESTS, Boolean.FALSE.toString(),
                     WORKING_DIR, ".",
                     "logs.ansi.styles.keyword", "blue",

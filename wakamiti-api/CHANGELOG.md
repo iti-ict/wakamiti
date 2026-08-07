@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Support optional early termination of pending execution after internal Wakamiti `ERROR` results, controlled by
   `wakamiti.stopExecutionOnError`.
+- Added `wakamiti.log.perScenario` configuration to declare whether launcher logging should split execution logs into
+  one file per scenario.
 
 ### Fixed
 - Serialize JSON report timestamps `snapshotInstant`, `startInstant`, and `finishInstant` as real UTC ISO-8601 instants.
