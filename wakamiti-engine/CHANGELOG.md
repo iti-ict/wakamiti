@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   flags, comma-separated values, and whitespace trimming.
 - Enforced a maximum length of 128 characters for Feature and Scenario titles in the Gherkin parser.
 - Added regex-based string assertions.
+- Added `wakamiti.stopExecutionOnError` configuration to control whether execution should stop after internal Wakamiti
+  `ERROR` results.
 
 
 ## [2.13.0] - 2026-07-31

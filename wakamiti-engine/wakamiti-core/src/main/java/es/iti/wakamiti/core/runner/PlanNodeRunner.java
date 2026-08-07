@@ -10,6 +10,7 @@ package es.iti.wakamiti.core.runner;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.imconfig.Configuration;
@@ -220,6 +222,7 @@ public class PlanNodeRunner {
             doNotImplemented(node, result);
         } else if (!getChildren().isEmpty()) {
             Stream<Pair<Instant, Result>> results = Stream.empty();
+            boolean continueExecution = true;
             if (dryRun) {
                 logger.logTestCaseHeader(node);
             } else {
@@ -228,10 +231,15 @@ public class PlanNodeRunner {
                 } catch (WakamitiException e) {
                     results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
                             .toList().stream(); // prevent lazy stream
+                    continueExecution = !stopExecutionOnError();
                 }
             }
-            results = Stream.concat(results, runChildren())
-                    .toList().stream(); // prevent lazy stream
+            if (continueExecution) {
+                results = Stream.concat(results, runChildren())
+                        .toList().stream(); // prevent lazy stream
+            } else {
+                skipPendingChildren();
+            }
             if (!dryRun) {
                 try {
                     testCasePostExecution(node);
@@ -265,10 +273,19 @@ public class PlanNodeRunner {
      *         children with a {@code null} result
      */
     protected Stream<Pair<Instant, Result>> runChildren() {
-        return getChildren().stream()
-                .map(PlanNodeRunner::runNode)
-                .filter(Objects::nonNull)
-                .map(result -> new Pair<>(Instant.now(), result));
+        List<Pair<Instant, Result>> results = new ArrayList<>();
+        List<PlanNodeRunner> childRunners = getChildren();
+        for (int i = 0; i < childRunners.size(); i++) {
+            Result result = childRunners.get(i).runNode();
+            if (result != null) {
+                results.add(new Pair<>(Instant.now(), result));
+            }
+            if (stopExecutionOnError() && result == Result.ERROR) {
+                skipPendingChildren(childRunners, i + 1);
+                break;
+            }
+        }
+        return results.stream();
     }
 
     /**
@@ -348,6 +365,19 @@ public class PlanNodeRunner {
         return node;
     }
 
+    void skipIfPending() {
+        if (state != State.PREPARED) {
+            return;
+        }
+        state = State.FINISHED;
+        markSkippedSelf(node);
+        if (children == null) {
+            node.children().forEach(PlanNodeRunner::markSkippedRecursively);
+        } else {
+            children.forEach(PlanNodeRunner::skipIfPending);
+        }
+    }
+
     /**
      * Hook executed before a test-case node runs its descendants.
      * <p>
@@ -398,6 +428,38 @@ public class PlanNodeRunner {
             PlanNode step
     ) {
         logger.logStepResult(step);
+    }
+
+    private boolean stopExecutionOnError() {
+        return configuration.get(WakamitiConfiguration.STOP_EXECUTION_ON_ERROR, Boolean.class).get();
+    }
+
+    private void skipPendingChildren() {
+        skipPendingChildren(getChildren(), 0);
+    }
+
+    private void skipPendingChildren(
+            List<PlanNodeRunner> runners,
+            int startIndex
+    ) {
+        for (int i = startIndex; i < runners.size(); i++) {
+            runners.get(i).skipIfPending();
+        }
+    }
+
+    private static void markSkippedSelf(
+            PlanNode node
+    ) {
+        Instant instant = Instant.now();
+        node.prepareExecution().markStarted(instant);
+        node.prepareExecution().markFinished(instant, Result.SKIPPED);
+    }
+
+    private static void markSkippedRecursively(
+            PlanNode node
+    ) {
+        markSkippedSelf(node);
+        node.children().forEach(PlanNodeRunner::markSkippedRecursively);
     }
 
     /**

@@ -41,6 +41,7 @@ public class PlanRunner {
 
     private final Wakamiti wakamiti;
     private final Configuration configuration;
+    private final boolean stopExecutionOnError;
 
     private final PlanNodeLogger planNodeLogger;
     private final PlanNode plan;
@@ -58,6 +59,8 @@ public class PlanRunner {
     ) {
         this.plan = plan;
         this.configuration = configuration;
+        this.stopExecutionOnError = configuration.get(WakamitiConfiguration.STOP_EXECUTION_ON_ERROR, Boolean.class)
+                .get();
         this.planNodeLogger = new PlanNodeLogger(Wakamiti.LOGGER, configuration, plan);
         this.wakamiti = Wakamiti.instance();
     }
@@ -96,14 +99,21 @@ public class PlanRunner {
         wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         List<PlanNodeRunner> runners = dryRun ? buildRunners(true) : getChildren();
-        for (PlanNodeRunner child : runners) {
+        for (int i = 0; i < runners.size(); i++) {
+            PlanNodeRunner child = runners.get(i);
+            Result result = null;
             try {
-                child.runNode();
+                result = child.runNode();
             } catch (Exception e) {
                 LOGGER.error("{error}", e.getMessage(), e);
                 if (child.getNode().result().isEmpty()) {
                     child.getNode().prepareExecution().markFinished(Instant.now(), Result.ERROR, e, null);
                 }
+                result = Result.ERROR;
+            }
+            if (stopExecutionOnError && result == Result.ERROR) {
+                skipPendingChildren(runners, i + 1);
+                break;
             }
         }
         planNodeLogger.logTestPlanResult(plan);
@@ -139,6 +149,15 @@ public class PlanRunner {
             );
             return new PlanNodeRunner(feature, childConfiguration, backendFactory, planNodeLogger, dryRun);
         }).collect(Collectors.toList());
+    }
+
+    private void skipPendingChildren(
+            List<PlanNodeRunner> runners,
+            int startIndex
+    ) {
+        for (int i = startIndex; i < runners.size(); i++) {
+            runners.get(i).skipIfPending();
+        }
     }
 
 }
