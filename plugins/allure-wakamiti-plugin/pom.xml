@@ -17,14 +17,14 @@
     </parent>
 
     <artifactId>allure-wakamiti-plugin</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] Allure Report</name>
     <description>Allure results exporter for Wakamiti executions</description>
     <inceptionYear>2026</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.13.0</wakamiti-engine.version>
+        <wakamiti-engine.version>3.0.0-SNAPSHOT</wakamiti-engine.version>
     </properties>
 
     <dependencies>

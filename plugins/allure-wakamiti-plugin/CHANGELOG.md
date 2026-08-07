@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Fixed
+- Accept UTC ISO-8601 report timestamps when converting Wakamiti snapshot instants to Allure epoch-millis fields.
+
+
 ## [1.1.0] - 2026-07-31
 
 ### Changed

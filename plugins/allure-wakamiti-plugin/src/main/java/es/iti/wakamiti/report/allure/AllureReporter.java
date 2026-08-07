@@ -13,8 +13,10 @@ import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -314,10 +316,14 @@ public class AllureReporter implements Reporter {
         if (instant == null || instant.isBlank()) {
             return null;
         }
-        return LocalDateTime.parse(instant)
-                .atZone(ZoneId.systemDefault())
-                .toInstant()
-                .toEpochMilli();
+        try {
+            return Instant.parse(instant).toEpochMilli();
+        } catch (DateTimeParseException ignored) {
+            return LocalDateTime.parse(instant)
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant()
+                    .toEpochMilli();
+        }
     }
 
     private boolean isFeature(

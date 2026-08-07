@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -111,6 +112,13 @@ public class AllureReporterTest {
         assertThat(brokenScenario.path("status").asText()).isEqualTo("broken");
         assertThat(brokenScenario.path("statusDetails").path("message").asText())
                 .isEqualTo("Synthetic error for Allure");
+
+        PlanNodeSnapshot plan = PLAN_SERIALIZER.read(outputFile);
+        PlanNodeSnapshot brokenPlanNode = plan.flatten(node -> "ID-BROKEN-1".equals(node.getId()))
+                .findFirst()
+                .orElseThrow();
+        assertThat(brokenScenario.path("start").asLong()).isEqualTo(Instant.parse(brokenPlanNode.getStartInstant()).toEpochMilli());
+        assertThat(brokenScenario.path("stop").asLong()).isEqualTo(Instant.parse(brokenPlanNode.getFinishInstant()).toEpochMilli());
     }
 
     @Test

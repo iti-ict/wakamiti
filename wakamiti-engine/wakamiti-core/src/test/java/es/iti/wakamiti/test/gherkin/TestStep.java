@@ -15,6 +15,10 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +79,18 @@ public class TestStep {
             System.out.println(serial);
         }
         assertThat(serial).doesNotContain("\"errorClassifier\" : \"test\"");
+        assertThat(Instant.parse(snapshot.getStartInstant()))
+                .isEqualTo(executed.startInstant().orElseThrow().truncatedTo(ChronoUnit.MICROS));
+        assertThat(Instant.parse(snapshot.getFinishInstant()))
+                .isEqualTo(executed.finishInstant().orElseThrow().truncatedTo(ChronoUnit.MICROS));
+
+        String localSnapshot = "2023-09-11T10:25:46.583";
+        PlanNodeSnapshot snapshotWithLocalInstant = new PlanNodeSnapshot(executed, localSnapshot);
+        Instant expectedSnapshotInstant = LocalDateTime.parse(localSnapshot)
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+                .truncatedTo(ChronoUnit.MICROS);
+        assertThat(Instant.parse(snapshotWithLocalInstant.getSnapshotInstant())).isEqualTo(expectedSnapshotInstant);
 
         List<PlanNode> testCases = plan
                 .descendants()
