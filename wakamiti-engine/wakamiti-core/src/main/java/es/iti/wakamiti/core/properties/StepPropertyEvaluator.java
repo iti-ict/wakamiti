@@ -68,7 +68,8 @@ public class StepPropertyEvaluator extends PropertyEvaluator {
             String property,
             Matcher matcher
     ) {
-        WakamitiStepRunContext context = WakamitiStepRunContext.current();
+        WakamitiStepRunContext context = Optional.ofNullable(WakamitiStepRunContext.current())
+                .orElseThrow(() -> new WakamitiException("Not resolvable property: " + property));
         Map<?, ?> steps = Optional.ofNullable(context.backend().getExtraProperties()
                         .get(RunnableBackend.ContextMap.RESULTS_PROP))
                 .map(Map.class::cast)
