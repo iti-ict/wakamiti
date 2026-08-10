@@ -9,6 +9,7 @@ package es.iti.wakamiti.groovy;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.File;
 import java.net.URI;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 import org.junit.Test;
 
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.StepContributor;
 
 
@@ -49,7 +51,15 @@ public class GroovyLoaderContributorTest {
     }
 
     @Test
-    public void testLoadWhenErrorFile() throws URISyntaxException {
+    public void testLoadWhenErrorFileAndFailOnErrorEnabled() throws URISyntaxException {
+        URI steps = Objects.requireNonNull(this.getClass().getClassLoader().getResource("error")).toURI();
+        assertThatThrownBy(() -> loader.load(List.of(new File(steps).getAbsolutePath())))
+                .isInstanceOf(WakamitiException.class);
+    }
+
+    @Test
+    public void testLoadWhenErrorFileAndFailOnErrorDisabled() throws URISyntaxException {
+        loader.setFailOnError(false);
         URI steps = Objects.requireNonNull(this.getClass().getClassLoader().getResource("error")).toURI();
         Class<?>[] result = loader.load(List.of(new File(steps).getAbsolutePath())).toArray(Class[]::new);
         assertThat(result).isEmpty();
