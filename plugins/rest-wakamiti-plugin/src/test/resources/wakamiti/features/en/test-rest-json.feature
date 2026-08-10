@@ -150,6 +150,7 @@ Feature: REST Test Feature
   @ID-test-1-3
   Scenario: URL with parameters
     Given the REST service '/users/{user}/{subject}'
+    And the REST content type 'application/json'
     And the following path parameters:
       | name    | value      |
       | user    | user1      |

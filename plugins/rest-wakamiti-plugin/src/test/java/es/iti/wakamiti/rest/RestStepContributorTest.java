@@ -44,9 +44,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import es.iti.wakamiti.api.WakamitiAPI;
-import es.iti.wakamiti.api.extensions.PropertyEvaluator;
-import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
 import org.apache.xmlbeans.XmlObject;
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
@@ -68,8 +65,10 @@ import org.mockserver.model.Not;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
@@ -77,6 +76,7 @@ import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.XmlUtils;
 import es.iti.wakamiti.api.util.http.oauth.GrantType;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
 import io.restassured.RestAssured;
 
 
@@ -173,6 +173,45 @@ public class RestStepContributorTest {
      */
     @Test(expected = WakamitiException.class)
     public void testSetContentTypeWithError() {
+        // act
+        contributor.setContentType("AAA");
+        contributor.executeGetSubject();
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#setFromContentType(String)}
+     */
+    @Test
+    public void testSetFromContentTypeWithSuccess() {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader(
+                                header("Content-Type", String.format("%s.*", MediaType.APPLICATION_XML))
+                        ),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setFromContentType("application/xml");
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setFromContentType(String)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testSetFromContentTypeWithError() {
         // act
         contributor.setContentType("AAA");
         contributor.executeGetSubject();
