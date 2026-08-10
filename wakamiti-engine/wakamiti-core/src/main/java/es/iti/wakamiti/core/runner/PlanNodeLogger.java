@@ -10,7 +10,9 @@ package es.iti.wakamiti.core.runner;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
 
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ import es.iti.wakamiti.api.model.ExecutionState;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
+import es.iti.wakamiti.api.util.Argument;
 
 
 /**
@@ -33,6 +36,7 @@ public class PlanNodeLogger {
     private static final float MILLIS_PER_SECOND = 1000f;
     private final boolean showStepSource;
     private final boolean showElapsedTime;
+    private final List<String> hiddenPatterns;
     private final Logger logger;
 
     private final long totalNumberTestCases;
@@ -43,7 +47,8 @@ public class PlanNodeLogger {
      * effective configuration.
      *
      * @param logger        logging backend
-     * @param configuration source of step-source and elapsed-time flags
+     * @param configuration source of step-source, elapsed-time flags, and hidden
+     *                      properties
      * @param plan          root plan used to compute test-case progress totals
      */
     public PlanNodeLogger(
@@ -58,6 +63,11 @@ public class PlanNodeLogger {
         this.showElapsedTime = configuration
                 .get(WakamitiConfiguration.LOGS_SHOW_ELAPSED_TIME, Boolean.class)
                 .orElse(true);
+        this.hiddenPatterns = configuration
+                .getList(WakamitiConfiguration.PROPERTIES_HIDDEN, String.class)
+                .stream()
+                .map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
+                .toList();
         this.totalNumberTestCases = plan.numDescendants(NodeType.TEST_CASE);
     }
 
@@ -126,7 +136,7 @@ public class PlanNodeLogger {
             if (node.keyword() != null) {
                 name.add(node.keyword());
             }
-            name.add(node.name());
+            name.add(resolveNodeName(node));
             logger.info("{highlight}", "-".repeat(name.length() + HEADING_PADDING));
             logger.info(
                     "{highlight} (Test Case {}/{})",
@@ -201,7 +211,7 @@ public class PlanNodeLogger {
             args.add(step.source());
         }
         args.add(emptyIfNull(step.keyword()));
-        args.add(step.name());
+        args.add(resolveNodeName(step));
         if (showElapsedTime) {
             String duration = (execution.result().orElse(null) == Result.SKIPPED ? ""
                     : "(" + (execution.duration().map(Duration::toMillis).orElse(0L) / MILLIS_PER_SECOND) + ")");
@@ -209,6 +219,44 @@ public class PlanNodeLogger {
         }
         args.add(execution.error().map(Throwable::getLocalizedMessage).orElse(""));
         return args.toArray();
+    }
+
+    /**
+     * Returns the node name with variable placeholders replaced by their
+     * resolved values, except for variables listed under
+     * {@link WakamitiConfiguration#PROPERTIES_HIDDEN}, which remain masked
+     * as {@code ${...}}.
+     * <p>
+     * This mirrors the logic in {@code Wakamiti.writeOutputFile()} but applies
+     * it at log time so that the console output shows actual values rather than
+     * raw placeholders (issue #1).
+     * </p>
+     *
+     * @param node the plan node whose name is to be resolved
+     * @return the name with visible variable placeholders replaced, or
+     *         {@code null} when the node has no name
+     */
+    private String resolveNodeName(
+            PlanNode node
+    ) {
+        if (node.name() == null) {
+            return null;
+        }
+        Map<String, String> evaluations = node.arguments().stream()
+                .map(Argument::evaluations)
+                .reduce(new LinkedHashMap<>(), (acc, map) -> {
+                    map.forEach(acc::putIfAbsent);
+                    return acc;
+                });
+        String resolved = node.name();
+        for (Map.Entry<String, String> entry : evaluations.entrySet()) {
+            boolean hidden = hiddenPatterns.stream()
+                    .anyMatch(pattern -> entry.getKey().matches(pattern));
+            if (!hidden) {
+                resolved = resolved.replace(entry.getKey(), entry.getValue());
+            }
+        }
+        return resolved;
     }
 
 }

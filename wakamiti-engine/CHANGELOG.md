@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [Unreleased]
+## [3.0.0] - Unreleased
 
 ### Added
 - Improved CLI argument parsing so repeated options are accumulated correctly, and module lists now support multiple 
@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ERROR` results.
 - Added launcher support for `wakamiti.log.perScenario` so file logging can generate one log file per scenario instead
   of a single log for the whole execution.
+
+### Fixed
+- Variable placeholders (e.g. `${credential.name}`) are now resolved in log output after step execution instead of
+  being printed as-is. Variables listed under `properties.hidden` remain masked.
 
 
 ## [2.13.0] - 2026-07-31
