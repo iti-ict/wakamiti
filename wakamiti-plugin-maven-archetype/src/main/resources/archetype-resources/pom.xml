@@ -12,7 +12,7 @@
     <parent>
         <groupId>es.iti.wakamiti</groupId>
         <artifactId>wakamiti-plugin-starter</artifactId>
-        <version>2.9.0</version>
+        <version>${wakamitiApiVersion}</version>
     </parent>
 
 
