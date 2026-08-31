@@ -446,8 +446,6 @@ function focusAnchor() {
     $(`li:has(#${id})`).find('.suite--header .test--header-btn').addClass('on');
     $(`#${id}`).find('.test--header-btn').addClass('on');
     document.getElementById(id)?.scrollIntoView();
-    const adjust = parseInt(getCssVar('--navbar-height'), 10) + 55;
-    window.scrollBy(0, -adjust);
 }
 
 function refresh(shouldRender = true) {
@@ -576,7 +574,9 @@ function buttons() {
     });
 
     $(document).on('click', 'nav a', function (event) {
+        event.preventDefault();
         event.stopImmediatePropagation();
+
         const id = $(this).attr('href').replace('#', '').toString();
         searchPage(id);
         render();

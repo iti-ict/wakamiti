@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.10.1] - Unreleased
+
+### Fix
+- Keep scenario titles visible when navigating to anchors.
+
+
 ## [2.10.0] - 2026-07-31
 
 ### Changed
