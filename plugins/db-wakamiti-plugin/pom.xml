@@ -233,7 +233,7 @@
                         <executions>
                             <execution>
                                 <id>test</id>
-                                <phase>intall</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
@@ -270,6 +270,7 @@
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>0.48.1</version>
                         <configuration>
+                            <maxConnections>20</maxConnections>
                             <removeVolumes>true</removeVolumes>
                             <images>
                                 <image>

@@ -13,17 +13,17 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
 import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Objects;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.MSSQLServerContainer;
@@ -50,26 +50,28 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class SQLServerTest {
 
-    public static final MSSQLServerContainer<?> CONTAINER = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2025-latest")
+    private static final Logger LOGGER = LoggerFactory.getLogger(SQLServerTest.class);
+    private static final MSSQLServerContainer<?> CONTAINER = new MSSQLServerContainer<>("mcr.microsoft.com/mssql/server:2025-latest")
             .acceptLicense()
 //            .withDatabaseName("test")
 //            .withUsername("user")
             .withPassword("$3cr3Tp4s$")
             .withInitScript("wakamiti/db/create-schema-sqlserver.sql")
             .withCreateContainerCmdModifier(cmd ->
-                    cmd.getHostConfig().withPortBindings(
-                            new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
+                    Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
+                            new PortBinding(
+                                    Ports.Binding.bindPort(1234),
+                                    Objects.requireNonNull(cmd.getExposedPorts())[0]
+                            ))
             );
 
     @BeforeClass
     public static void setUp() throws IOException {
-        System.out.println("Creating container. Please, be patient... ");
-        Logger.getLogger("com.microsoft.sqlserver.jdbc").setLevel(Level.SEVERE);
-        Logger.getLogger("com.microsoft.sqlserver.jdbc.SQLServerConnection").setLevel(Level.SEVERE);
+        LOGGER.info("Creating container. Please, be patient... ");
 
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
-        System.out.println(message("\rContainer [MSSQLServerContainer] started with [url={}, username={}, password={}]",
-                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
+        LOGGER.info("Container [MSSQLServerContainer] started with [url={}, username={}, password={}]",
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
         String url = CONTAINER.getJdbcUrl();
         String user = CONTAINER.getUsername();
         String password = CONTAINER.getPassword();
@@ -84,7 +86,6 @@ public class SQLServerTest {
 
     @AfterClass
     public static void shutdown() {
-        CONTAINER.stop();
         CONTAINER.close();
     }
 
