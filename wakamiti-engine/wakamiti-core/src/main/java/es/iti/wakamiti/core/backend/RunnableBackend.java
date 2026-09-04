@@ -107,6 +107,14 @@ public class RunnableBackend extends LifecycleBackend {
 
     /**
      * {@inheritDoc}
+     */
+    @Override
+    public boolean isLifecycleHook() {
+        return testCase.nodeType() == NodeType.LIFECYCLE_HOOK;
+    }
+
+    /**
+     * {@inheritDoc}
      * This implementation validates the given test step, fetches the associated backend data, and executes the step.
      *
      * @param step The plan node representing the step to run.

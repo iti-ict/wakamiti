@@ -25,6 +25,7 @@ import org.assertj.core.api.Assertions;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
@@ -46,13 +47,13 @@ import es.iti.wakamiti.database.jdbc.Database;
  * Step contributor providing SQL-oriented setup, execution and assertions.
  * <p>
  * The contributor can hold multiple named connections and supports deferred
- * cleanup operations that run during scenario teardown.
+ * cleanup operations that run during functional scenario teardown.
  * </p>
  */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "database-steps",
-        version = "2.13"
+        version = "3.0"
 )
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
@@ -60,11 +61,18 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Executes queued cleanup operations before connections are closed.
      * <p>
-     * Cleanup actions are executed even if prior scenario steps failed.
+     * Cleanup actions are executed for regular scenarios even if prior steps
+     * failed. Lifecycle hook scenarios deliberately retain their changes for
+     * the surrounding feature lifecycle.
      * </p>
      */
     @TearDown(order = 1)
     public void cleanUp() {
+        WakamitiStepRunContext context = WakamitiStepRunContext.current();
+        if (context != null && context.backend().isLifecycleHook()) {
+            LOGGER.trace("Automatic database cleanup disabled for lifecycle hook");
+            return;
+        }
         this.enableCleanupUponCompletion = false;
         cleanUpOperations.forEach(Runnable::run);
     }

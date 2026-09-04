@@ -32,11 +32,14 @@ import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
@@ -948,6 +951,44 @@ public class DatabaseStepContributorTest {
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "1"}
+            );
+        }
+    }
+
+    @Test
+    public void testExecuteSQLScriptWhenEnabledCleanupInBeforeHook() {
+        assertLifecycleHookDoesNotCleanup("before");
+    }
+
+    @Test
+    public void testExecuteSQLScriptWhenEnabledCleanupInAfterHook() {
+        assertLifecycleHookDoesNotCleanup("after");
+    }
+
+    private void assertLifecycleHookDoesNotCleanup(
+            String gherkinType
+    ) {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config, "before".equals(gherkinType)
+                || "after".equals(gherkinType) ? NodeType.LIFECYCLE_HOOK : NodeType.TEST_CASE);
+
+        // Act
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Hook' WHERE id = 1"));
+        contributor.cleanUp();
+
+        // Check
+        try (Select<String[]> select = Database.from(contributor.connection())
+                .select("SELECT * FROM client WHERE id = 1").get(DatabaseHelper::format)) {
+            assertThat(select.stream().toList()).containsExactly(
+                    new String[]{"1", "Rosa", "Hook", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -4144,9 +4185,20 @@ public class DatabaseStepContributorTest {
     private void createContext(
             Configuration configuration
     ) {
+        createContext(configuration, null);
+    }
+
+    private void createContext(
+            Configuration configuration,
+            NodeType nodeType
+    ) {
+        Backend backend = nodeType == null
+                ? Wakamiti.instance().newBackendFactory().createNonRunnableBackend(configuration)
+                : Wakamiti.instance().newBackendFactory().createBackend(
+                        new PlanNode(nodeType, List.of()), configuration);
         WakamitiStepRunContext.set(new WakamitiStepRunContext(
                 configuration,
-                Wakamiti.instance().newBackendFactory().createNonRunnableBackend(configuration),
+                backend,
                 Locale.getDefault(),
                 Locale.getDefault()
         ));

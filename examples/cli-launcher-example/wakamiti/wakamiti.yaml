@@ -29,7 +29,7 @@ wakamiti:
       username: root
       password: test
       driver: com.mysql.cj.jdbc.Driver
-    enableCleanupUponCompletion: "false"
+    enableCleanupUponCompletion: "true"
   email:
     store:
       host: host.docker.internal

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning][2].
 ## [Unreleased]
 
 ### Fixed
+- Automatic database cleanup is skipped for feature lifecycle hook scenarios.
 - Empty SQL scripts now result in an `ERROR` instead of being silently ignored.
 
 

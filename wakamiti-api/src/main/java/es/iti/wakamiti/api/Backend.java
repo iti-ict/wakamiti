@@ -110,6 +110,16 @@ public interface Backend {
     }
 
     /**
+     * Indicates whether this backend executes a lifecycle hook node rather than
+     * a regular test scenario.
+     *
+     * @return {@code true} when the backend is associated with a lifecycle hook
+     */
+    default boolean isLifecycleHook() {
+        return false;
+    }
+
+    /**
      * Obtain a list of all steps from any available step contributor
      * used by the backend. If a step uses data types with variations
      * (like assertions), a new element would be presented for each

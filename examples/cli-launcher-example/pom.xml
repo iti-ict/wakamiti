@@ -23,7 +23,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
 
         <rest.version>2.10.0</rest.version>
-        <db.version>3.9.0</db.version>
+        <db.version>3.10.0-SNAPSHOT</db.version>
         <amqp.version>2.10.0</amqp.version>
         <email.version>1.6.0</email.version>
         <groovy.version>2.8.0</groovy.version>
