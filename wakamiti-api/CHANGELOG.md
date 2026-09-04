@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Support setup and tear-down operations at plan, feature and scenario levels.
 - Support optional early termination of pending execution after internal Wakamiti `ERROR` results, controlled by
   `wakamiti.stopExecutionOnError`.
 - Added `wakamiti.log.perScenario` configuration to declare whether launcher logging should split execution logs into

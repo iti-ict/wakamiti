@@ -15,11 +15,15 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
+import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiConfiguration;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.ConfigurationFactory;
+import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
@@ -46,6 +50,8 @@ public class PlanRunner {
     private final PlanNodeLogger planNodeLogger;
     private final PlanNode plan;
     private List<PlanNodeRunner> children;
+    private BackendFactory backendFactory;
+    private Backend lifecycleBackend;
 
     /**
      * Creates an execution coordinator for a fully constructed plan.
@@ -99,22 +105,47 @@ public class PlanRunner {
         wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);
         List<PlanNodeRunner> runners = dryRun ? buildRunners(true) : getChildren();
-        for (int i = 0; i < runners.size(); i++) {
-            PlanNodeRunner child = runners.get(i);
-            Result result = null;
+        boolean hasImplementedSteps = plan.descendants().anyMatch(node -> node.nodeType() == NodeType.STEP);
+        boolean lifecycleError = false;
+        boolean stopChildren = false;
+        if (!dryRun && hasImplementedSteps) {
             try {
-                result = child.runNode();
-            } catch (Exception e) {
-                LOGGER.error("{error}", e.getMessage(), e);
-                if (child.getNode().result().isEmpty()) {
-                    child.getNode().prepareExecution().markFinished(Instant.now(), Result.ERROR, e, null);
+                lifecycleBackend().setUp(Level.PLAN);
+            } catch (WakamitiException e) {
+                lifecycleError = true;
+                stopChildren = stopExecutionOnError;
+            }
+        }
+        if (stopChildren) {
+            skipPendingChildren(runners, 0);
+        } else {
+            for (int i = 0; i < runners.size(); i++) {
+                PlanNodeRunner child = runners.get(i);
+                Result result = null;
+                try {
+                    result = child.runNode();
+                } catch (Exception e) {
+                    LOGGER.error("{error}", e.getMessage(), e);
+                    if (child.getNode().result().isEmpty()) {
+                        child.getNode().prepareExecution().markFinished(Instant.now(), Result.ERROR, e, null);
+                    }
+                    result = Result.ERROR;
                 }
-                result = Result.ERROR;
+                if (stopExecutionOnError && result == Result.ERROR) {
+                    skipPendingChildren(runners, i + 1);
+                    break;
+                }
             }
-            if (stopExecutionOnError && result == Result.ERROR) {
-                skipPendingChildren(runners, i + 1);
-                break;
+        }
+        if (!dryRun && hasImplementedSteps) {
+            try {
+                lifecycleBackend().tearDown(Level.PLAN);
+            } catch (WakamitiException e) {
+                lifecycleError = true;
             }
+        }
+        if (lifecycleError) {
+            plan.prepareExecution().markFinished(Instant.now(), Result.ERROR);
         }
         planNodeLogger.logTestPlanResult(plan);
         wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(plan));
@@ -142,12 +173,11 @@ public class PlanRunner {
     protected List<PlanNodeRunner> buildRunners(
             boolean dryRun
     ) {
-        BackendFactory backendFactory = wakamiti.newBackendFactory();
         return plan.children().map(feature -> {
             Configuration childConfiguration = configuration.append(
                     CONF_BUILDER.fromMap(feature.properties())
             );
-            return new PlanNodeRunner(feature, childConfiguration, backendFactory, planNodeLogger, dryRun);
+            return new PlanNodeRunner(feature, childConfiguration, backendFactory(), planNodeLogger, dryRun);
         }).collect(Collectors.toList());
     }
 
@@ -158,6 +188,20 @@ public class PlanRunner {
         for (int i = startIndex; i < runners.size(); i++) {
             runners.get(i).skipIfPending();
         }
+    }
+
+    private BackendFactory backendFactory() {
+        if (backendFactory == null) {
+            backendFactory = wakamiti.newBackendFactory();
+        }
+        return backendFactory;
+    }
+
+    private Backend lifecycleBackend() {
+        if (lifecycleBackend == null) {
+            lifecycleBackend = backendFactory().createLifecycleBackend(plan, configuration);
+        }
+        return lifecycleBackend;
     }
 
 }

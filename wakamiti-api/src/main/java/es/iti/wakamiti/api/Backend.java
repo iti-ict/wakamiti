@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.extensions.StepContributor;
@@ -37,21 +38,29 @@ public interface Backend {
     String DATATABLE_ARG = "datatable";
 
     /**
-     * Performs set-up operations prior to running any step.
+     * Performs set-up operations before executing a lifecycle scope.
      * Typically, these operations correspond to methods
      * annotated with {@link SetUp} in {@link StepContributor}.
-     * Setup is expected to run once per test-case execution.
+     * Setup is expected to run once for the requested scope.
+     *
+     * @param level scope whose setup operations must run
      */
-    void setUp();
+    void setUp(
+            Level level
+    );
 
     /**
-     * Performs tear-down operations after running all steps.
+     * Performs tear-down operations after executing a lifecycle scope.
      * Typically, these operations correspond to methods
      * annotated with {@link TearDown} in {@link StepContributor}.
-     * Tear-down is expected to run once per test-case execution, even when one
-     * or more steps failed.
+     * Tear-down is expected to run once for the requested scope, even when its
+     * execution failed.
+     *
+     * @param level scope whose teardown operations must run
      */
-    void tearDown();
+    void tearDown(
+            Level level
+    );
 
     /**
      * Runs a plan node of type {@link NodeType#STEP}, updating

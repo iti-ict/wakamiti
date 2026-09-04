@@ -8,8 +8,6 @@
 package es.iti.wakamiti.core.backend;
 
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -27,6 +25,7 @@ import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiSkippedException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.model.ExecutionState;
 import es.iti.wakamiti.api.plan.NodeType;
@@ -49,7 +48,7 @@ import es.iti.wakamiti.core.util.LocaleLoader;
  * properties.
  * </p>
  */
-public class RunnableBackend extends AbstractBackend {
+public class RunnableBackend extends LifecycleBackend {
 
     /** Engine logger shared by runnable backends for execution diagnostics. */
     public static final Logger LOGGER = Wakamiti.LOGGER;
@@ -57,8 +56,6 @@ public class RunnableBackend extends AbstractBackend {
 
     private final PlanNode testCase;
     private final Clock clock;
-    private final List<ThrowableRunnable> setUpOperations;
-    private final List<ThrowableRunnable> tearDownOperations;
     private final Map<PlanNode, StepBackendData> stepBackendData;
     private final Map<String, Object> extraProperties;
     private final List<PlanNode> stepsWithErrors;
@@ -83,18 +80,29 @@ public class RunnableBackend extends AbstractBackend {
             Configuration configuration,
             WakamitiDataTypeRegistry typeRegistry,
             List<RunnableStep> steps,
-            List<ThrowableRunnable> setUpOperations,
-            List<ThrowableRunnable> tearDownOperations,
+            Map<Level, List<ThrowableRunnable>> setUpOperations,
+            Map<Level, List<ThrowableRunnable>> tearDownOperations,
             Clock clock
     ) {
-        super(configuration, typeRegistry, steps);
+        super(configuration, typeRegistry, setUpOperations, tearDownOperations, steps);
         this.testCase = testCase;
-        this.setUpOperations = setUpOperations;
-        this.tearDownOperations = tearDownOperations;
         this.clock = clock;
         this.stepBackendData = new HashMap<>();
         this.extraProperties = new ContextMap();
         this.stepsWithErrors = new ArrayList<>();
+    }
+
+    @Override
+    protected void beforeLifecycleOperation() {
+        Locale locale = LocaleLoader.forLanguage(testCase.language());
+        WakamitiStepRunContext.set(
+                new WakamitiStepRunContext(configuration, this, locale, locale)
+        );
+    }
+
+    @Override
+    protected void afterLifecycleOperation() {
+        WakamitiStepRunContext.clear();
     }
 
     /**
@@ -209,75 +217,6 @@ public class RunnableBackend extends AbstractBackend {
         ExecutionState<Result> execution = modelStep.prepareExecution();
         execution.markStarted(now);
         execution.markFinished(now, Result.SKIPPED);
-    }
-
-    /**
-     * {@inheritDoc}
-     * This implementation executes the setup operations associated with this backend.
-     */
-    @Override
-    public void setUp() {
-        String type = "set-up";
-        LOGGER.debug("Performing {} operations...", type);
-        for (ThrowableRunnable setUpOperation : setUpOperations) {
-            runMethod(setUpOperation, type);
-        }
-        LOGGER.debug("{} finished", type);
-    }
-
-    /**
-     * {@inheritDoc}
-     * This implementation executes the teardown operations associated with this backend.
-     */
-    @Override
-    public void tearDown() {
-        String type = "tear-down";
-        LOGGER.debug("Performing {} operations...", type);
-        for (ThrowableRunnable tearDownOperation : tearDownOperations) {
-            runMethod(tearDownOperation, type);
-        }
-        LOGGER.debug("{} finished", type);
-    }
-
-    /**
-     * Runs the specified {@link ThrowableRunnable} operation and handles any exceptions or errors.
-     *
-     * @param operation The operation to be executed.
-     * @param type      The type of the operation for logging purposes.
-     * @throws WakamitiException If an exception or error occurs during the execution of the operation.
-     */
-    private void runMethod(
-            ThrowableRunnable operation,
-            String type
-    ) {
-        try {
-            Locale locale = LocaleLoader.forLanguage(testCase.language());
-            WakamitiStepRunContext.set(
-                    new WakamitiStepRunContext(
-                            configuration,
-                            this,
-                            locale,
-                            locale
-                    )
-            );
-            operation.run();
-        } catch (Exception | Error e) {
-            Throwable tr = e;
-            while (isBlank(tr.getMessage())) {
-                if (tr.getCause() == null) {
-                    break;
-                }
-                tr = tr.getCause();
-            }
-            LOGGER.error("Error running {} operation: {}", type, tr.getMessage());
-            LOGGER.debug(tr.getMessage(), e);
-
-            if (e instanceof WakamitiException) {
-                throw (WakamitiException) e;
-            } else {
-                throw new WakamitiException(e);
-            }
-        }
     }
 
     /**

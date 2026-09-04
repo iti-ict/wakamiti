@@ -11,6 +11,7 @@ package es.iti.wakamiti.core.backend;
 import java.util.List;
 
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanNode;
 
@@ -58,7 +59,9 @@ public class NonRunnableBackend extends AbstractBackend {
      * This implementation does nothing, as there is no setup required for a non-runnable steps.
      */
     @Override
-    public void setUp() {
+    public void setUp(
+            Level level
+    ) {
         // nothing
     }
 
@@ -67,7 +70,9 @@ public class NonRunnableBackend extends AbstractBackend {
      * This implementation does nothing, as there is no teardown required for a non-runnable steps.
      */
     @Override
-    public void tearDown() {
+    public void tearDown(
+            Level level
+    ) {
         // nothing
     }
 

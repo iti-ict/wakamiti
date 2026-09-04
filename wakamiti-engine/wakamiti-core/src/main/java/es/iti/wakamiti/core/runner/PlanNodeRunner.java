@@ -26,6 +26,7 @@ import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.model.ExecutionState;
@@ -57,6 +58,7 @@ public class PlanNodeRunner {
     private final boolean dryRun;
     private List<PlanNodeRunner> children;
     private Optional<Backend> backend;
+    private Backend lifecycleBackend;
     private State state;
 
     /**
@@ -182,6 +184,13 @@ public class PlanNodeRunner {
 
     protected BackendFactory backendFactory() {
         return backendFactory;
+    }
+
+    private Backend lifecycleBackend() {
+        if (lifecycleBackend == null) {
+            lifecycleBackend = backendFactory.createLifecycleBackend(node, configuration);
+        }
+        return lifecycleBackend;
     }
 
     protected PlanNodeLogger getLogger() {
@@ -388,10 +397,39 @@ public class PlanNodeRunner {
     }
 
     /**
+     * Hook executed before a feature node runs its descendants.
+     * <p>
+     * Default behavior logs the feature header and invokes backend
+     * {@link Backend#setUp(Level)}.
+     * </p>
+     *
+     * @param node feature node about to execute
+     */
+    protected void featurePreExecution(
+            PlanNode node
+    ) {
+        lifecycleBackend().setUp(Level.FEATURE);
+    }
+
+    /**
+     * Hook executed after a feature node finishes descendant execution.
+     * <p>
+     * Default behavior invokes backend {@link Backend#tearDown(Level)}.
+     * </p>
+     *
+     * @param node executed feature node
+     */
+    protected void featurePostExecution(
+            PlanNode node
+    ) {
+        lifecycleBackend().tearDown(Level.FEATURE);
+    }
+
+    /**
      * Hook executed before a test-case node runs its descendants.
      * <p>
      * Default behavior logs the test-case header and invokes backend
-     * {@link Backend#setUp()}.
+     * {@link Backend#setUp(Level)}.
      * </p>
      *
      * @param node test-case node about to execute
@@ -399,14 +437,18 @@ public class PlanNodeRunner {
     protected void testCasePreExecution(
             PlanNode node
     ) {
-        logger.logTestCaseHeader(node);
-        getBackend().ifPresent(Backend::setUp);
+        if (node.nodeType() == NodeType.TEST_CASE) {
+            logger.logTestCaseHeader(node);
+        } else {
+            logger.logHookHeader(node);
+        }
+        getBackend().ifPresent(backend -> backend.setUp(Level.SCENARIO));
     }
 
     /**
      * Hook executed after a test-case node finishes descendant execution.
      * <p>
-     * Default behavior invokes backend {@link Backend#tearDown()}.
+     * Default behavior invokes backend {@link Backend#tearDown(Level)}.
      * </p>
      *
      * @param node executed test-case node
@@ -414,7 +456,7 @@ public class PlanNodeRunner {
     protected void testCasePostExecution(
             PlanNode node
     ) {
-        getBackend().ifPresent(Backend::tearDown);
+        getBackend().ifPresent(backend -> backend.tearDown(Level.SCENARIO));
     }
 
     /**
