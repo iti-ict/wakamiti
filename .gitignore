@@ -1,6 +1,7 @@
 .project
 .idea
 .aiassistant
+.codex
 .settings
 .vscode
 .factorypath
