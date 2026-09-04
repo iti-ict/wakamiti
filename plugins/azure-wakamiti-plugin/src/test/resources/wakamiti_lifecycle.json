@@ -1,0 +1,102 @@
+{
+  "nodeType": "AGGREGATOR",
+  "displayName": "Test Plan",
+  "result": "ERROR",
+  "testCaseResults": {
+    "PASSED": 1
+  },
+  "children": [
+    {
+      "nodeType": "AGGREGATOR",
+      "id": "LC-FEATURE",
+      "name": "Lifecycle integration feature",
+      "keyword": "Feature",
+      "displayName": "Feature: Lifecycle integration feature",
+      "source": "features/lifecycle.feature[1,1]",
+      "properties": {
+        "gherkinType": "feature"
+      },
+      "result": "ERROR",
+      "testCaseResults": {
+        "PASSED": 1
+      },
+      "children": [
+        {
+          "nodeType": "LIFECYCLE_HOOK",
+          "id": "#fixture-before",
+          "name": "failing setup fixture",
+          "displayName": "Before: failing setup fixture",
+          "properties": {
+            "gherkinType": "before"
+          },
+          "result": "ERROR",
+          "errorMessage": "Fixture setup failed",
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "displayName": "Before fixture group",
+              "result": "ERROR",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "displayName": "Given fixture-only setup",
+                  "result": "ERROR"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nodeType": "TEST_CASE",
+          "id": "LC-SCENARIO",
+          "name": "functional scenario remains passed",
+          "keyword": "Scenario",
+          "displayName": "[LC-SCENARIO] Scenario: functional scenario remains passed",
+          "source": "features/lifecycle.feature[7,3]",
+          "properties": {
+            "gherkinType": "scenario"
+          },
+          "result": "PASSED",
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "displayName": "Given functional group",
+              "result": "PASSED",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "displayName": "Given functional-only step",
+                  "result": "PASSED"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "nodeType": "LIFECYCLE_HOOK",
+          "id": "#fixture-after",
+          "name": "successful teardown fixture",
+          "displayName": "After: successful teardown fixture",
+          "properties": {
+            "gherkinType": "after"
+          },
+          "result": "PASSED",
+          "children": [
+            {
+              "nodeType": "STEP_AGGREGATOR",
+              "displayName": "After fixture group",
+              "result": "PASSED",
+              "children": [
+                {
+                  "nodeType": "STEP",
+                  "displayName": "Then fixture-only teardown",
+                  "result": "PASSED"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

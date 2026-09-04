@@ -25,6 +25,7 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.azure.AzureSynchronizer;
 import es.iti.wakamiti.azure.api.model.TestCase;
+import es.iti.wakamiti.azure.api.model.TestResult;
 import es.iti.wakamiti.core.JsonPlanSerializer;
 
 
@@ -34,11 +35,13 @@ public class MapperTest {
 
     private static PlanNodeSnapshot plan;
     private static PlanNodeSnapshot planSuite;
+    private static PlanNodeSnapshot lifecyclePlan;
 
     @BeforeClass
     public static void setUp() throws IOException {
         plan = new JsonPlanSerializer().read(resource("wakamiti.json"));
         planSuite = new JsonPlanSerializer().read(resource("wakamiti_suite.json"));
+        lifecyclePlan = new JsonPlanSerializer().read(resource("wakamiti_lifecycle.json"));
     }
 
     private static InputStream resource(
@@ -170,6 +173,26 @@ public class MapperTest {
         assertThat(tests.get(1)).hasFieldOrPropertyWithValue("order", 1);
         assertThat(tests.get(2)).hasFieldOrPropertyWithValue("name", "[ID-azure-1-3] Wakamiti Scenario C");
         assertThat(tests.get(2)).hasFieldOrPropertyWithValue("order", 2);
+    }
+
+    @Test
+    public void testLifecycleHooksAreNotMappedAsAzureTestsOrScenarioResults() {
+        Mapper featureMapper = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_FEATURE).instance(null);
+        Mapper scenarioMapper = Mapper.ofType(AzureSynchronizer.GHERKIN_TYPE_SCENARIO).instance(null);
+
+        List<TestCase> featureTests = featureMapper.mapTests(lifecyclePlan).toList();
+        List<TestCase> scenarioTests = scenarioMapper.mapTests(lifecyclePlan).toList();
+        List<TestResult> featureResults = featureMapper.mapResults(lifecyclePlan).toList();
+        List<TestResult> scenarioResults = scenarioMapper.mapResults(lifecyclePlan).toList();
+
+        assertThat(featureTests).extracting(TestCase::name)
+                .containsExactly("[LC-FEATURE] Lifecycle integration feature");
+        assertThat(scenarioTests).extracting(TestCase::name)
+                .containsExactly("[LC-SCENARIO] functional scenario remains passed");
+        assertThat(featureResults).extracting(TestResult::outcome)
+                .containsExactly(TestResult.Type.ERROR);
+        assertThat(scenarioResults).extracting(TestResult::outcome)
+                .containsExactly(TestResult.Type.PASSED);
     }
 
     private void logResult(
