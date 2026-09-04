@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
+### Added
+- Include executed lifecycle hooks in Allure results.
+
 ### Fixed
 - Accept UTC ISO-8601 report timestamps when converting Wakamiti snapshot instants to Allure epoch-millis fields.
 

@@ -61,21 +61,22 @@ public class AllureReporterTest {
 
         List<JsonNode> results = readResults(resultsDir);
         assertThat(results).hasSize(2);
+
         assertThat(results)
                 .extracting(result -> result.path("status").asText())
                 .containsExactlyInAnyOrder("passed", "failed");
 
-        JsonNode passedScenario = resultByName(results, "[ID-1] Scenario: passing scenario");
+        JsonNode passedScenario = resultByName(results, "passing scenario");
         assertThat(passedScenario.path("status").asText()).isEqualTo("passed");
         assertThat(passedScenario.path("stage").asText()).isEqualTo("finished");
-        assertThat(labelValue(passedScenario, "suite")).isEqualTo("Allure report feature");
         assertThat(labelValue(passedScenario, "feature")).isEqualTo("Allure report feature");
         assertThat(labelValue(passedScenario, "framework")).isEqualTo("wakamiti");
         assertThat(labelValue(passedScenario, "language")).isEqualTo("en");
         assertThat(parameterValue(passedScenario, "id")).isEqualTo("ID-1");
         assertThat(parameterValue(passedScenario, "source")).contains("allure.feature");
+        assertThat(passedScenario.path("testCaseId").asText()).isEqualTo("ID-1");
 
-        JsonNode failedScenario = resultByName(results, "[ID-2] Scenario: failing scenario");
+        JsonNode failedScenario = resultByName(results, "failing scenario");
         assertThat(failedScenario.path("status").asText()).isEqualTo("failed");
         assertThat(failedScenario.path("statusDetails").path("message").asText())
                 .isEqualTo("Synthetic failure for Allure");
@@ -84,6 +85,18 @@ public class AllureReporterTest {
         assertThat(failedScenario.path("historyId").asText()).isNotBlank();
         assertThat(failedScenario.path("testCaseId").asText()).isNotBlank();
         assertThat(failedScenario.path("uuid").asText()).isNotBlank();
+
+        try (Stream<Path> files = Files.list(resultsDir)) {
+            List<JsonNode> containers = files
+                    .filter(path -> path.getFileName().toString().endsWith("-container.json"))
+                    .map(this::readJson)
+                    .collect(Collectors.toList());
+            assertThat(containers).hasSize(1);
+            assertThat(containers.get(0).path("name").asText()).isEqualTo("Allure report feature");
+            assertThat(containers.get(0).path("children")).hasSize(2);
+            assertThat(StreamSupport.stream(containers.get(0).path("children").spliterator(), false)
+                    .allMatch(child -> !child.asText().isBlank())).isTrue();
+        }
 
         assertThat(Files.isRegularFile(outputFile)).isTrue();
     }
@@ -108,7 +121,7 @@ public class AllureReporterTest {
         List<JsonNode> results = readResults(resultsDir);
         assertThat(results).hasSize(1);
 
-        JsonNode brokenScenario = resultByName(results, "[ID-BROKEN-1] Scenario: error scenario");
+        JsonNode brokenScenario = resultByName(results, "error scenario");
         assertThat(brokenScenario.path("status").asText()).isEqualTo("broken");
         assertThat(brokenScenario.path("statusDetails").path("message").asText())
                 .isEqualTo("Synthetic error for Allure");
@@ -133,16 +146,50 @@ public class AllureReporterTest {
 
         JsonNode scenario = results.get(0);
         assertThat(scenario.path("status").asText()).isEqualTo("passed");
-        assertThat(scenario.path("fullName").asText()).endsWith(".ID-3");
+        assertThat(scenario.path("name").asText()).isEqualTo("detailed scenario");
+        assertThat(scenario.path("fullName").asText()).isEqualTo("[ID-3] Scenario: detailed scenario");
+        assertThat(scenario.path("testCaseId").asText()).isEqualTo("ID-3");
         assertThat(scenario.path("description").asText()).isEqualTo("This is a scenario description");
-        assertThat(labelValue(scenario, "suite")).isEqualTo("Metadata feature");
-        assertThat(labelValues(scenario)).contains("smoke", "api");
-        assertThat(labelValues(scenario)).doesNotContain("definition", "implementation");
-        assertThat(labelValue(scenario, "package")).contains("metadata");
+        assertThat(labelValue(scenario, "feature")).isEqualTo("Metadata feature");
+        assertThat(labelValue(scenario, "suite")).isNull();
+        assertThat(labelValue(scenario, "package")).isNull();
+        assertThat(labelValue(scenario, "tags")).contains("smoke", "api");
         assertThat(parameterValue(scenario, "id")).isEqualTo("ID-3");
         assertThat(scenario.path("steps").size()).isEqualTo(1);
-        assertThat(nodeByName(scenario.path("steps"), "Given a passing step").path("status").asText())
-                .isEqualTo("passed");
+        JsonNode step = nodeByName(scenario.path("steps"), "Given a passing step");
+        assertThat(step.path("status").asText()).isEqualTo("passed");
+        assertThat(step.path("parameters")).isEmpty();
+    }
+
+    @Test
+    public void shouldIncludeLifecycleHooksInAllureResults() throws IOException {
+        Path resultsDir = moduleDir().resolve("target/allure-lifecycle-results");
+        Path outputFile = moduleDir().resolve("target/allure-lifecycle-wakamiti.json");
+
+        runFeature(moduleDir().resolve("src/test/resources/features/lifecycle").toString(), resultsDir, outputFile);
+
+        List<JsonNode> results = readResults(resultsDir);
+        assertThat(results).hasSize(1);
+
+        JsonNode functionalScenario = resultByName(results, "functional scenario");
+        assertThat(functionalScenario.path("status").asText()).isEqualTo("passed");
+        assertThat(parameterValue(functionalScenario, "id")).isEqualTo("ID-LC-1");
+
+        try (Stream<Path> files = Files.list(resultsDir)) {
+            List<JsonNode> containers = files
+                    .filter(path -> path.getFileName().toString().endsWith("-container.json"))
+                    .map(this::readJson)
+                    .collect(Collectors.toList());
+            assertThat(containers).hasSize(1);
+            JsonNode container = containers.get(0);
+            assertThat(container.path("children")).hasSize(1);
+            assertThat(container.path("befores")).hasSize(1);
+            assertThat(container.path("befores").get(0).path("name").asText())
+                    .isEqualTo("before feature hook");
+            assertThat(container.path("afters")).hasSize(1);
+            assertThat(container.path("afters").get(0).path("name").asText())
+                    .isEqualTo("after feature hook");
+        }
     }
 
     @Test
@@ -160,9 +207,26 @@ public class AllureReporterTest {
         List<JsonNode> results = readResults(resultsDir);
         assertThat(results).hasSize(2);
 
-        JsonNode skippedScenario = resultByName(results, "[SKIP-1] Scenario: skipped case");
+        List<JsonNode> containers = readContainers(resultsDir);
+        assertThat(containers).hasSize(1);
+        JsonNode container = containers.get(0);
+        assertThat(container.path("name").asText()).isEqualTo("Statuses feature");
+        assertThat(container.path("children")).hasSize(2);
+        assertThat(container.path("befores")).isEmpty();
+        assertThat(container.path("afters")).isEmpty();
+        assertThat(StreamSupport.stream(container.path("children").spliterator(), false)
+                .map(JsonNode::asText)
+                .allMatch(uuid -> results.stream()
+                        .map(result -> result.path("uuid").asText())
+                        .anyMatch(uuid::equals)))
+                .isTrue();
+
+        JsonNode skippedScenario = results.stream()
+                .filter(result -> "SKIP-1".equals(result.path("testCaseId").asText()))
+                .findFirst()
+                .orElseThrow();
         assertThat(skippedScenario.path("status").asText()).isEqualTo("skipped");
-        assertThat(labelValues(skippedScenario)).containsExactly("focus");
+        assertThat(labelValue(skippedScenario, "tags")).contains("SKIP-1", "focus");
         assertThat(skippedScenario.path("steps")).hasSize(1);
 
         JsonNode groupedStep = nodeByName(skippedScenario.path("steps"), "Given setup group");
@@ -171,15 +235,16 @@ public class AllureReporterTest {
 
         JsonNode nestedStep = nodeByName(groupedStep.path("steps"), "And embedded action");
         assertThat(nestedStep.path("status").asText()).isEqualTo("skipped");
-        assertThat(parameterValue(nestedStep, "documentType")).isEqualTo("text/plain");
-        assertThat(parameterValue(nestedStep, "document")).isEqualTo("first line\nsecond line");
-        assertThat(parameterValue(nestedStep, "dataTable")).isEqualTo("a | b" + System.lineSeparator() + "1 | 2");
-        assertThat(labelValue(skippedScenario, "package")).isEqualTo("features.sample");
+        assertThat(nestedStep.path("parameters")).isEmpty();
 
-        JsonNode unknownScenario = resultByName(results, "Unnamed node");
+        JsonNode unknownScenario = results.stream()
+                .filter(result -> "unknown".equals(result.path("status").asText()))
+                .findFirst()
+                .orElseThrow();
         assertThat(unknownScenario.path("status").asText()).isEqualTo("unknown");
-        assertThat(labelValue(unknownScenario, "package")).isEqualTo("wakamiti");
-        assertThat(unknownScenario.path("fullName").asText()).isEqualTo("wakamiti.Unnamed node");
+        assertThat(unknownScenario.path("name").isNull()).isTrue();
+        assertThat(unknownScenario.path("fullName").isNull()).isTrue();
+        assertThat(labelValue(unknownScenario, "package")).isNull();
         assertThat(unknownScenario.path("parameters").isMissingNode() || unknownScenario.path("parameters").isEmpty()).isTrue();
     }
 
@@ -249,12 +314,11 @@ public class AllureReporterTest {
             assertThat(summary.path("statistic").path("passed").asInt()).isEqualTo(1);
             assertThat(summary.path("statistic").path("total").asInt()).isEqualTo(2);
 
-            JsonNode suite = suites.path("items").get(0);
-            assertThat(suite.path("name").asText()).isEqualTo("Allure report feature");
+            assertThat(suites.path("items")).isEmpty();
 
             assertThat(StreamSupport.stream(statusChart.spliterator(), false)
                     .map(node -> node.path("name").asText()))
-                    .contains("[ID-2] Scenario: failing scenario");
+                    .contains("failing scenario");
         }
     }
 
@@ -291,9 +355,22 @@ public class AllureReporterTest {
     private List<JsonNode> readResults(
             Path output
     ) throws IOException {
+        return readJsonFiles(output, "-result.json");
+    }
+
+    private List<JsonNode> readContainers(
+            Path output
+    ) throws IOException {
+        return readJsonFiles(output, "-container.json");
+    }
+
+    private List<JsonNode> readJsonFiles(
+            Path output,
+            String suffix
+    ) throws IOException {
         try (Stream<Path> files = Files.list(output)) {
             return files
-                    .filter(path -> path.getFileName().toString().endsWith("-result.json"))
+                    .filter(path -> path.getFileName().toString().endsWith(suffix))
                     .sorted()
                     .map(this::readJson)
                     .collect(Collectors.toList());

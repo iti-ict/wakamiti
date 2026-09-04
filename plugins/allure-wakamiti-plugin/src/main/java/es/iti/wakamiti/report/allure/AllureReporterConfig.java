@@ -23,7 +23,7 @@ import es.iti.wakamiti.api.util.PathUtil;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "allure-report-config",
-        version = "2.13",
+        version = "3.0",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class AllureReporterConfig implements ConfigContributor<AllureReporter> {
