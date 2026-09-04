@@ -157,6 +157,9 @@
                                 <goals>
                                     <goal>remove</goal>
                                 </goals>
+                                <configuration>
+                                    <removeMode>all</removeMode>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
