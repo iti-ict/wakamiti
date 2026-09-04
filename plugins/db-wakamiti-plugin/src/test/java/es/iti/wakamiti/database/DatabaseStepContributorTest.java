@@ -15,8 +15,10 @@ import static org.hamcrest.Matchers.comparesEqualTo;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
@@ -54,6 +56,8 @@ public class DatabaseStepContributorTest {
     private static final String URL = "jdbc:h2:mem:test;MODE=MySQL;";
     private static final String USER = "sa";
     private static final String PASS = "";
+    private static final String QUALIFIED_SCHEMA = "QUALIFIED";
+    private static final String QUALIFIED_TABLE = QUALIFIED_SCHEMA + ".QUALIFIED_CLIENT";
 
     private static Connection h2;
 
@@ -82,6 +86,7 @@ public class DatabaseStepContributorTest {
     @After
     public void finish() throws SQLException, FileNotFoundException {
         RunScript.execute(h2, new FileReader("src/test/resources/wakamiti/db/clean.sql"));
+        RunScript.execute(h2, new StringReader("DELETE FROM qualified.qualified_client;"));
         contributor.releaseConnection();
     }
 
@@ -902,6 +907,159 @@ public class DatabaseStepContributorTest {
                     new String[]{"2", "1"}
             );
         }
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedUpdate() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        Object result = contributor.executeSQLScript(new Document(
+                "UPDATE " + QUALIFIED_TABLE + " SET ACTIVE = FALSE WHERE ID = 1"
+        ));
+
+        // Check
+        assertUpdatedRow(result);
+        assertQualifiedTableActive(false);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedUpdateWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.metadata.schema", "PUBLIC",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        Object result = contributor.executeSQLScript(new Document(
+                "UPDATE " + QUALIFIED_TABLE + " SET ACTIVE = FALSE WHERE ID = 1"
+        ));
+
+        // Check
+        assertUpdatedRow(result);
+        assertQualifiedTableActive(false);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedInsertWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        contributor.executeSQLScript(new Document(
+                "INSERT INTO " + QUALIFIED_TABLE + " (ID, ACTIVE) VALUES (2, FALSE)"
+        ));
+
+        // Check
+        assertQualifiedTableActive(2, false);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableMissing(2);
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedDeleteWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        contributor.executeSQLScript(new Document(
+                "DELETE FROM " + QUALIFIED_TABLE + " WHERE ID = 1"
+        ));
+
+        // Check
+        assertQualifiedTableMissing(1);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedTruncateWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        contributor.executeSQLScript(new Document("TRUNCATE TABLE " + QUALIFIED_TABLE));
+
+        // Check
+        assertQualifiedTableSize(0);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableSize(1);
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testMetadataUsesConfiguredSchema() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.metadata.schema", QUALIFIED_SCHEMA
+        );
+        configContributor.configurer().configure(contributor, config);
+        Database database = Database.from(contributor.connection());
+
+        // Act & Check
+        assertThat(database.table("QUALIFIED_CLIENT")).isEqualTo("QUALIFIED_CLIENT");
+        assertThat(database.column("QUALIFIED_CLIENT", "ACTIVE")).isEqualTo("ACTIVE");
+        assertThat(database.primaryKey("QUALIFIED_CLIENT")).containsExactly("ID");
+        assertThat(database.columnTypes("QUALIFIED_CLIENT")).containsEntry("ACTIVE", JDBCType.BOOLEAN);
     }
 
     @Test
@@ -4180,6 +4338,62 @@ public class DatabaseStepContributorTest {
     ) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(classLoader.getResource(resourceName).getFile());
+    }
+
+    private void assertUpdatedRow(
+            Object result
+    ) {
+        assertThat(result).isInstanceOf(ArrayNode.class);
+        assertThat((ArrayNode) result).hasSize(1);
+        JsonNode row = ((ArrayNode) result).get(0);
+        assertThat(row.get("ID").asText()).isEqualTo("1");
+        assertThat(row.get("ACTIVE").asText()).isEqualTo("false");
+    }
+
+    private void assertQualifiedTableActive(
+            boolean expected
+    ) throws SQLException {
+        assertQualifiedTableActive(1, expected);
+    }
+
+    private void assertQualifiedTableActive(
+            int id,
+            boolean expected
+    ) throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement();
+             var result = statement.executeQuery(
+                     "SELECT ACTIVE FROM " + QUALIFIED_TABLE + " WHERE ID = " + id)) {
+            assertThat(result.next()).isTrue();
+            assertThat(result.getBoolean(1)).isEqualTo(expected);
+            assertThat(result.next()).isFalse();
+        }
+    }
+
+    private void assertQualifiedTableMissing(
+            int id
+    ) throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement();
+             var result = statement.executeQuery(
+                     "SELECT 1 FROM " + QUALIFIED_TABLE + " WHERE ID = " + id)) {
+            assertThat(result.next()).isFalse();
+        }
+    }
+
+    private void assertQualifiedTableSize(
+            int expected
+    ) throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement();
+             var result = statement.executeQuery("SELECT COUNT(*) FROM " + QUALIFIED_TABLE)) {
+            assertThat(result.next()).isTrue();
+            assertThat(result.getInt(1)).isEqualTo(expected);
+        }
+    }
+
+    private void resetQualifiedTable() throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement()) {
+            statement.executeUpdate("DELETE FROM " + QUALIFIED_TABLE);
+            statement.executeUpdate("INSERT INTO " + QUALIFIED_TABLE + " VALUES (1, TRUE)");
+        }
     }
 
     private void createContext(

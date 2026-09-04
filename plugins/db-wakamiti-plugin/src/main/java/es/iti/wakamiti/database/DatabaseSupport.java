@@ -1120,7 +1120,7 @@ public class DatabaseSupport {
                         .Truncate truncate
         ) {
             Database db = Database.from(connection());
-            String table = db.table(truncate.getTable().getName());
+            String table = db.table(truncate.getTable().getFullyQualifiedName());
             Delete delete = new net.sf.jsqlparser.statement.delete.Delete();
             delete.setTable(new Table(db.parser().format(table)));
             visit(delete);
@@ -1132,7 +1132,7 @@ public class DatabaseSupport {
                         .Delete delete
         ) {
             Database db = Database.from(connection());
-            String table = db.table(delete.getTable().getName());
+            String table = db.table(delete.getTable().getFullyQualifiedName());
             delete.setTable(new Table(db.parser().format(table)));
             db.parser().formatColumns(delete.getWhere(), column -> format(table, column));
 
@@ -1157,7 +1157,7 @@ public class DatabaseSupport {
                         .Update update
         ) {
             Database db = Database.from(connection());
-            String table = db.table(update.getTable().getName());
+            String table = db.table(update.getTable().getFullyQualifiedName());
             update.setTable(new Table(db.parser().format(table)));
             db.parser().formatColumns(update.getWhere(), column -> format(table, column));
 
@@ -1209,7 +1209,7 @@ public class DatabaseSupport {
                         .Insert insert
         ) {
             Database db = Database.from(connection());
-            String table = db.table(insert.getTable().getName());
+            String table = db.table(insert.getTable().getFullyQualifiedName());
             insert.setTable(new Table(db.parser().format(table)));
             db.parser().formatColumns(insert.getColumns(), column -> format(table, column));
 
@@ -1257,7 +1257,7 @@ public class DatabaseSupport {
                         .Update update
         ) {
             Database db = Database.from(connection());
-            String table = db.table(update.getTable().getName());
+            String table = db.table(update.getTable().getFullyQualifiedName());
             result = db.parser()
                     .toSelect(update)
                     .map(DatabaseSupport.this::doSelect)

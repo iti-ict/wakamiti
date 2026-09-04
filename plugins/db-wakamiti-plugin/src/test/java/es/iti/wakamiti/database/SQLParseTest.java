@@ -300,6 +300,25 @@ public class SQLParseTest {
     }
 
     @Test
+    public void testFormatQualifiedName() {
+        SQLParser postgresql = new SQLParser(DatabaseType.POSTGRESQL, false);
+
+        assertThat(postgresql.format("client")).isEqualTo("\"client\"");
+        assertThat(postgresql.format("other.client")).isEqualTo("\"other\".\"client\"");
+        assertThat(postgresql.format("\"other\".\"client\"")).isEqualTo("\"other\".\"client\"");
+        assertThat(parser(false).format("other.client")).isEqualTo("other.client");
+    }
+
+    @Test
+    public void testFormatColumnsWhenExpressionContainsBooleanLiterals() throws JSQLParserException {
+        Expression expression = SQLParser.parseExpression("ACTIVE = TRUE AND ENABLED = FALSE");
+
+        parser(false).formatColumns(expression, column -> "FORMATTED_" + column);
+
+        assertThat(expression).hasToString("FORMATTED_ACTIVE = TRUE AND FORMATTED_ENABLED = FALSE");
+    }
+
+    @Test
     public void testSqlDb2() throws JSQLParserException {
         String sql = "SELECT 'MINUTES', TO_CHAR(CURRENT_DATE - CAST(col1 AS NUMERIC) DAYS, 'YYYYMMDD') FROM \"table1\" WHERE col2 = 'DAYS'";
         Statement result = SQLParser.parseStatement(sql);

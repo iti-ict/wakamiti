@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.utility.MountableFile;
 
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
@@ -49,6 +50,10 @@ public class MySqlDatabaseTest {
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
+            .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("wakamiti/db/create-qualified-mysql.sql"),
+                    "/docker-entrypoint-initdb.d/00-create-qualified.sql"
+            )
             .withInitScript("wakamiti/db/create-schema.sql")
             .withCreateContainerCmdModifier(cmd ->
                     Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(

@@ -266,3 +266,31 @@ Característica: Testing database steps
       UPDATE city SET latitude = 40.469906 WHERE id = 1;
       """
     Y se ha eliminado el contenido del fichero CSV '${data.dir}/data1.csv' de la tabla client
+
+
+  Escenario: Tabla con esquema cualificado
+    * Al finalizar, se ejecuta el siguiente script SQL:
+      """
+      DELETE FROM QUALIFIED.QUALIFIED_CLIENT;
+      INSERT INTO QUALIFIED.QUALIFIED_CLIENT (ID, ACTIVE) VALUES (1, TRUE);
+      DELETE FROM OTHER;
+      INSERT INTO OTHER (SOMETHING) VALUES (47);
+      """
+    Dado que se ha ejecutado el siguiente script SQL:
+      """
+      DELETE FROM QUALIFIED.QUALIFIED_CLIENT;
+      INSERT INTO QUALIFIED.QUALIFIED_CLIENT (ID, ACTIVE) VALUES (1, TRUE);
+      """
+    Cuando se ha ejecutado el siguiente script SQL:
+      """
+      UPDATE QUALIFIED.QUALIFIED_CLIENT SET ACTIVE = FALSE WHERE ID = 1;
+      """
+    Y se ha ejecutado el siguiente script SQL:
+      """
+      DELETE FROM OTHER;
+      INSERT INTO OTHER (SOMETHING)
+      SELECT CASE WHEN ACTIVE = FALSE THEN 48 ELSE 47 END
+      FROM QUALIFIED.QUALIFIED_CLIENT WHERE ID = 1;
+      """
+    Entonces el registro con something = '48' existe en la tabla other
+    Y el registro con something = '47' no existe en la tabla other

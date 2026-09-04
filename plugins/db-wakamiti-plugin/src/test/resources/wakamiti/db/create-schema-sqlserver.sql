@@ -25,7 +25,12 @@ CREATE TABLE other (
     something int NOT NULL
 );
 
+CREATE SCHEMA qualified;
 
+CREATE TABLE qualified.qualified_client (
+    id int PRIMARY KEY,
+    active bit DEFAULT 0
+);
 
 
 

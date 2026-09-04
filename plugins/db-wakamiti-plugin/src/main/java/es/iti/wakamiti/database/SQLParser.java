@@ -303,6 +303,10 @@ public class SQLParser {
             public void visit(
                     Column column
             ) {
+                if ("TRUE".equalsIgnoreCase(column.getColumnName())
+                        || "FALSE".equalsIgnoreCase(column.getColumnName())) {
+                    return;
+                }
                 column.setColumnName(mapper.apply(column.getColumnName()));
             }
         });
@@ -606,9 +610,11 @@ public class SQLParser {
     public String format(
             String name
     ) {
-        return Optional.ofNullable(FORMAT.get(type))
-                .orElse(FORMAT.get(DatabaseType.OTHER))
-                .apply(name);
+        java.util.function.Function<String, String> formatter = Optional.ofNullable(FORMAT.get(type))
+                .orElse(FORMAT.get(DatabaseType.OTHER));
+        return Stream.of(name.split("\\."))
+                .map(formatter)
+                .collect(Collectors.joining("."));
     }
 
     /**

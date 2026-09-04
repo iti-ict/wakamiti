@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.utility.MountableFile;
 
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
@@ -53,6 +54,10 @@ public class OracleDatabaseTest {
             .withDatabaseName("test")
             .withUsername("tester")
             .withPassword("pass")
+            .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("wakamiti/db/create-qualified-oracle.sql"),
+                    "/container-entrypoint-initdb.d/00-create-qualified.sql"
+            )
             .withInitScript("wakamiti/db/create-schema-oracle.sql")
             .withCreateContainerCmdModifier(cmd ->
                     Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(

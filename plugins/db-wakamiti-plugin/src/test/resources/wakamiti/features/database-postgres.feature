@@ -263,3 +263,31 @@ Feature: Testing database steps
       UPDATE city SET latitude = 40.469906 WHERE id = 1;
       """
     And the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
+
+
+  Scenario: Schema-qualified table
+    * On completion, the following SQL script is executed:
+      """
+      DELETE FROM "QUALIFIED"."QUALIFIED_CLIENT";
+      INSERT INTO "QUALIFIED"."QUALIFIED_CLIENT" (id, active) VALUES (1, true);
+      DELETE FROM other;
+      INSERT INTO other (something) VALUES (47);
+      """
+    Given the following SQL script is executed:
+      """
+      DELETE FROM "QUALIFIED"."QUALIFIED_CLIENT";
+      INSERT INTO "QUALIFIED"."QUALIFIED_CLIENT" (id, active) VALUES (1, true);
+      """
+    When the following SQL script is executed:
+      """
+      UPDATE "QUALIFIED"."QUALIFIED_CLIENT" SET active = false WHERE id = 1;
+      """
+    And the following SQL script is executed:
+      """
+      DELETE FROM other;
+      INSERT INTO other (something)
+      SELECT CASE WHEN active = false THEN 48 ELSE 47 END
+      FROM "QUALIFIED"."QUALIFIED_CLIENT" WHERE id = 1;
+      """
+    Then the record having something = '48' exists in the table other
+    And the record having something = '47' does not exist in the table other
