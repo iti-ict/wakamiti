@@ -236,6 +236,7 @@ public class PlanNodeSnapshot {
             PlanNode node
     ) {
         return node.children()
+                .filter(child -> child.nodeType() != NodeType.LIFECYCLE_HOOK)
                 .filter(it -> it.result().isPresent())
                 .collect(groupingBy(it -> it.result().orElseThrow(), counting()));
     }

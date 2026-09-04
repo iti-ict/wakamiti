@@ -8,6 +8,12 @@
 package es.iti.wakamiti.core.runner;
 
 
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_AFTER_FEATURE;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BEFORE_FEATURE;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -18,7 +24,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.slf4j.MDC;
 
@@ -172,7 +177,7 @@ public class PlanNodeRunner {
     }
 
     protected Optional<Backend> getBackend() {
-        if (backend.isEmpty() && node.nodeType() == NodeType.TEST_CASE) {
+        if (backend.isEmpty() && node.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK)) {
             backend = Optional.of(backendFactory.createBackend(node, configuration));
         }
         return backend;
@@ -198,6 +203,17 @@ public class PlanNodeRunner {
     }
 
     /**
+     * Executes this node silently (without notifying any external listener).
+     * Intended for lifecycle hook scenarios that should run but not appear as
+     * JUnit or JUnit5 test results.
+     *
+     * @return node result, or {@code null} when no executable branch applies
+     */
+    public Result run() {
+        return runNode();
+    }
+
+    /**
      * Executes this node according to its type and lifecycle state.
      *
      * @return node result, or {@code null} when no executable branch applies
@@ -211,10 +227,10 @@ public class PlanNodeRunner {
         state = State.RUNNING;
         Wakamiti.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
 
-        if (node.nodeType() == NodeType.TEST_CASE) {
+        if (node.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK)) {
             result = runTestCaseNode();
         } else if (!getChildren().isEmpty()) {
-            result = aggregatorFinish(runChildren());
+            result = isFeatureNode() ? runFeatureNode() : aggregatorFinish(runChildren());
         } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             result = runStep();
         }
@@ -237,7 +253,7 @@ public class PlanNodeRunner {
                 result = Result.NOT_IMPLEMENTED;
                 doNotImplemented(node, result);
             } else if (!getChildren().isEmpty()) {
-                Stream<Pair<Instant, Result>> results = Stream.empty();
+                List<Pair<Instant, Result>> results = new ArrayList<>();
                 boolean continueExecution = true;
                 if (dryRun) {
                     logger.logTestCaseHeader(node);
@@ -245,14 +261,12 @@ public class PlanNodeRunner {
                     try {
                         testCasePreExecution(node);
                     } catch (WakamitiException e) {
-                        results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                                .toList().stream(); // prevent lazy stream
+                        results.add(errorResult());
                         continueExecution = !stopExecutionOnError();
                     }
                 }
                 if (continueExecution) {
-                    results = Stream.concat(results, runChildren())
-                            .toList().stream(); // prevent lazy stream
+                    results.addAll(runChildren());
                 } else {
                     skipPendingChildren();
                 }
@@ -260,8 +274,7 @@ public class PlanNodeRunner {
                     try {
                         testCasePostExecution(node);
                     } catch (WakamitiException e) {
-                        results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                                .toList().stream(); // prevent lazy stream
+                        results.add(errorResult());
                     }
                 }
                 result = aggregatorFinish(results);
@@ -272,10 +285,61 @@ public class PlanNodeRunner {
         }
     }
 
+    private Result runFeatureNode() {
+        List<PlanNodeRunner> childRunners = getChildren();
+        List<PlanNodeRunner> beforeRunners = childRunners.stream()
+                .filter(this::isBeforeRunner)
+                .toList();
+        List<PlanNodeRunner> afterRunners = childRunners.stream()
+                .filter(this::isAfterRunner)
+                .toList();
+        List<PlanNodeRunner> scenarioRunners = childRunners.stream()
+                .filter(this::isFeatureRegularRunner)
+                .toList();
+
+        if (!hasExecutableFeatureScenario(scenarioRunners)) {
+            beforeRunners.forEach(PlanNodeRunner::skipIfPending);
+            afterRunners.forEach(PlanNodeRunner::skipIfPending);
+            if (scenarioRunners.isEmpty()) {
+                Instant instant = Instant.now();
+                node.prepareExecution().markStarted(instant);
+                node.prepareExecution().markFinished(instant, Result.SKIPPED);
+                return Result.SKIPPED;
+            }
+            return aggregatorFinish(runSelectedChildren(scenarioRunners));
+        }
+
+        List<Pair<Instant, Result>> results = new ArrayList<>();
+        boolean continueExecution = true;
+        boolean hasImplementedSteps = node.descendants().anyMatch(d -> d.nodeType().isAnyOf(NodeType.STEP));
+        try {
+            if (hasImplementedSteps) {
+                featurePreExecution(node);
+            }
+        } catch (WakamitiException e) {
+            results.add(errorResult());
+            continueExecution = !stopExecutionOnError();
+        }
+        if (continueExecution) {
+            results.addAll(runChildren());
+        } else {
+            skipPendingChildren();
+        }
+        try {
+            if (hasImplementedSteps) {
+                featurePostExecution(node);
+            }
+        } catch (WakamitiException e) {
+            results.add(errorResult());
+        }
+
+        return aggregatorFinish(results);
+    }
+
     private Result aggregatorFinish(
-            Stream<Pair<Instant, Result>> results
+            List<Pair<Instant, Result>> results
     ) {
-        Pair<Instant, Result> aux = results
+        Pair<Instant, Result> aux = results.stream()
                 .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
                 .orElse(new Pair<>(Instant.now(), Result.FAILED));
         Result result = aux.value();
@@ -287,14 +351,25 @@ public class PlanNodeRunner {
      * Executes child runners in encounter order and timestamps each resulting
      * outcome.
      *
-     * @return stream of child execution timestamps and results, excluding
+     * @return child execution timestamps and results, excluding
      *         children with a {@code null} result
      */
-    protected Stream<Pair<Instant, Result>> runChildren() {
+    protected List<Pair<Instant, Result>> runChildren() {
+        return runSelectedChildren(getChildren());
+    }
+
+    /**
+     * Executes the supplied child runners in encounter order.
+     *
+     * @param childRunners runners to execute
+     * @return timestamped child results, excluding {@code null} results
+     */
+    protected List<Pair<Instant, Result>> runSelectedChildren(
+            List<PlanNodeRunner> childRunners
+    ) {
         List<Pair<Instant, Result>> results = new ArrayList<>();
-        List<PlanNodeRunner> childRunners = getChildren();
         for (int i = 0; i < childRunners.size(); i++) {
-            Result result = childRunners.get(i).runNode();
+            Result result = runChild(childRunners.get(i));
             if (result != null) {
                 results.add(new Pair<>(Instant.now(), result));
             }
@@ -303,7 +378,23 @@ public class PlanNodeRunner {
                 break;
             }
         }
-        return results.stream();
+        return results;
+    }
+
+    /**
+     * Executes one child runner.
+     *
+     * <p>JUnit integrations override this method to publish their native test
+     * events while the base class keeps result aggregation and stop-on-error
+     * behavior centralized.</p>
+     *
+     * @param child runner to execute
+     * @return child result, or {@code null} when the child has no result
+     */
+    protected Result runChild(
+            PlanNodeRunner child
+    ) {
+        return child.runNode();
     }
 
     /**
@@ -343,7 +434,7 @@ public class PlanNodeRunner {
         Instant startInstant = Instant.now();
 
         node.children().forEach(c -> {
-            boolean isBackground = c.properties().get("gherkinType").equals("background");
+            boolean isBackground = GHERKIN_TYPE_BACKGROUND.equals(c.properties().get(GHERKIN_PROPERTY));
             doNotImplemented(c, isBackground && c.hasChildren() ? Result.SKIPPED : result);
         });
 
@@ -408,6 +499,7 @@ public class PlanNodeRunner {
     protected void featurePreExecution(
             PlanNode node
     ) {
+        logger.logFeatureHeader(node);
         lifecycleBackend().setUp(Level.FEATURE);
     }
 
@@ -485,6 +577,10 @@ public class PlanNodeRunner {
         return configuration.get(WakamitiConfiguration.STOP_EXECUTION_ON_ERROR, Boolean.class).get();
     }
 
+    private static Pair<Instant, Result> errorResult() {
+        return new Pair<>(Instant.now(), Result.ERROR);
+    }
+
     private boolean isPerScenarioLogEnabled() {
         return configuration.get(WakamitiConfiguration.LOGS_PER_SCENARIO, Boolean.class).get();
     }
@@ -556,6 +652,49 @@ public class PlanNodeRunner {
                 Objects.toString(node.name(), "")
         );
         return UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8)).toString();
+    }
+
+    private boolean isFeatureNode() {
+        return node.nodeType() == NodeType.AGGREGATOR
+                && GHERKIN_TYPE_FEATURE.equals(node.properties().get(GHERKIN_PROPERTY));
+    }
+
+    private boolean isFeatureRegularRunner(
+            PlanNodeRunner runner
+    ) {
+        return runner.getNode().nodeType() != NodeType.LIFECYCLE_HOOK;
+    }
+
+    private boolean isBeforeRunner(
+            PlanNodeRunner runner
+    ) {
+        return isLifecycleRunnerType(runner, GHERKIN_TYPE_BEFORE_FEATURE);
+    }
+
+    private boolean isAfterRunner(
+            PlanNodeRunner runner
+    ) {
+        return isLifecycleRunnerType(runner, GHERKIN_TYPE_AFTER_FEATURE);
+    }
+
+    private boolean isLifecycleRunnerType(
+            PlanNodeRunner runner,
+            String gherkinType
+    ) {
+        return gherkinType.equals(runner.getNode().properties().get(GHERKIN_PROPERTY));
+    }
+
+    private boolean hasExecutableFeatureScenario(
+            List<PlanNodeRunner> scenarioRunners
+    ) {
+        if (scenarioRunners.isEmpty() || dryRun) {
+            return false;
+        }
+        return scenarioRunners.stream().anyMatch(runner -> runner.getNode().descendants()
+                .filter(descendant -> descendant.nodeType() == NodeType.TEST_CASE)
+                .anyMatch(descendant -> !descendant.filtered()))
+                || scenarioRunners.stream().anyMatch(runner -> runner.getNode().nodeType() == NodeType.TEST_CASE
+                        && !runner.getNode().filtered());
     }
 
     static final class ScenarioLogContext {

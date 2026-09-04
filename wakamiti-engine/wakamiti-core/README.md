@@ -34,6 +34,22 @@ Wakamiti represents a test plan as a tree of nodes:
 
 This model allows the engine to transform or redefine the plan before execution while preserving the semantics of the original resources.
 
+### Lifecycle hook scenarios in Gherkin
+
+`wakamiti-core` supports reserved scenario tags to execute setup/teardown logic at feature and suite level:
+
+- `@Before`: runs at the start of the feature.
+- `@After`: runs at the end of the feature.
+
+Behavior rules:
+
+- They are declared as `Scenario` blocks in `.feature` files.
+- They do **not** receive `Background` steps.
+- They are lifecycle-only scenarios: they are visible in execution output and reports, but they do not contribute to functional test-case aggregates.
+- They are not treated as strict functional test-case IDs.
+- Feature-level hooks are skipped when the feature has no executable functional scenario after filtering.
+- Hook flow follows `stopExecutionOnError` like the rest of the engine.
+
 ### Configuration
 
 Core configuration is expressed through the `wakamiti.*` namespace, typically in `wakamiti.yaml`. Examples include:

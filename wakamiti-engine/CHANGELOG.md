@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ERROR` results.
 - Added launcher support for `wakamiti.log.perScenario` so file logging can generate one log file per scenario instead
   of a single log for the whole execution.
+- Added reserved Gherkin scenario tags `@Before` and `@After` to run feature-level lifecycle scenarios without 
+ `Background` inheritance and without affecting functional aggregate results.
 
 ### Fixed
 - Variable placeholders (e.g. `${credential.name}`) are now resolved in log output after step execution instead of

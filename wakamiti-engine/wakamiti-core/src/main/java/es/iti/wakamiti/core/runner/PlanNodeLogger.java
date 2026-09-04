@@ -8,6 +8,9 @@
 package es.iti.wakamiti.core.runner;
 
 
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import es.iti.wakamiti.api.WakamitiConfiguration;
@@ -39,6 +43,8 @@ public class PlanNodeLogger {
     private final List<String> hiddenPatterns;
     private final Logger logger;
 
+    private final long totalNumberFeatures;
+    private long currentFeatureNumber;
     private final long totalNumberTestCases;
     private long currentTestCaseNumber;
 
@@ -68,6 +74,8 @@ public class PlanNodeLogger {
                 .stream()
                 .map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
                 .toList();
+        this.totalNumberFeatures = plan.numDescendants(node ->
+                node.properties().getOrDefault(GHERKIN_PROPERTY, "").equals(GHERKIN_TYPE_FEATURE));
         this.totalNumberTestCases = plan.numDescendants(NodeType.TEST_CASE);
     }
 
@@ -120,6 +128,30 @@ public class PlanNodeLogger {
     }
 
     /**
+     * Logs the header of an executable feature.
+     *
+     * @param node feature node to display
+     */
+    public void logFeatureHeader(
+            PlanNode node
+    ) {
+        if (!node.properties().getOrDefault(GHERKIN_PROPERTY, "").equals(GHERKIN_TYPE_FEATURE)) {
+            return;
+        }
+        currentFeatureNumber++;
+        if (logger.isInfoEnabled()) {
+            logger.info("{highlight}", "-".repeat(node.name().length() + HEADING_PADDING));
+            logger.info(
+                    "{highlight} (Feature {}/{})",
+                    "| " + node.name() + " |",
+                    currentFeatureNumber,
+                    totalNumberFeatures
+            );
+            logger.info("{highlight}", "-".repeat(node.name().length() + HEADING_PADDING));
+        }
+    }
+
+    /**
      * Logs the header information for a specific test case.
      *
      * @param node The test case node.
@@ -143,6 +175,33 @@ public class PlanNodeLogger {
                     "| " + name + " |",
                     currentTestCaseNumber,
                     totalNumberTestCases
+            );
+            logger.info("{highlight}", "-".repeat(name.length() + HEADING_PADDING));
+        }
+    }
+
+    /**
+     * Logs the header of a feature lifecycle hook scenario.
+     *
+     * @param node lifecycle hook node to display
+     */
+    public void logHookHeader(
+            PlanNode node
+    ) {
+        if (node.nodeType() != NodeType.LIFECYCLE_HOOK) {
+            return;
+        }
+        if (logger.isInfoEnabled()) {
+            StringJoiner name = new StringJoiner(" : ");
+            String gherkinType = node.properties().get(GHERKIN_PROPERTY);
+            if (gherkinType != null) {
+                name.add(StringUtils.capitalize(gherkinType) + " hook");
+            }
+            name.add(resolveNodeName(node));
+            logger.info("{highlight}", "-".repeat(name.length() + HEADING_PADDING));
+            logger.info(
+                    "{highlight}",
+                    "| " + name + " |"
             );
             logger.info("{highlight}", "-".repeat(name.length() + HEADING_PADDING));
         }

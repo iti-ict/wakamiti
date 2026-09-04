@@ -90,8 +90,8 @@ public class DefaultBackendFactory implements BackendFactory {
             PlanNode testCase,
             Configuration configuration
     ) {
-        if (testCase.nodeType() != NodeType.TEST_CASE) {
-            throw new IllegalArgumentException("Plan node must be of type TEST_CASE");
+        if (!testCase.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK)) {
+            throw new IllegalArgumentException("Plan node must be of type TEST_CASE or LIFECYCLE_HOOK");
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(

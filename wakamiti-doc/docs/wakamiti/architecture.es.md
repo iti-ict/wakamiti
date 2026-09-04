@@ -854,6 +854,24 @@ no es nulo o está vacío
 
 
 
+## Hooks de ciclo de vida (`@Before`, `@After`)
+
+Wakamiti reserva estos tags para escenarios de preparación y limpieza:
+
+- `@Before`: se ejecuta al inicio de la *feature*.
+- `@After`: se ejecuta al final de la *feature*.
+
+Comportamiento:
+
+- Se definen como `Escenario`.
+- No heredan pasos de `Antecedentes`.
+- Se muestran en salida/reportes, pero no cuentan como casos funcionales en los agregados de resultado.
+- No se validan como IDs funcionales en `strictTestCaseID`.
+- Si una *feature* no tiene escenarios funcionales ejecutables tras filtros, sus hooks `@Before`/`@After` se omiten.
+- Siguen la política de parada de `wakamiti.stopExecutionOnError`.
+
+
+
 ## Propiedades dinámicas
 
 Wakamiti permite el uso de propiedades dinámicas con las que facilitar el paso de información a la ejecución de los 

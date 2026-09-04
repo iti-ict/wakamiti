@@ -88,6 +88,10 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     public static final String GHERKIN_TYPE_BACKGROUND = "background";
     /** Normalized property value identifying an executable Gherkin Step node. */
     public static final String GHERKIN_TYPE_STEP = "step";
+    /** Normalized property value identifying a feature-level pre-execution hook scenario. */
+    public static final String GHERKIN_TYPE_BEFORE_FEATURE = "before";
+    /** Normalized property value identifying a feature-level post-execution hook scenario. */
+    public static final String GHERKIN_TYPE_AFTER_FEATURE = "after";
     /** Plan-node property preserving the enclosing feature's display name. */
     public static final String GHERKIN_FEATURE_NAME = "featureName";
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -198,10 +202,16 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
             if (abstractScenario instanceof Scenario scenario) {
                 var child = createScenario(feature, scenario, location, node);
-                if (scenarioFilter.test(child) || includeFiltered) {
+                if (isLifecycleHookScenario(child) || scenarioFilter.test(child) || includeFiltered) {
                     node.addChild(child);
                 }
             } else if (abstractScenario instanceof ScenarioOutline scenarioOutline) {
+                if (lifecycleType(scenarioOutline.getTags()).isPresent()) {
+                    throw new WakamitiException(
+                            "Reserved lifecycle tags are not supported in Scenario Outline: {}",
+                            scenarioOutline.getName()
+                    );
+                }
                 var child = createScenarioOutline(
                         feature,
                         scenarioOutline,
@@ -215,7 +225,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         }
         if (node.name() != null) {
             node.descendants()
-                    .filter(child -> child.nodeType() == NodeType.TEST_CASE)
+                    .filter(child -> child.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK))
                     .forEach(child -> child.addProperty(GHERKIN_FEATURE_NAME, node.name()));
         }
         return node;
@@ -237,12 +247,16 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             PlanNodeBuilder parentNode
     ) {
         PlanNodeBuilder node = newScenarioNode(scenario, location, parentNode);
-        node.filtered(!scenarioFilter.test(node));
+        if (!isLifecycleHookScenario(node)) {
+            node.filtered(!scenarioFilter.test(node));
+        }
         if (node.filtered()) {
             return node;
         }
-        Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location, node);
-        backgroundSteps.ifPresent(background -> node.addChild(background.copy()));
+        if (!isLifecycleHookScenario(node)) {
+            Optional<PlanNodeBuilder> backgroundSteps = createBackgroundSteps(feature, location, node);
+            backgroundSteps.ifPresent(background -> node.addChild(background.copy()));
+        }
         for (Step step : scenario.getSteps()) {
             node.addChild(createStep(step, location, parentNode.language(), node));
         }
@@ -395,7 +409,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             String location,
             PlanNodeBuilder parentNode
     ) {
-        return new PlanNodeBuilder(NodeType.TEST_CASE)
+        PlanNodeBuilder node = new PlanNodeBuilder(NodeType.TEST_CASE)
                 .setId(id(scenario.getTags(), scenario.getName(), ""))
                 .setName(trim(scenario.getName()))
                 .setDisplayNamePattern("[{id}] {keyword}: {name}")
@@ -407,6 +421,11 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .setUnderlyingModel(scenario)
                 .addProperties(propertiesFromComments(scenario, parentNode.properties()))
                 .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO);
+        lifecycleType(scenario.getTags()).ifPresent(type -> node
+                .setNodeType(NodeType.LIFECYCLE_HOOK)
+                .setDisplayNamePattern("{keyword}: {name}")
+                .addProperty(GHERKIN_PROPERTY, type));
+        return node;
     }
 
     /**
@@ -758,6 +777,36 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                     + UUID.randomUUID().toString().substring(0, ID_SUFFIX_LENGTH);
         }
         return idTag + suffix;
+    }
+
+    private boolean isLifecycleHookScenario(
+            PlanNodeBuilder node
+    ) {
+        return node.nodeType() == NodeType.LIFECYCLE_HOOK;
+    }
+
+    private Optional<String> lifecycleType(
+            List<Tag> tags
+    ) {
+        List<String> normalizedTags = tags(tags);
+        boolean beforeFeature = Wakamiti.instance().createTagFilter(GHERKIN_TYPE_BEFORE_FEATURE).filter(normalizedTags);
+        boolean afterFeature = Wakamiti.instance().createTagFilter(GHERKIN_TYPE_AFTER_FEATURE).filter(normalizedTags);
+        int numReservedTags = (beforeFeature ? 1 : 0)
+                + (afterFeature ? 1 : 0);
+        if (numReservedTags > 1) {
+            throw new WakamitiException(
+                    "Only one lifecycle reserved tag is allowed among @{} and @{}.",
+                    GHERKIN_TYPE_BEFORE_FEATURE,
+                    GHERKIN_TYPE_AFTER_FEATURE
+            );
+        }
+        if (beforeFeature) {
+            return Optional.of(GHERKIN_TYPE_BEFORE_FEATURE);
+        }
+        if (afterFeature) {
+            return Optional.of(GHERKIN_TYPE_AFTER_FEATURE);
+        }
+        return Optional.empty();
     }
 
     /**

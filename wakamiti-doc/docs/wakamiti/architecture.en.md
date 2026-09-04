@@ -848,6 +848,24 @@ is not null or empty
 
 
 
+### Lifecycle hooks (`@Before`, `@After`)
+
+Wakamiti reserves these tags for setup and teardown scenarios:
+
+- `@Before`: runs at the beginning of the feature.
+- `@After`: runs at the end of the feature.
+
+Behavior:
+
+- They are declared as `Scenario` blocks.
+- They do not inherit `Background` steps.
+- They appear in output/reports, but they are excluded from functional test-case aggregate results.
+- They are excluded from strict functional ID validation (`strictTestCaseID`).
+- If a feature has no executable functional scenarios after filtering, its `@Before`/`@After` hooks are skipped.
+- They follow the `wakamiti.stopExecutionOnError` policy.
+
+
+
 ## Dynamic properties
 
 Wakamiti allows the use of dynamic properties to easily pass information to scenario execution using the syntax 
