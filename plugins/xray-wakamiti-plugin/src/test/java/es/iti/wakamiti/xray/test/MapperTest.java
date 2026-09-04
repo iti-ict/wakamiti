@@ -31,10 +31,12 @@ public class MapperTest {
     private static final Logger LOGGER = WakamitiLogger.forClass(MapperTest.class);
 
     private static PlanNodeSnapshot plan;
+    private static PlanNodeSnapshot lifecyclePlan;
 
     @BeforeClass
     public static void setUp() throws IOException {
         plan = new JsonPlanSerializer().read(resource("wakamiti.json"));
+        lifecyclePlan = new JsonPlanSerializer().read(resource("wakamiti_lifecycle.json"));
     }
 
     private static InputStream resource(
@@ -87,6 +89,26 @@ public class MapperTest {
         assertThat(tests.get(0)).hasFieldOrProperty("jira.summary");
         assertThat(tests.get(1)).hasFieldOrProperty("jira.summary");
         assertThat(tests.get(2)).hasFieldOrProperty("jira.summary");
+    }
+
+    @Test
+    public void testLifecycleHooksAreNotMappedOrIncludedInFeatureDefinition() {
+        List<TestCase> featureTests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_FEATURE).instance(null)
+                .map(lifecyclePlan).toList();
+        List<TestCase> scenarioTests = Mapper.ofType(XRaySynchronizer.GHERKIN_TYPE_SCENARIO).instance(null)
+                .map(lifecyclePlan).toList();
+
+        assertThat(featureTests).hasSize(1);
+        assertThat(featureTests.get(0).getJira().getSummary()).isEqualTo("Lifecycle integration feature");
+        assertThat(featureTests.get(0).getGherkin())
+                .contains("Given functional group")
+                .doesNotContain("fixture-only");
+        assertThat(scenarioTests).hasSize(1);
+        assertThat(scenarioTests.get(0).getJira().getSummary())
+                .isEqualTo("functional scenario remains passed");
+        assertThat(scenarioTests.get(0).getGherkin())
+                .contains("Given functional-only step")
+                .doesNotContain("fixture-only");
     }
 
 }

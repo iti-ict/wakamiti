@@ -105,7 +105,11 @@ public abstract class Mapper {
     private String getDisplayName(
             PlanNodeSnapshot target
     ) {
-        return target.getChildren().stream()
+        Stream<PlanNodeSnapshot> containers = target.getChildren().stream();
+        if (GHERKIN_TYPE_FEATURE.equals(gherkinType(target))) {
+            containers = containers.filter(child -> GHERKIN_TYPE_SCENARIO.equals(gherkinType(child)));
+        }
+        return containers
                 .map(planNodeSnapshot -> planNodeSnapshot.getChildren().stream()
                         .map(getComposedDisplayName())
                         .collect(toList()))
