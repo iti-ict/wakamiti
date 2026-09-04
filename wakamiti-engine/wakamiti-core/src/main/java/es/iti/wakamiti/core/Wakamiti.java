@@ -721,7 +721,7 @@ public final class Wakamiti {
         plan
                 .descendants()
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
-                .map(node -> node.id().matches(idTagPattern) ? node.id() : null)
+                .map(node -> node.id() != null && node.id().matches(idTagPattern) ? node.id() : null)
                 .forEach(id -> ids.computeIfAbsent(id, x -> new AtomicInteger()).incrementAndGet());
 
         if (ids.get(null) != null) {
