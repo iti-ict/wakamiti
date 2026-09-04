@@ -110,6 +110,29 @@ public class WakamitiReportMojoTest extends WakamitiAbstractMojoTest {
     }
 
     //Test
+    public void testWhenLifecycleFeatureConfigWithSuccess() throws Exception {
+        // Given
+        ProjectStub project = new ProjectStub(new File(getBasedir(), "src/test/resources/pom-config-lifecycle.xml"));
+        String configurationFiles = getProjectConfig(project, "configurationFiles");
+        Map<String, String> properties = Configuration.factory().fromPath(Path.of(configurationFiles)).inner("wakamiti").asMap();
+        MavenSession session = newMavenSession(project);
+
+        // When
+        WakamitiReporterMojo mojo = (WakamitiReporterMojo) executeMojo(session, GOAL);
+
+        // Then
+        assertThat(currentConfiguration.asMap()).containsAllEntriesOf(properties);
+        assertThat(currentConfiguration.asMap()).containsEntry(
+                WakamitiConfiguration.RESOURCE_PATH,
+                "src/test/resources/features/lifecycleHooks.feature"
+        );
+
+        assertThat(mojo.configurationFiles).isEqualTo(List.of(configurationFiles));
+        assertThat(session.getResult().getExceptions()).isEmpty();
+        verify(wakamiti, times(1)).generateReports(any());
+    }
+
+    //Test
     public void testWhenIgnoreWithSuccess() throws Exception {
         // Given
         ProjectStub project = new ProjectStub(new File(getBasedir(), "src/test/resources/pom-ignore.xml"));

@@ -1,0 +1,4 @@
+wakamiti:
+  resourceTypes: gherkin
+  resourcePath: src/test/resources/features/lifecycleHooks.feature
+  outputFilePath: target/wakamiti/lifecycle-hooks.json
