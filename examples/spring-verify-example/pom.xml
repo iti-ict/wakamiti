@@ -107,7 +107,7 @@
                                     <executable>${java.home}/bin/java</executable>
                                     <classpathScope>runtime</classpathScope>
                                     <async>true</async>
-                                    <asyncDestroyOnShutdown>true</asyncDestroyOnShutdown>
+                                    <asyncDestroyOnShutdown>false</asyncDestroyOnShutdown>
                                     <arguments>
                                         <argument>-cp</argument>
                                         <classpath/>
