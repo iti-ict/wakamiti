@@ -22,13 +22,13 @@
 
         <maven.deploy.skip>true</maven.deploy.skip>
 
-        <rest.version>2.10.0</rest.version>
+        <rest.version>2.11.0-SNAPSHOT</rest.version>
         <db.version>3.10.0-SNAPSHOT</db.version>
         <amqp.version>2.10.0</amqp.version>
         <email.version>1.6.0</email.version>
-        <groovy.version>2.8.0</groovy.version>
+        <groovy.version>2.9.0-SNAPSHOT</groovy.version>
         <io.version>2.8.0</io.version>
-        <jmeter.version>1.2.0</jmeter.version>
+        <jmeter.version>1.2.1-SNAPSHOT</jmeter.version>
         <html.version>2.11.0-SNAPSHOT</html.version>
 
         <volume>${project.basedir}/wakamiti:/wakamiti</volume>
