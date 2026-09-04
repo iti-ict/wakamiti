@@ -5,11 +5,15 @@ Característica: Pruebas de API REST con Spring Petclinic
   Antecedentes:
     Dado el servicio REST '/owners/{id}'
 
-  Escenario: Se consulta un usuario
-    Dado el parámetro de ruta 'id' con el valor '20'
-    Y que se ha insertado los siguientes datos en la tabla de BBDD owners:
+  @Before
+  Escenario: Inicialización de la catacterística
+    * se ha insertado el siguiente registro en la tabla de BBDD owners:
       | ID | FIRST_NAME | LAST_NAME      |
       | 20 | Pepe       | Perez Martinez |
+
+  @ID-1
+  Escenario: Se consulta un usuario
+    Dado el parámetro de ruta 'id' con el valor '20'
     Y la cola de destino test
     # id: s1
     Cuando se consulta el usuario
@@ -43,3 +47,9 @@ Característica: Pruebas de API REST con Spring Petclinic
       """
     Y el fichero 'abc' no existe
     Y el número de correos sin leer es 0
+
+  @After
+  Escenario: Finalización de la catacterística
+    * se ha eliminado el siguiente registro de la tabla owners:
+      | ID | FIRST_NAME | LAST_NAME      |
+      | 20 | Pepe       | Perez Martinez |

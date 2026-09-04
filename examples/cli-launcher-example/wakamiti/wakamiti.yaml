@@ -3,7 +3,9 @@ wakamiti:
     - gherkin
 
   log:
-    level: info
+    level: trace
+    path: /target/result
+    perScenario: true
 
   launcher:
     modules:
@@ -12,22 +14,22 @@ wakamiti:
   nonRegisteredStepProviders:
     - steps.CustomSteps
 
-  outputFilePath: /result/report-%execID%.json
+  outputFilePath: /target/result/report.json
   htmlReport:
-    output: /result/report-%execID%.html
+    output: /target/result/report.html
   rest:
     baseURL: http://host.docker.internal:9966/petclinic/api
   jmeter:
     baseURL: http://host.docker.internal:9966/petclinic/api
     report:
-      jtl: /result/report-%execID%.jtl
+      jtl: /target/result/report.jtl
   database:
     connection:
       url: jdbc:mysql://host.docker.internal:3309/petclinic?useUnicode=true
       username: root
-      password: petclinic
+      password: test
       driver: com.mysql.cj.jdbc.Driver
-    enableCleanupUponCompletion: "true"
+    enableCleanupUponCompletion: "false"
   email:
     store:
       host: host.docker.internal

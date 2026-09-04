@@ -29,7 +29,7 @@
         <groovy.version>2.8.0</groovy.version>
         <io.version>2.8.0</io.version>
         <jmeter.version>1.2.0</jmeter.version>
-        <html.version>2.10.0</html.version>
+        <html.version>2.11.0-SNAPSHOT</html.version>
 
         <volume>${project.basedir}/wakamiti:/wakamiti</volume>
         <repo>${user.home}/.m2/repository:/repository</repo>
@@ -61,15 +61,15 @@
                         </goals>
                         <configuration>
                             <commandlineArgs>
-                                run --rm -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test
+                                run --rm -v ${volume} -v ${repo} -v ${project.build.directory}/test1:/target ${add.host} wakamiti/wakamiti:test
                                 -KresourcePath=/wakamiti/steps -KresourcePath=/wakamiti/rest.feature
-                                -m ${groupId}:rest-wakamiti-plugin:${rest.version}
-                                -m ${groupId}:db-wakamiti-plugin:${db.version}
-                                -m ${groupId}:amqp-wakamiti-plugin:${amqp.version}
-                                -m ${groupId}:email-wakamiti-plugin:${email.version}
-                                -m ${groupId}:groovy-wakamiti-plugin:${groovy.version}
-                                -m ${groupId}:io-wakamiti-plugin:${io.version}
-                                -m ${groupId}:html-report-wakamiti-plugin:${html.version}
+                                -m ${project.groupId}:rest-wakamiti-plugin:${rest.version}
+                                -m ${project.groupId}:db-wakamiti-plugin:${db.version}
+                                -m ${project.groupId}:amqp-wakamiti-plugin:${amqp.version}
+                                -m ${project.groupId}:email-wakamiti-plugin:${email.version}
+                                -m ${project.groupId}:groovy-wakamiti-plugin:${groovy.version}
+                                -m ${project.groupId}:io-wakamiti-plugin:${io.version}
+                                -m ${project.groupId}:html-report-wakamiti-plugin:${html.version}
                             </commandlineArgs>
                         </configuration>
                     </execution>
@@ -81,15 +81,15 @@
                         </goals>
                         <configuration>
                             <commandlineArgs>
-                                run --rm -v ${volume} -v ${repo} ${add.host} wakamiti/wakamiti:test
+                                run --rm -v ${volume} -v ${repo} -v ${project.build.directory}/test2:/target ${add.host} wakamiti/wakamiti:test
                                 -KresourcePath=/wakamiti/steps -KresourcePath=/wakamiti/jmeter.feature
-                                -m ${groupId}:jmeter-wakamiti-plugin:${jmeter.version}
-                                -m ${groupId}:db-wakamiti-plugin:${db.version}
-                                -m ${groupId}:amqp-wakamiti-plugin:${amqp.version}
-                                -m ${groupId}:email-wakamiti-plugin:${email.version}
-                                -m ${groupId}:groovy-wakamiti-plugin:${groovy.version}
-                                -m ${groupId}:io-wakamiti-plugin:${io.version}
-                                -m ${groupId}:html-report-wakamiti-plugin:${html.version}
+                                -m ${project.groupId}:jmeter-wakamiti-plugin:${jmeter.version}
+                                -m ${project.groupId}:db-wakamiti-plugin:${db.version}
+                                -m ${project.groupId}:amqp-wakamiti-plugin:${amqp.version}
+                                -m ${project.groupId}:email-wakamiti-plugin:${email.version}
+                                -m ${project.groupId}:groovy-wakamiti-plugin:${groovy.version}
+                                -m ${project.groupId}:io-wakamiti-plugin:${io.version}
+                                -m ${project.groupId}:html-report-wakamiti-plugin:${html.version}
                             </commandlineArgs>
                         </configuration>
                     </execution>
