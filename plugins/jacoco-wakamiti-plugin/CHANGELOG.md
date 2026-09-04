@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [Unreleased]
+
+### Added
+- Generate coverage segments for executed feature lifecycle hooks.
+
+
 ## [1.1.0] - 2026-07-31
 
 ### Changed

@@ -47,6 +47,7 @@ import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.extensions.EventObserver;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
@@ -185,10 +186,11 @@ public class JacocoReporter implements EventObserver {
     ) {
         if (event.data() != null) {
             PlanNodeSnapshot snapshot = (PlanNodeSnapshot) event.data();
-            if (snapshot.getNodeType().isAnyOf(NodeType.TEST_CASE)) {
-                dump(snapshot.getId());
+            String segmentId = coverageSegmentId(snapshot);
+            if (segmentId != null) {
+                dump(segmentId);
                 if (xml != null || csv != null) {
-                    executeSingle(snapshot.getId());
+                    executeSingle(segmentId);
                 }
             }
         }
@@ -196,6 +198,27 @@ public class JacocoReporter implements EventObserver {
         if (Event.AFTER_WRITE_OUTPUT_FILES.equals(event.type())) {
             Optional.ofNullable(html).ifPresent(x -> executeFinal());
         }
+    }
+
+    private String coverageSegmentId(
+            PlanNodeSnapshot snapshot
+    ) {
+        if (snapshot.getNodeType() == NodeType.TEST_CASE) {
+            return snapshot.getId();
+        }
+        if (snapshot.getNodeType() != NodeType.LIFECYCLE_HOOK
+                || snapshot.getResult() == null || snapshot.getResult() == Result.SKIPPED) {
+            return null;
+        }
+        String type = Optional.ofNullable(snapshot.getProperties())
+                .map(properties -> properties.get("gherkinType"))
+                .filter(value -> "before".equals(value) || "after".equals(value))
+                .orElse(null);
+        String id = Optional.ofNullable(snapshot.getId())
+                .map(value -> value.replaceFirst("^#", ""))
+                .filter(value -> !value.isBlank())
+                .orElse(null);
+        return type == null || id == null ? null : format("fixture-{}-{}", type, id);
     }
 
     @Override
@@ -248,7 +271,7 @@ public class JacocoReporter implements EventObserver {
             LOGGER.info("Writing execution data to {}", file);
             loader.save(file, true);
         } catch (IOException e) {
-            throw new WakamitiException("Cannot dump jacoco coverage of test case '{}'", id, e);
+            throw new WakamitiException("Cannot dump jacoco coverage segment '{}'", id, e);
         }
     }
 
@@ -307,7 +330,7 @@ public class JacocoReporter implements EventObserver {
 
         final ExecFileLoader loader = fileLoader();
         if (!exec.exists()) {
-            LOGGER.warn("No execution data file provided of test case '{}'", id);
+            LOGGER.warn("No execution data file provided for coverage segment '{}'", id);
         } else {
             LOGGER.info("Loading execution data file {}", exec.getAbsolutePath());
             try {

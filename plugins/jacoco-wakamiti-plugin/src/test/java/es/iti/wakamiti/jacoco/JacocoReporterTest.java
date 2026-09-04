@@ -19,6 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +30,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.jacoco.core.data.ExecutionDataStore;
@@ -42,6 +44,7 @@ import org.slf4j.Logger;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 
 
@@ -125,6 +128,27 @@ public class JacocoReporterTest {
     }
 
     @Test
+    public void eventWithLifecycleHooksCreatesIndependentCoverageSegments() throws Exception {
+        JacocoReporter reporter = new JacocoReporter();
+        reporter.setHost("localhost");
+        reporter.setPort("6300");
+        reporter.setOutput(Files.createTempDirectory("jacoco-hooks"));
+
+        ExecDumpClient dumpClient = mock(ExecDumpClient.class);
+        ExecFileLoader dumpLoader = mock(ExecFileLoader.class);
+        when(dumpClient.dump(anyString(), anyInt())).thenReturn(dumpLoader);
+        setPrivate(reporter, "dumpClient", dumpClient);
+
+        reporter.eventReceived(hookEvent("#setup", "before", Result.PASSED));
+        reporter.eventReceived(hookEvent("#teardown", "after", Result.ERROR));
+        reporter.eventReceived(hookEvent("#ignored", "after", Result.SKIPPED));
+
+        verify(dumpClient, times(2)).dump("localhost", 6300);
+        verify(dumpLoader).save(argThat(file -> file.getName().equals("fixture-before-setup.exec")), eq(true));
+        verify(dumpLoader).save(argThat(file -> file.getName().equals("fixture-after-teardown.exec")), eq(true));
+    }
+
+    @Test
     public void eventWithTestCaseAndXmlTriggersExecuteSingleAndProducesXml() throws Exception {
         // Arrange temporary filesystem
         Path out = Files.createTempDirectory("jacoco-out");
@@ -189,6 +213,19 @@ public class JacocoReporterTest {
         java.lang.reflect.Field f = target.getClass().getDeclaredField(field);
         f.setAccessible(true);
         f.set(target, value);
+    }
+
+    private Event hookEvent(
+            String id,
+            String type,
+            Result result
+    ) {
+        PlanNodeSnapshot snapshot = mock(PlanNodeSnapshot.class);
+        when(snapshot.getNodeType()).thenReturn(NodeType.LIFECYCLE_HOOK);
+        when(snapshot.getId()).thenReturn(id);
+        when(snapshot.getProperties()).thenReturn(Map.of("gherkinType", type));
+        when(snapshot.getResult()).thenReturn(result);
+        return new Event(Event.NODE_RUN_FINISHED, Instant.now(), snapshot);
     }
 
     private static Object getPrivate(
