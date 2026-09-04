@@ -1026,6 +1026,29 @@ public class DatabaseStepContributorTest {
         }
     }
 
+    @Test(expected = WakamitiException.class)
+    public void testExecuteSQLScriptWhenIsEmptyWithError() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        try {
+            contributor.executeSQLScript(new Document(""));
+
+            // Check
+        } catch (WakamitiException e) {
+            assertThat(e.getMessage()).isEqualTo("SQL script is empty");
+            throw e;
+        }
+    }
+
     @Test
     public void testAssertRowExistsBySingleId() {
         // Prepare

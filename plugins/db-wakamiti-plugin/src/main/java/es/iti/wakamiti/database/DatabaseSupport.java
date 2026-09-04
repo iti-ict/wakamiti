@@ -264,6 +264,9 @@ public class DatabaseSupport {
             String script,
             boolean cleanupUponCompletion
     ) {
+        if (script.isBlank()) {
+            throw new WakamitiException("SQL script is empty");
+        }
         List<Map<String, String>> results = new LinkedList<>();
         try {
             SQLParser.parseStatements(script).forEach(statement -> {
