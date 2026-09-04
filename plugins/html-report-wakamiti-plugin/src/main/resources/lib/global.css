@@ -1305,3 +1305,25 @@ footer a:hover {
 .simple-pagination div {
     display: flex;
 }
+
+/* -- Lifecycle hook scenarios (@Before, @After) ------- */
+.lifecycle-hook {
+    opacity: 0.85;
+}
+
+.lifecycle-hook > .test--header {
+    background-color: var(--grey100);
+}
+
+.lifecycle-hook .test--title span,
+.lifecycle-hook .keyword {
+    color: var(--grey700);
+    font-style: italic;
+}
+
+.lifecycle-hook .test--tags,
+.lifecycle-hook a {
+    font-style: italic;
+    color: var(--grey500);
+    opacity: 0.6;
+}

@@ -40,7 +40,9 @@ public class TestHtmlReportGenerator {
     private static Document xml2;
     private static Document xml3;
     private static Document xmlNoExecution;
+    private static Document xmlLifecycle;
     private static String html2;
+    private static String htmlLifecycle;
     private static String templateSource;
     private static String scriptSource;
 
@@ -54,7 +56,9 @@ public class TestHtmlReportGenerator {
         xml2 = load("wakamiti_2", "htmlReport.output", "target/wakamiti_2.html");
         xml3 = load("wakamiti_huge", "htmlReport.output", "target/wakamiti_huge.html");
         xmlNoExecution = load("wakamiti_noExecution", "htmlReport.output", "target/wakamiti_noExecution.html");
+        xmlLifecycle = load("wakamiti_lifecycle", "htmlReport.output", "target/wakamiti_lifecycle.html");
         html2 = Files.readString(Path.of("target/wakamiti_2.html"));
+        htmlLifecycle = Files.readString(Path.of("target/wakamiti_lifecycle.html"));
         templateSource = Files.readString(Path.of("src/main/resources/report.ftl"));
         scriptSource = Files.readString(Path.of("src/main/resources/lib/global.js"));
     }
@@ -184,6 +188,36 @@ public class TestHtmlReportGenerator {
                 .contains("class=\"step--response\"");
         org.assertj.core.api.Assertions.assertThat(html2)
                 .contains("class=\"step--response\"");
+    }
+
+    @Test
+    public void testLifecycleHooksSeparateFromFunctionalResults() {
+        // All 3 scenarios (2 hooks + 1 functional) appear in the embedded report data
+        org.assertj.core.api.Assertions.assertThat(htmlLifecycle)
+                .contains("Setup feature execution")
+                .contains("Functional scenario")
+                .contains("Teardown feature execution");
+
+        assertThat(xmlLifecycle)
+                .nodesByXPath("//canvas[@data-result='{\"FAILED\":1}']")
+                .size().isEqualTo(2);
+    }
+
+    @Test
+    public void testFilteredSnapshotExcludesSkippedLifecycleHooksAndIdentifiesFixtures() throws IOException {
+        try (Reader reader = Files.newBufferedReader(
+                Paths.get("src/test/resources/wakamiti_lifecycle.json"), StandardCharsets.UTF_8)) {
+            PlanNodeSnapshot plan = WakamitiAPI.instance().planSerializer().read(reader);
+            PlanNodeSnapshot feature = plan.getChildren().get(0);
+
+            java.util.List<FilteredSnapshot> children = FilteredSnapshot.of(feature.getChildren());
+
+            org.assertj.core.api.Assertions.assertThat(children).hasSize(3);
+            org.assertj.core.api.Assertions.assertThat(children.get(0).getLt()).isEqualTo("before");
+            org.assertj.core.api.Assertions.assertThat(children.get(0).getK()).isEqualTo("Before fixture");
+            org.assertj.core.api.Assertions.assertThat(children)
+                    .noneMatch(child -> "unexecuted after hook".equals(child.getN()));
+        }
     }
 
     private String uri(

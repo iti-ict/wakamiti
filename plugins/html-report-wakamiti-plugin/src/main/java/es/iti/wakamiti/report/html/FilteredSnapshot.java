@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import es.iti.wakamiti.api.plan.NodeType;
@@ -39,6 +40,7 @@ import es.iti.wakamiti.report.html.factory.DurationTemplateNumberFormatFactory;
 public class FilteredSnapshot {
 
     private NodeType t;
+    private String lt;
     private String i;
     private String n;
     private String k;
@@ -71,10 +73,15 @@ public class FilteredSnapshot {
     ) {
         FilteredSnapshot filteredSnapshot = new FilteredSnapshot();
         filteredSnapshot.t = snapshot.getNodeType();
+        if (snapshot.getNodeType() == NodeType.LIFECYCLE_HOOK && snapshot.getProperties() != null) {
+            filteredSnapshot.lt = snapshot.getProperties().get("gherkinType");
+            filteredSnapshot.k = StringUtils.capitalize(filteredSnapshot.lt) + " fixture";
+        } else {
+            filteredSnapshot.k = snapshot.getKeyword();
+        }
         filteredSnapshot.i = Strings.isNotBlank(snapshot.getId())
                 ? snapshot.getId().replaceAll("^#", "") : null;
         filteredSnapshot.n = snapshot.getName();
-        filteredSnapshot.k = snapshot.getKeyword();
         filteredSnapshot.l = !isEmpty(snapshot.getDescription()) ? snapshot.getDescription() : null;
         filteredSnapshot.g = !isEmpty(snapshot.getTags()) ? snapshot.getTags() : null;
         filteredSnapshot.w = snapshot.getDuration() != null
@@ -104,7 +111,17 @@ public class FilteredSnapshot {
     public static List<FilteredSnapshot> of(
             List<PlanNodeSnapshot> snapshots
     ) {
-        return snapshots.stream().map(FilteredSnapshot::of).collect(Collectors.toList());
+        return snapshots.stream()
+                .filter(FilteredSnapshot::visibleNode)
+                .map(FilteredSnapshot::of)
+                .collect(Collectors.toList());
+    }
+
+    private static boolean visibleNode(
+            PlanNodeSnapshot snapshot
+    ) {
+        return snapshot.getNodeType() != NodeType.LIFECYCLE_HOOK
+                || snapshot.getResult() != null && snapshot.getResult() != Result.SKIPPED;
     }
 
     /**
@@ -112,6 +129,14 @@ public class FilteredSnapshot {
      */
     public NodeType getT() {
         return t;
+    }
+
+    /**
+     * @return lifecycle hook sub-type ({@code before}, {@code after},
+     *         or {@code null} for non-hook nodes
+     */
+    public String getLt() {
+        return lt;
     }
 
     /**
