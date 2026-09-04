@@ -1,0 +1,26 @@
+[ {
+  "uri" : "lifecycle.feature[1,1]",
+  "keyword" : "Feature",
+  "id" : "#lc0001",
+  "name" : "Lifecycle feature",
+  "tags" : [ {
+    "name" : "@definition"
+  } ],
+  "elements" : [ {
+    "keyword" : "Scenario",
+    "id" : "LC-1",
+    "name" : "a functional scenario",
+    "tags" : [ {
+      "name" : "@definition"
+    } ],
+    "type" : "scenario",
+    "steps" : [ {
+      "keyword" : "Given",
+      "name" : "a functional step",
+      "result" : {
+        "status" : "passed",
+        "duration" : 10
+      }
+    } ]
+  } ]
+} ]
