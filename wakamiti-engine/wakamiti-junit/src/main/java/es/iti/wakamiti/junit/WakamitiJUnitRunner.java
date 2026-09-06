@@ -75,7 +75,7 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     protected final boolean profileEnabled;
     protected final PlanNodeLogger planNodeLogger;
     protected final boolean treatStepsAsTests;
-    protected final es.iti.wakamiti.core.Wakamiti wakamiti;
+    protected final Wakamiti wakamiti;
     protected final Configuration configuration;
     private static final Statement NO_OP_STATEMENT = new Statement() {
         @Override
@@ -113,7 +113,7 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
             this.planNodeLogger = null;
             this.treatStepsAsTests = false;
         } else {
-            this.wakamiti = es.iti.wakamiti.core.Wakamiti.instance();
+            this.wakamiti = Wakamiti.instance();
             this.configuration = retrieveConfiguration(configurationClass);
             this.plan = wakamiti.createPlanFromConfiguration(configuration);
             this.planNodeLogger = new PlanNodeLogger(LOGGER, configuration, plan);
@@ -414,10 +414,8 @@ public class WakamitiJUnitRunner extends ParentRunner<PlanNodeJUnitRunner> {
     }
 
     private void doInitWakamiti() {
+        wakamiti.configureRuntime(configuration);
         LOGGER.debug("{}", configuration);
-        Wakamiti.contributors().propertyResolvers(configuration);
-        wakamiti.configureLogger(configuration);
-        wakamiti.configureEventObservers(configuration);
         plan.assignExecutionID(configuration.get(EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString()));
         wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);

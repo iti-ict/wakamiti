@@ -33,9 +33,8 @@ import es.iti.wakamiti.core.Wakamiti;
 /**
  * Coordinates end-to-end execution of a constructed plan.
  * <p>
- * The runner configures logging/event observers, assigns execution IDs,
- * delegates node execution to {@link PlanNodeRunner} children, and publishes
- * plan-level start/finish events.
+ * The runner assigns execution IDs, delegates node execution to
+ * {@link PlanNodeRunner} children, and publishes plan-level start/finish events.
  * </p>
  */
 public class PlanRunner {
@@ -96,8 +95,6 @@ public class PlanRunner {
     private PlanNode runPlan(
             boolean dryRun
     ) {
-        wakamiti.configureLogger(configuration);
-        wakamiti.configureEventObservers(configuration);
         plan.assignExecutionID(
                 configuration.get(WakamitiConfiguration.EXECUTION_ID, String.class)
                         .orElse(UUID.randomUUID().toString())

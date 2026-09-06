@@ -168,10 +168,8 @@ class WakamitiClassDescriptor extends AbstractTestDescriptor {
     }
 
     private void initWakamiti() {
+        wakamiti.configureRuntime(configuration);
         LOGGER.debug("{}", configuration);
-        Wakamiti.contributors().propertyResolvers(configuration);
-        wakamiti.configureLogger(configuration);
-        wakamiti.configureEventObservers(configuration);
         plan.assignExecutionID(configuration.get(EXECUTION_ID, String.class).orElse(UUID.randomUUID().toString()));
         wakamiti.publishEvent(Event.PLAN_RUN_STARTED, new PlanNodeSnapshot(plan));
         planNodeLogger.logTestPlanHeader(plan);

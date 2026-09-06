@@ -190,6 +190,24 @@ public final class Wakamiti {
     }
 
     /**
+     * Activates the configuration used by Wakamiti shared runtime services.
+     * <p>
+     * This method must be invoked before creating or executing a plan so that
+     * sequential plans do not retain runtime state from a previous configuration.
+     * Shared runtime services do not provide isolation between concurrent plans.
+     *
+     * @param configuration The configuration to activate.
+     */
+    public void configureRuntime(
+            Configuration configuration
+    ) {
+        RESOURCE_LOADER.setWorkingDir(workingDir(configuration));
+        CONTRIBUTORS.propertyResolvers(configuration);
+        configureLogger(configuration);
+        configureEventObservers(configuration);
+    }
+
+    /**
      * Attempt to create a plan using the resource type and the feature path
      * defined in the received configuration.
      *
@@ -199,9 +217,8 @@ public final class Wakamiti {
     public PlanNode createPlanFromConfiguration(
             Configuration configuration
     ) {
+        configureRuntime(configuration);
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
-
-        RESOURCE_LOADER.setWorkingDir(workingDir(configuration));
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
@@ -247,7 +264,7 @@ public final class Wakamiti {
     public PlanNode createPlanFromWorkspace(
             Configuration configuration
     ) {
-        RESOURCE_LOADER.setWorkingDir(workingDir(configuration));
+        configureRuntime(configuration);
 
         List<String> discoveryPaths = configuration.getList(RESOURCE_PATH, String.class);
         if (discoveryPaths.isEmpty()) {
@@ -282,8 +299,8 @@ public final class Wakamiti {
             Configuration configuration,
             InputStream inputStream
     ) {
+        configureRuntime(configuration);
         LOGGER.info(IMPORTANT, "Creating the Test Plan...");
-        RESOURCE_LOADER.setWorkingDir(workingDir(configuration));
         String resourceTypeName = configuration.get(RESOURCE_TYPES, String.class)
                 .orElseThrow(() -> new WakamitiException("No resource types configured\nConfiguration was:\n{}", configuration));
         Optional<PlanNode> plan = createPlanForResourceType(
@@ -467,6 +484,7 @@ public final class Wakamiti {
             PlanNode plan,
             Configuration configuration
     ) {
+        configureRuntime(configuration);
         PlanRunner runner = new PlanRunner(plan, configuration);
         PlanNode result = configuration.get(DRY_RUN, Boolean.class).orElse(false)
                 ? runner.noRun() : runner.run();
