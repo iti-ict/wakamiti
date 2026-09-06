@@ -2131,7 +2131,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
-                duration = duration.minus(assertNonEmptyAsync(dataSet, duration));
+                duration = remainingDuration(duration, assertNonEmptyAsync(dataSet, duration));
             }
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -2175,11 +2175,19 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
-                duration = duration.minus(assertEmptyAsync(dataSet, duration));
+                duration = remainingDuration(duration, assertEmptyAsync(dataSet, duration));
             }
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
+    }
+
+    private static Duration remainingDuration(
+            Duration available,
+            Duration elapsed
+    ) {
+        Duration remaining = available.minus(elapsed);
+        return remaining.isNegative() ? Duration.ZERO : remaining;
     }
 
     /**

@@ -85,6 +85,7 @@ public class DatabaseSupport {
     protected static final String ERROR_CLOSING_DATASET = "Error closing dataset";
     protected static final double SIMILARITY_THRESHOLD = 0.7;
     protected static final long DEFAULT_SIMILAR_SEARCH_TIMEOUT_MS = 10_000L;
+    private static final Duration ASYNC_POLL_INTERVAL = Durations.ONE_HUNDRED_MILLISECONDS;
     private static final long NANOS_PER_MILLISECOND = 1_000_000L;
     private static final long MILLIS_PER_SECOND = 1_000L;
     protected static final LevenshteinDistance LEVENSHTEIN_DISTANCE = new LevenshteinDistance();
@@ -811,10 +812,16 @@ public class DatabaseSupport {
             Duration duration,
             Runnable catchAction
     ) {
+        if (duration.compareTo(ASYNC_POLL_INTERVAL) <= 0) {
+            if (!action.getAsBoolean()) {
+                catchAction.run();
+            }
+            return;
+        }
         try {
             await()
                     .atMost(duration)
-                    .pollInterval(Durations.ONE_HUNDRED_MILLISECONDS)
+                    .pollInterval(ASYNC_POLL_INTERVAL)
                     .until(action::getAsBoolean);
         } catch (ConditionTimeoutException ignored) {
             catchAction.run();

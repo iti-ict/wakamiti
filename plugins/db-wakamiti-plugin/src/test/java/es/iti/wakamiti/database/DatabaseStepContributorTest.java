@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.h2.tools.RunScript;
 import org.junit.After;
@@ -3352,6 +3354,48 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
+    public void testAssertAsyncWhenTimeoutIsExpiredAndConditionMatches() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(() -> {
+            attempts.incrementAndGet();
+            return true;
+        }, Duration.ofNanos(-1), () -> catchActionCalled.set(true));
+
+        assertThat(attempts.get()).isEqualTo(1);
+        assertThat(catchActionCalled.get()).isFalse();
+    }
+
+    @Test
+    public void testAssertAsyncWhenTimeoutIsExpiredAndConditionDoesNotMatch() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(() -> {
+            attempts.incrementAndGet();
+            return false;
+        }, Duration.ZERO, () -> catchActionCalled.set(true));
+
+        assertThat(attempts.get()).isEqualTo(1);
+        assertThat(catchActionCalled.get()).isTrue();
+    }
+
+    @Test
+    public void testAssertAsyncWhenTimeoutEqualsPollInterval() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(() -> {
+            attempts.incrementAndGet();
+            return true;
+        }, Duration.ofMillis(100), () -> catchActionCalled.set(true));
+
+        assertThat(attempts.get()).isEqualTo(1);
+        assertThat(catchActionCalled.get()).isFalse();
+    }
+
+    @Test
     public void testAssertXLSFileExistsAsync() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
@@ -3587,6 +3631,28 @@ public class DatabaseStepContributorTest {
 
         // Act
         contributor.assertXLSFileNotExistsAsync(file, Duration.ofSeconds(1));
+
+        // Check
+        assertThatNoException();
+    }
+
+    @Test
+    public void testAssertXLSFileNotExistsAsyncWhenTimeoutBudgetIsExhausted() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("wakamiti/data2.xlsx");
+
+        // Act
+        contributor.assertXLSFileNotExistsAsync(file, Duration.ZERO);
 
         // Check
         assertThatNoException();
