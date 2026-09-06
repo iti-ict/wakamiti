@@ -92,6 +92,7 @@ public class DatabaseSupport {
     protected static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     protected final Map<String, ConnectionProvider> connections = new HashMap<>();
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
+    protected final Deque<Runnable> declarativeCleanUpOperations = new LinkedList<>();
     protected final AtomicReference<String> currentConnection = new AtomicReference<>();
     protected String xlsIgnoreSheetRegex;
     protected String nullSymbol;
