@@ -79,10 +79,22 @@ public class LifecycleBackend extends AbstractBackend {
     ) {
         String type = "tear-down";
         LOGGER.debug("Performing tear-down {} operations...", level);
+        WakamitiException failure = null;
         for (ThrowableRunnable tearDownOperation : tearDownOperations.getOrDefault(level, List.of())) {
-            runMethod(tearDownOperation, type);
+            try {
+                runMethod(tearDownOperation, type);
+            } catch (WakamitiException operationFailure) {
+                if (failure == null) {
+                    failure = operationFailure;
+                } else {
+                    failure.addSuppressed(operationFailure);
+                }
+            }
         }
         LOGGER.debug("tear-down {} finished", level);
+        if (failure != null) {
+            throw failure;
+        }
     }
 
     @Override

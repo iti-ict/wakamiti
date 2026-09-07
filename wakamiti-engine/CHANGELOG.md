@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Restore each plan's shared runtime configuration before creation and execution, preventing sequential plans and
   JUnit suites from reusing another plan's working directory or other configuration.
+- Execute every ordered teardown operation and report additional failures as suppressed exceptions.
 - Variable placeholders (e.g. `${credential.name}`) are now resolved in log output after step execution instead of
   being printed as-is. Variables listed under `properties.hidden` remain masked.
 
