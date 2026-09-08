@@ -10,6 +10,7 @@ package es.iti.wakamiti.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.comparesEqualTo;
 
 import java.io.File;
@@ -40,6 +41,7 @@ import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.plan.NodeType;
@@ -129,39 +131,42 @@ public class DatabaseStepContributorTest {
         assertThat(contributor.connection().parameters().url()).isEqualTo(URL);
     }
 
-    @Test(expected = WakamitiException.class)
+    @Test
     public void testConnectionWhenNoDatabasesFound() {
-        // Prepare
         Configuration config = configContributor.defaultConfiguration();
-        configContributor.configurer().configure(contributor, config);
 
-        // Act
-        try {
-            contributor.connection();
-
-            // Check
-        } catch (WakamitiException e) {
-            assertThat(e).hasMessage("There is no default connection");
-            throw e;
-        }
+        assertThatThrownBy(() -> configContributor.configurer().configure(contributor, config))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage("At least one connection configuration is required");
     }
 
-    @Test(expected = WakamitiException.class)
+    @Test
     public void testConnectionWhenNoHealthcheckAndNoDatabasesFound() {
-        // Prepare
         Configuration config = configContributor.defaultConfiguration();
+
+        contributor.setHealthcheck(false);
+
+        assertThatThrownBy(() -> configContributor.configurer().configure(contributor, config))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage("At least one connection configuration is required");
+    }
+
+    @Test
+    public void testConnectionCountIsResetForEachConfiguration() {
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS
+        );
         configContributor.configurer().configure(contributor, config);
 
-        // Act
-        try {
-            contributor.setHealthcheck(false);
-            contributor.connection();
+        DatabaseStepContributor emptyContributor = new DatabaseStepContributor();
 
-            // Check
-        } catch (WakamitiException e) {
-            assertThat(e.getMessage()).isEqualTo("There is no default connection");
-            throw e;
-        }
+        assertThatThrownBy(() -> configContributor.configurer().configure(
+                emptyContributor,
+                configContributor.defaultConfiguration()
+        )).isInstanceOf(ConfigurationException.class)
+                .hasMessage("At least one connection configuration is required");
     }
 
     @Test

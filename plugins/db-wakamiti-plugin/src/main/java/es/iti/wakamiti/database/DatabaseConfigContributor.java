@@ -8,11 +8,13 @@
 package es.iti.wakamiti.database;
 
 
-import java.util.stream.Collectors;
+import java.io.File;
+import java.util.List;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.extensions.ConfigContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import slf4jansi.AnsiLogger;
 
@@ -45,12 +47,16 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
      * Values &lt;= 0 disable timeout.
      */
     public static final String DATABASE_SIMILAR_SEARCH_TIMEOUT_MS = "database.similarSearch.timeout";
+
     private static final String PROPERTY_BASE = "database";
     private static final String DATASOURCE_BASE = "datasource";
-    private static final String CONNECTION_URL = "connection.url";
-    private static final String CONNECTION_USERNAME = "connection.username";
-    private static final String CONNECTION_PASSWORD = "connection.password";
-    private static final String CONNECTION_DRIVER = "connection.driver";
+    private static final String SCRIPTS_SETUP = "scripts.setup";
+    private static final String SCRIPTS_TEARDOWN = "scripts.teardown";
+    private static final String CONNECTION_BASE = "connection";
+    private static final String CONNECTION_URL = "url";
+    private static final String CONNECTION_USERNAME = "username";
+    private static final String CONNECTION_PASSWORD = "password";
+    private static final String CONNECTION_DRIVER = "driver";
     private static final String METADATA_SCHEMA = "metadata.schema";
     private static final String METADATA_CATALOG = "metadata.catalog";
     private static final String AUTO_TRIM = "autotrim";
@@ -97,7 +103,8 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     ) {
         Configuration databaseConfig = configuration.inner(PROPERTY_BASE);
 
-        configuration.get(DATABASE_XLS_IGNORE_SHEET_PATTERN, String.class).ifPresent(contributor::setXlsIgnoreSheetRegex);
+        configuration.get(DATABASE_XLS_IGNORE_SHEET_PATTERN, String.class)
+                .ifPresent(contributor::setXlsIgnoreSheetRegex);
         configuration.get(DATABASE_NULL_SYMBOL, String.class).ifPresent(contributor::setNullSymbol);
         configuration.get(DATABASE_CSV_FORMAT, String.class).ifPresent(contributor::setCsvFormat);
         configuration.get(DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, Boolean.class)
@@ -107,17 +114,49 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
         configuration.get(DATABASE_SIMILAR_SEARCH_TIMEOUT_MS, Long.class)
                 .ifPresent(contributor::setSimilarSearchTimeoutMs);
 
-        if (databaseConfig.keyStream().anyMatch(k -> k.startsWith(DATASOURCE_BASE))) {
-            Configuration datasourceConfig = databaseConfig.inner(DATASOURCE_BASE);
-            datasourceConfig.keyStream()
-                    .map(key -> key.split("\\.")[0])
-                    .collect(Collectors.toSet())
-                    .forEach(alias -> contributor.addConnection(alias, parameters(datasourceConfig.inner(alias))));
-        } else if (databaseConfig.keyStream().anyMatch(k -> k.startsWith("connection"))) {
-            contributor.addConnection(parameters(databaseConfig));
+        int connections = 0;
+        if (hasConnection(databaseConfig)) {
+            configureDatasource(contributor, databaseConfig, DatabaseSupport.DEFAULT);
+            connections++;
+        }
+        Configuration datasourceConfig = databaseConfig.inner(DATASOURCE_BASE);
+        List<String> aliases = datasourceConfig.keyStream()
+                .map(key -> key.split("\\.")[0])
+                .distinct()
+                .toList();
+        for (String alias : aliases) {
+            configureDatasource(contributor, datasourceConfig.inner(alias), alias);
+            connections++;
+        }
+
+        if (connections == 0) {
+            throw new ConfigurationException("At least one connection configuration is required");
         }
 
         AnsiLogger.addStyle("sql", "yellow,bold");
+    }
+
+    private void configureDatasource(
+            DatabaseStepContributor contributor,
+            Configuration configuration,
+            String alias
+    ) {
+        if (!hasConnection(configuration)) {
+            throw new ConfigurationException(
+                    "A connection configuration is mandatory for datasource '" + alias + "'"
+            );
+        }
+        contributor.addConnection(alias, connectionParameters(configuration));
+        configuration.getList(SCRIPTS_SETUP, File.class)
+                .forEach(script -> contributor.addSetupScript(alias, script));
+        configuration.getList(SCRIPTS_TEARDOWN, File.class)
+                .forEach(script -> contributor.addTeardownScript(alias, script));
+    }
+
+    private boolean hasConnection(
+            Configuration configuration
+    ) {
+        return configuration.keyStream().anyMatch(key -> key.startsWith(CONNECTION_BASE + "."));
     }
 
     /**
@@ -126,14 +165,18 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
      * @param configuration The configuration to extract connection parameters from
      * @return The connection parameters
      */
-    private ConnectionParameters parameters(
+    private ConnectionParameters connectionParameters(
             Configuration configuration
     ) {
         ConnectionParameters connectionParameters = new ConnectionParameters();
-        configuration.get(CONNECTION_URL, String.class).ifPresent(connectionParameters::url);
-        configuration.get(CONNECTION_USERNAME, String.class).ifPresent(connectionParameters::username);
-        configuration.get(CONNECTION_PASSWORD, String.class).ifPresent(connectionParameters::password);
-        configuration.get(CONNECTION_DRIVER, String.class).ifPresent(connectionParameters::driver);
+        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_URL), String.class)
+                .ifPresent(connectionParameters::url);
+        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_USERNAME), String.class)
+                .ifPresent(connectionParameters::username);
+        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_PASSWORD), String.class)
+                .ifPresent(connectionParameters::password);
+        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_DRIVER), String.class)
+                .ifPresent(connectionParameters::driver);
         configuration.get(METADATA_SCHEMA, String.class).ifPresent(connectionParameters::schema);
         configuration.get(METADATA_CATALOG, String.class).ifPresent(connectionParameters::catalog);
         configuration.get(AUTO_TRIM, Boolean.class).ifPresent(connectionParameters::autoTrim);

@@ -1,12 +1,11 @@
 
 
-
 This plugin provides a set of steps to interact with a database via JDBC, making it easy to load and validate data.
 
 > **NOTE**
 >
-> Due to the large number of database engines available, this plugin does not include specific drivers. This means that 
-> in order to work correctly, it is necessary to include the module with the appropriate JDBC driver in the Wakamiti 
+> Due to the large number of database engines available, this plugin does not include specific drivers. This means that
+> in order to work correctly, it is necessary to include the module with the appropriate JDBC driver in the Wakamiti
 > configuration.
 
 
@@ -16,14 +15,14 @@ This plugin provides a set of steps to interact with a database via JDBC, making
 Include the module and the necessary JDBC driver(s) in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.6.0
+es.iti.wakamiti:db-wakamiti-plugin:3.10.0-SNAPSHOT
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.6.0</version>
+  <version>3.10.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -113,10 +112,41 @@ database:
 ```
 
 
-### `database.{alias}...`
+### `database.scripts.<hook>`
+- Type: `file[]`
 
-Set the JDBC connection parameters and/or metadata of a database identified by an alias. You can establish as many named
-connections as you want. The first database will be taken as the default configuration.
+Specifies an ordered list of SQL scripts to execute at a particular point in the plan execution. This point is selected
+through `hook`. The following hooks are currently available:
+
+- `setup`: scripts run in the declared order before the plan scenarios start. If a script fails, the remaining setup
+  scripts are not executed.
+- `teardown`: scripts run in the declared order when the plan finishes. If a script fails, the remaining teardown scripts
+  are still attempted and the errors are reported afterwards.
+
+Scripts configured in this property use `database.connection`. If that connection is not configured, the scripts are
+ignored. Relative paths are resolved against `workingDir`, and running the scripts does not change the active connection
+later used by scenarios.
+
+Example:
+```yaml
+database:
+  scripts:
+    setup:
+      - db/create-schema.sql
+      - db/load-reference-data.sql
+    teardown:
+      - db/clean.sql
+```
+
+
+### `database.datasource.<alias>...`
+
+Sets the JDBC connection parameters, metadata, and scripts of a database identified by an alias. You can establish as
+many named connections as you want. If `database.connection` is not configured, the first named datasource will be used
+as the default connection. At least one connection must be configured, either the root connection or a named datasource.
+
+Each datasource can define its own `scripts.setup` and `scripts.teardown` lists. These scripts follow the behavior
+described in [`database.scripts.<hook>`](#databasescriptshook), but run using that datasource's connection.
 
 Example:
 ```yaml
@@ -136,6 +166,12 @@ database:
         url: jdbc:mysql://other.host:3306/test
         username: test2
         password: test2
+      scripts:
+        setup:
+          - db/db2/create-schema.sql
+          - db/db2/load-reference-data.sql
+        teardown:
+          - db/db2/clean.sql
       metadata:
         schema: TESTDB2
         catalog: TESTCAT2
@@ -238,7 +274,8 @@ If not alias is included, it will be set as the default connection.
 
 This step is the declarative equivalent to set the configuration properties
 [`database.connection.url`](#databaseconnectionurl), [`database.connection.username`](#databaseconnectionusername),
-[`database.connection.password`](#databaseconnectionpassword) or [`database.{alias}...`](#databasealias).
+[`database.connection.password`](#databaseconnectionpassword) or
+[`database.datasource.<alias>...`](#databasedatasourcealias).
 
 #### Parameters:
 | Name       | Wakamiti type     | Description          |

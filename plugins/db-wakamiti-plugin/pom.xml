@@ -218,8 +218,8 @@
             <properties>
                 <database.alias>database</database.alias>
                 <database.port>1234</database.port>
-                <database.name>testdb</database.name>
-                <database.username>tester</database.username>
+                <database.name>test</database.name>
+                <database.username>user</database.username>
                 <database.password>pass</database.password>
                 <database.driver>com.mysql:mysql-connector-j:jar:8.0.31</database.driver>
             </properties>
@@ -262,6 +262,10 @@
                                 <argument>database.connection.username=${database.username}</argument>
                                 <argument>-K</argument>
                                 <argument>database.connection.password=${database.password}</argument>
+                                <argument>-K</argument>
+                                <argument>database.scripts.setup=/wakamiti/db/clean-mysql.sql</argument>
+                                <argument>-K</argument>
+                                <argument>database.scripts.teardown=/wakamiti/db/clean-mysql.sql</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -293,7 +297,10 @@
                                         <volumes>
                                             <bind>
                                                 <volume>
-                                                    ${project.build.directory}/test-classes/wakamiti/db/create-schema.sql:/docker-entrypoint-initdb.d/1.sql
+                                                    ${project.build.directory}/test-classes/wakamiti/db/create-qualified-mysql.sql:/docker-entrypoint-initdb.d/1.sql
+                                                </volume>
+                                                <volume>
+                                                    ${project.build.directory}/test-classes/wakamiti/db/create-schema.sql:/docker-entrypoint-initdb.d/2.sql
                                                 </volume>
                                             </bind>
                                         </volumes>

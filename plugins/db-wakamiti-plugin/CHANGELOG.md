@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
+### Added
+- Add `database.scripts.setup`, `database.scripts.teardown` and their equivalents under
+  `database.datasource.<alias>.scripts` for plan-level SQL setup and teardown.
+
 ### Fixed
 - Automatic database cleanup is skipped for feature lifecycle hook scenarios.
 - Lifecycle database connections are released after feature and plan execution.

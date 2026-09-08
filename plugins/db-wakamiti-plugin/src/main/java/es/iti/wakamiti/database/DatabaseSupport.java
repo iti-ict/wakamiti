@@ -22,6 +22,7 @@ import java.sql.SQLTimeoutException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -94,6 +95,8 @@ public class DatabaseSupport {
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
     protected final Deque<Runnable> declarativeCleanUpOperations = new LinkedList<>();
     protected final AtomicReference<String> currentConnection = new AtomicReference<>();
+    private final Map<String, List<File>> setupScripts = new LinkedHashMap<>();
+    private final Map<String, List<File>> teardownScripts = new LinkedHashMap<>();
     protected String xlsIgnoreSheetRegex;
     protected String nullSymbol;
     protected String csvFormat;
@@ -211,6 +214,56 @@ public class DatabaseSupport {
     }
 
     /**
+     * Adds a setup script for the specified connection.
+     *
+     * @param alias  connection alias
+     * @param script SQL file to execute before the plan starts
+     */
+    public void addSetupScript(
+            String alias,
+            File script
+    ) {
+        LOGGER.debug("Adding setup script {uri} for '{}' connection", script.getPath(), alias);
+        setupScripts.computeIfAbsent(alias, key -> new ArrayList<>()).add(script);
+    }
+
+    /**
+     * Adds a setup script for the default connection.
+     *
+     * @param script SQL file to execute before the plan starts
+     */
+    public void addSetupScript(
+            File script
+    ) {
+        addSetupScript(DEFAULT, script);
+    }
+
+    /**
+     * Adds a teardown script for the specified connection.
+     *
+     * @param alias  connection alias
+     * @param script SQL file to execute after the plan finishes
+     */
+    public void addTeardownScript(
+            String alias,
+            File script
+    ) {
+        LOGGER.debug("Adding teardown script {uri} for '{}' connection", script.getPath(), alias);
+        teardownScripts.computeIfAbsent(alias, key -> new ArrayList<>()).add(script);
+    }
+
+    /**
+     * Adds a teardown script for the default connection.
+     *
+     * @param script SQL file to execute after the plan finishes
+     */
+    public void addTeardownScript(
+            File script
+    ) {
+        addTeardownScript(DEFAULT, script);
+    }
+
+    /**
      * Matches an assertion for an empty result.
      *
      * @return An assertion for an empty result.
@@ -234,10 +287,7 @@ public class DatabaseSupport {
      * @return The current database connection.
      */
     protected ConnectionProvider connection() {
-        String alias = Optional.ofNullable(currentConnection.get()).orElse(
-                connections.keySet().stream().findFirst()
-                        .orElseThrow(() -> new WakamitiException("There is no default connection"))
-        );
+        String alias = Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection);
         LOGGER.trace("Using '{}' connection", alias);
         return connections.get(alias);
     }
@@ -255,6 +305,119 @@ public class DatabaseSupport {
         }
     }
 
+    /**
+     * Executes setup script groups in declaration order and stops at the first failure.
+     * The active scenario connection is restored afterwards.
+     *
+     * @throws WakamitiException if a datasource cannot be selected or a script fails
+     */
+    protected void executeSetupScripts() {
+        String previousConnection = currentConnection.get();
+        try {
+            for (Map.Entry<String, List<File>> group : setupScripts.entrySet()) {
+                String source = group.getKey() + "::setup";
+                selectConnection(group.getKey());
+                executeScripts(group.getValue(), source);
+            }
+        } finally {
+            currentConnection.set(previousConnection);
+        }
+    }
+
+    /**
+     * Attempts every teardown script group in declaration order and reports all failures afterwards.
+     * Datasource selection and script failures do not prevent later groups from running.
+     * The active scenario connection is restored afterwards.
+     *
+     * @throws WakamitiException if one or more datasources cannot be selected or scripts fail
+     */
+    protected void executeTeardownScripts() {
+        List<WakamitiException> failures = new ArrayList<>();
+        String previousConnection = currentConnection.get();
+        try {
+            for (Map.Entry<String, List<File>> group : teardownScripts.entrySet()) {
+                String source = group.getKey() + "::teardown";
+                try {
+                    selectConnection(group.getKey());
+                } catch (WakamitiException failure) {
+                    failures.add(failure);
+                    continue;
+                }
+                attemptScripts(group.getValue(), source, failures);
+            }
+        } finally {
+            currentConnection.set(previousConnection);
+        }
+        throwIfAny(failures);
+    }
+
+    /**
+     * Selects the connection owned by a script group.
+     *
+     * @param alias    configured connection alias
+     * @throws WakamitiException if there is no connection for the group
+     */
+    private void selectConnection(
+            String alias
+    ) {
+        if (!connections.containsKey(alias)) {
+            throw new WakamitiException(
+                    "Unknown database datasource '{}'",
+                    alias
+            );
+        }
+        currentConnection.set(alias);
+    }
+
+    private void executeScripts(
+            List<File> scripts,
+            String source
+    ) {
+        for (int i = 0; i < scripts.size(); i++) {
+            executePlanScript(scripts.get(i), source, i);
+        }
+    }
+
+    private void attemptScripts(
+            List<File> scripts,
+            String source,
+            List<WakamitiException> failures
+    ) {
+        for (int i = 0; i < scripts.size(); i++) {
+            try {
+                executePlanScript(scripts.get(i), source, i);
+            } catch (WakamitiException failure) {
+                failures.add(failure);
+            }
+        }
+    }
+
+    /**
+     * Resolves and executes one configured plan script without registering
+     * automatic cleanup operations.
+     *
+     * @param configuredFile configured script path
+     * @param source         configuration source that supplied the file
+     * @param index          zero-based position in the configured list
+     * @throws WakamitiException if the file cannot be read or its SQL cannot be executed
+     */
+    private void executePlanScript(
+            File configuredFile,
+            String source,
+            int index
+    ) {
+        File file = resourceLoader().absolutePath(configuredFile);
+        try {
+            LOGGER.debug("Executing script {uri}...", file.getAbsolutePath());
+            assertFileExists(file);
+            executeScript(resourceLoader().readFileAsString(file), false);
+        } catch (WakamitiException e) {
+            throw new WakamitiException(
+                    "Error executing SQL file '{}' configured at '{}[{}]': {}",
+                    file.getAbsolutePath(), source, index, e.getMessage(), e
+            );
+        }
+    }
 
     /**
      * Closes every configured connection and clears transient contributor state.
@@ -291,6 +454,14 @@ public class DatabaseSupport {
         WakamitiException first = failures.get(0);
         failures.stream().skip(1).forEach(first::addSuppressed);
         throw first;
+    }
+
+    private String defaultConnection() {
+        if (connections.containsKey(DEFAULT)) {
+            return DEFAULT;
+        }
+        return connections.keySet().stream().findFirst()
+                .orElseThrow(() -> new WakamitiException("There is no default connection"));
     }
 
     /**

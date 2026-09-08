@@ -28,6 +28,7 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
 import es.iti.wakamiti.api.annotations.Level;
+import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -57,6 +58,18 @@ import es.iti.wakamiti.database.jdbc.Database;
 )
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
+
+    /** Executes configured setup scripts before the plan, stopping at the first failure. */
+    @SetUp(level = Level.PLAN)
+    public void setUpPlan() {
+        executeSetupScripts();
+    }
+
+    /** Executes every configured teardown script and reports any failures afterwards. */
+    @TearDown(level = Level.PLAN, order = 1)
+    public void tearDownPlan() {
+        executeTeardownScripts();
+    }
 
     /** Releases plan connections after all database teardown scripts have been attempted. */
     @TearDown(level = Level.PLAN, order = 2)
