@@ -27,6 +27,7 @@ import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -39,7 +40,6 @@ import es.iti.wakamiti.database.dataset.DataTableDataSet;
 import es.iti.wakamiti.database.dataset.InlineDataSet;
 import es.iti.wakamiti.database.dataset.MultiDataSet;
 import es.iti.wakamiti.database.dataset.OoxmlDataSet;
-import es.iti.wakamiti.database.jdbc.ConnectionProvider;
 import es.iti.wakamiti.database.jdbc.Database;
 
 
@@ -57,6 +57,18 @@ import es.iti.wakamiti.database.jdbc.Database;
 )
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
+
+    /** Releases plan connections after all database teardown scripts have been attempted. */
+    @TearDown(level = Level.PLAN, order = 2)
+    public void releasePlanConnections() {
+        releaseConnections();
+    }
+
+    /** Releases connections opened by a feature lifecycle backend. */
+    @TearDown(level = Level.FEATURE)
+    public void releaseFeatureConnections() {
+        releaseConnections();
+    }
 
     /**
      * Executes queued cleanup operations before connections are closed.
@@ -86,12 +98,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      */
     @TearDown(order = 2)
     public void releaseConnection() {
-        try {
-            connections.values().forEach(ConnectionProvider::close);
-        } finally {
-            connections.clear();
-            cleanUpOperations.clear();
-        }
+        releaseConnections();
     }
 
     /**

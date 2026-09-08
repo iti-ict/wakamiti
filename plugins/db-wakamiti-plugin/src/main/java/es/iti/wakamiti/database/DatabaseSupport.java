@@ -23,7 +23,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.Temporal;
 import java.util.Deque;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +90,7 @@ public class DatabaseSupport {
     private static final long MILLIS_PER_SECOND = 1_000L;
     protected static final LevenshteinDistance LEVENSHTEIN_DISTANCE = new LevenshteinDistance();
     protected static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
-    protected final Map<String, ConnectionProvider> connections = new HashMap<>();
+    protected final Map<String, ConnectionProvider> connections = new LinkedHashMap<>();
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
     protected final Deque<Runnable> declarativeCleanUpOperations = new LinkedList<>();
     protected final AtomicReference<String> currentConnection = new AtomicReference<>();
@@ -253,6 +253,44 @@ public class DatabaseSupport {
         if (!file.exists()) {
             throw new WakamitiException("File '{}' not found", file.getAbsolutePath());
         }
+    }
+
+
+    /**
+     * Closes every configured connection and clears transient contributor state.
+     * All connections are given a chance to close; when several closures fail,
+     * the first failure is thrown and the rest are attached as suppressed exceptions.
+     *
+     * @throws WakamitiException if one or more connections cannot be closed
+     */
+    protected void releaseConnections() {
+        List<WakamitiException> failures = new ArrayList<>();
+        try {
+            for (ConnectionProvider provider : connections.values()) {
+                try {
+                    provider.close();
+                } catch (WakamitiException failure) {
+                    failures.add(failure);
+                }
+            }
+        } finally {
+            connections.clear();
+            declarativeCleanUpOperations.clear();
+            cleanUpOperations.clear();
+            currentConnection.set(null);
+        }
+        throwIfAny(failures);
+    }
+
+    private static void throwIfAny(
+            List<WakamitiException> failures
+    ) {
+        if (failures.isEmpty()) {
+            return;
+        }
+        WakamitiException first = failures.get(0);
+        failures.stream().skip(1).forEach(first::addSuppressed);
+        throw first;
     }
 
     /**
