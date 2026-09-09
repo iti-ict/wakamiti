@@ -53,10 +53,10 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
     private static final String SCRIPTS_SETUP = "scripts.setup";
     private static final String SCRIPTS_TEARDOWN = "scripts.teardown";
     private static final String CONNECTION_BASE = "connection";
-    private static final String CONNECTION_URL = "url";
-    private static final String CONNECTION_USERNAME = "username";
-    private static final String CONNECTION_PASSWORD = "password";
-    private static final String CONNECTION_DRIVER = "driver";
+    private static final String CONNECTION_URL = "%s.url".formatted(CONNECTION_BASE);
+    private static final String CONNECTION_USERNAME = "%s.username".formatted(CONNECTION_BASE);
+    private static final String CONNECTION_PASSWORD = "%s.password".formatted(CONNECTION_BASE);
+    private static final String CONNECTION_DRIVER = "%s.driver".formatted(CONNECTION_BASE);
     private static final String METADATA_SCHEMA = "metadata.schema";
     private static final String METADATA_CATALOG = "metadata.catalog";
     private static final String AUTO_TRIM = "autotrim";
@@ -169,14 +169,10 @@ public class DatabaseConfigContributor implements ConfigContributor<DatabaseStep
             Configuration configuration
     ) {
         ConnectionParameters connectionParameters = new ConnectionParameters();
-        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_URL), String.class)
-                .ifPresent(connectionParameters::url);
-        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_USERNAME), String.class)
-                .ifPresent(connectionParameters::username);
-        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_PASSWORD), String.class)
-                .ifPresent(connectionParameters::password);
-        configuration.get("%s.%s".formatted(CONNECTION_BASE, CONNECTION_DRIVER), String.class)
-                .ifPresent(connectionParameters::driver);
+        configuration.get(CONNECTION_URL, String.class).ifPresent(connectionParameters::url);
+        configuration.get(CONNECTION_USERNAME, String.class).ifPresent(connectionParameters::username);
+        configuration.get(CONNECTION_PASSWORD, String.class).ifPresent(connectionParameters::password);
+        configuration.get(CONNECTION_DRIVER, String.class).ifPresent(connectionParameters::driver);
         configuration.get(METADATA_SCHEMA, String.class).ifPresent(connectionParameters::schema);
         configuration.get(METADATA_CATALOG, String.class).ifPresent(connectionParameters::catalog);
         configuration.get(AUTO_TRIM, Boolean.class).ifPresent(connectionParameters::autoTrim);
