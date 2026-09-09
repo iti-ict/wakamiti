@@ -272,14 +272,16 @@ public class XRayApi extends BaseApi {
             return Collections.emptyList();
         }
 
-        List<TestSet> list = read(response, "$.data.getTestSets.results");
+        List<TestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<>() {
+        });
 
         if (list == null) {
             return List.of();
         }
 
         for (int i = 0; i < list.size(); i++) {
-            List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results");
+            List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<>() {
+            });
             list.get(i).testCases(testCases);
         }
 
@@ -447,7 +449,8 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, query);
 
-        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results");
+        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results", new TypeRef<>() {
+        });
 
         createdIssues.forEach(testCase ->
                 testRuns.stream()
