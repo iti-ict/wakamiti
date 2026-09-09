@@ -22,7 +22,7 @@
             <defaultValue>2.10.0</defaultValue>
         </requiredProperty>
         <requiredProperty key="defaultWakamitiCoreVersion">
-            <defaultValue>3.0.0-SNAPSHOT</defaultValue>
+            <defaultValue>3.0.0</defaultValue>
         </requiredProperty>
         <requiredProperty key="wakamitiApiVersion">
             <defaultValue>${defaultWakamitiApiVersion}</defaultValue>

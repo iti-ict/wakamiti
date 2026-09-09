@@ -25,7 +25,7 @@
     <inceptionYear>2025</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>3.0.0-SNAPSHOT</wakamiti-engine.version>
+        <wakamiti-engine.version>3.0.0</wakamiti-engine.version>
         <jacoco.version>0.8.15</jacoco.version>
     </properties>
 
