@@ -73,6 +73,9 @@ public class ConnectionProvider implements AutoCloseable {
             } else {
                 connection = CONNECTION_MANAGER.refreshConnection(connection, parameters);
             }
+            if (connection == null) {
+                throw new WakamitiException("Connection manager returned a null connection");
+            }
             return connection;
         } catch (SQLException e) {
             throw new WakamitiException("Connection has failed", e);

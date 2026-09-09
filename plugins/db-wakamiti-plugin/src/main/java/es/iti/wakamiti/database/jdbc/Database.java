@@ -462,8 +462,12 @@ public final class Database {
     }
 
     private String catalog() {
+        String catalog = connection.parameters().catalog();
+        if (catalog != null) {
+            return catalog;
+        }
         try {
-            return Optional.ofNullable(connection.parameters().catalog()).orElse(connection.get().getCatalog());
+            return connection.get().getCatalog();
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             return null;
@@ -471,8 +475,12 @@ public final class Database {
     }
 
     private String schema() {
+        String schema = connection.parameters().schema();
+        if (schema != null) {
+            return schema;
+        }
         try {
-            return Optional.ofNullable(connection.parameters().schema()).orElse(connection.get().getSchema());
+            return connection.get().getSchema();
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             return null;
