@@ -201,35 +201,63 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         String language = feature.getLanguage();
         PlanNodeBuilder node = newFeatureNode(feature, language, location);
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
-            if (abstractScenario instanceof Scenario scenario) {
-                var child = createScenario(feature, scenario, location, node);
-                if (isLifecycleHookScenario(child) || scenarioFilter.test(child) || includeFiltered) {
-                    node.addChild(child);
-                }
-            } else if (abstractScenario instanceof ScenarioOutline scenarioOutline) {
-                if (lifecycleType(scenarioOutline.getTags()).isPresent()) {
-                    throw new WakamitiException(
-                            "Reserved lifecycle tags are not supported in Scenario Outline: {}",
-                            scenarioOutline.getName()
-                    );
-                }
-                var child = createScenarioOutline(
-                        feature,
-                        scenarioOutline,
-                        location,
-                        node
-                );
-                if (scenarioFilter.test(child) || includeFiltered) {
-                    node.addChild(child);
-                }
-            }
+            addScenarioDefinition(feature, abstractScenario, location, node);
         }
-        if (node.name() != null) {
-            node.descendants()
-                    .filter(child -> child.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK))
-                    .forEach(child -> child.addProperty(GHERKIN_FEATURE_NAME, node.name()));
-        }
+        addFeatureName(node);
         return node;
+    }
+
+    private void addScenarioDefinition(
+            Feature feature,
+            ScenarioDefinition scenarioDefinition,
+            String location,
+            PlanNodeBuilder featureNode
+    ) {
+        if (scenarioDefinition instanceof Scenario scenario) {
+            addScenario(feature, scenario, location, featureNode);
+        } else if (scenarioDefinition instanceof ScenarioOutline scenarioOutline) {
+            addScenarioOutline(feature, scenarioOutline, location, featureNode);
+        }
+    }
+
+    private void addScenario(
+            Feature feature,
+            Scenario scenario,
+            String location,
+            PlanNodeBuilder featureNode
+    ) {
+        PlanNodeBuilder child = createScenario(feature, scenario, location, featureNode);
+        if (isLifecycleHookScenario(child) || scenarioFilter.test(child) || includeFiltered) {
+            featureNode.addChild(child);
+        }
+    }
+
+    private void addScenarioOutline(
+            Feature feature,
+            ScenarioOutline scenarioOutline,
+            String location,
+            PlanNodeBuilder featureNode
+    ) {
+        if (lifecycleType(scenarioOutline.getTags()).isPresent()) {
+            throw new WakamitiException(
+                    "Reserved lifecycle tags are not supported in Scenario Outline: {}",
+                    scenarioOutline.getName()
+            );
+        }
+        PlanNodeBuilder child = createScenarioOutline(feature, scenarioOutline, location, featureNode);
+        if (scenarioFilter.test(child) || includeFiltered) {
+            featureNode.addChild(child);
+        }
+    }
+
+    private void addFeatureName(
+            PlanNodeBuilder featureNode
+    ) {
+        if (featureNode.name() != null) {
+            featureNode.descendants()
+                    .filter(child -> child.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK))
+                    .forEach(child -> child.addProperty(GHERKIN_FEATURE_NAME, featureNode.name()));
+        }
     }
 
     /**
