@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [1.2.3] - 2026-09-09
+## [1.2.0] - 2026-09-09
 
 ### Added
 - Include executed lifecycle hooks in Allure results.

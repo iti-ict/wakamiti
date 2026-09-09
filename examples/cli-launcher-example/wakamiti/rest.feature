@@ -6,7 +6,7 @@ Característica: Pruebas de API REST con Spring Petclinic
     Dado el servicio REST '/owners/{id}'
 
   @Before
-  Escenario: Inicialización de la catacterística
+  Escenario: Inicialización de la característica
     * se ha insertado el siguiente registro en la tabla de BBDD owners:
       | ID | FIRST_NAME | LAST_NAME      |
       | 20 | Pepe       | Perez Martinez |

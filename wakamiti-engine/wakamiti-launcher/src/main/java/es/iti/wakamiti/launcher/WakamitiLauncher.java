@@ -114,7 +114,7 @@ public final class WakamitiLauncher {
         boolean perScenario = conf.get("perScenario", Boolean.class).orElse(false);
 
         if (path.isPresent()) {
-            String executionTimestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss"));
+            String executionTimestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             if (perScenario) {
                 System.setProperty(ScenarioLogAppender.LOG_PATH_PROPERTY, path.get());
                 System.setProperty(ScenarioLogAppender.EXECUTION_TIMESTAMP_PROPERTY, executionTimestamp);
