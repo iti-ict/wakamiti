@@ -178,15 +178,14 @@ public final class XmlUtils {
     ) {
         map.forEach((key, value) -> {
             Element element = doc.createElement(key);
-            if (value instanceof XmlObject) {
-                value = ((XmlObject) value).getDomNode().getFirstChild();
+            if (value instanceof XmlObject xmlObject) {
+                value = xmlObject.getDomNode().getFirstChild();
             }
-            if (value instanceof Document) {
-                value = ((Document) value).getFirstChild();
+            if (value instanceof Document document) {
+                value = document.getFirstChild();
             }
-            if (value instanceof Node) {
-                value = doc.importNode((Node) value, true);
-                element.appendChild((Node) value);
+            if (value instanceof Node node) {
+                element.appendChild(doc.importNode(node, true));
             } else if (value instanceof Map) {
                 processMap(doc, element, (Map<String, Object>) value);
             } else {
@@ -370,10 +369,10 @@ public final class XmlUtils {
         if (result == null) {
             return null;
         }
-        if (result instanceof NodeChildren) {
+        if (result instanceof NodeChildren nodeChildren) {
             StringWriter writer = new StringWriter();
             try {
-                ((NodeChildren) result).writeTo(writer);
+                nodeChildren.writeTo(writer);
             } catch (IOException e) {
                 throw new XmlRuntimeException(e);
             }
@@ -419,9 +418,9 @@ public final class XmlUtils {
             parser.getCodec().readTree(parser); // The result is ignored
             JsonLocation end = parser.currentLocation();
             StringWriter writer = new StringWriter();
-            if (end.contentReference().getRawContent() instanceof StringReader) {
-                ((StringReader) end.contentReference().getRawContent()).reset();
-                ((StringReader) end.contentReference().getRawContent()).transferTo(writer);
+            if (end.contentReference().getRawContent() instanceof StringReader reader) {
+                reader.reset();
+                reader.transferTo(writer);
             } else {
                 writer.append(end.contentReference().getRawContent().toString());
             }
