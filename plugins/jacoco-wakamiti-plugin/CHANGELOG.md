@@ -6,10 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [1.2.0] - 2026-09-09
 
 ### Added
 - Generate coverage segments for executed feature lifecycle hooks.
+
+### Changed
+- Upgrade dependencies: `org.ow2.asm:asm`
 
 
 ## [1.1.0] - 2026-07-31

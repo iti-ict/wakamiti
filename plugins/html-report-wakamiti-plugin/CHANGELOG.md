@@ -6,14 +6,17 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [2.11.0] - Unreleased
-
-### Fix
-- Keep scenario titles visible when navigating to anchors.
+## [2.11.0] - 2026-09-09
 
 ### Added
 - Display feature lifecycle hooks and identify them as setup or teardown fixtures.
 
+### Changed
+- Upgrade dependencies: `org.freemarker:freemarker`, `org.apache.commons:commons-collections4`
+- Add dependencies: `org.apache.commons:commons-lang3`
+
+### Fixed
+- Keep scenario titles visible when navigating to anchors.
 
 
 ## [2.10.0] - 2026-07-31
