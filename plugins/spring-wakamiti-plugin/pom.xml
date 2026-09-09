@@ -26,7 +26,7 @@
 
 
     <properties>
-        <spring.version>4.1.0</spring.version>
+        <spring.version>4.1.1</spring.version>
     </properties>
 
 
