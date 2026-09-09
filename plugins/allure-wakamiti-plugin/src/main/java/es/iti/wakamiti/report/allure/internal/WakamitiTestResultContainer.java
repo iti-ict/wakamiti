@@ -8,6 +8,6 @@
 package es.iti.wakamiti.report.allure.internal;
 
 
-public class TestResultContainer extends io.qameta.allure.model.TestResultContainer implements WithUuid {
+public class WakamitiTestResultContainer extends io.qameta.allure.model.TestResultContainer implements WithUuid {
 
 }

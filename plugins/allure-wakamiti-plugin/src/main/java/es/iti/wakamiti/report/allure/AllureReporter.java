@@ -27,7 +27,8 @@ import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.report.allure.internal.AllureMapper;
 import es.iti.wakamiti.report.allure.internal.EnumValueSerializer;
-import es.iti.wakamiti.report.allure.internal.TestResultContainer;
+import es.iti.wakamiti.report.allure.internal.WakamitiTestResult;
+import es.iti.wakamiti.report.allure.internal.WakamitiTestResultContainer;
 import es.iti.wakamiti.report.allure.internal.WithUuid;
 
 
@@ -83,11 +84,11 @@ public class AllureReporter implements Reporter {
             Path output,
             WithUuid result
     ) throws IOException {
-        String suffix = result instanceof TestResultContainer
+        String suffix = result instanceof WakamitiTestResultContainer
                 ? "-container.json" : "-result.json";
         Path file = output.resolve(result.getUuid() + suffix);
         JsonNode json = OBJECT_MAPPER.valueToTree(result);
-        if (result instanceof es.iti.wakamiti.report.allure.internal.TestResult testResult
+        if (result instanceof WakamitiTestResult testResult
                 && testResult.getStatus() == null
                 && json instanceof ObjectNode objectNode) {
             objectNode.put("status", "unknown");

@@ -103,7 +103,7 @@ public class AllureMapper {
     }
 
     private void addFixture(
-            TestResultContainer container,
+            WakamitiTestResultContainer container,
             PlanNodeSnapshot hook
     ) {
         String type = hook.getProperties() == null ? null : hook.getProperties().get("gherkinType");
@@ -130,12 +130,12 @@ public class AllureMapper {
                 .setParameters(List.of());
     }
 
-    private TestResult mapTestResult(
+    private WakamitiTestResult mapTestResult(
             PlanNodeSnapshot node,
             PlanNodeSnapshot feature
     ) {
         String fullName = node.getDisplayName();
-        return (TestResult) new TestResult()
+        return (WakamitiTestResult) new WakamitiTestResult()
                 .setUuid(uuid("result", node.getExecutionID(), fullName))
                 .setHistoryId(hash(fullName))
                 .setTestCaseId(node.getId())
