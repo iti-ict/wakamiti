@@ -61,45 +61,89 @@ public class AllureMapper {
         if (node == null) {
             return;
         }
-        PlanNodeSnapshot activeFeature = isFeature(node) ? node : feature;
+        boolean featureNode = isFeature(node);
+        PlanNodeSnapshot activeFeature = featureNode ? node : feature;
         if (node.getNodeType() == NodeType.TEST_CASE) {
             mapped.add(mapTestResult(node, activeFeature));
             return;
         }
-        if (isFeature(node)) {
-            TestResultContainer container = new TestResultContainer();
-            container.setUuid(uuid("container", node.getSource(), node.getName()));
-            container.setName(Optional.ofNullable(node.getName()).orElse(displayName(node)));
-            container.setDescription(description(node));
-            container.setStart(toEpochMillis(node.getStartInstant()));
-            container.setStop(toEpochMillis(node.getFinishInstant()));
-            List<String> children = new ArrayList<>();
-            if (node.getChildren() != null) {
-                for (PlanNodeSnapshot child : node.getChildren()) {
-                    if (child.getNodeType() == NodeType.LIFECYCLE_HOOK) {
-                        if (isExecutedFixture(child)) {
-                            addFixture(container, child);
-                        }
-                        continue;
-                    }
-                    int before = mapped.size();
-                    mapNode(child, activeFeature, mapped);
-                    for (int i = before; i < mapped.size(); i++) {
-                        if (mapped.get(i) instanceof TestResult result) {
-                            children.add(result.getUuid());
-                        }
-                    }
-                }
-            }
-            container.setChildren(children);
-            if (!children.isEmpty() || !container.getBefores().isEmpty() || !container.getAfters().isEmpty()) {
-                mapped.add(container);
-            }
+        if (featureNode) {
+            mapFeatureNode(node, mapped);
             return;
         }
-        if (node.getChildren() != null) {
-            node.getChildren().forEach(child -> mapNode(child, activeFeature, mapped));
+
+        mapChildren(node, activeFeature, mapped);
+    }
+
+    private void mapFeatureNode(
+            PlanNodeSnapshot node,
+            List<WithUuid> mapped
+    ) {
+        WakamitiTestResultContainer container = new WakamitiTestResultContainer();
+        container.setUuid(uuid("container", node.getSource(), node.getName()));
+        container.setName(Optional.ofNullable(node.getName()).orElse(displayName(node)));
+        container.setDescription(description(node));
+        container.setStart(toEpochMillis(node.getStartInstant()));
+        container.setStop(toEpochMillis(node.getFinishInstant()));
+
+        List<String> children = new ArrayList<>();
+        childrenOf(node).forEach(child -> mapFeatureChild(child, node, container, children, mapped));
+        container.setChildren(children);
+        if (!children.isEmpty() || !container.getBefores().isEmpty() || !container.getAfters().isEmpty()) {
+            mapped.add(container);
         }
+    }
+
+    private void mapFeatureChild(
+            PlanNodeSnapshot child,
+            PlanNodeSnapshot feature,
+            WakamitiTestResultContainer container,
+            List<String> children,
+            List<WithUuid> mapped
+    ) {
+        if (child.getNodeType() == NodeType.LIFECYCLE_HOOK) {
+            addFixtureIfExecuted(container, child);
+            return;
+        }
+
+        int firstMappedChild = mapped.size();
+        mapNode(child, feature, mapped);
+        addTestResultUuids(mapped, firstMappedChild, children);
+    }
+
+    private void addFixtureIfExecuted(
+            WakamitiTestResultContainer container,
+            PlanNodeSnapshot child
+    ) {
+        if (isExecutedFixture(child)) {
+            addFixture(container, child);
+        }
+    }
+
+    private void addTestResultUuids(
+            List<WithUuid> mapped,
+            int firstMappedChild,
+            List<String> children
+    ) {
+        for (int i = firstMappedChild; i < mapped.size(); i++) {
+            if (mapped.get(i) instanceof WakamitiTestResult result) {
+                children.add(result.getUuid());
+            }
+        }
+    }
+
+    private void mapChildren(
+            PlanNodeSnapshot node,
+            PlanNodeSnapshot feature,
+            List<WithUuid> mapped
+    ) {
+        childrenOf(node).forEach(child -> mapNode(child, feature, mapped));
+    }
+
+    private List<PlanNodeSnapshot> childrenOf(
+            PlanNodeSnapshot node
+    ) {
+        return Optional.ofNullable(node.getChildren()).orElseGet(List::of);
     }
 
     private void addFixture(
