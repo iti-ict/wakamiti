@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>wakamiti-plugin-maven-archetype</artifactId>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
     <packaging>maven-archetype</packaging>
     <name>Wakamiti Plugin Maven Archetype</name>
     <description>Maven archetype used to bootstrap Wakamiti plugins</description>
