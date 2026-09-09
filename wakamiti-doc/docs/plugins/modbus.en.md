@@ -33,14 +33,14 @@ integration with modern systems and communication over standard Ethernet network
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:modbus-wakamiti-plugin:1.0.0
+es.iti.wakamiti:modbus-wakamiti-plugin:1.1.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>modbus-wakamiti-plugin</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 

@@ -23,14 +23,14 @@ assert JSON messages, purge queues, and validate that no messages are received.
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:amqp-wakamiti-plugin:2.9.0
+es.iti.wakamiti:amqp-wakamiti-plugin:2.11.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>amqp-wakamiti-plugin</artifactId>
-  <version>2.9.0</version>
+  <version>2.11.0</version>
 </dependency>
 ```
 

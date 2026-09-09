@@ -21,21 +21,19 @@ HTML Reporter) en la ejecución.
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:xray-wakamiti-plugin:2.5.2
+es.iti.wakamiti:xray-wakamiti-plugin:1.2.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>xray-wakamiti-plugin</artifactId>
-  <version>2.5.2</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
 
 ## Configuración
-
-### XRAY
 
 ###  `xray.enabled`
 - Tipo: `boolean` 

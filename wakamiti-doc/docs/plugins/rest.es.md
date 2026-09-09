@@ -20,14 +20,14 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:rest-wakamiti-plugin:2.4.0
+es.iti.wakamiti:rest-wakamiti-plugin:2.11.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>rest-wakamiti-plugin</artifactId>
-  <version>2.4.0</version>
+  <version>2.11.0</version>
 </dependency>
 ```
 

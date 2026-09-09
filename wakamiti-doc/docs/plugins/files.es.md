@@ -17,14 +17,14 @@ Resulta útil en escenarios end-to-end donde el sistema crea, modifica, copia, m
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:io-wakamiti-plugin:2.7.0
+es.iti.wakamiti:io-wakamiti-plugin:2.8.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>io-wakamiti-plugin</artifactId>
-  <version>2.7.0</version>
+  <version>2.8.0</version>
 </dependency>
 ```
 
