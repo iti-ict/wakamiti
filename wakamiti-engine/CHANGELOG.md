@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [3.0.0] - Unreleased
+## [3.0.0] - 2026-09-09
 
 ### Added
 - Support setup and tear-down operations at plan, feature and scenario levels.
@@ -20,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of a single log for the whole execution.
 - Added reserved Gherkin scenario tags `@Before` and `@After` to run feature-level lifecycle scenarios without 
  `Background` inheritance and without affecting functional aggregate results.
+
+### Changed
+- Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`, `io.cucumber:tag-expressions`, `org.junit:junit-bom`,
+  `org.codehaus.plexus:plexus-archiver`
+- Add dependencies: `org.jspecify:jspecify`
 
 ### Fixed
 - Restore each plan's shared runtime configuration before creation and execution, preventing sequential plans and

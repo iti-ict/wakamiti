@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.11.0] - 2026-09-09
+
+### Changed
+- Upgrade dependencies: `org.apache.qpid:qpid-jms-client`, `com.rabbitmq:amqp-client`, `com.google.guava:guava`,
+  `io.netty:netty-bom`, `tools.jackson.core:jackson-core`, `org.bouncycastle:bcprov-jdk18on`
+
+
 ## [2.10.0] - 2026-07-31
 
 ### Changed
