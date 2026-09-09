@@ -26,7 +26,7 @@
 
 
     <properties>
-        <mockserver.version>7.4.0</mockserver.version>
+        <mockserver.version>7.6.0</mockserver.version>
         <rest-assured.version>6.0.1</rest-assured.version>
 
         <wakamiti-engine.version>3.0.0-SNAPSHOT</wakamiti-engine.version>
@@ -168,7 +168,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>3.6.3</version>
                         <executions>
                             <execution>
                                 <id>test</id>
