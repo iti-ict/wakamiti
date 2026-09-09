@@ -28,7 +28,7 @@
         <email.version>1.6.0</email.version>
         <groovy.version>2.9.0-SNAPSHOT</groovy.version>
         <io.version>2.8.0</io.version>
-        <jmeter.version>1.2.1-SNAPSHOT</jmeter.version>
+        <jmeter.version>1.3.0</jmeter.version>
         <html.version>2.11.0</html.version>
 
         <volume>${project.basedir}/wakamiti:/wakamiti</volume>
