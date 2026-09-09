@@ -42,7 +42,6 @@ public class XRayApi extends BaseApi {
     private static final String DELIMITER = "\",\"";
 
     private final String project;
-    private final Logger logger;
 
     /**
      * Creates an authenticated Xray Cloud GraphQL client.
@@ -65,7 +64,6 @@ public class XRayApi extends BaseApi {
     ) {
         super(baseURL, AUTH_URL, clientId, clientSecret, logger);
         this.project = project;
-        this.logger = logger;
     }
 
     /**
@@ -449,8 +447,7 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, query);
 
-        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results", new TypeRef<>() {
-        });
+        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results");
 
         createdIssues.forEach(testCase ->
                 testRuns.stream()
