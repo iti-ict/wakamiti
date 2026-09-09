@@ -608,7 +608,6 @@ function buttons() {
     });
 
     $(document).on('click', 'nav a', function (event) {
-        event.preventDefault();
         event.stopImmediatePropagation();
 
         const id = $(this).attr('href').replace('#', '').toString();
