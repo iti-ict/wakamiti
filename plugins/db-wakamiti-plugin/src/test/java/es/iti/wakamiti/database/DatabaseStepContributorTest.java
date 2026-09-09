@@ -3401,6 +3401,24 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
+    public void testAssertAsyncAttemptsConditionBeforeTimeout() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(
+                () -> {
+                    attempts.incrementAndGet();
+                    return false;
+                },
+                Duration.ofMillis(101),
+                () -> catchActionCalled.set(true)
+        );
+
+        assertThat(attempts.get()).isGreaterThanOrEqualTo(1);
+        assertThat(catchActionCalled.get()).isTrue();
+    }
+
+    @Test
     public void testAssertXLSFileExistsAsync() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
@@ -3522,6 +3540,26 @@ public class DatabaseStepContributorTest {
                             db.column(table, "birth_date"), table));
             throw new WakamitiException();
         }
+    }
+
+    @Test
+    public void testAssertXLSFileExistsAsyncWithReducedTimeoutReportsAssertion() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        File file = resource("wakamiti/data3.xlsx");
+
+        // Act & Check
+        assertThatThrownBy(() -> contributor.assertXLSFileExistsAsync(file, Duration.ofMillis(101)))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("It was expected some record satisfying");
     }
 
     @Test
@@ -3661,6 +3699,26 @@ public class DatabaseStepContributorTest {
 
         // Check
         assertThatNoException();
+    }
+
+    @Test
+    public void testAssertXLSFileNotExistsAsyncWithReducedTimeoutReportsAssertion() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        File file = resource("wakamiti/data1.xlsx");
+
+        // Act & Check
+        assertThatThrownBy(() -> contributor.assertXLSFileNotExistsAsync(file, Duration.ofMillis(101)))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("It was expected no record satisfying");
     }
 
     @Test(expected = WakamitiException.class)

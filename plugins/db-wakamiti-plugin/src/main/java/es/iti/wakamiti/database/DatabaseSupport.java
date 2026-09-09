@@ -1022,15 +1022,20 @@ public class DatabaseSupport {
             Duration duration,
             Runnable catchAction
     ) {
-        if (duration.compareTo(ASYNC_POLL_INTERVAL) <= 0) {
-            if (!action.getAsBoolean()) {
-                catchAction.run();
-            }
+        Temporal start = Instant.now();
+        if (action.getAsBoolean()) {
             return;
         }
+
+        Duration remaining = duration.minus(Duration.between(start, Instant.now()));
+        if (remaining.compareTo(ASYNC_POLL_INTERVAL) <= 0) {
+            catchAction.run();
+            return;
+        }
+
         try {
             await()
-                    .atMost(duration)
+                    .atMost(remaining)
                     .pollInterval(ASYNC_POLL_INTERVAL)
                     .until(action::getAsBoolean);
         } catch (ConditionTimeoutException ignored) {
@@ -1056,8 +1061,8 @@ public class DatabaseSupport {
         Temporal start = Instant.now();
         assertAsync(() -> {
             for (Pair<String[], Object[]> row : rows) {
+                currentRow.set(row);
                 if (!matcherNonEmpty().test(countBy(dataSet.table(), row.key(), row.value()))) {
-                    currentRow.set(row);
                     return false;
                 }
             }
@@ -1093,8 +1098,8 @@ public class DatabaseSupport {
         Temporal start = Instant.now();
         assertAsync(() -> {
             for (Pair<String[], Object[]> row : rows) {
+                currentRow.set(row);
                 if (!matcherEmpty().test(countBy(dataSet.table(), row.key(), row.value()))) {
-                    currentRow.set(row);
                     return false;
                 }
             }

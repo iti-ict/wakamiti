@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning][2].
 ### Fixed
 - Automatic database cleanup is skipped for feature lifecycle hook scenarios.
 - Lifecycle database connections are released after feature and plan execution.
+- Asynchronous database assertions evaluate their condition at least once when the timeout does not exceed the polling interval.
 - Asynchronous XLS assertions no longer fail with invalid timeouts when their shared time budget is exhausted.
 - Database cleanup now runs declarative operations in definition order before automatically reverting database changes
   in reverse order.
