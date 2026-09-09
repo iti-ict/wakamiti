@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [3.10.0] - 2026-09-09
 
 ### Added
 - Add `database.scripts.setup`, `database.scripts.teardown` and their equivalents under

@@ -6,9 +6,9 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [1.2.0] - 2026-09-09
 
-### Fixed
+### Added
 - Map feature and scenario results without associating lifecycle hooks with functional test cases.
 
 

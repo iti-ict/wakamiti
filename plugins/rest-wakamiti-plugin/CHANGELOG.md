@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [2.11.0] - Unreleased
+## [2.11.0] - 2026-09-09
 
 ### Added
 - New step `rest.define.fromContentType` that sets the request content type using a MIME type string 
