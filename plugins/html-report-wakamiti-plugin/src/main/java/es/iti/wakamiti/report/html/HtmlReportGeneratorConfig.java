@@ -20,7 +20,7 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "html-report-config",
-        version = "2.13",
+        version = "3.0",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class HtmlReportGeneratorConfig implements ConfigContributor<HtmlReportGenerator> {
