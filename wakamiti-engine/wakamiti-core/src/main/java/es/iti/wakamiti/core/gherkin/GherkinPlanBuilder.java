@@ -97,6 +97,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final int ALPHABET_SIZE = 26;
     private static final int ID_SUFFIX_LENGTH = 5;
+    private static final String KEYWORD_NAME = "{keyword}: {name}";
 
     private Predicate<PlanNodeBuilder> scenarioFilter = (x -> true);
     private Pattern idTagPattern;
@@ -385,7 +386,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return new PlanNodeBuilder(NodeType.AGGREGATOR)
                 .setId(id(feature.getTags(), feature.getName(), ""))
                 .setName(feature.getName())
-                .setDisplayNamePattern("{keyword}: {name}")
+                .setDisplayNamePattern(KEYWORD_NAME)
                 .setLanguage(language)
                 .setKeyword(feature.getKeyword())
                 .addDescription(splitAndTrim(feature.getDescription()))
@@ -412,7 +413,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         PlanNodeBuilder node = new PlanNodeBuilder(NodeType.TEST_CASE)
                 .setId(id(scenario.getTags(), scenario.getName(), ""))
                 .setName(trim(scenario.getName()))
-                .setDisplayNamePattern("[{id}] {keyword}: {name}")
+                .setDisplayNamePattern("[{id}] %s".formatted(KEYWORD_NAME))
                 .setLanguage(parentNode.language())
                 .setKeyword(trim(scenario.getKeyword()))
                 .addDescription(splitAndTrim(scenario.getDescription()))
@@ -423,7 +424,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
                 .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_SCENARIO);
         lifecycleType(scenario.getTags()).ifPresent(type -> node
                 .setNodeType(NodeType.LIFECYCLE_HOOK)
-                .setDisplayNamePattern("{keyword}: {name}")
+                .setDisplayNamePattern(KEYWORD_NAME)
                 .addProperty(GHERKIN_PROPERTY, type));
         return node;
     }
@@ -444,7 +445,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         return new PlanNodeBuilder(NodeType.AGGREGATOR)
                 .setId(id(scenarioOutline.getTags(), scenarioOutline.getName(), ""))
                 .setName(trim(scenarioOutline.getName()))
-                .setDisplayNamePattern("[{id}] {keyword}: {name}")
+                .setDisplayNamePattern("[{id}] %s".formatted(KEYWORD_NAME))
                 .setLanguage(parentNode.language())
                 .setKeyword(trim(scenarioOutline.getKeyword()))
                 .addDescription(splitAndTrim(scenarioOutline.getDescription()))
@@ -519,7 +520,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
             PlanNodeBuilder backgroundAggregator = new PlanNodeBuilder(NodeType.STEP_AGGREGATOR)
                     .setKeyword(background.get().getKeyword())
                     .setName(background.get().getName())
-                    .setDisplayNamePattern("{keyword}: {name}")
+                    .setDisplayNamePattern(KEYWORD_NAME)
                     .addTags(parentNode.tags())
                     .addProperties(propertiesFromComments(background.get(), parentNode.properties()))
                     .addProperty(GHERKIN_PROPERTY, GHERKIN_TYPE_BACKGROUND);
