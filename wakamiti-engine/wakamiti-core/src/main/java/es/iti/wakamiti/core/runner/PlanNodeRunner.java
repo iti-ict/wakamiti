@@ -240,48 +240,66 @@ public class PlanNodeRunner {
     }
 
     private Result runTestCaseNode() {
-        String previousScenarioId = MDC.get(ScenarioLogContext.KEY);
-        if (isPerScenarioLogEnabled()) {
-            MDC.put(ScenarioLogContext.KEY, scenarioLogId());
-        }
-        Result result = null;
+        String previousScenarioId = initializeScenarioLoggingContext();
         try {
-            if (node.filtered()) {
-                result = Result.SKIPPED;
-                markFilteredTestCase(node);
-            } else if (node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
-                result = Result.NOT_IMPLEMENTED;
-                doNotImplemented(node, result);
-            } else if (!getChildren().isEmpty()) {
-                List<Pair<Instant, Result>> results = new ArrayList<>();
-                boolean continueExecution = true;
-                if (dryRun) {
-                    logger.logTestCaseHeader(node);
-                } else {
-                    try {
-                        testCasePreExecution(node);
-                    } catch (WakamitiException e) {
-                        results.add(errorResult());
-                        continueExecution = !stopExecutionOnError();
-                    }
-                }
-                if (continueExecution) {
-                    results.addAll(runChildren());
-                } else {
-                    skipPendingChildren();
-                }
-                if (!dryRun) {
-                    try {
-                        testCasePostExecution(node);
-                    } catch (WakamitiException e) {
-                        results.add(errorResult());
-                    }
-                }
-                result = aggregatorFinish(results);
-            }
-            return result;
+            return resolveTestCaseResult();
         } finally {
             restoreScenarioLoggingContext(previousScenarioId);
+        }
+    }
+
+    private Result resolveTestCaseResult() {
+        if (node.filtered()) {
+            markFilteredTestCase(node);
+            return Result.SKIPPED;
+        }
+        if (node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
+            doNotImplemented(node, Result.NOT_IMPLEMENTED);
+            return Result.NOT_IMPLEMENTED;
+        }
+        if (getChildren().isEmpty()) {
+            return null;
+        }
+        return executeTestCase();
+    }
+
+    private Result executeTestCase() {
+        List<Pair<Instant, Result>> results = new ArrayList<>();
+        if (prepareTestCaseExecution(results)) {
+            results.addAll(runChildren());
+        } else {
+            skipPendingChildren();
+        }
+        finishTestCaseExecution(results);
+        return aggregatorFinish(results);
+    }
+
+    private boolean prepareTestCaseExecution(
+            List<Pair<Instant, Result>> results
+    ) {
+        if (dryRun) {
+            logger.logTestCaseHeader(node);
+            return true;
+        }
+        try {
+            testCasePreExecution(node);
+            return true;
+        } catch (WakamitiException e) {
+            results.add(errorResult());
+            return !stopExecutionOnError();
+        }
+    }
+
+    private void finishTestCaseExecution(
+            List<Pair<Instant, Result>> results
+    ) {
+        if (dryRun) {
+            return;
+        }
+        try {
+            testCasePostExecution(node);
+        } catch (WakamitiException e) {
+            results.add(errorResult());
         }
     }
 
@@ -583,6 +601,14 @@ public class PlanNodeRunner {
 
     private boolean isPerScenarioLogEnabled() {
         return configuration.get(WakamitiConfiguration.LOGS_PER_SCENARIO, Boolean.class).get();
+    }
+
+    private String initializeScenarioLoggingContext() {
+        String previousScenarioId = MDC.get(ScenarioLogContext.KEY);
+        if (isPerScenarioLogEnabled()) {
+            MDC.put(ScenarioLogContext.KEY, scenarioLogId());
+        }
+        return previousScenarioId;
     }
 
     private String scenarioLogId() {
