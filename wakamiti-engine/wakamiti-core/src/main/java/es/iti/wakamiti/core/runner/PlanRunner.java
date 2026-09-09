@@ -103,50 +103,65 @@ public class PlanRunner {
         planNodeLogger.logTestPlanHeader(plan);
         List<PlanNodeRunner> runners = dryRun ? buildRunners(true) : getChildren();
         boolean hasImplementedSteps = plan.descendants().anyMatch(node -> node.nodeType() == NodeType.STEP);
-        boolean lifecycleError = false;
-        boolean stopChildren = false;
-        if (!dryRun && hasImplementedSteps) {
-            try {
-                lifecycleBackend().setUp(Level.PLAN);
-            } catch (WakamitiException e) {
-                lifecycleError = true;
-                stopChildren = stopExecutionOnError;
-            }
-        }
-        if (stopChildren) {
-            skipPendingChildren(runners, 0);
-        } else {
-            for (int i = 0; i < runners.size(); i++) {
-                PlanNodeRunner child = runners.get(i);
-                Result result = null;
-                try {
-                    result = child.runNode();
-                } catch (Exception e) {
-                    LOGGER.error("{error}", e.getMessage(), e);
-                    if (child.getNode().result().isEmpty()) {
-                        child.getNode().prepareExecution().markFinished(Instant.now(), Result.ERROR, e, null);
-                    }
-                    result = Result.ERROR;
-                }
-                if (stopExecutionOnError && result == Result.ERROR) {
-                    skipPendingChildren(runners, i + 1);
-                    break;
-                }
-            }
-        }
-        if (!dryRun && hasImplementedSteps) {
-            try {
-                lifecycleBackend().tearDown(Level.PLAN);
-            } catch (WakamitiException e) {
-                lifecycleError = true;
-            }
-        }
-        if (lifecycleError) {
+        boolean executeLifecycle = !dryRun && hasImplementedSteps;
+        boolean setUpError = executeLifecycle && !setUpPlan();
+        runChildren(runners, setUpError && stopExecutionOnError);
+        boolean tearDownError = executeLifecycle && !tearDownPlan();
+        if (setUpError || tearDownError) {
             plan.prepareExecution().markFinished(Instant.now(), Result.ERROR);
         }
         planNodeLogger.logTestPlanResult(plan);
         wakamiti.publishEvent(Event.PLAN_RUN_FINISHED, new PlanNodeSnapshot(plan));
         return plan;
+    }
+
+    private boolean setUpPlan() {
+        try {
+            lifecycleBackend().setUp(Level.PLAN);
+            return true;
+        } catch (WakamitiException e) {
+            return false;
+        }
+    }
+
+    private void runChildren(
+            List<PlanNodeRunner> runners,
+            boolean stopChildren
+    ) {
+        if (stopChildren) {
+            skipPendingChildren(runners, 0);
+            return;
+        }
+        for (int i = 0; i < runners.size(); i++) {
+            Result result = runChild(runners.get(i));
+            if (stopExecutionOnError && result == Result.ERROR) {
+                skipPendingChildren(runners, i + 1);
+                break;
+            }
+        }
+    }
+
+    private Result runChild(
+            PlanNodeRunner child
+    ) {
+        try {
+            return child.runNode();
+        } catch (Exception e) {
+            LOGGER.error("{error}", e.getMessage(), e);
+            if (child.getNode().result().isEmpty()) {
+                child.getNode().prepareExecution().markFinished(Instant.now(), Result.ERROR, e, null);
+            }
+            return Result.ERROR;
+        }
+    }
+
+    private boolean tearDownPlan() {
+        try {
+            lifecycleBackend().tearDown(Level.PLAN);
+            return true;
+        } catch (WakamitiException e) {
+            return false;
+        }
     }
 
     /**
