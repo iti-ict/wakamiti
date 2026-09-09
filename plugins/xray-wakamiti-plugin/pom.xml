@@ -25,8 +25,9 @@
     <inceptionYear>2024</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>3.0.0-SNAPSHOT</wakamiti-engine.version>
-        <mockserver.version>7.4.0</mockserver.version>
+        <wakamiti-engine.version>3.0.0</wakamiti-engine.version>
+
+        <mockserver.version>7.6.0</mockserver.version>
     </properties>
 
     <dependencies>
