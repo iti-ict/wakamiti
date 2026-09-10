@@ -10,17 +10,22 @@ package es.iti.wakamiti.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.comparesEqualTo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.h2.tools.RunScript;
 import org.junit.After;
@@ -32,11 +37,15 @@ import org.slf4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.ConfigurationException;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
+import es.iti.wakamiti.api.plan.NodeType;
+import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
@@ -51,6 +60,8 @@ public class DatabaseStepContributorTest {
     private static final String URL = "jdbc:h2:mem:test;MODE=MySQL;";
     private static final String USER = "sa";
     private static final String PASS = "";
+    private static final String QUALIFIED_SCHEMA = "QUALIFIED";
+    private static final String QUALIFIED_TABLE = QUALIFIED_SCHEMA + ".QUALIFIED_CLIENT";
 
     private static Connection h2;
 
@@ -79,6 +90,7 @@ public class DatabaseStepContributorTest {
     @After
     public void finish() throws SQLException, FileNotFoundException {
         RunScript.execute(h2, new FileReader("src/test/resources/wakamiti/db/clean.sql"));
+        RunScript.execute(h2, new StringReader("DELETE FROM qualified.qualified_client;"));
         contributor.releaseConnection();
     }
 
@@ -119,39 +131,42 @@ public class DatabaseStepContributorTest {
         assertThat(contributor.connection().parameters().url()).isEqualTo(URL);
     }
 
-    @Test(expected = WakamitiException.class)
+    @Test
     public void testConnectionWhenNoDatabasesFound() {
-        // Prepare
         Configuration config = configContributor.defaultConfiguration();
-        configContributor.configurer().configure(contributor, config);
 
-        // Act
-        try {
-            contributor.connection();
-
-            // Check
-        } catch (WakamitiException e) {
-            assertThat(e).hasMessage("There is no default connection");
-            throw e;
-        }
+        assertThatThrownBy(() -> configContributor.configurer().configure(contributor, config))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage("At least one connection configuration is required");
     }
 
-    @Test(expected = WakamitiException.class)
+    @Test
     public void testConnectionWhenNoHealthcheckAndNoDatabasesFound() {
-        // Prepare
         Configuration config = configContributor.defaultConfiguration();
+
+        contributor.setHealthcheck(false);
+
+        assertThatThrownBy(() -> configContributor.configurer().configure(contributor, config))
+                .isInstanceOf(ConfigurationException.class)
+                .hasMessage("At least one connection configuration is required");
+    }
+
+    @Test
+    public void testConnectionCountIsResetForEachConfiguration() {
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS
+        );
         configContributor.configurer().configure(contributor, config);
 
-        // Act
-        try {
-            contributor.setHealthcheck(false);
-            contributor.connection();
+        DatabaseStepContributor emptyContributor = new DatabaseStepContributor();
 
-            // Check
-        } catch (WakamitiException e) {
-            assertThat(e.getMessage()).isEqualTo("There is no default connection");
-            throw e;
-        }
+        assertThatThrownBy(() -> configContributor.configurer().configure(
+                emptyContributor,
+                configContributor.defaultConfiguration()
+        )).isInstanceOf(ConfigurationException.class)
+                .hasMessage("At least one connection configuration is required");
     }
 
     @Test
@@ -902,6 +917,159 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedUpdate() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        Object result = contributor.executeSQLScript(new Document(
+                "UPDATE " + QUALIFIED_TABLE + " SET ACTIVE = FALSE WHERE ID = 1"
+        ));
+
+        // Check
+        assertUpdatedRow(result);
+        assertQualifiedTableActive(false);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedUpdateWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.metadata.schema", "PUBLIC",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        Object result = contributor.executeSQLScript(new Document(
+                "UPDATE " + QUALIFIED_TABLE + " SET ACTIVE = FALSE WHERE ID = 1"
+        ));
+
+        // Check
+        assertUpdatedRow(result);
+        assertQualifiedTableActive(false);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedInsertWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        contributor.executeSQLScript(new Document(
+                "INSERT INTO " + QUALIFIED_TABLE + " (ID, ACTIVE) VALUES (2, FALSE)"
+        ));
+
+        // Check
+        assertQualifiedTableActive(2, false);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableMissing(2);
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedDeleteWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        contributor.executeSQLScript(new Document(
+                "DELETE FROM " + QUALIFIED_TABLE + " WHERE ID = 1"
+        ));
+
+        // Check
+        assertQualifiedTableMissing(1);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testExecuteSQLScriptWithSchemaQualifiedTruncateWhenEnabledCleanup() throws SQLException {
+        // Prepare
+        resetQualifiedTable();
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        contributor.executeSQLScript(new Document("TRUNCATE TABLE " + QUALIFIED_TABLE));
+
+        // Check
+        assertQualifiedTableSize(0);
+
+        contributor.cleanUp();
+
+        assertQualifiedTableSize(1);
+        assertQualifiedTableActive(true);
+    }
+
+    @Test
+    public void testMetadataUsesConfiguredSchema() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.metadata.schema", QUALIFIED_SCHEMA
+        );
+        configContributor.configurer().configure(contributor, config);
+        Database database = Database.from(contributor.connection());
+
+        // Act & Check
+        assertThat(database.table("QUALIFIED_CLIENT")).isEqualTo("QUALIFIED_CLIENT");
+        assertThat(database.column("QUALIFIED_CLIENT", "ACTIVE")).isEqualTo("ACTIVE");
+        assertThat(database.primaryKey("QUALIFIED_CLIENT")).containsExactly("ID");
+        assertThat(database.columnTypes("QUALIFIED_CLIENT")).containsEntry("ACTIVE", JDBCType.BOOLEAN);
+    }
+
+    @Test
     public void testExecuteSQLScriptWhenEnabledCleanup() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
@@ -948,6 +1116,44 @@ public class DatabaseStepContributorTest {
             assertThat(result).isNotEmpty();
             assertThat(result).containsExactly(
                     new String[]{"1", "1"}
+            );
+        }
+    }
+
+    @Test
+    public void testExecuteSQLScriptWhenEnabledCleanupInBeforeHook() {
+        assertLifecycleHookDoesNotCleanup("before");
+    }
+
+    @Test
+    public void testExecuteSQLScriptWhenEnabledCleanupInAfterHook() {
+        assertLifecycleHookDoesNotCleanup("after");
+    }
+
+    private void assertLifecycleHookDoesNotCleanup(
+            String gherkinType
+    ) {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config, "before".equals(gherkinType)
+                || "after".equals(gherkinType) ? NodeType.LIFECYCLE_HOOK : NodeType.TEST_CASE);
+
+        // Act
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Hook' WHERE id = 1"));
+        contributor.cleanUp();
+
+        // Check
+        try (Select<String[]> select = Database.from(contributor.connection())
+                .select("SELECT * FROM client WHERE id = 1").get(DatabaseHelper::format)) {
+            assertThat(select.stream().toList()).containsExactly(
+                    new String[]{"1", "Rosa", "Hook", "true", "1980-12-25", "2024-07-22 12:34:56.000"}
             );
         }
     }
@@ -1023,6 +1229,29 @@ public class DatabaseStepContributorTest {
             assertThat(result).containsExactly(
                     new String[]{"47"}
             );
+        }
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testExecuteSQLScriptWhenIsEmptyWithError() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+
+        // Act
+        try {
+            contributor.executeSQLScript(new Document(""));
+
+            // Check
+        } catch (WakamitiException e) {
+            assertThat(e.getMessage()).isEqualTo("SQL script is empty");
+            throw e;
         }
     }
 
@@ -3130,6 +3359,66 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
+    public void testAssertAsyncWhenTimeoutIsExpiredAndConditionMatches() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(() -> {
+            attempts.incrementAndGet();
+            return true;
+        }, Duration.ofNanos(-1), () -> catchActionCalled.set(true));
+
+        assertThat(attempts.get()).isEqualTo(1);
+        assertThat(catchActionCalled.get()).isFalse();
+    }
+
+    @Test
+    public void testAssertAsyncWhenTimeoutIsExpiredAndConditionDoesNotMatch() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(() -> {
+            attempts.incrementAndGet();
+            return false;
+        }, Duration.ZERO, () -> catchActionCalled.set(true));
+
+        assertThat(attempts.get()).isEqualTo(1);
+        assertThat(catchActionCalled.get()).isTrue();
+    }
+
+    @Test
+    public void testAssertAsyncWhenTimeoutEqualsPollInterval() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(() -> {
+            attempts.incrementAndGet();
+            return true;
+        }, Duration.ofMillis(100), () -> catchActionCalled.set(true));
+
+        assertThat(attempts.get()).isEqualTo(1);
+        assertThat(catchActionCalled.get()).isFalse();
+    }
+
+    @Test
+    public void testAssertAsyncAttemptsConditionBeforeTimeout() {
+        AtomicInteger attempts = new AtomicInteger();
+        AtomicBoolean catchActionCalled = new AtomicBoolean();
+
+        contributor.assertAsync(
+                () -> {
+                    attempts.incrementAndGet();
+                    return false;
+                },
+                Duration.ofMillis(101),
+                () -> catchActionCalled.set(true)
+        );
+
+        assertThat(attempts.get()).isGreaterThanOrEqualTo(1);
+        assertThat(catchActionCalled.get()).isTrue();
+    }
+
+    @Test
     public void testAssertXLSFileExistsAsync() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
@@ -3254,6 +3543,26 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
+    public void testAssertXLSFileExistsAsyncWithReducedTimeoutReportsAssertion() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        File file = resource("wakamiti/data3.xlsx");
+
+        // Act & Check
+        assertThatThrownBy(() -> contributor.assertXLSFileExistsAsync(file, Duration.ofMillis(101)))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("It was expected some record satisfying");
+    }
+
+    @Test
     public void testAssertXLSFileNotExists() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(
@@ -3368,6 +3677,48 @@ public class DatabaseStepContributorTest {
 
         // Check
         assertThatNoException();
+    }
+
+    @Test
+    public void testAssertXLSFileNotExistsAsyncWhenTimeoutBudgetIsExhausted() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        contributor.executeSQLScript(new Document("UPDATE client SET second_name = 'Melano     ' WHERE id = 1"));
+        File file = resource("wakamiti/data2.xlsx");
+
+        // Act
+        contributor.assertXLSFileNotExistsAsync(file, Duration.ZERO);
+
+        // Check
+        assertThatNoException();
+    }
+
+    @Test
+    public void testAssertXLSFileNotExistsAsyncWithReducedTimeoutReportsAssertion() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false",
+                "database.enableCleanupUponCompletion", "true"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        File file = resource("wakamiti/data1.xlsx");
+
+        // Act & Check
+        assertThatThrownBy(() -> contributor.assertXLSFileNotExistsAsync(file, Duration.ofMillis(101)))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("It was expected no record satisfying");
     }
 
     @Test(expected = WakamitiException.class)
@@ -4118,12 +4469,79 @@ public class DatabaseStepContributorTest {
         return new File(classLoader.getResource(resourceName).getFile());
     }
 
+    private void assertUpdatedRow(
+            Object result
+    ) {
+        assertThat(result).isInstanceOf(ArrayNode.class);
+        assertThat((ArrayNode) result).hasSize(1);
+        JsonNode row = ((ArrayNode) result).get(0);
+        assertThat(row.get("ID").asText()).isEqualTo("1");
+        assertThat(row.get("ACTIVE").asText()).isEqualTo("false");
+    }
+
+    private void assertQualifiedTableActive(
+            boolean expected
+    ) throws SQLException {
+        assertQualifiedTableActive(1, expected);
+    }
+
+    private void assertQualifiedTableActive(
+            int id,
+            boolean expected
+    ) throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement();
+             var result = statement.executeQuery(
+                     "SELECT ACTIVE FROM " + QUALIFIED_TABLE + " WHERE ID = " + id)) {
+            assertThat(result.next()).isTrue();
+            assertThat(result.getBoolean(1)).isEqualTo(expected);
+            assertThat(result.next()).isFalse();
+        }
+    }
+
+    private void assertQualifiedTableMissing(
+            int id
+    ) throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement();
+             var result = statement.executeQuery(
+                     "SELECT 1 FROM " + QUALIFIED_TABLE + " WHERE ID = " + id)) {
+            assertThat(result.next()).isFalse();
+        }
+    }
+
+    private void assertQualifiedTableSize(
+            int expected
+    ) throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement();
+             var result = statement.executeQuery("SELECT COUNT(*) FROM " + QUALIFIED_TABLE)) {
+            assertThat(result.next()).isTrue();
+            assertThat(result.getInt(1)).isEqualTo(expected);
+        }
+    }
+
+    private void resetQualifiedTable() throws SQLException {
+        try (java.sql.Statement statement = h2.createStatement()) {
+            statement.executeUpdate("DELETE FROM " + QUALIFIED_TABLE);
+            statement.executeUpdate("INSERT INTO " + QUALIFIED_TABLE + " VALUES (1, TRUE)");
+        }
+    }
+
     private void createContext(
             Configuration configuration
     ) {
+        createContext(configuration, null);
+    }
+
+    private void createContext(
+            Configuration configuration,
+            NodeType nodeType
+    ) {
+        Backend backend = nodeType == null
+                ? Wakamiti.instance().newBackendFactory().createNonRunnableBackend(configuration)
+                : Wakamiti.instance().newBackendFactory().createBackend(
+                        new PlanNode(nodeType, List.of()), configuration);
         WakamitiStepRunContext.set(new WakamitiStepRunContext(
                 configuration,
-                Wakamiti.instance().newBackendFactory().createNonRunnableBackend(configuration),
+                backend,
                 Locale.getDefault(),
                 Locale.getDefault()
         ));

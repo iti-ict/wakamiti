@@ -8,13 +8,10 @@
 package es.iti.wakamiti.junit;
 
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -29,7 +26,6 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
 
@@ -168,18 +164,13 @@ public class PlanNodeJUnitRunner extends PlanNodeRunner implements WakamitiPlanN
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Runs the child nodes of the current test suite and captures the results.
-     *
-     * @return A stream of pairs containing the timestamp and result for each child node.
-     */
     @Override
-    protected Stream<Pair<Instant, Result>> runChildren() {
-        return getChildren().stream()
-                .map(WakamitiPlanNodeRunner.class::cast)
-                .map(child -> child.run(notifier))
-                .filter(Objects::nonNull)
-                .map(result -> new Pair<>(Instant.now(), result));
+    protected Result runChild(
+            PlanNodeRunner child
+    ) {
+        return child instanceof WakamitiPlanNodeRunner wakamitiChild
+                ? wakamitiChild.run(notifier)
+                : child.run();
     }
 
     /**

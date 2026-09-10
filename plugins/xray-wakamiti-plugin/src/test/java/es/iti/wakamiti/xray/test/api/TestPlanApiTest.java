@@ -335,6 +335,11 @@ public class TestPlanApiTest {
                 .hasSize(1);
 
         assertThat(testSets.get(0).getJira().getSummary()).isEqualTo("Test Set Summary");
+        assertThat(testSets.get(0).getTestCases())
+                .hasSize(1)
+                .first()
+                .extracting(TestCase::getIssueId)
+                .isEqualTo("10070");
 
         requests.forEach(MOCK::verify);
     }
@@ -384,6 +389,8 @@ public class TestPlanApiTest {
                 .gherkin("Gherkin");
 
         xRayApi.updateTestRunStatus(List.of(testCase));
+
+        assertThat(testCase.getTestRunId()).isEqualTo("20080");
 
         requests.forEach(MOCK::verify);
     }

@@ -26,3 +26,10 @@ CREATE TABLE client_city (
 CREATE TABLE other (
     something int NOT NULL
 );
+
+CREATE SCHEMA "QUALIFIED";
+
+CREATE TABLE "QUALIFIED"."QUALIFIED_CLIENT" (
+    id int PRIMARY KEY,
+    active boolean NOT NULL
+);

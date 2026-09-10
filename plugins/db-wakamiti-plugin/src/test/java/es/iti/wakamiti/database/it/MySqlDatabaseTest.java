@@ -13,12 +13,16 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
 import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+
+import java.util.Objects;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.utility.MountableFile;
 
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
@@ -41,27 +45,34 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class MySqlDatabaseTest {
 
-    public static final MySQLContainer<?> CONTAINER = new MySQLContainer<>("mysql:5.7.34")
+    private static final Logger LOGGER = LoggerFactory.getLogger(MySqlDatabaseTest.class);
+    private static final MySQLContainer<?> CONTAINER = new MySQLContainer<>("mysql:5.7.34")
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
+            .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("wakamiti/db/create-qualified-mysql.sql"),
+                    "/docker-entrypoint-initdb.d/00-create-qualified.sql"
+            )
             .withInitScript("wakamiti/db/create-schema.sql")
             .withCreateContainerCmdModifier(cmd ->
-                    cmd.getHostConfig().withPortBindings(
-                            new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
+                    Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
+                            new PortBinding(
+                                    Ports.Binding.bindPort(1234),
+                                    Objects.requireNonNull(cmd.getExposedPorts())[0]
+                            ))
             );
 
     @BeforeClass
     public static void setUp() {
-        System.out.println("Creating container. Please, be patient... ");
+        LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
-        System.out.println(message("\rContainer [MySQLContainer] started with [url={}, username={}, password={}]",
-                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
+        LOGGER.info("Container [MySQLContainer] started with [url={}, username={}, password={}]",
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }
 
     @AfterClass
     public static void shutdown() {
-        CONTAINER.stop();
         CONTAINER.close();
     }
 

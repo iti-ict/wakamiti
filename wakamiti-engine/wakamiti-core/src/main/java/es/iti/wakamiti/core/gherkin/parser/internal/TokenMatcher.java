@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import es.iti.wakamiti.core.gherkin.parser.ParserException;
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialect;
 import es.iti.wakamiti.core.gherkin.parser.GherkinDialectProvider;
 import es.iti.wakamiti.core.gherkin.parser.GherkinLanguageConstants;
@@ -28,6 +29,7 @@ import es.iti.wakamiti.core.gherkin.parser.Location;
 public class TokenMatcher implements ITokenMatcher {
 
     private static final Pattern LANGUAGE_PATTERN = Pattern.compile("^\\s*#\\s*language\\s*:\\s*([a-zA-Z\\-_]+)\\s*$");
+    private static final int MAX_FEATURE_SCENARIO_TITLE_LENGTH = 128;
     private final GherkinDialectProvider dialectProvider;
     private GherkinDialect currentDialect;
     private String activeDocStringSeparator = null;
@@ -159,7 +161,11 @@ public class TokenMatcher implements ITokenMatcher {
             es.iti.wakamiti.core.gherkin.parser.internal
                     .Token token
     ) {
-        return matchTitleLine(token, TokenType.FeatureLine, currentDialect.getFeatureKeywords());
+        return matchTitleLine(
+                token,
+                TokenType.FeatureLine,
+                currentDialect.getFeatureKeywords()
+        );
     }
 
     @Override
@@ -175,7 +181,11 @@ public class TokenMatcher implements ITokenMatcher {
             es.iti.wakamiti.core.gherkin.parser.internal
                     .Token token
     ) {
-        return matchTitleLine(token, TokenType.ScenarioLine, currentDialect.getScenarioKeywords());
+        return matchTitleLine(
+                token,
+                TokenType.ScenarioLine,
+                currentDialect.getScenarioKeywords()
+        );
     }
 
     @Override
@@ -183,7 +193,11 @@ public class TokenMatcher implements ITokenMatcher {
             es.iti.wakamiti.core.gherkin.parser.internal
                     .Token token
     ) {
-        return matchTitleLine(token, TokenType.ScenarioOutlineLine, currentDialect.getScenarioOutlineKeywords());
+        return matchTitleLine(
+                token,
+                TokenType.ScenarioOutlineLine,
+                currentDialect.getScenarioOutlineKeywords()
+        );
     }
 
     @Override
@@ -202,7 +216,16 @@ public class TokenMatcher implements ITokenMatcher {
         for (String keyword : keywords) {
             if (token.line.startsWithTitleKeyword(keyword)) {
                 String title = token.line.getRestTrimmed(keyword.length() + GherkinLanguageConstants.TITLE_KEYWORD_SEPARATOR.length());
-                if (title.isEmpty()) return false;
+                if (title.isEmpty()) {
+                    return false;
+                }
+                if (title.length() > MAX_FEATURE_SCENARIO_TITLE_LENGTH) {
+                    throw new ParserException.AstBuilderException(
+                            "Title too long for " + tokenType + ": max "
+                                    + MAX_FEATURE_SCENARIO_TITLE_LENGTH + " characters",
+                            token.location
+                    );
+                }
                 setTokenMatched(token, tokenType, title, keyword, null, null);
                 return true;
             }

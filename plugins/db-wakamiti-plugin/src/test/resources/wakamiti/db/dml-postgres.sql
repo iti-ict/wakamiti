@@ -4,6 +4,8 @@ INSERT INTO city (ID, name, latitude, longitude) VALUES (1, 'Valencia', 39.46990
 INSERT INTO CLIENT_CITY ("clientId", "cityId") VALUES (1, 1);
 INSERT INTO other (something) VALUES (47);
 
+INSERT INTO "QUALIFIED"."QUALIFIED_CLIENT" (id, active) VALUES (1, true);
+
 COMMIT;
 
 /* comment */

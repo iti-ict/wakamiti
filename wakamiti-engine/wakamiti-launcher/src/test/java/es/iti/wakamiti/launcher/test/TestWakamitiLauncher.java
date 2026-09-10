@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.util.WakamitiLogger;
@@ -60,7 +61,9 @@ public class TestWakamitiLauncher {
 
     @Test
     public void testLogger() {
-        String args = "--dry-run -KresourceTypes=gherkin -Klog.path=target -Klog.level=info";
+        File logDirectory = new File("target/testLogger-" + System.nanoTime());
+        assertThat(logDirectory.mkdirs()).isTrue();
+        String args = "--dry-run -KresourceTypes=gherkin -Klog.path=" + logDirectory.getPath() + " -Klog.level=info";
         try (MockedConstruction<WakamitiLauncherFetcher> mockPaymentService =
                      Mockito.mockConstruction(WakamitiLauncherFetcher.class, (mock, context) ->
                              when(mock.fetchAndUpdateClasspath()).thenReturn(new ArrayList<>()))
@@ -74,9 +77,76 @@ public class TestWakamitiLauncher {
 
         Logger logger = WakamitiLogger.forClass(this.getClass());
         logger.info("Test");
-        assertThat(new File("target").listFiles())
+        assertThat(logDirectory.listFiles())
                 .anyMatch(file -> file.getName().matches("wakamiti-\\d+\\.log")
                         && Files.linesOf(file, Charset.defaultCharset()).stream().anyMatch(l -> l.contains("Test")));
+    }
+
+    @Test
+    public void testPerScenarioLogger() {
+        File logDirectory = new File("target/testPerScenarioLogger-" + System.nanoTime());
+        assertThat(logDirectory.mkdirs()).isTrue();
+        String args = "--dry-run -KresourceTypes=gherkin -Klog.path=" + logDirectory.getPath()
+                + " -Klog.perScenario=true -Klog.level=info";
+        try (MockedConstruction<WakamitiLauncherFetcher> mockPaymentService =
+                     Mockito.mockConstruction(WakamitiLauncherFetcher.class, (mock, context) ->
+                             when(mock.fetchAndUpdateClasspath()).thenReturn(new ArrayList<>()))
+        ) {
+            try (MockedConstruction<WakamitiRunner> mockRunner =
+                         Mockito.mockConstruction(WakamitiRunner.class, (mock, context) ->
+                                 when(mock.run()).thenReturn(true))) {
+                WakamitiLauncher.main(args.split(" "));
+            }
+        }
+
+        Logger logger = WakamitiLogger.forClass(this.getClass());
+        MDC.put("wakamiti.scenarioId", "ID-01");
+        logger.info("Scenario log");
+        MDC.clear();
+        logger.info("Execution log");
+
+        assertThat(logDirectory.listFiles())
+                .anyMatch(file -> file.getName().matches("wakamiti-\\d+-ID-01\\.log")
+                        && Files.linesOf(file, Charset.defaultCharset()).stream().anyMatch(l -> l.contains("Scenario log")));
+        assertThat(logDirectory.listFiles())
+                .noneMatch(file -> Files.linesOf(file, Charset.defaultCharset()).stream().anyMatch(l -> l.contains("Execution log")));
+    }
+
+    @Test
+    public void testRepeatedWakamitiArgumentIsAccumulated() throws Exception {
+        CliArguments result = new CliArguments().parse(
+                "-KresourcePath=path1",
+                "-KresourcePath=path2"
+        );
+        assertThat(result.wakamitiConfiguration().getList("resourcePath", String.class))
+                .containsExactly("path1", "path2");
+    }
+
+    @Test
+    public void testRepeatedScalarWakamitiArgumentIsAccumulated() throws Exception {
+        CliArguments result = new CliArguments().parse(
+                "-Krest.host=host1",
+                "-Krest.host=host2"
+        );
+        assertThat(result.wakamitiConfiguration().getList("rest.host", String.class))
+                .containsExactly("host1", "host2");
+    }
+
+    @Test
+    public void testSingleWakamitiArgumentKeepsCommaAsValue() throws Exception {
+        CliArguments result = new CliArguments().parse("-KresourcePath=path1,path2");
+        assertThat(result.wakamitiConfiguration().getList("resourcePath", String.class))
+                .containsExactly("path1,path2");
+    }
+
+    @Test
+    public void testRepeatedModulesAreAccumulated() throws Exception {
+        CliArguments result = new CliArguments().parse(
+                "-m", "module-a",
+                "-m", "module-b",
+                "-m", "module-c,module-d"
+        );
+        assertThat(result.modules()).containsExactly("module-a", "module-b", "module-c", "module-d");
     }
 
 }

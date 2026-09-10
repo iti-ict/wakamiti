@@ -13,6 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -32,9 +34,11 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.ConfigurationException;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
+import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
 import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.gherkin.GherkinPlanBuilder;
 import es.iti.wakamiti.core.gherkin.GherkinResourceType;
 
 
@@ -134,6 +138,19 @@ public class TestPlanFactory {
         return testPlan;
     }
 
+    private PlanNode createPlan(
+            String path,
+            Configuration extraConfig
+    ) {
+        Properties properties = new Properties();
+        properties.put(WakamitiConfiguration.RESOURCE_TYPES, GherkinResourceType.NAME);
+        properties.put(WakamitiConfiguration.RESOURCE_PATH, path);
+        Configuration configuration = Wakamiti.defaultConfiguration()
+                .appendFromProperties(properties)
+                .append(extraConfig);
+        return Wakamiti.instance().createPlanFromConfiguration(configuration);
+    }
+
     @Test
     public void test1SimpleScenario() throws IOException, JSONException, ConfigurationException {
         assertFilePlan("test1_simpleScenario", 1);
@@ -187,6 +204,113 @@ public class TestPlanFactory {
                 1,
                 properties
         );
+    }
+
+    @Test
+    public void test7LifecycleHooks() throws ConfigurationException {
+        PlanNode plan = createPlan(
+                "src/test/resources/features/test7_lifecycleHooks.feature",
+                Configuration.factory().fromPairs(WakamitiConfiguration.TAG_FILTER, "ID-Test7")
+        );
+        PlanNode feature = plan.children().findFirst().orElseThrow();
+
+        List<PlanNode> lifecycleScenarios = feature.children()
+                .filter(child -> child.nodeType() == NodeType.LIFECYCLE_HOOK)
+                .toList();
+
+        assertThat(lifecycleScenarios).hasSize(2);
+        assertThat(lifecycleScenarios).allMatch(node -> !node.displayName().startsWith("["));
+        assertThat(lifecycleScenarios).extracting(node -> node.properties().get(GherkinPlanBuilder.GHERKIN_PROPERTY))
+                .containsExactly("before", "after");
+        assertThat(lifecycleScenarios).allMatch(node ->
+                "Test 7 - Lifecycle hooks".equals(node.properties().get(GherkinPlanBuilder.GHERKIN_FEATURE_NAME)));
+        assertThat(lifecycleScenarios).allMatch(node -> node.children().anyMatch(
+                child -> GherkinPlanBuilder.GHERKIN_TYPE_STEP.equals(
+                        child.properties().get(GherkinPlanBuilder.GHERKIN_PROPERTY))));
+        assertThat(lifecycleScenarios).allMatch(node -> node.children()
+                .noneMatch(child -> GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND.equals(
+                        child.properties().get(GherkinPlanBuilder.GHERKIN_PROPERTY)
+                )));
+        assertThat(feature.children()
+                .filter(node -> node.nodeType() == NodeType.TEST_CASE)
+                .count()).isEqualTo(1);
+    }
+
+    @Test
+    public void test7LifecycleHooksAreRetainedWhenFeatureIsFilteredOut() throws ConfigurationException {
+        PlanNode plan = createPlan(
+                "src/test/resources/features/test7_lifecycleHooks.feature",
+                Configuration.factory().fromPairs(WakamitiConfiguration.TAG_FILTER, "NonExistingTag")
+        );
+        PlanNode feature = plan.children().findFirst().orElseThrow();
+
+        List<PlanNode> lifecycleScenarios = feature.children()
+                .filter(child -> child.nodeType() == NodeType.LIFECYCLE_HOOK)
+                .toList();
+
+        assertThat(lifecycleScenarios).hasSize(2);
+        assertThat(feature.children()
+                .filter(node -> node.nodeType() == NodeType.TEST_CASE)
+                .count()).isEqualTo(0);
+    }
+
+    @Test
+    public void test7LifecycleHooksDoNotRequireStrictId() {
+        PlanNode plan = createPlan(
+                "src/test/resources/features/test7_lifecycleHooks.feature",
+                Configuration.factory().fromPairs(
+                        WakamitiConfiguration.TAG_FILTER, "ID-Test7",
+                        STRICT_TEST_CASE_ID, "true"
+                )
+        );
+
+        PlanNode feature = plan.children().findFirst().orElseThrow();
+        assertThat(feature.children()
+                .filter(node -> node.nodeType() == NodeType.LIFECYCLE_HOOK)
+                .count()).isEqualTo(2);
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testLifecycleReservedTagsAreRejectedInScenarioOutline() {
+        try {
+            createPlan(
+                    "src/test/resources/features/failure/lifecycleOutline.feature",
+                    Configuration.factory().empty()
+            );
+        } catch (Exception e) {
+            assertThat(e).hasMessageContaining("Reserved lifecycle tags are not supported in Scenario Outline");
+            throw e;
+        }
+    }
+
+    @Test(expected = WakamitiException.class)
+    public void testMultipleLifecycleReservedTagsAreRejected() {
+        try {
+            createPlan(
+                    "src/test/resources/features/failure/multipleLifecycleTags.feature",
+                    Configuration.factory().empty()
+            );
+        } catch (Exception e) {
+            assertThat(e).hasMessageContaining("Only one lifecycle reserved tag is allowed");
+            throw e;
+        }
+    }
+
+    @Test
+    public void testLifecycleHooks() {
+        PlanNode plan = runPlan(
+                "src/test/resources/features/lifecycleHooks",
+                "test7_lifecycleHooks_plan.json",
+                Configuration.factory().fromPairs(
+                        WakamitiConfiguration.NON_REGISTERED_STEP_PROVIDERS,
+                        "es.iti.wakamiti.test.gherkin.WakamitiSteps"
+                )
+        );
+        PlanNodeSnapshot snapshot = new PlanNodeSnapshot(plan);
+
+        assertThat(snapshot.getResult()).isEqualTo(Result.PASSED);
+        assertThat(snapshot.getTestCaseResults()).isEqualTo(Map.of(Result.PASSED, 1L));
+        assertThat(snapshot.getChildrenResults()).isEqualTo(Map.of(Result.PASSED, 1L));
     }
 
     @Test

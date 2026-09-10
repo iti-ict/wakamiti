@@ -316,7 +316,7 @@
         </script>
         <script id="scenario" type="x-tmpl-mustache">
             <li id="<%i%>">
-                <section class="test--component">
+                <section class="test--component <%#isLifecycleHook%>lifecycle-hook<%/isLifecycleHook%>">
                     <header class="test--header">
                         <button class="test--header-btn toggle toggle-group <%^isPassed%>on<%/isPassed%> <%^hasChildren%>disabled<%/hasChildren%>" type="button">
                             <%#hasTags%>
@@ -486,7 +486,8 @@
                 <%/c%>
             </script>
             <script id="scenario_menu" type="x-tmpl-mustache">
-                <li data-target="<#if plan.testCaseResults?has_content><%#r%><%toHTML%><%/r%>-</#if>toggle">
+                <li data-target="<#if plan.testCaseResults?has_content><%#r%><%toHTML%><%/r%>-</#if>toggle"
+                 <%#isLifecycleHook%>class="lifecycle-hook"<%/isLifecycleHook%>>
                     <%>a_menu%>
                 </li>
             </script>

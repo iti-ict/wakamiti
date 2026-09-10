@@ -36,6 +36,22 @@ public interface BackendFactory {
     );
 
     /**
+     * Creates a backend for a plan- or feature-level lifecycle scope.
+     * <p>
+     * The returned backend is intended to be retained for both setup and
+     * teardown of the supplied scope, so contributor state is preserved.
+     * </p>
+     *
+     * @param scope         lifecycle node
+     * @param configuration effective execution configuration for that lifecycle
+     * @return backend bound to the supplied node/context
+     */
+    Backend createLifecycleBackend(
+            PlanNode scope,
+            Configuration configuration
+    );
+
+    /**
      * Creates a non-runnable backend for metadata and discovery use cases.
      * <p>
      * Returned instances are intended for listing steps, hints and data types

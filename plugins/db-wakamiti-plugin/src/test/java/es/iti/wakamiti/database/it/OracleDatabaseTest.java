@@ -13,15 +13,18 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
 import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Objects;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.utility.MountableFile;
 
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
@@ -46,28 +49,32 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class OracleDatabaseTest {
 
-    public static final OracleContainer CONTAINER = new OracleContainer("gvenzl/oracle-xe:21.3.0-slim")
+    private static final Logger LOGGER = LoggerFactory.getLogger(OracleDatabaseTest.class);
+    private static final OracleContainer CONTAINER = new OracleContainer("gvenzl/oracle-xe:21.3.0-slim")
             .withDatabaseName("test")
             .withUsername("tester")
             .withPassword("pass")
+            .withCopyFileToContainer(
+                    MountableFile.forClasspathResource("wakamiti/db/create-qualified-oracle.sql"),
+                    "/container-entrypoint-initdb.d/00-create-qualified.sql"
+            )
             .withInitScript("wakamiti/db/create-schema-oracle.sql")
             .withCreateContainerCmdModifier(cmd ->
-                    cmd.getHostConfig().withPortBindings(
+                    Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
                             new PortBinding(Ports.Binding.bindPort(freePort()), new ExposedPort(8080, InternetProtocol.TCP)),
                             new PortBinding(Ports.Binding.bindPort(1234), new ExposedPort(1521, InternetProtocol.TCP)))
             );
 
     @BeforeClass
     public static void setUp() {
-        System.out.println("Creating container. Please, be patient... ");
+        LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
-        System.out.println(message("\rContainer [OracleContainer] started with [url={}, username={}, password={}]",
-                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
+        LOGGER.info("Container [OracleContainer] started with [url={}, username={}, password={}]",
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }
 
     @AfterClass
     public static void shutdown() {
-        CONTAINER.stop();
         CONTAINER.close();
     }
 

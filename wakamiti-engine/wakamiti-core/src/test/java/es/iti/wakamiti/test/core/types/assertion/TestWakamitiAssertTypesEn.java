@@ -268,6 +268,7 @@ public class TestWakamitiAssertTypesEn {
         exp.put("ends with 'thing' (ignoring case)", "sometHing");
         exp.put("contains 'omet'", "something");
         exp.put("contains 'omet' (ignoring case)", "somEthing");
+        exp.put("matches '^som.*ing$'", "something");
 
         exp.put("is not 'something'", "somEthing");
         exp.put("is not equal to 'something'", "someThing");
@@ -281,6 +282,7 @@ public class TestWakamitiAssertTypesEn {
         exp.put("does not end with 'thin' (ignoring case)", "sometHing");
         exp.put("does not contain 'things'", "something");
         exp.put("does not contain 'things' (ignoring case)", "somEthing");
+        exp.put("does not match '^som.*ings$'", "something");
 
         for (Entry<String, String> e : exp.entrySet()) {
             Assertion<?> matcher = textMatcher.parse(locale, e.getKey());

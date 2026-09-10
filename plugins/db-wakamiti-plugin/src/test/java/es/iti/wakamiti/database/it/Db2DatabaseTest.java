@@ -13,11 +13,14 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
 import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+
+import java.util.Objects;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Db2Container;
 
 import com.github.dockerjava.api.model.PortBinding;
@@ -41,7 +44,8 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class Db2DatabaseTest {
 
-    public static final Db2Container CONTAINER = new Db2Container("ibmcom/db2:11.5.8.0")
+    private static final Logger LOGGER = LoggerFactory.getLogger(Db2DatabaseTest.class);
+    private static final Db2Container CONTAINER = new Db2Container("ibmcom/db2:11.5.8.0")
             .withPrivilegedMode(true)
             .acceptLicense()
             .withEnv("ENABLE_ORACLE_COMPATIBILITY", "true")
@@ -52,21 +56,23 @@ public class Db2DatabaseTest {
             .withPassword("pass")
             .withInitScript("wakamiti/db/create-schema-db2.sql")
             .withCreateContainerCmdModifier(cmd ->
-                    cmd.getHostConfig().withPortBindings(
-                            new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
+                    Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
+                            new PortBinding(
+                                    Ports.Binding.bindPort(1234),
+                                    Objects.requireNonNull(cmd.getExposedPorts())[0]
+                            ))
             );
 
     @BeforeClass
     public static void setUp() {
-        System.out.println("Creating container. Please, be patient... ");
+        LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
-        System.out.println(message("\rContainer [Db2Container] started with [url={}, username={}, password={}]",
-                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
+        LOGGER.info("Container [Db2Container] started with [url={}, username={}, password={}]",
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }
 
     @AfterClass
     public static void shutdown() {
-        CONTAINER.stop();
         CONTAINER.close();
     }
 

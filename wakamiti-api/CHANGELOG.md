@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.10.0] - 2026-09-10
+
+### Added
+- Support setup and tear-down operations at plan, feature and scenario levels.
+- Support optional early termination of pending execution after internal Wakamiti `ERROR` results, controlled by
+  `wakamiti.stopExecutionOnError`.
+- Added `wakamiti.log.perScenario` configuration to declare whether launcher logging should split execution logs into
+  one file per scenario.
+
+### Fixed
+- Serialize JSON report timestamps `snapshotInstant`, `startInstant`, and `finishInstant` as real UTC ISO-8601 instants.
+- Preserve correct UTC instants when aggregating child snapshot timestamps and when normalizing legacy local timestamp 
+  inputs.
+
+
 ## [2.9.0] - 2026-07-31
 
 ### Changed

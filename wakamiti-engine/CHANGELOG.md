@@ -6,11 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [3.0.0] - 2026-09-10
+
+### Added
+- Support setup and tear-down operations at plan, feature and scenario levels.
+- Improved CLI argument parsing so repeated options are accumulated correctly, and module lists now support multiple 
+  flags, comma-separated values, and whitespace trimming.
+- Enforced a maximum length of 128 characters for Feature and Scenario titles in the Gherkin parser.
+- Added regex-based string assertions.
+- Added `wakamiti.stopExecutionOnError` configuration to control whether execution should stop after internal Wakamiti
+  `ERROR` results.
+- Added launcher support for `wakamiti.log.perScenario` so file logging can generate one log file per scenario instead
+  of a single log for the whole execution.
+- Added reserved Gherkin scenario tags `@Before` and `@After` to run feature-level lifecycle scenarios without 
+ `Background` inheritance and without affecting functional aggregate results.
+
+### Changed
+- Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`, `io.cucumber:tag-expressions`, `org.junit:junit-bom`,
+  `org.codehaus.plexus:plexus-archiver`
+- Add dependencies: `org.jspecify:jspecify`
+
+### Fixed
+- Restore each plan's shared runtime configuration before creation and execution, preventing sequential plans and
+  JUnit suites from reusing another plan's working directory or other configuration.
+- Execute every ordered teardown operation and report additional failures as suppressed exceptions.
+- Variable placeholders (e.g. `${credential.name}`) are now resolved in log output after step execution instead of
+  being printed as-is. Variables listed under `properties.hidden` remain masked.
+
+
 ## [2.13.0] - 2026-07-31
 
 ### Changed
 - Require Java 17 and use a Java 17 runtime for the Docker image.
-- Upgrade Wakamiti API, Maven Resolver, Cucumber tag expressions, MockServer and the remaining build and runtime dependencies.
+- Upgrade Wakamiti API, Maven Resolver, Cucumber tag expressions, MockServer and the remaining build and runtime 
+  dependencies.
 - Build Maven Resolver sessions with the supported supplier API and explicit dependency-resolution policies.
 - Publish the language server with an automatic module name instead of an explicit JPMS descriptor.
 
@@ -22,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Remove the experimental OpenAPI feature generator and its launcher command.
 - Remove the deprecated JUnit 4 runners from `wakamiti-core`; use `wakamiti-junit` instead.
+
 
 ## [2.12.0] - 2026-06-29
 

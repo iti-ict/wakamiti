@@ -16,6 +16,8 @@ import java.util.Optional;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,14 +108,25 @@ public final class WakamitiLauncher {
             boolean debug
     ) {
         String loggerName = "es.iti.wakamiti";
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
         Optional<Level> level = conf.get("level", String.class).map(String::toUpperCase).map(Level::toLevel);
         Optional<String> path = conf.get("path", String.class);
+        boolean perScenario = conf.get("perScenario", Boolean.class).orElse(false);
 
         if (path.isPresent()) {
-            String filename = path.get() + "/wakamiti-"
-                    + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss")) + ".log";
-            System.setProperty("path", filename);
-            Configurator.reconfigure(URI.create("log4j2_file.xml"));
+            String executionTimestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            if (perScenario) {
+                System.setProperty(ScenarioLogAppender.LOG_PATH_PROPERTY, path.get());
+                System.setProperty(ScenarioLogAppender.EXECUTION_TIMESTAMP_PROPERTY, executionTimestamp);
+                Configurator.reconfigure(URI.create("log4j2.xml"));
+                ScenarioLogAppender.install(context, loggerName);
+            } else {
+                String filename = path.get() + "/wakamiti-" + executionTimestamp + ".log";
+                System.setProperty("path", filename);
+                Configurator.reconfigure(URI.create("log4j2_file.xml"));
+            }
+        } else {
+            Configurator.reconfigure(URI.create("log4j2.xml"));
         }
         if (level.isEmpty()) {
             if (debug) {

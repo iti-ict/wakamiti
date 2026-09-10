@@ -12,8 +12,17 @@
             "summary": "Test Set Summary"
           },
           "tests": {
-            "total": 0,
-            "results": []
+            "total": 1,
+            "results": [
+              {
+                "issueId": "10070",
+                "jira": {
+                  "key": "WAK-70",
+                  "summary": "Test Case Summary",
+                  "labels": []
+                }
+              }
+            ]
           }
         }
       ]

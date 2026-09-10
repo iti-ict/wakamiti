@@ -117,7 +117,9 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
 
         ProjectStub project = new ProjectStub(new File(getBasedir(), "src/test/resources/pom-config.xml"));
         String configurationFiles = getProjectConfig(project, "configurationFiles");
-        Map<String, String> properties = Configuration.factory().fromPath(Path.of(configurationFiles)).inner("wakamiti").asMap();
+        Map<String, String> properties = Configuration.factory()
+                .fromPath(Path.of(configurationFiles))
+                .inner("wakamiti").asMap();
         MavenSession session = newMavenSession(project);
 
         // When
@@ -132,6 +134,34 @@ public class WakamitiVerifyMojoTest extends WakamitiAbstractMojoTest {
         assertThat(mojo.skipTests).isFalse();
         assertThat(mojo.properties).isEmpty();
 
+        assertThat(session.getResult().getExceptions()).isEmpty();
+        verify(plan, times(1)).result();
+    }
+
+    //Test
+    public void testWhenLifecycleFeatureConfigWithSuccess() throws Exception {
+        // Given
+        when(plan.result()).thenReturn(Optional.of(Result.PASSED));
+        when(plan.hasChildren()).thenReturn(true);
+
+        ProjectStub project = new ProjectStub(new File(getBasedir(), "src/test/resources/pom-config-lifecycle.xml"));
+        String configurationFiles = getProjectConfig(project, "configurationFiles");
+        Map<String, String> properties = Configuration.factory()
+                .fromPath(Path.of(configurationFiles))
+                .inner("wakamiti").asMap();
+        MavenSession session = newMavenSession(project);
+
+        // When
+        WakamitiVerifyMojo mojo = (WakamitiVerifyMojo) executeMojo(session, GOAL);
+
+        // Then
+        assertThat(currentConfiguration.asMap()).containsAllEntriesOf(properties);
+        assertThat(currentConfiguration.asMap()).containsEntry(
+                WakamitiConfiguration.RESOURCE_PATH,
+                "src/test/resources/features/lifecycleHooks.feature"
+        );
+
+        assertThat(mojo.configurationFiles).isEqualTo(List.of(configurationFiles));
         assertThat(session.getResult().getExceptions()).isEmpty();
         verify(plan, times(1)).result();
     }

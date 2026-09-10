@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +35,7 @@ import es.iti.wakamiti.api.WakamitiDataType;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
@@ -76,10 +78,10 @@ public class DefaultBackendFactory implements BackendFactory {
     /**
      * Creates a backend based on the provided test case and configuration.
      *
-     * @param testCase      The plan node representing the test case.
+     * @param testCase      The plan node representing the executable scenario.
      * @param configuration The configuration for the backend.
      * @return A Backend instance, either RunnableBackend or NonRunnableBackend.
-     * @throws IllegalArgumentException If the provided plan node is not of type TEST_CASE.
+     * @throws IllegalArgumentException If the provided plan node is neither TEST_CASE nor LIFECYCLE_HOOK.
      * @see RunnableBackend
      * @see NonRunnableBackend
      */
@@ -88,8 +90,8 @@ public class DefaultBackendFactory implements BackendFactory {
             PlanNode testCase,
             Configuration configuration
     ) {
-        if (testCase.nodeType() != NodeType.TEST_CASE) {
-            throw new IllegalArgumentException("Plan node must be of type TEST_CASE");
+        if (!testCase.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK)) {
+            throw new IllegalArgumentException("Plan node must be of type TEST_CASE or LIFECYCLE_HOOK");
         }
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
@@ -99,6 +101,29 @@ public class DefaultBackendFactory implements BackendFactory {
             );
         }
         return doCreateBackend(testCase, configuration);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @throws IllegalArgumentException when {@code scope} is not an aggregator
+     */
+    @Override
+    public Backend createLifecycleBackend(
+            PlanNode scope,
+            Configuration configuration
+    ) {
+        if (!scope.nodeType().isAnyOf(NodeType.AGGREGATOR)) {
+            throw new IllegalArgumentException("Plan node must be of type AGGREGATOR");
+        }
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                    "Creating backend for Lifecycle {}::'{}'",
+                    scope.source(),
+                    scope.displayName()
+            );
+        }
+        return doCreateLifecycleBackend(configuration);
     }
 
     /**
@@ -113,6 +138,26 @@ public class DefaultBackendFactory implements BackendFactory {
             Configuration configuration
     ) {
         return doCreateBackend(null, configuration);
+    }
+
+    private Backend doCreateLifecycleBackend(
+            Configuration configuration
+    ) {
+        List<String> restrictedModules = restrictedModules(configuration);
+
+        List<StepContributor> stepContributors = createStepContributors(
+                restrictedModules,
+                configuration,
+                true
+        );
+
+        return new LifecycleBackend(
+                configuration,
+                null,
+                getSetUpOperations(stepContributors),
+                getTearDownOperations(stepContributors),
+                List.of()
+        );
     }
 
     /**
@@ -130,11 +175,7 @@ public class DefaultBackendFactory implements BackendFactory {
     ) {
         boolean runnableBackend = (testCase != null);
 
-        List<String> restrictedModules = new ArrayList<>(
-                configuration.getList(WakamitiConfiguration.MODULES, String.class)
-        ).stream().flatMap(it -> Stream.of(it.split(",")))
-                .map(String::strip)
-                .collect(Collectors.toList());
+        List<String> restrictedModules = restrictedModules(configuration);
 
         if (testCase != null) {
             configuration = Configuration.factory()
@@ -170,31 +211,33 @@ public class DefaultBackendFactory implements BackendFactory {
     }
 
     /**
-     * Retrieves a list of setup operations from the provided StepContributors.
+     * Retrieves setup operations from the provided contributors, grouped by
+     * lifecycle scope.
      *
-     * @param stepContributors List of StepContributors to retrieve setup operations from.
-     * @return List of setup operations represented as ThrowableRunnable.
+     * @param stepContributors contributors to inspect
+     * @return setup operations grouped by scope and sorted by order
      * @see SetUp
      * @see ThrowableRunnable
      */
-    private List<ThrowableRunnable> getSetUpOperations(
+    private Map<Level, List<ThrowableRunnable>> getSetUpOperations(
             List<StepContributor> stepContributors
     ) {
-        return loadMethods(stepContributors, SetUp.class, SetUp::order);
+        return loadMethods(stepContributors, SetUp.class, SetUp::order, SetUp::level);
     }
 
     /**
-     * Retrieves a list of teardown operations from the provided StepContributors.
+     * Retrieves teardown operations from the provided contributors, grouped by
+     * lifecycle scope.
      *
-     * @param stepContributors List of StepContributors to retrieve teardown operations from.
-     * @return List of teardown operations represented as ThrowableRunnable.
+     * @param stepContributors contributors to inspect
+     * @return teardown operations grouped by scope and sorted by order
      * @see TearDown
      * @see ThrowableRunnable
      */
-    private List<ThrowableRunnable> getTearDownOperations(
+    private Map<Level, List<ThrowableRunnable>> getTearDownOperations(
             List<StepContributor> stepContributors
     ) {
-        return loadMethods(stepContributors, TearDown.class, TearDown::order);
+        return loadMethods(stepContributors, TearDown.class, TearDown::order, TearDown::level);
     }
 
     /**
@@ -308,21 +351,23 @@ public class DefaultBackendFactory implements BackendFactory {
     /**
      * Loads methods annotated with a specific annotation from a list of StepContributors.
      * Creates a mapping of methods to their corresponding annotation instances, sorts them based on the provided order,
-     * and returns a list of ThrowableRunnable instances that can invoke the methods.
+     * and groups the resulting operations by lifecycle scope.
      *
      * @param <A>              The type of the annotation.
      * @param stepContributors List of StepContributors to inspect for annotated methods.
      * @param annotation       The annotation class to search for on the methods.
      * @param orderGetter      Function to extract the order value from the annotation.
-     * @return List of ThrowableRunnable instances representing annotated methods, sorted by the specified order.
+     * @param levelGetter      Function to extract the level value from the annotation.
+     * @return operations grouped by annotation level and sorted by order
      * @see StepContributor
      * @see Annotation
      * @see ThrowableRunnable
      */
-    private <A extends Annotation> List<ThrowableRunnable> loadMethods(
+    private <A extends Annotation> Map<Level, List<ThrowableRunnable>> loadMethods(
             List<StepContributor> stepContributors,
             Class<A> annotation,
-            ToIntFunction<A> orderGetter
+            ToIntFunction<A> orderGetter,
+            Function<A, Level> levelGetter
     ) {
         LinkedHashMap<ThrowableRunnable, A> runnable = new LinkedHashMap<>();
         for (StepContributor stepContributor : stepContributors) {
@@ -338,11 +383,22 @@ public class DefaultBackendFactory implements BackendFactory {
 
         Comparator<? super Entry<ThrowableRunnable, A>> sorter = Comparator
                 .comparingInt(e -> orderGetter.applyAsInt(e.getValue()));
-
         return runnable.entrySet().stream()
                 .sorted(sorter)
-                .map(Entry::getKey)
-                .collect(Collectors.toList());
+                .collect(Collectors.groupingBy(
+                        entry -> levelGetter.apply(entry.getValue()),
+                        HashMap::new,
+                        Collectors.mapping(Entry::getKey, Collectors.toList())
+                ));
+    }
+
+    private List<String> restrictedModules(
+            Configuration configuration
+    ) {
+        return configuration.getList(WakamitiConfiguration.MODULES, String.class).stream()
+                .flatMap(module -> Stream.of(module.split(",")))
+                .map(String::strip)
+                .toList();
     }
 
     /**

@@ -13,11 +13,14 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
 import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
 import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-import static es.iti.wakamiti.database.jdbc.LogUtils.message;
+
+import java.util.Objects;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import com.github.dockerjava.api.model.PortBinding;
@@ -41,27 +44,30 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 @RunWith(WakamitiJUnitRunner.class)
 public class PostgresqlDatabaseTest {
 
-    public static final PostgreSQLContainer<?> CONTAINER = new PostgreSQLContainer<>("postgres:9.6.12")
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostgresqlDatabaseTest.class);
+    private static final PostgreSQLContainer<?> CONTAINER = new PostgreSQLContainer<>("postgres:9.6.12")
             .withDatabaseName("test")
             .withUsername("user")
             .withPassword("pass")
             .withInitScript("wakamiti/db/create-schema-postgres.sql")
             .withCreateContainerCmdModifier(cmd ->
-                    cmd.getHostConfig().withPortBindings(
-                            new PortBinding(Ports.Binding.bindPort(1234), cmd.getExposedPorts()[0]))
+                    Objects.requireNonNull(cmd.getHostConfig()).withPortBindings(
+                            new PortBinding(
+                                    Ports.Binding.bindPort(1234),
+                                    Objects.requireNonNull(cmd.getExposedPorts())[0]
+                            ))
             );
 
     @BeforeClass
     public static void setUp() {
-        System.out.println("Creating container. Please, be patient... ");
+        LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
-        System.out.println(message("\rContainer [PostgreSQLContainer] started with [url={}, username={}, password={}]",
-                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword()));
+        LOGGER.info("Container [PostgreSQLContainer] started with [url={}, username={}, password={}]",
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }
 
     @AfterClass
     public static void shutdown() {
-        CONTAINER.stop();
         CONTAINER.close();
     }
 

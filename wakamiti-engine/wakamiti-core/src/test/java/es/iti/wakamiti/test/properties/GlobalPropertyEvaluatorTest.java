@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,6 +76,19 @@ public class GlobalPropertyEvaluatorTest {
     @Test(expected = WakamitiException.class)
     public void testResolveWhenPropertyIsNotPresentWithError() {
         resolver.eval("'${other}'");
+    }
+
+    @Test
+    public void testEvalOrKeepsUnresolvedPropertyLiteral() {
+        PropertyEvaluator.Result result = resolver.evalOr("'${other}'", property -> property);
+        assertThat(result.value()).isEqualTo("'${other}'");
+        assertThat(result.evaluations()).containsExactlyEntriesOf(Map.of(
+                "${other}", "${other}"
+        ));
+
+        Assertions.assertThatThrownBy(() -> resolver.eval("'${other}'"))
+                .isInstanceOf(WakamitiException.class)
+                .hasMessageContaining("Not resolvable property: ${other}");
     }
 
 }

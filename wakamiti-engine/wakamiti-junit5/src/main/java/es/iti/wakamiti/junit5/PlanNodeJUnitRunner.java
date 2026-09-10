@@ -8,13 +8,11 @@
 package es.iti.wakamiti.junit5;
 
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.junit.platform.engine.EngineExecutionListener;
 import org.junit.platform.engine.TestDescriptor;
@@ -27,7 +25,6 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.plan.Result;
-import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.core.runner.PlanNodeLogger;
 import es.iti.wakamiti.core.runner.PlanNodeRunner;
 
@@ -102,12 +99,12 @@ class PlanNodeJUnitRunner extends PlanNodeRunner implements NodeExecution {
     }
 
     @Override
-    protected Stream<Pair<Instant, Result>> runChildren() {
-        return getChildren().stream()
-                .map(NodeExecution.class::cast)
-                .map(child -> child.execute(listener))
-                .filter(Objects::nonNull)
-                .map(result -> new Pair<>(Instant.now(), result));
+    protected Result runChild(
+            PlanNodeRunner child
+    ) {
+        return child instanceof NodeExecution nodeExecution
+                ? nodeExecution.execute(listener)
+                : child.run();
     }
 
     @Override

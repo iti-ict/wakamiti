@@ -49,6 +49,7 @@
                 <module>examples/junit-launcher-example</module>
                 <module>examples/spring-junit-example</module>
                 <module>examples/spring-verify-example</module>
+                <module>examples/cli-launcher-example</module>
             </modules>
         </profile>
     </profiles>

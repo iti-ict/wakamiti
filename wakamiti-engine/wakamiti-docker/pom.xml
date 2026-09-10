@@ -34,7 +34,7 @@
     <properties>
         <wakamiti.launcher.path>${parent.basedir}/wakamiti-launcher</wakamiti.launcher.path>
         <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
-        <io.fabric8.version>0.48.1</io.fabric8.version>
+        <io.fabric8.version>0.49.0</io.fabric8.version>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
@@ -127,67 +127,77 @@
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>docker-maven-plugin</artifactId>
-                        <version>${io.fabric8.version}</version>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <name>wakamiti/wakamiti:test</name>
-                                    <build>
-                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                                    </build>
-                                </image>
-                            </images>
-                            <buildArgs>
-                                <BUILD_DATE>${maven.build.timestamp}</BUILD_DATE>
-                                <BUILD_VERSION>${project.version}</BUILD_VERSION>
-                            </buildArgs>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>build-test</id>
-                                <phase>pre-integration-test</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <phase>clean</phase>
-                                <goals>
-                                    <goal>remove</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
                         <version>3.6.3</version>
                         <executions>
+                            <execution>
+                                <id>remove-test-image</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>docker</executable>
+                                    <arguments>
+                                        <argument>image</argument>
+                                        <argument>rm</argument>
+                                        <argument>--force</argument>
+                                        <argument>wakamiti/wakamiti:test</argument>
+                                    </arguments>
+                                    <successCodes>
+                                        <successCode>0</successCode>
+                                        <successCode>1</successCode>
+                                    </successCodes>
+                                    <timeout>60000</timeout>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>build-test</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>docker</executable>
+                                    <arguments>
+                                        <argument>build</argument>
+                                        <argument>--file</argument>
+                                        <argument>${project.basedir}/Dockerfile</argument>
+                                        <argument>--tag</argument>
+                                        <argument>wakamiti/wakamiti:test</argument>
+                                        <argument>--build-arg</argument>
+                                        <argument>BUILD_DATE=${maven.build.timestamp}</argument>
+                                        <argument>--build-arg</argument>
+                                        <argument>BUILD_VERSION=${project.version}</argument>
+                                        <argument>${project.basedir}</argument>
+                                    </arguments>
+                                    <timeout>900000</timeout>
+                                </configuration>
+                            </execution>
                             <execution>
                                 <id>test</id>
                                 <phase>integration-test</phase>
                                 <goals>
                                     <goal>exec</goal>
                                 </goals>
+                                <configuration>
+                                    <executable>docker</executable>
+                                    <arguments>
+                                        <argument>run</argument>
+                                        <argument>-e</argument>
+                                        <argument>ADD_CLASSPATH=/wakamiti/test-classes</argument>
+                                        <argument>-v</argument>
+                                        <argument>${project.basedir}/target:/wakamiti</argument>
+                                        <argument>--rm</argument>
+                                        <argument>-w</argument>
+                                        <argument>/wakamiti/test-classes</argument>
+                                        <argument>wakamiti/wakamiti:test</argument>
+                                    </arguments>
+                                    <quietLogs>false</quietLogs>
+                                </configuration>
                             </execution>
                         </executions>
-                        <configuration>
-                            <executable>docker</executable>
-                            <arguments>
-                                <argument>run</argument>
-                                <argument>-e</argument>
-                                <argument>ADD_CLASSPATH=/wakamiti/test-classes</argument>
-                                <argument>-v</argument>
-                                <argument>${project.basedir}/target:/wakamiti</argument>
-                                <argument>--rm</argument>
-                                <argument>-w</argument>
-                                <argument>/wakamiti/test-classes</argument>
-                                <argument>wakamiti/wakamiti:test</argument>
-                            </arguments>
-                            <quietLogs>false</quietLogs>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

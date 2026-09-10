@@ -24,6 +24,7 @@ Feature: REST Test Feature
 
   Scenario: URL with parameters
     Given the REST service '/users/{user}/{subject}'
+    And the REST content type 'application/xml'
     And the following path parameters:
       | name    | value      |
       | user    | user1      |

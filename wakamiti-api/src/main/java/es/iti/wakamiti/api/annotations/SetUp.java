@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a contributor method as initialization logic to execute before a
- * scenario.
+ * execution scope.
  * <p>
  * Multiple setup methods are ordered by {@link #order()}; lower values run
  * first. Methods that share the same order should not depend on a deterministic
@@ -34,5 +34,12 @@ public @interface SetUp {
      * to {@code 100}
      */
     int order() default 100;
+
+    /**
+     * Selects the execution scope in which this setup operation runs.
+     *
+     * @return lifecycle scope; defaults to {@link Level#SCENARIO}
+     */
+    Level level() default Level.SCENARIO;
 
 }

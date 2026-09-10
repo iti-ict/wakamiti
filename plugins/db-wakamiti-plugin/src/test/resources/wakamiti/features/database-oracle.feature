@@ -250,25 +250,29 @@ Feature: Testing database steps
       And the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database in 1 second
 
 
-  # database.enableCleanupUponCompletion: true
-  Scenario: Cleanup of data with foreign key
-    * On completion, the table client is empty
-    * On completion, the table city is empty
-    * On completion, the table client_city is empty
-    Given the following user inserted into the database table client:
-      | id | first_name | second_name | active | birth_date | creation            |
-      | 1  | Rosa       | Melano      | 1      | 1980-12-25 | 2024-07-22 12:34:56 |
-    And the following city is inserted into the database table city:
-      | id | name     |
-      | 1  | Valencia |
-    And the following relationship is inserted into the database table client_city:
-      | clientId | cityId |
-      | 1        | 1      |
-    When the table client_city is cleared
+  Scenario: Schema-qualified table
+    * On completion, the following SQL script is executed:
+      """
+      DELETE FROM QUALIFIED.QUALIFIED_CLIENT;
+      INSERT INTO QUALIFIED.QUALIFIED_CLIENT (ID, ACTIVE) VALUES (1, 1);
+      DELETE FROM OTHER;
+      INSERT INTO OTHER (SOMETHING) VALUES (47);
+      """
+    Given the following SQL script is executed:
+      """
+      DELETE FROM QUALIFIED.QUALIFIED_CLIENT;
+      INSERT INTO QUALIFIED.QUALIFIED_CLIENT (ID, ACTIVE) VALUES (1, 1);
+      """
+    When the following SQL script is executed:
+      """
+      UPDATE QUALIFIED.QUALIFIED_CLIENT SET ACTIVE = 0 WHERE ID = 1;
+      """
     And the following SQL script is executed:
       """
-      DELETE FROM CITY WHERE id = 1;
-      INSERT INTO city (ID, name, latitude, longitude) VALUES (1, 'Valencia', 39.469906, -0.376288);
-      UPDATE city SET latitude = 40.469906 WHERE id = 1;
+      DELETE FROM OTHER;
+      INSERT INTO OTHER (SOMETHING)
+      SELECT CASE WHEN ACTIVE = 0 THEN 48 ELSE 47 END
+      FROM QUALIFIED.QUALIFIED_CLIENT WHERE ID = 1;
       """
-    And the content of the CSV file '${data.dir}/data1.csv' is deleted from the table client
+    Then the record having something = '48' exists in the table other
+    And the record having something = '47' does not exist in the table other

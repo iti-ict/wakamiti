@@ -15,11 +15,13 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 
@@ -394,7 +396,7 @@ public class XRaySynchronizer implements EventObserver {
             List<TestCase> tests
     ) {
         List<TestSet> testSets = tests.stream().map(TestCase::getTestSetList).flatMap(List::stream).toList();
-        List<TestSet> remoteTestSets = xRayApi.getTestSets();
+        List<TestSet> remoteTestSets = new ArrayList<>(xRayApi.getTestSets());
         List<String> remoteTestSetsSummary = remoteTestSets.stream().map(TestSet::getJira).map(JiraIssue::getSummary).toList();
         List<TestSet> newTestSets = testSets.stream()
                 .filter(s -> !remoteTestSetsSummary.contains(s.getJira().getSummary()))
@@ -434,15 +436,25 @@ public class XRaySynchronizer implements EventObserver {
     private void updateResults(
             PlanNodeSnapshot data
     ) {
-        data.getChildren().forEach(child ->
-                child.getChildren().forEach(results ->
-                        testPlan.getTestCases().stream()
-                                .filter(testCase -> testCase.getJira().getSummary().equals(results.getName()))
-                                .findFirst()
-                                .ifPresent(testCase -> testCase.status(results.getResult().name()))
-                ));
+        String resultType = testCasePerFeature ? GHERKIN_TYPE_FEATURE : GHERKIN_TYPE_SCENARIO;
+        resultNodes(data, resultType).forEach(results ->
+                testPlan.getTestCases().stream()
+                        .filter(testCase -> testCase.getJira().getSummary().equals(results.getName()))
+                        .findFirst()
+                        .ifPresent(testCase -> testCase.status(results.getResult().name()))
+        );
 
         xRayApi.updateTestRunStatus(testPlan.getTestCases());
+    }
+
+    static Stream<PlanNodeSnapshot> resultNodes(
+            PlanNodeSnapshot data,
+            String gherkinType
+    ) {
+        return data.flatten(node -> gherkinType.equals(Optional.ofNullable(node.getProperties())
+                        .map(properties -> properties.get("gherkinType"))
+                        .orElse(null)))
+                .filter(node -> node.getResult() != null);
     }
 
     private void uploadAttachment(

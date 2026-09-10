@@ -25,14 +25,14 @@ validar que una aplicación envía correos como consecuencia de alguna otra oper
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:email-wakamiti-plugin:1.4.0
+es.iti.wakamiti:email-wakamiti-plugin:1.6.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>email-wakamiti-plugin</artifactId>
-  <version>1.4.0</version>
+  <version>1.6.0</version>
 </dependency>
 ```
 

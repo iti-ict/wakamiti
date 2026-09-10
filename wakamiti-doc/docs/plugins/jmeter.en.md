@@ -21,14 +21,14 @@ This plugin provides a set of steps for conducting performance testing using JMe
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:jmeter-wakamiti-plugin:1.0.0
+es.iti.wakamiti:jmeter-wakamiti-plugin:1.3.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>jmeter-wakamiti-plugin</artifactId>
-  <version>1.0.0</version>
+  <version>1.3.0</version>
 </dependency>
 ```
 

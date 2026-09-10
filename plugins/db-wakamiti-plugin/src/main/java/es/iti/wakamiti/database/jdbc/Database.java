@@ -22,7 +22,9 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -32,6 +34,9 @@ import org.slf4j.Logger;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.database.SQLParser;
 import es.iti.wakamiti.database.exception.SQLRuntimeException;
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.select.PlainSelect;
 
 
 /**
@@ -43,6 +48,7 @@ public final class Database {
 
     private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     private static final Map<String, Schema> CACHED_SCHEMA = new HashMap<>();
+    private static final Map<String, ResolvedTable> CACHED_TABLES = new HashMap<>();
     private static final String COLUMN_NAME = "COLUMN_NAME";
 
     private final ConnectionProvider connection;
@@ -128,28 +134,7 @@ public final class Database {
     public String table(
             String table
     ) {
-        return schema.tables.computeIfAbsent(parser.unquote(table), k -> {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Retrieving the table {}", k);
-            }
-            try (ResultSet rs = connection().getMetaData()
-                    .getTables(catalog(), schema(), "_".repeat(k.length()), null)) {
-                String name = null;
-                while (rs.next()) {
-                    String current = rs.getString("TABLE_NAME");
-                    if (k.equalsIgnoreCase(current)) {
-                        name = current;
-                        break;
-                    }
-                }
-                if (name == null) {
-                    throw new SQLRuntimeException("The table {} does not exist", k);
-                }
-                return name;
-            } catch (SQLException e) {
-                throw new SQLRuntimeException(message("Error retrieving the table {}", k), e);
-            }
-        });
+        return resolveTable(table).sqlName();
     }
 
     /**
@@ -163,12 +148,15 @@ public final class Database {
             final String table,
             String column
     ) {
+        ResolvedTable resolvedTable = resolveTable(table);
+        String tableKey = resolvedTable.cacheKey();
         UnaryOperator<String> retrieve = col -> {
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Retrieving column {} of table {}", col, table(table));
+                LOGGER.trace("Retrieving column {} of table {}", col, resolvedTable.sqlName());
             }
             try (ResultSet rs = connection().getMetaData()
-                    .getColumns(catalog(), schema(), table(table), "_".repeat(parser.unquote(column).length()))) {
+                    .getColumns(resolvedTable.catalog(), resolvedTable.schema(), resolvedTable.name(),
+                            "_".repeat(parser.unquote(column).length()))) {
                 String name = null;
                 while (rs.next()) {
                     String current = rs.getString(COLUMN_NAME);
@@ -178,24 +166,24 @@ public final class Database {
                     }
                 }
                 if (name == null) {
-                    throw new SQLRuntimeException("The column {}.{} does not exist", table(table), col);
+                    throw new SQLRuntimeException("The column {}.{} does not exist", resolvedTable.sqlName(), col);
                 }
                 return name;
             } catch (SQLException e) {
                 throw new SQLRuntimeException(
-                        message("Error retrieving column {}.{}", parser.unquote(column), table(table)), e);
+                        message("Error retrieving column {}.{}", parser.unquote(column), resolvedTable.sqlName()), e);
             }
         };
 
-        if (schema.columns.containsKey(table(table))) {
-            Map<String, String> columns = schema.columns.get(table(table));
+        if (schema.columns.containsKey(tableKey)) {
+            Map<String, String> columns = schema.columns.get(tableKey);
             return columns.computeIfAbsent(parser.unquote(column), retrieve);
         } else {
             LinkedHashMap<String, String> columns = new LinkedHashMap<>();
             columns.put(parser.unquote(column), retrieve.apply(parser.unquote(column)));
-            schema.columns.put(table(table), columns);
+            schema.columns.put(tableKey, columns);
         }
-        return schema.columns.get(table(table)).get(parser.unquote(column));
+        return schema.columns.get(tableKey).get(parser.unquote(column));
     }
 
     /**
@@ -207,16 +195,19 @@ public final class Database {
     public Stream<String> primaryKey(
             String table
     ) {
-        return schema.pk.computeIfAbsent(table(parser.unquote(table)), k -> {
-            LOGGER.debug("Retrieving primary key of table {}", k);
+        ResolvedTable resolvedTable = resolveTable(table);
+        return schema.pk.computeIfAbsent(resolvedTable.cacheKey(), k -> {
+            LOGGER.debug("Retrieving primary key of table {}", resolvedTable.sqlName());
             ArrayList<String> primaryKeys = new ArrayList<>();
-            try (ResultSet rs = connection().getMetaData().getPrimaryKeys(catalog(), schema(), k)) {
+            try (ResultSet rs = connection().getMetaData().getPrimaryKeys(
+                    resolvedTable.catalog(), resolvedTable.schema(), resolvedTable.name())) {
                 while (rs.next()) {
                     primaryKeys.add(rs.getString(COLUMN_NAME));
                 }
                 return primaryKeys;
             } catch (SQLException e) {
-                throw new SQLRuntimeException(message("Error retrieving primary key of table {}", k), e);
+                throw new SQLRuntimeException(
+                        message("Error retrieving primary key of table {}", resolvedTable.sqlName()), e);
             }
         }).stream();
     }
@@ -230,11 +221,12 @@ public final class Database {
     public Map<String, JDBCType> columnTypes(
             String table
     ) {
-        return schema.types.computeIfAbsent(table(parser.unquote(table)), k -> {
-            LOGGER.debug("Retrieving column types of table {}", k);
+        ResolvedTable resolvedTable = resolveTable(table);
+        return schema.types.computeIfAbsent(resolvedTable.cacheKey(), k -> {
+            LOGGER.debug("Retrieving column types of table {}", resolvedTable.sqlName());
             LinkedHashMap<String, JDBCType> types = new LinkedHashMap<>();
             try (ResultSet rs = connection().getMetaData()
-                    .getColumns(catalog(), schema(), k, null)) {
+                    .getColumns(resolvedTable.catalog(), resolvedTable.schema(), resolvedTable.name(), null)) {
                 while (rs.next()) {
                     types.put(
                             rs.getString(COLUMN_NAME),
@@ -243,7 +235,8 @@ public final class Database {
                 }
                 return types;
             } catch (SQLException e) {
-                throw new SQLRuntimeException(message("Error retrieving column types of table {}", k), e);
+                throw new SQLRuntimeException(
+                        message("Error retrieving column types of table {}", resolvedTable.sqlName()), e);
             }
         });
     }
@@ -287,10 +280,10 @@ public final class Database {
             String table,
             Map<String, String> data
     ) {
-        Map<String, JDBCType> types = columnTypes(table(parser.unquote(table)));
+        Map<String, JDBCType> types = columnTypes(table);
         return data.entrySet().stream()
                 .map(e -> new AbstractMap.SimpleEntry<>(
-                        column(table(parser.unquote(table)), parser.unquote(e.getKey())), e.getValue()))
+                        column(table, parser.unquote(e.getKey())), e.getValue()))
                 .peek(e -> {
                     if (!types.containsKey(e.getKey())) {
                         throw new SQLRuntimeException("Column {}.{} not found", parser.unquote(table), e.getKey());
@@ -339,9 +332,142 @@ public final class Database {
         return new Call.Builder(this, sql);
     }
 
-    private String catalog() {
+    private ResolvedTable resolveTable(
+            String table
+    ) {
+        RequestedTable requested = parseTable(table);
+        String defaultCatalog = catalog();
+        String defaultSchema = schema();
+        String cacheKey = Stream.of(
+                        connection.parameters().url(),
+                        defaultCatalog,
+                        defaultSchema,
+                        requested.catalog(),
+                        requested.schema(),
+                        requested.name()
+                )
+                .map(value -> Optional.ofNullable(value).orElse(""))
+                .map(String::toUpperCase)
+                .collect(java.util.stream.Collectors.joining("|"));
+        return CACHED_TABLES.computeIfAbsent(cacheKey,
+                key -> retrieveTable(requested, defaultCatalog, defaultSchema, key));
+    }
+
+    private RequestedTable parseTable(
+            String table
+    ) {
         try {
-            return Optional.ofNullable(connection.parameters().catalog()).orElse(connection.get().getCatalog());
+            net.sf.jsqlparser.statement.select.Select select =
+                    (net.sf.jsqlparser.statement.select.Select) SQLParser.parseStatement("SELECT * FROM " + table);
+            PlainSelect plainSelect = select.getPlainSelect();
+            if (!(plainSelect.getFromItem() instanceof Table parsedTable)) {
+                throw new SQLRuntimeException("Invalid table name {}", table);
+            }
+            String database = parsedTable.getDatabase().getDatabaseName();
+            return new RequestedTable(
+                    unquote(database),
+                    unquote(parsedTable.getSchemaName()),
+                    unquote(parsedTable.getName())
+            );
+        } catch (JSQLParserException | ClassCastException e) {
+            throw new SQLRuntimeException(message("Invalid table name {}", table), e);
+        }
+    }
+
+    private ResolvedTable retrieveTable(
+            RequestedTable requested,
+            String defaultCatalog,
+            String defaultSchema,
+            String cacheKey
+    ) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Retrieving the table {}", requested.qualifiedName());
+        }
+        List<MetadataScope> scopes = new ArrayList<>();
+        if (requested.catalog() != null) {
+            scopes.add(new MetadataScope(requested.catalog(), requested.schema(), false));
+        } else if (requested.schema() != null) {
+            scopes.add(new MetadataScope(defaultCatalog, requested.schema(), false));
+            scopes.add(new MetadataScope(requested.schema(), null, true));
+        } else {
+            scopes.add(new MetadataScope(defaultCatalog, defaultSchema, false));
+        }
+
+        try {
+            for (MetadataScope scope : scopes) {
+                Optional<ResolvedTable> resolved = findTable(requested, scope, cacheKey);
+                if (resolved.isPresent()) {
+                    return resolved.get();
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLRuntimeException(message("Error retrieving the table {}", requested.qualifiedName()), e);
+        }
+        throw new SQLRuntimeException("The table {} does not exist", requested.qualifiedName());
+    }
+
+    private Optional<ResolvedTable> findTable(
+            RequestedTable requested,
+            MetadataScope scope,
+            String cacheKey
+    ) throws SQLException {
+        try (ResultSet rs = connection().getMetaData().getTables(
+                scope.catalog(), scope.schema(), "_".repeat(requested.name().length()), null)) {
+            while (rs.next()) {
+                String current = rs.getString("TABLE_NAME");
+                if (requested.name().equalsIgnoreCase(current)) {
+                    String actualCatalog = rs.getString("TABLE_CAT");
+                    String actualSchema = rs.getString("TABLE_SCHEM");
+                    String qualifiedName = qualifiedName(requested, scope, actualCatalog, actualSchema, current);
+                    return Optional.of(new ResolvedTable(
+                            actualCatalog,
+                            actualSchema,
+                            current,
+                            qualifiedName,
+                            cacheKey
+                    ));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    private String qualifiedName(
+            RequestedTable requested,
+            MetadataScope scope,
+            String actualCatalog,
+            String actualSchema,
+            String table
+    ) {
+        if (requested.catalog() != null) {
+            return Stream.of(
+                            Optional.ofNullable(actualCatalog).orElse(requested.catalog()),
+                            Optional.ofNullable(actualSchema).orElse(requested.schema()),
+                            table
+                    )
+                    .filter(Objects::nonNull)
+                    .collect(java.util.stream.Collectors.joining("."));
+        }
+        if (requested.schema() != null) {
+            String qualifier = scope.schemaAsCatalog() ? actualCatalog : actualSchema;
+            return Optional.ofNullable(qualifier).orElse(requested.schema()) + "." + table;
+        }
+        return table;
+    }
+
+    private String unquote(
+            String identifier
+    ) {
+        return identifier == null ? null : parser.unquote(identifier);
+    }
+
+    private String catalog() {
+        String catalog = connection.parameters().catalog();
+        if (catalog != null) {
+            return catalog;
+        }
+        try {
+            return connection.get().getCatalog();
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             return null;
@@ -349,8 +475,12 @@ public final class Database {
     }
 
     private String schema() {
+        String schema = connection.parameters().schema();
+        if (schema != null) {
+            return schema;
+        }
         try {
-            return Optional.ofNullable(connection.parameters().schema()).orElse(connection.get().getSchema());
+            return connection.get().getSchema();
         } catch (SQLException e) {
             LOGGER.warn(e.getMessage());
             return null;
@@ -367,6 +497,24 @@ public final class Database {
      */
     public Connection connection() {
         return connection.get();
+    }
+
+    private record RequestedTable(String catalog, String schema, String name) {
+
+        private String qualifiedName() {
+            return Stream.of(catalog, schema, name)
+                    .filter(Objects::nonNull)
+                    .collect(java.util.stream.Collectors.joining("."));
+        }
+
+    }
+
+    private record MetadataScope(String catalog, String schema, boolean schemaAsCatalog) {
+
+    }
+
+    private record ResolvedTable(String catalog, String schema, String name, String sqlName, String cacheKey) {
+
     }
 
 }

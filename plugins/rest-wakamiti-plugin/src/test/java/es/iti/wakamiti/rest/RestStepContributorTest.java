@@ -32,6 +32,9 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.LinkedList;
@@ -42,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.xmlbeans.XmlObject;
+import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -61,8 +65,10 @@ import org.mockserver.model.Not;
 import org.mockserver.socket.tls.KeyStoreFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.datatypes.Assertion;
+import es.iti.wakamiti.api.extensions.PropertyEvaluator;
 import es.iti.wakamiti.api.plan.DataTable;
 import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
@@ -70,6 +76,7 @@ import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.XmlUtils;
 import es.iti.wakamiti.api.util.http.oauth.GrantType;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
+import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
 import io.restassured.RestAssured;
 
 
@@ -166,6 +173,45 @@ public class RestStepContributorTest {
      */
     @Test(expected = WakamitiException.class)
     public void testSetContentTypeWithError() {
+        // act
+        contributor.setContentType("AAA");
+        contributor.executeGetSubject();
+
+        // check
+        // An error should be thrown
+    }
+
+    /**
+     * Test {@link RestStepContributor#setFromContentType(String)}
+     */
+    @Test
+    public void testSetFromContentTypeWithSuccess() {
+        // prepare
+        mockServer(
+                request()
+                        .withPath("/")
+                        .withHeader(
+                                header("Content-Type", String.format("%s.*", MediaType.APPLICATION_XML))
+                        ),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setFromContentType("application/xml");
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(result).isNotNull();
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /**
+     * Test {@link RestStepContributor#setFromContentType(String)}
+     */
+    @Test(expected = WakamitiException.class)
+    public void testSetFromContentTypeWithError() {
         // act
         contributor.setContentType("AAA");
         contributor.executeGetSubject();
@@ -2030,11 +2076,81 @@ public class RestStepContributorTest {
         // An error should be thrown
     }
 
+    @Test
+    public void testWhenLooseComparisonFileHasUnresolvedStepPropertyThenFailsExplicitly() throws IOException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("[{\"aaaa\":\"something\"}]")
+        );
+        Path tempFile = writeTempFile("[{\"aaaa\":\"${getValue#[0].AAAA}\"}]");
+
+        try {
+            // act
+            contributor.executeGetSubject();
+
+            // check
+            Assertions.assertThatThrownBy(() -> contributor.assertLooseFileContent(tempFile.toFile()))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContaining("-segment '[0].aaaa' expected: '${getValue#[0].AAAA}', actual: 'something'");
+        } finally {
+            Files.deleteIfExists(tempFile);
+        }
+    }
+
+    @Test
+    public void testWhenAssertionFileHasUnresolvedGlobalPropertyThenStayUnresolved() throws IOException {
+        // prepare
+        mockServer(
+                request()
+                        .withMethod("GET")
+                        .withPath("/"),
+                response()
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody("[{\"aaaa\":\"something\"}]")
+        );
+        Path tempFile = writeTempFile("[{\"aaaa\":\"${AAAA}\"}]");
+        WakamitiAPI.instance().extensionManager()
+                .getExtensions(PropertyEvaluator.class)
+                .filter(e -> e instanceof GlobalPropertyEvaluator)
+                .map(e -> (GlobalPropertyEvaluator) e)
+                .findFirst()
+                .ifPresent(e -> e.configure(
+                        es.iti.wakamiti.api.imconfig.Configuration.factory().empty()
+                ));
+
+        try {
+            // act
+            contributor.executeGetSubject();
+
+            // check - tolerant evaluation leaves unresolved properties as-is
+            Assertions.assertThatThrownBy(() -> contributor.assertLooseFileContent(tempFile.toFile()))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContaining("-segment '[0].aaaa' expected: '${AAAA}', actual: 'something'");
+        } finally {
+            Files.deleteIfExists(tempFile);
+        }
+    }
+
     private void mockServer(
             HttpRequest expected,
             HttpResponse response
     ) {
         CLIENT.when(expected, Times.once()).respond(response);
+    }
+
+    private Path writeTempFile(
+            String content
+    ) throws IOException {
+        Path file = Files.createTempFile("rest-expected-", ".json");
+        Files.writeString(file, content, StandardCharsets.UTF_8);
+        return file;
     }
 
     private DataTable dataTable(

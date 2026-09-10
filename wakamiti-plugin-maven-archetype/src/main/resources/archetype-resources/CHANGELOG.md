@@ -11,11 +11,6 @@ and this project adheres to [Semantic Versioning][2].
 ### Added
 - Initial plugin skeleton.
 
-### Changed
-- Generate Java 17 classpath-based plugins with automatic module metadata.
-- Use `wakamiti-junit` and `slf4j-simple` in the generated test setup.
-
-
 
 [1]: <https://keepachangelog.com/en/>
 [2]: <https://semver.org>

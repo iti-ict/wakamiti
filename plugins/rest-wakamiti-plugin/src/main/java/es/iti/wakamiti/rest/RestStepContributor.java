@@ -88,6 +88,26 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
     /**
+     * Sets the content type for the request using a MIME type string.
+     * <p>
+     * Unlike {@link #setContentType(String)}, which only accepts predefined
+     * keyword values (e.g. {@code JSON}, {@code XML}), this method accepts any
+     * valid MIME type string such as {@code application/json} or
+     * {@code application/xml}.
+     *
+     * @param contentType the MIME type string to be set as the request content type
+     *                    (e.g. {@code application/json}, {@code text/plain}).
+     * @see ContentType#fromContentType(String)
+     */
+    @Step(value = "rest.define.fromContentType", args = "text")
+    public void setFromContentType(
+            String contentType
+    ) {
+        specifications.add(request ->
+                request.contentType(ContentType.fromContentType(contentType)));
+    }
+
+    /**
      * Sets the base URL for the request.
      *
      * @param url the base URL to be set.

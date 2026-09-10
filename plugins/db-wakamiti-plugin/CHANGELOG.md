@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.10.0] - 2026-09-10
+
+### Added
+- Add `database.scripts.setup`, `database.scripts.teardown` and their equivalents under
+  `database.datasource.<alias>.scripts` for plan-level SQL setup and teardown.
+
+### Fixed
+- Automatic database cleanup is skipped for feature lifecycle hook scenarios.
+- Lifecycle database connections are released after feature and plan execution.
+- Asynchronous database assertions evaluate their condition at least once when the timeout does not exceed the polling interval.
+- Asynchronous XLS assertions no longer fail with invalid timeouts when their shared time budget is exhausted.
+- Database cleanup now runs declarative operations in definition order before automatically reverting database changes
+  in reverse order.
+- Empty SQL scripts now result in an `ERROR` instead of being silently ignored.
+
+
 ## [3.9.0] - 2026-07-31
 
 ### Changed

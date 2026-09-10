@@ -25,7 +25,10 @@ import org.assertj.core.api.Assertions;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.I18nResource;
+import es.iti.wakamiti.api.annotations.Level;
+import es.iti.wakamiti.api.annotations.SetUp;
 import es.iti.wakamiti.api.annotations.Step;
 import es.iti.wakamiti.api.annotations.TearDown;
 import es.iti.wakamiti.api.datatypes.Assertion;
@@ -38,7 +41,6 @@ import es.iti.wakamiti.database.dataset.DataTableDataSet;
 import es.iti.wakamiti.database.dataset.InlineDataSet;
 import es.iti.wakamiti.database.dataset.MultiDataSet;
 import es.iti.wakamiti.database.dataset.OoxmlDataSet;
-import es.iti.wakamiti.database.jdbc.ConnectionProvider;
 import es.iti.wakamiti.database.jdbc.Database;
 
 
@@ -46,26 +48,58 @@ import es.iti.wakamiti.database.jdbc.Database;
  * Step contributor providing SQL-oriented setup, execution and assertions.
  * <p>
  * The contributor can hold multiple named connections and supports deferred
- * cleanup operations that run during scenario teardown.
+ * cleanup operations that run during functional scenario teardown.
  * </p>
  */
 @Extension(
         provider = "es.iti.wakamiti",
         name = "database-steps",
-        version = "2.13"
+        version = "3.0"
 )
 @I18nResource("iti_wakamiti_wakamiti-database")
 public class DatabaseStepContributor extends DatabaseSupport implements StepContributor {
 
+    /** Executes configured setup scripts before the plan, stopping at the first failure. */
+    @SetUp(level = Level.PLAN)
+    public void setUpPlan() {
+        executeSetupScripts();
+    }
+
+    /** Executes every configured teardown script and reports any failures afterwards. */
+    @TearDown(level = Level.PLAN, order = 1)
+    public void tearDownPlan() {
+        executeTeardownScripts();
+    }
+
+    /** Releases plan connections after all database teardown scripts have been attempted. */
+    @TearDown(level = Level.PLAN, order = 2)
+    public void releasePlanConnections() {
+        releaseConnections();
+    }
+
+    /** Releases connections opened by a feature lifecycle backend. */
+    @TearDown(level = Level.FEATURE)
+    public void releaseFeatureConnections() {
+        releaseConnections();
+    }
+
     /**
      * Executes queued cleanup operations before connections are closed.
      * <p>
-     * Cleanup actions are executed even if prior scenario steps failed.
+     * Cleanup actions are executed for regular scenarios even if prior steps
+     * failed. Lifecycle hook scenarios deliberately retain their changes for
+     * the surrounding feature lifecycle.
      * </p>
      */
     @TearDown(order = 1)
     public void cleanUp() {
+        WakamitiStepRunContext context = WakamitiStepRunContext.current();
+        if (context != null && context.backend().isLifecycleHook()) {
+            LOGGER.trace("Automatic database cleanup disabled for lifecycle hook");
+            return;
+        }
         this.enableCleanupUponCompletion = false;
+        declarativeCleanUpOperations.forEach(Runnable::run);
         cleanUpOperations.forEach(Runnable::run);
     }
 
@@ -77,12 +111,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
      */
     @TearDown(order = 2)
     public void releaseConnection() {
-        try {
-            connections.values().forEach(ConnectionProvider::close);
-        } finally {
-            connections.clear();
-            cleanUpOperations.clear();
-        }
+        releaseConnections();
     }
 
     /**
@@ -137,7 +166,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupScript(
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.executeSQLScript(document);
         });
@@ -155,7 +184,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.executeSQLScript(document);
         });
@@ -171,7 +200,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupScript(
             File file
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.executeSQLScript(file);
         });
@@ -189,7 +218,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File file,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.executeSQLScript(file);
         });
@@ -205,7 +234,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupProcedure(
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.executeProcedure(document);
         });
@@ -223,7 +252,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.executeProcedure(document);
         });
@@ -239,7 +268,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupProcedure(
             File file
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.executeProcedure(file);
         });
@@ -257,7 +286,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File file,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.executeProcedure(file);
         });
@@ -274,7 +303,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupClear(
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.clearTable(table);
         });
@@ -293,7 +322,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.clearTable(table);
         });
@@ -314,7 +343,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String value,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.clearTableByRow(table, column, value);
         });
@@ -338,7 +367,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.clearTableByRow(table, column, value);
         });
@@ -357,7 +386,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.clearTableByClause(table, document);
         });
@@ -378,7 +407,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.clearTableByClause(table, document);
         });
@@ -397,7 +426,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.deleteFromDataTable(table, data);
         });
@@ -418,7 +447,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.deleteFromDataTable(table, data);
         });
@@ -436,7 +465,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupDeleteXLS(
             File xls
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.deleteFromXLSFile(xls);
         });
@@ -456,7 +485,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File xls,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.deleteFromXLSFile(xls);
         });
@@ -475,7 +504,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.deleteFromCSVFile(csv, table);
         });
@@ -496,7 +525,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.deleteFromCSVFile(csv, table);
         });
@@ -515,7 +544,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.insertFromDataTable(table, data);
         });
@@ -536,7 +565,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.insertFromDataTable(table, data);
         });
@@ -554,7 +583,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupInsertXLS(
             File xls
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.insertFromXLSFile(xls);
         });
@@ -574,7 +603,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File xls,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.insertFromXLSFile(xls);
         });
@@ -593,7 +622,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.insertFromCSVFile(csv, table);
         });
@@ -614,7 +643,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.insertFromCSVFile(csv, table);
         });
@@ -633,7 +662,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String id,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowExistsBySingleId(id, table);
         });
@@ -654,7 +683,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowExistsBySingleId(id, table);
         });
@@ -673,7 +702,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String id,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowNotExistsBySingleId(id, table);
         });
@@ -695,7 +724,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowNotExistsBySingleId(id, table);
         });
@@ -716,7 +745,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String value,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowExistsByOneColumn(column, value, table);
         });
@@ -740,7 +769,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowExistsByOneColumn(column, value, table);
         });
@@ -762,7 +791,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String value,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowNotExistsByOneColumn(column, value, table);
         });
@@ -786,7 +815,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowNotExistsByOneColumn(column, value, table);
         });
@@ -811,7 +840,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Assertion<Long> matcher
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowCountByOneColumn(column, value, table, matcher);
         });
@@ -838,7 +867,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             Assertion<Long> matcher,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowCountByOneColumn(column, value, table, matcher);
         });
@@ -857,7 +886,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowExistsByClause(table, document);
         });
@@ -878,7 +907,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowExistsByClause(table, document);
         });
@@ -897,7 +926,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowNotExistsByClause(table, document);
         });
@@ -918,7 +947,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowNotExistsByClause(table, document);
         });
@@ -939,7 +968,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             Assertion<Long> matcher,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertRowCountByClause(table, matcher, document);
         });
@@ -963,7 +992,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             Document document
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertRowCountByClause(table, matcher, document);
         });
@@ -982,7 +1011,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertDataTableExists(table, data);
         });
@@ -1003,7 +1032,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertDataTableExists(table, data);
         });
@@ -1022,7 +1051,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertDataTableNotExists(table, data);
         });
@@ -1043,7 +1072,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertDataTableNotExists(table, data);
         });
@@ -1064,7 +1093,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             Assertion<Long> matcher,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertDataTableCount(table, matcher, data);
         });
@@ -1088,7 +1117,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String alias,
             DataTable data
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertDataTableCount(table, matcher, data);
         });
@@ -1105,7 +1134,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertXLSFileExists(
             File xls
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertXLSFileExists(xls);
         });
@@ -1124,7 +1153,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File xls,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertXLSFileExists(xls);
         });
@@ -1141,7 +1170,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertXLSFileNotExists(
             File xls
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertXLSFileNotExists(xls);
         });
@@ -1160,7 +1189,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File xls,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertXLSFileNotExists(xls);
         });
@@ -1179,7 +1208,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertCSVFileExists(csv, table);
         });
@@ -1200,7 +1229,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertCSVFileExists(csv, table);
         });
@@ -1219,7 +1248,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertCSVFileNotExists(csv, table);
         });
@@ -1240,7 +1269,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertCSVFileNotExists(csv, table);
         });
@@ -1257,7 +1286,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertTableIsEmpty(
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertTableIsEmpty(table);
         });
@@ -1276,7 +1305,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertTableIsEmpty(table);
         });
@@ -1293,7 +1322,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertTableIsNotEmpty(
             String table
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection();
             this.assertTableIsNotEmpty(table);
         });
@@ -1312,7 +1341,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             String alias
     ) {
-        cleanUpOperations.add(() -> {
+        declarativeCleanUpOperations.add(() -> {
             this.switchConnection(alias);
             this.assertTableIsNotEmpty(table);
         });
@@ -2123,7 +2152,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
-                duration = duration.minus(assertNonEmptyAsync(dataSet, duration));
+                duration = remainingDuration(duration, assertNonEmptyAsync(dataSet, duration));
             }
         } catch (IOException e) {
             throw new WakamitiException(e);
@@ -2167,11 +2196,19 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
         try (MultiDataSet multiDataSet = new OoxmlDataSet(file, xlsIgnoreSheetRegex, nullSymbol)) {
             for (DataSet dataSet : multiDataSet) {
-                duration = duration.minus(assertEmptyAsync(dataSet, duration));
+                duration = remainingDuration(duration, assertEmptyAsync(dataSet, duration));
             }
         } catch (IOException e) {
             throw new WakamitiException(e);
         }
+    }
+
+    private static Duration remainingDuration(
+            Duration available,
+            Duration elapsed
+    ) {
+        Duration remaining = available.minus(elapsed);
+        return remaining.isNegative() ? Duration.ZERO : remaining;
     }
 
     /**

@@ -29,14 +29,14 @@ Qué hace:
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:jacoco-wakamiti-plugin:1.0.0
+es.iti.wakamiti:jacoco-wakamiti-plugin:1.2.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>jacoco-wakamiti-plugin</artifactId>
-  <version>1.0.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 

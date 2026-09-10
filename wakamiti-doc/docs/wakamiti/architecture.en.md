@@ -174,6 +174,20 @@ wakamiti:
 ```
 
 
+### `wakamiti.stopExecutionOnError`
+- Type: `boolean`
+- Default: `false`
+
+Controls whether Wakamiti should stop the remaining execution when the engine records an internal `ERROR`.
+Application-level `FAILED` results do not trigger this early stop.
+
+Example:
+```yaml
+wakamiti:
+  stopExecutionOnError: false
+```
+
+
 ### `wakamiti.includeFilteredTestCases`
 - Type: `boolean`
 - Default: `false`
@@ -300,6 +314,22 @@ Example:
 wakamiti:
   log:
     path: results
+```
+
+
+### `wakamiti.log.perScenario`
+- Type: `boolean`
+- Default: `false`
+
+When enabled together with [`wakamiti.log.path`](#wakamitilogpath), Wakamiti creates one log file per scenario instead
+of a single execution log. Files are named `wakamiti-${yyyyMMddhhmmss}-${scenarioId}.log`.
+
+Example:
+```yaml
+wakamiti:
+  log:
+    path: results
+    perScenario: true
 ```
 
 
@@ -815,6 +845,24 @@ is null or empty
 ```
 is not null or empty
 ```
+
+
+
+### Lifecycle hooks (`@Before`, `@After`)
+
+Wakamiti reserves these tags for setup and teardown scenarios:
+
+- `@Before`: runs at the beginning of the feature.
+- `@After`: runs at the end of the feature.
+
+Behavior:
+
+- They are declared as `Scenario` blocks.
+- They do not inherit `Background` steps.
+- They appear in output/reports, but they are excluded from functional test-case aggregate results.
+- They are excluded from strict functional ID validation (`strictTestCaseID`).
+- If a feature has no executable functional scenarios after filtering, its `@Before`/`@After` hooks are skipped.
+- They follow the `wakamiti.stopExecutionOnError` policy.
 
 
 

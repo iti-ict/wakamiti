@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import es.iti.commons.jext.Extension;
 import es.iti.wakamiti.api.WakamitiAPI;
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.extensions.LoaderContributor;
 import es.iti.wakamiti.api.util.ThrowableFunction;
 import groovy.lang.GroovyClassLoader;
@@ -47,6 +48,22 @@ public class GroovyLoaderContributor implements LoaderContributor {
     public static final Logger LOGGER = LoggerFactory.getLogger("es.iti.wakamiti.groovy");
 
     private final GroovyClassLoader groovyClassLoader = new GroovyClassLoader();
+    private boolean failOnError = true;
+
+    /**
+     * Sets whether a Groovy compilation error should abort test execution.
+     * <p>
+     * When {@code true} (the default) any unresolvable compilation failure
+     * throws a {@link WakamitiException}. When {@code false} errors are
+     * logged and the remaining sources continue loading.
+     *
+     * @param failOnError {@code true} to abort on error, {@code false} to continue
+     */
+    public void setFailOnError(
+            boolean failOnError
+    ) {
+        this.failOnError = failOnError;
+    }
 
     @Override
     public Stream<? extends Class<?>> load(
@@ -92,6 +109,14 @@ public class GroovyLoaderContributor implements LoaderContributor {
             }
             if (failed.size() == pending.size()) {
                 failed.forEach((k, e) -> LOGGER.error("Cannot parse file [{}]", k, e));
+                if (failOnError) {
+                    throw new WakamitiException(
+                            "Groovy compilation failed for {} file(s); aborting test execution. "
+                            + "Set '{}=false' to ignore compilation errors.",
+                            failed.size(),
+                            GroovyConfigContributor.GROOVY_COMPILATION_FAIL_ON_ERROR
+                    );
+                }
                 break;
             }
             pending = new ArrayList<>(failed.keySet());

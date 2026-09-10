@@ -7,6 +7,7 @@ let pageIndex = new Map();
 const NON_PASSED_RESULTS = new Set(['ERROR', 'FAILED', 'UNDEFINED']);
 const TEMPLATE_VIEW_HELPERS = {
     isAggregator: function () { return this.t === 'AGGREGATOR'; },
+    isLifecycleHook: function () { return this.t === 'LIFECYCLE_HOOK'; },
     toHTML: function () { return toHTML(this); },
     toView: function () {
         return toHTML(this).split('-')
@@ -360,6 +361,12 @@ function filterScenario(node, allowedStatuses, text) {
         return children.length > 0 ? {...node, c: children} : null;
     }
 
+    // Lifecycle hooks are never filtered by status or text; their visibility
+    // is controlled at feature level in filtered().
+    if (node.t === 'LIFECYCLE_HOOK') {
+        return node;
+    }
+
     if (node.r && !allowedStatuses.has(node.r)) {
         return null;
     }
@@ -373,6 +380,9 @@ function filterScenario(node, allowedStatuses, text) {
 
 /**
  * Applies the filters set to the result data.
+ * Lifecycle hook nodes follow special visibility rules:
+ *  - @Before / @After hooks are shown only when their feature has at least one
+ *    visible functional scenario.
  *
  * @returns {*[]}
  */
@@ -380,18 +390,42 @@ function filtered() {
     const allowedStatuses = statuses();
     const text = document.getElementById('search-input').value.trim().toLowerCase();
 
-    return sourceData.reduce((features, feature) => {
-        const children = (feature.c || [])
-            .map((scenario) => filterScenario(scenario, allowedStatuses, text))
+    // Pre-scan: is there any feature with visible functional scenarios?
+    const anyFunctionalVisible = sourceData.some(feature =>
+        (feature.c || [])
+            .filter(c => c.t !== 'LIFECYCLE_HOOK')
+            .some(s => filterScenario(s, allowedStatuses, text))
+    );
+
+    return sourceData.reduce((result, feature) => {
+        const allChildren = feature.c || [];
+        const functionalChildren = allChildren.filter(c => c.t !== 'LIFECYCLE_HOOK');
+        const hookChildren = allChildren.filter(c => c.t === 'LIFECYCLE_HOOK');
+
+        const visibleFunctional = functionalChildren
+            .map(s => filterScenario(s, allowedStatuses, text))
             .filter(Boolean);
 
-        const featureMatches = !text || matchesText(feature, text);
-        if (children.length === 0 && !featureMatches) {
-            return features;
+        const hasVisibleFunctional = visibleFunctional.length > 0;
+
+        // Feature-scoped hooks are visible only when this feature has visible functional scenarios.
+        const beforeHooks = hasVisibleFunctional
+            ? hookChildren.filter(h => h.lt === 'before') : [];
+        const afterHooks = hasVisibleFunctional
+            ? hookChildren.filter(h => h.lt === 'after') : [];
+
+        const allVisible = [
+            ...beforeHooks,
+            ...visibleFunctional,
+            ...afterHooks
+        ];
+
+        if (allVisible.length === 0) {
+            return result;
         }
 
-        features.push({...feature, c: children});
-        return features;
+        result.push({...feature, c: allVisible});
+        return result;
     }, []);
 }
 
@@ -446,8 +480,6 @@ function focusAnchor() {
     $(`li:has(#${id})`).find('.suite--header .test--header-btn').addClass('on');
     $(`#${id}`).find('.test--header-btn').addClass('on');
     document.getElementById(id)?.scrollIntoView();
-    const adjust = parseInt(getCssVar('--navbar-height'), 10) + 55;
-    window.scrollBy(0, -adjust);
 }
 
 function refresh(shouldRender = true) {
@@ -577,6 +609,7 @@ function buttons() {
 
     $(document).on('click', 'nav a', function (event) {
         event.stopImmediatePropagation();
+
         const id = $(this).attr('href').replace('#', '').toString();
         searchPage(id);
         render();

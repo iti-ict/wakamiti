@@ -1,0 +1,94 @@
+{
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "result" : "PASSED",
+  "testCaseResults" : {
+    "PASSED" : 1
+  },
+  "childrenResults" : {
+    "PASSED" : 1
+  },
+  "children" : [ {
+    "nodeType" : "AGGREGATOR",
+    "id" : "#lc0001",
+    "name" : "Lifecycle feature",
+    "keyword" : "Feature",
+    "source" : "lifecycle.feature[1,1]",
+    "displayName" : "Feature: Lifecycle feature",
+    "tags" : [ "definition" ],
+    "properties" : {
+      "gherkinType" : "feature"
+    },
+    "result" : "PASSED",
+    "testCaseResults" : {
+      "PASSED" : 1
+    },
+    "childrenResults" : {
+      "PASSED" : 2
+    },
+    "children" : [ {
+      "nodeType" : "LIFECYCLE_HOOK",
+      "id" : "#lc0002",
+      "name" : "before feature hook",
+      "keyword" : "Scenario",
+      "source" : "lifecycle.feature[3,3]",
+      "displayName" : "Scenario: before feature hook",
+      "tags" : [ "Before" ],
+      "properties" : {
+        "gherkinType" : "before"
+      },
+      "result" : "PASSED",
+      "duration" : 0,
+      "children" : [ {
+        "nodeType" : "STEP",
+        "keyword" : "Given",
+        "name" : "a hook step",
+        "result" : "PASSED",
+        "duration" : 0
+      } ]
+    }, {
+      "nodeType" : "TEST_CASE",
+      "id" : "LC-1",
+      "name" : "a functional scenario",
+      "keyword" : "Scenario",
+      "source" : "lifecycle.feature[7,3]",
+      "displayName" : "[LC-1] Scenario: a functional scenario",
+      "tags" : [ "definition", "LC-1" ],
+      "properties" : {
+        "gherkinType" : "scenario"
+      },
+      "result" : "PASSED",
+      "duration" : 10,
+      "children" : [ {
+        "nodeType" : "STEP",
+        "keyword" : "Given",
+        "name" : "a functional step",
+        "result" : "PASSED",
+        "duration" : 10
+      } ]
+    }, {
+      "nodeType" : "LIFECYCLE_HOOK",
+      "id" : "#lc0003",
+      "name" : "after feature hook",
+      "keyword" : "Scenario",
+      "source" : "lifecycle.feature[11,3]",
+      "displayName" : "Scenario: after feature hook",
+      "properties" : {
+        "gherkinType" : "after"
+      },
+      "result" : "PASSED",
+      "duration" : 2
+    }, {
+      "nodeType" : "LIFECYCLE_HOOK",
+      "id" : "#lc0004",
+      "name" : "unexecuted after hook",
+      "keyword" : "Scenario",
+      "source" : "lifecycle.feature[14,3]",
+      "displayName" : "Scenario: unexecuted after hook",
+      "properties" : {
+        "gherkinType" : "after"
+      },
+      "result" : "SKIPPED"
+    } ]
+  } ]
+}

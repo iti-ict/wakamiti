@@ -18,15 +18,16 @@
 
 
     <artifactId>xray-wakamiti-plugin</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
 
     <name>[Wakamiti Plugin] XRay Integration</name>
     <description>XRay plan test integration</description>
     <inceptionYear>2024</inceptionYear>
 
     <properties>
-        <wakamiti-engine.version>2.13.0</wakamiti-engine.version>
-        <mockserver.version>7.4.0</mockserver.version>
+        <wakamiti-engine.version>3.0.0</wakamiti-engine.version>
+
+        <mockserver.version>7.6.0</mockserver.version>
     </properties>
 
     <dependencies>

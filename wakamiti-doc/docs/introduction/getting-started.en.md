@@ -115,9 +115,13 @@ Tests are executed with the terminal, from the working directory (the one contai
 `.feature` file we have created), with the following command:
 
 * Windows:
-```Shell copy=true
+```Shell tags=type name=cmd copy=true
 docker run --rm -v "%cd%:/wakamiti" wakamiti/wakamiti
 ```
+```Shell tags=type name=powershell copy=true
+docker run --rm -v "${PWD}:/wakamiti" wakamiti/wakamiti
+```
+
 * Linux:
 ```Shell copy=true
 docker run --rm -v "$(pwd):/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti

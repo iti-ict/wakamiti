@@ -1,0 +1,330 @@
+{
+  "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+  "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+  "nodeType" : "AGGREGATOR",
+  "displayName" : "Test Plan",
+  "startInstant" : "2026-08-13T10:14:08.535213Z",
+  "finishInstant" : "2026-08-13T10:14:08.732519100Z",
+  "duration" : 22,
+  "result" : "FAILED",
+  "testCaseResults" : {
+    "FAILED" : 1
+  },
+  "childrenResults" : {
+    "FAILED" : 1
+  },
+  "children" : [ {
+    "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+    "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+    "nodeType" : "AGGREGATOR",
+    "id" : "ID-Test7",
+    "name" : "Test 7 - Lifecycle hooks",
+    "keyword" : "Feature",
+    "language" : "en",
+    "source" : "featureHooks.feature[3,1]",
+    "displayName" : "Feature: Test 7 - Lifecycle hooks",
+    "tags" : [ "ID-Test7" ],
+    "properties" : {
+      "encoding" : "UTF-8",
+      "gherkinType" : "feature"
+    },
+    "startInstant" : "2026-08-13T10:14:08.592475700Z",
+    "finishInstant" : "2026-08-13T10:14:08.689504900Z",
+    "duration" : 18,
+    "result" : "FAILED",
+    "testCaseResults" : {
+      "FAILED" : 1
+    },
+    "childrenResults" : {
+      "FAILED" : 1
+    },
+    "children" : [ {
+      "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+      "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+      "nodeType" : "LIFECYCLE_HOOK",
+      "id" : "#y6e3aa",
+      "name" : "Setup feature execution",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "featureHooks.feature[9,3]",
+      "displayName" : "Scenario: Setup feature execution",
+      "tags" : [ "Before", "ID-Test7" ],
+      "properties" : {
+        "encoding" : "UTF-8",
+        "gherkinType" : "before",
+        "featureName" : "Test 7 - Lifecycle hooks"
+      },
+      "startInstant" : "2026-08-13T10:14:08.592475700Z",
+      "finishInstant" : "2026-08-13T10:14:08.596490200Z",
+      "duration" : 4,
+      "result" : "PASSED",
+      "childrenResults" : {
+        "PASSED" : 3
+      },
+      "children" : [ {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#y6bb38",
+        "name" : "a number with value 4.0 and another number with value 5",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "featureHooks.feature[10,5]",
+        "displayName" : "Given a number with value 4.0 and another number with value 5",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.592475700Z",
+        "finishInstant" : "2026-08-13T10:14:08.594484200Z",
+        "duration" : 2,
+        "result" : "PASSED"
+      }, {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#d5e5fa",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "featureHooks.feature[11,5]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.594484200Z",
+        "finishInstant" : "2026-08-13T10:14:08.594484200Z",
+        "duration" : 0,
+        "response" : "20.0",
+        "result" : "PASSED"
+      }, {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#m43d3d",
+        "name" : "the result is equals to 20.0",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "featureHooks.feature[12,5]",
+        "displayName" : "Then the result is equals to 20.0",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.594484200Z",
+        "finishInstant" : "2026-08-13T10:14:08.596490200Z",
+        "duration" : 2,
+        "result" : "PASSED"
+      } ]
+    }, {
+      "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+      "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+      "nodeType" : "TEST_CASE",
+      "id" : "ID-Test7_Scenario1",
+      "name" : "Functional scenario",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "featureHooks.feature[15,3]",
+      "displayName" : "[ID-Test7_Scenario1] Scenario: Functional scenario",
+      "tags" : [ "ID-Test7_Scenario1", "ID-Test7" ],
+      "properties" : {
+        "encoding" : "UTF-8",
+        "gherkinType" : "scenario",
+        "featureName" : "Test 7 - Lifecycle hooks"
+      },
+      "startInstant" : "2026-08-13T10:14:08.634290600Z",
+      "finishInstant" : "2026-08-13T10:14:08.645336100Z",
+      "duration" : 10,
+      "result" : "FAILED",
+      "testCaseResults" : {
+        "FAILED" : 1
+      },
+      "childrenResults" : {
+        "PASSED" : 3,
+        "FAILED" : 1
+      },
+      "children" : [ {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP_AGGREGATOR",
+        "keyword" : "Background",
+        "displayName" : "Background: ",
+        "tags" : [ "ID-Test7_Scenario1", "ID-Test7" ],
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "background"
+        },
+        "startInstant" : "2026-08-13T10:14:08.634290600Z",
+        "finishInstant" : "2026-08-13T10:14:08.635302600Z",
+        "duration" : 1,
+        "result" : "PASSED",
+        "childrenResults" : {
+          "PASSED" : 1
+        },
+        "children" : [ {
+          "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+          "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+          "nodeType" : "STEP",
+          "id" : "#u646f5",
+          "name" : "the set of real numbers ℝ",
+          "keyword" : "Given",
+          "language" : "en",
+          "source" : "featureHooks.feature[6,5]",
+          "displayName" : "Given the set of real numbers ℝ",
+          "properties" : {
+            "encoding" : "UTF-8",
+            "gherkinType" : "step"
+          },
+          "startInstant" : "2026-08-13T10:14:08.634290600Z",
+          "finishInstant" : "2026-08-13T10:14:08.635302600Z",
+          "duration" : 1,
+          "result" : "PASSED"
+        } ]
+      }, {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#yf2238",
+        "name" : "a number with value 8.02 and another number with value 9",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "featureHooks.feature[16,5]",
+        "displayName" : "Given a number with value 8.02 and another number with value 9",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.635302600Z",
+        "finishInstant" : "2026-08-13T10:14:08.643335300Z",
+        "duration" : 8,
+        "result" : "PASSED"
+      }, {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#k82f04",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "featureHooks.feature[17,5]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.644335900Z",
+        "finishInstant" : "2026-08-13T10:14:08.644335900Z",
+        "duration" : 0,
+        "response" : "72.18000793457031",
+        "result" : "PASSED"
+      }, {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#db6fac",
+        "name" : "the result is equals to 72.18",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "featureHooks.feature[18,5]",
+        "displayName" : "Then the result is equals to 72.18",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.644335900Z",
+        "finishInstant" : "2026-08-13T10:14:08.645336100Z",
+        "duration" : 1,
+        "result" : "FAILED"
+      } ]
+    }, {
+      "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+      "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+      "nodeType" : "LIFECYCLE_HOOK",
+      "id" : "#m6735c",
+      "name" : "Teardown feature execution",
+      "keyword" : "Scenario",
+      "language" : "en",
+      "source" : "featureHooks.feature[21,3]",
+      "displayName" : "Scenario: Teardown feature execution",
+      "tags" : [ "After", "ID-Test7" ],
+      "properties" : {
+        "encoding" : "UTF-8",
+        "gherkinType" : "after",
+        "featureName" : "Test 7 - Lifecycle hooks"
+      },
+      "startInstant" : "2026-08-13T10:14:08.684477900Z",
+      "finishInstant" : "2026-08-13T10:14:08.689504900Z",
+      "duration" : 4,
+      "result" : "PASSED",
+      "childrenResults" : {
+        "PASSED" : 3
+      },
+      "children" : [ {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#f9f017",
+        "name" : "a number with value 4.0 and another number with value 4",
+        "keyword" : "Given",
+        "language" : "en",
+        "source" : "featureHooks.feature[22,5]",
+        "displayName" : "Given a number with value 4.0 and another number with value 4",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.684477900Z",
+        "finishInstant" : "2026-08-13T10:14:08.687489300Z",
+        "duration" : 3,
+        "result" : "PASSED"
+      }, {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#vdaf9a",
+        "name" : "both numbers are multiplied",
+        "keyword" : "When",
+        "language" : "en",
+        "source" : "featureHooks.feature[23,5]",
+        "displayName" : "When both numbers are multiplied",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.687489300Z",
+        "finishInstant" : "2026-08-13T10:14:08.687489300Z",
+        "duration" : 0,
+        "response" : "16.0",
+        "result" : "PASSED"
+      }, {
+        "executionID" : "5f456f12-9d9a-4a30-bd4a-835c90a69dd2",
+        "snapshotInstant" : "2026-08-13T10:14:08.734522500Z",
+        "nodeType" : "STEP",
+        "id" : "#v8bf68",
+        "name" : "the result is equals to 16.0",
+        "keyword" : "Then",
+        "language" : "en",
+        "source" : "featureHooks.feature[24,5]",
+        "displayName" : "Then the result is equals to 16.0",
+        "properties" : {
+          "encoding" : "UTF-8",
+          "gherkinType" : "step"
+        },
+        "startInstant" : "2026-08-13T10:14:08.688491Z",
+        "finishInstant" : "2026-08-13T10:14:08.689504900Z",
+        "duration" : 1,
+        "result" : "PASSED"
+      } ]
+    }, {
+      "nodeType" : "LIFECYCLE_HOOK",
+      "id" : "#not-run-hook",
+      "name" : "Unexecuted lifecycle fixture",
+      "keyword" : "Scenario",
+      "properties" : {
+        "gherkinType" : "after"
+      },
+      "result" : "SKIPPED"
+    } ]
+  } ]
+}

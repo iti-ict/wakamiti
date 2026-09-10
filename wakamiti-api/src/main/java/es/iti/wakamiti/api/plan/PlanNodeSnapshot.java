@@ -17,6 +17,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -42,6 +45,12 @@ import es.iti.wakamiti.api.model.ExecutionState;
  * serialization/deserialization operations.
  */
 public class PlanNodeSnapshot {
+
+    private static final int INSTANT_PRECISION = 6;
+    private static final DateTimeFormatter UTC_INSTANT_FORMATTER =
+            new DateTimeFormatterBuilder()
+                    .appendInstant(INSTANT_PRECISION)
+                    .toFormatter();
 
     private String executionID;
     private String snapshotInstant;
@@ -84,21 +93,21 @@ public class PlanNodeSnapshot {
 
     /**
      * Captures the current state of a plan node and all its descendants using
-     * the current local date and time as the snapshot marker.
+     * the current UTC instant as the snapshot marker.
      *
      * @param node the executable node whose current state will be captured
      */
     public PlanNodeSnapshot(
             PlanNode node
     ) {
-        this(node, LocalDateTime.now().toString());
+        this(node, Instant.now().toString());
     }
 
     /**
      * Captures the current state of a plan node tree with a caller-provided
      * timestamp shared by every descendant snapshot.
      * <p>
-     * Execution instants are converted to the system-default time zone.
+     * Execution instants are serialized as UTC instants.
      * Throwable information is reduced to the first error's message and stack
      * trace, while result summaries are computed for child and test-case nodes.
      * </p>
@@ -112,7 +121,7 @@ public class PlanNodeSnapshot {
             String snapshotInstant
     ) {
         this.executionID = node.executionID();
-        this.snapshotInstant = snapshotInstant;
+        this.snapshotInstant = toUtcInstantString(snapshotInstant);
         this.nodeType = node.nodeType();
         this.id = node.id();
         this.name = node.name();
@@ -123,8 +132,8 @@ public class PlanNodeSnapshot {
         this.description = new LinkedList<>(node.description() == null ? List.of() : node.description());
         this.tags = new LinkedList<>(node.tags() == null ? List.of() : node.tags());
         this.properties = new LinkedHashMap<>(node.properties() == null ? Map.of() : node.properties());
-        this.startInstant = node.startInstant().map(this::instantToString).orElse(null);
-        this.finishInstant = node.finishInstant().map(this::instantToString).orElse(null);
+        this.startInstant = node.startInstant().map(PlanNodeSnapshot::instantToString).orElse(null);
+        this.finishInstant = node.finishInstant().map(PlanNodeSnapshot::instantToString).orElse(null);
         this.duration = node.duration().map(Duration::toMillis).orElse(null);
         this.result = node.result().orElse(null);
         this.document = node.data().filter(Document.class::isInstance).map(Document.class::cast)
@@ -166,12 +175,12 @@ public class PlanNodeSnapshot {
         }
         PlanNodeSnapshot root = new PlanNodeSnapshot();
         root.children = Arrays.asList(nodes);
-        root.startInstant = childLocalDateTime(
+        root.startInstant = childInstant(
                 root,
                 PlanNodeSnapshot::getStartInstant,
                 (x, y) -> x.isBefore(y) ? x : y
         );
-        root.finishInstant = childLocalDateTime(
+        root.finishInstant = childInstant(
                 root,
                 PlanNodeSnapshot::getFinishInstant,
                 (x, y) -> x.isAfter(y) ? x : y
@@ -227,6 +236,7 @@ public class PlanNodeSnapshot {
             PlanNode node
     ) {
         return node.children()
+                .filter(child -> child.nodeType() != NodeType.LIFECYCLE_HOOK)
                 .filter(it -> it.result().isPresent())
                 .collect(groupingBy(it -> it.result().orElseThrow(), counting()));
     }
@@ -237,14 +247,14 @@ public class PlanNodeSnapshot {
         return node.getChildren().stream().collect(groupingBy(PlanNodeSnapshot::getResult, counting()));
     }
 
-    private static String childLocalDateTime(
+    private static String childInstant(
             PlanNodeSnapshot node,
             Function<PlanNodeSnapshot, String> method,
-            BinaryOperator<LocalDateTime> reducer
+            BinaryOperator<Instant> reducer
     ) {
-        return node.children.stream().map(method).filter(Objects::nonNull).map(LocalDateTime::parse)
+        return node.children.stream().map(method).filter(Objects::nonNull).map(PlanNodeSnapshot::toInstant)
                 .reduce(reducer)
-                .map(LocalDateTime::toString).orElse(null);
+                .map(Instant::toString).orElse(null);
     }
 
     private static <T extends Comparable<T>> T maxChild(
@@ -313,10 +323,33 @@ public class PlanNodeSnapshot {
         return copy;
     }
 
-    private String instantToString(
+    private static String instantToString(
             Instant instant
     ) {
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).toString();
+        return UTC_INSTANT_FORMATTER.format(instant);
+    }
+
+    private static Instant toInstant(
+            String instant
+    ) {
+        try {
+            return Instant.parse(instant);
+        } catch (DateTimeParseException ignored) {
+            return LocalDateTime.parse(instant).atZone(ZoneId.systemDefault()).toInstant();
+        }
+    }
+
+    private static String toUtcInstantString(
+            String instant
+    ) {
+        if (instant == null) {
+            return null;
+        }
+        try {
+            return instantToString(toInstant(instant));
+        } catch (DateTimeParseException ignored) {
+            return instant;
+        }
     }
 
     private String errorTrace(
@@ -419,10 +452,9 @@ public class PlanNodeSnapshot {
     }
 
     /**
-     * Returns when node execution started, expressed in the system-default
-     * local time zone.
+     * Returns when node execution started, expressed in UTC.
      *
-     * @return an ISO local date-time string, or {@code null} if execution did
+     * @return an ISO-8601 UTC instant string, or {@code null} if execution did
      * not start
      */
     public String getStartInstant() {
@@ -430,10 +462,9 @@ public class PlanNodeSnapshot {
     }
 
     /**
-     * Returns when node execution finished, expressed in the system-default
-     * local time zone.
+     * Returns when node execution finished, expressed in UTC.
      *
-     * @return an ISO local date-time string, or {@code null} if execution did
+     * @return an ISO-8601 UTC instant string, or {@code null} if execution did
      * not finish
      */
     public String getFinishInstant() {
@@ -573,9 +604,10 @@ public class PlanNodeSnapshot {
     }
 
     /**
-     * Returns the timestamp at which this state was captured.
+     * Returns the UTC timestamp at which this state was captured.
      *
-     * @return the caller-provided or generated snapshot timestamp
+     * @return an ISO-8601 UTC instant string, or the original textual value
+     * when it could not be parsed as a date-time
      */
     public String getSnapshotInstant() {
         return snapshotInstant;

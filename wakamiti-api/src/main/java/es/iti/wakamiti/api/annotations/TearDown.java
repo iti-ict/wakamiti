@@ -15,7 +15,8 @@ import java.lang.annotation.Target;
 
 
 /**
- * Marks a contributor method as cleanup logic to execute after a scenario.
+ * Marks a contributor method as cleanup logic to execute after an execution
+ * scope.
  * <p>
  * Multiple teardown methods are ordered by {@link #order()}; lower values run
  * first. Cleanup implementations should remain safe when setup or scenario
@@ -33,5 +34,12 @@ public @interface TearDown {
      * to {@code 100}
      */
     int order() default 100;
+
+    /**
+     * Selects the execution scope in which this teardown operation runs.
+     *
+     * @return lifecycle scope; defaults to {@link Level#SCENARIO}
+     */
+    Level level() default Level.SCENARIO;
 
 }

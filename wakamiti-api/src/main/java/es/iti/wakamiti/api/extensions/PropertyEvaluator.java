@@ -128,7 +128,7 @@ public abstract class PropertyEvaluator implements Contributor {
                 evaluation = propertyAlternative.apply(property);
             }
             evaluations.putIfAbsent(property, evaluation);
-            value = value.replaceFirst(Pattern.quote(property), evaluation);
+            value = value.replaceFirst(Pattern.quote(property), Matcher.quoteReplacement(evaluation));
         }
         return Result.of(evaluations, value);
     }

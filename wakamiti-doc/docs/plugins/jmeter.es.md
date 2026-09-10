@@ -21,14 +21,14 @@ Este plugin proporciona un conjunto de pasos para realizar pruebas de rendimient
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:jmeter-wakamiti-plugin:1.0.0
+es.iti.wakamiti:jmeter-wakamiti-plugin:1.3.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>jmeter-wakamiti-plugin</artifactId>
-  <version>1.0.0</version>
+  <version>1.3.0</version>
 </dependency>
 ```
 

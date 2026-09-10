@@ -58,7 +58,7 @@ import freemarker.template.TemplateExceptionHandler;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "html-report",
-        version = "2.13"
+        version = "3.0"
 )
 public class HtmlReportGenerator implements Reporter {
 

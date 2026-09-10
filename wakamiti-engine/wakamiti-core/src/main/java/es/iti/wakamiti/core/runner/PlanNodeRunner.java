@@ -8,8 +8,15 @@
 package es.iti.wakamiti.core.runner;
 
 
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_PROPERTY;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_AFTER_FEATURE;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BACKGROUND;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_BEFORE_FEATURE;
+import static es.iti.wakamiti.core.gherkin.GherkinPlanBuilder.GHERKIN_TYPE_FEATURE;
+
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -17,11 +24,14 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
+import org.slf4j.MDC;
 
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.BackendFactory;
+import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.annotations.Level;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.model.ExecutionState;
@@ -53,6 +63,7 @@ public class PlanNodeRunner {
     private final boolean dryRun;
     private List<PlanNodeRunner> children;
     private Optional<Backend> backend;
+    private Backend lifecycleBackend;
     private State state;
 
     /**
@@ -166,7 +177,7 @@ public class PlanNodeRunner {
     }
 
     protected Optional<Backend> getBackend() {
-        if (backend.isEmpty() && node.nodeType() == NodeType.TEST_CASE) {
+        if (backend.isEmpty() && node.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK)) {
             backend = Optional.of(backendFactory.createBackend(node, configuration));
         }
         return backend;
@@ -180,8 +191,26 @@ public class PlanNodeRunner {
         return backendFactory;
     }
 
+    private Backend lifecycleBackend() {
+        if (lifecycleBackend == null) {
+            lifecycleBackend = backendFactory.createLifecycleBackend(node, configuration);
+        }
+        return lifecycleBackend;
+    }
+
     protected PlanNodeLogger getLogger() {
         return logger;
+    }
+
+    /**
+     * Executes this node silently (without notifying any external listener).
+     * Intended for lifecycle hook scenarios that should run but not appear as
+     * JUnit or JUnit5 test results.
+     *
+     * @return node result, or {@code null} when no executable branch applies
+     */
+    public Result run() {
+        return runNode();
     }
 
     /**
@@ -198,10 +227,10 @@ public class PlanNodeRunner {
         state = State.RUNNING;
         Wakamiti.instance().publishEvent(Event.NODE_RUN_STARTED, new PlanNodeSnapshot(node));
 
-        if (node.nodeType() == NodeType.TEST_CASE) {
+        if (node.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK)) {
             result = runTestCaseNode();
         } else if (!getChildren().isEmpty()) {
-            result = aggregatorFinish(runChildren());
+            result = isFeatureNode() ? runFeatureNode() : aggregatorFinish(runChildren());
         } else if (node.nodeType().isAnyOf(NodeType.STEP, NodeType.VIRTUAL_STEP)) {
             result = runStep();
         }
@@ -211,45 +240,124 @@ public class PlanNodeRunner {
     }
 
     private Result runTestCaseNode() {
-        Result result = null;
+        String previousScenarioId = initializeScenarioLoggingContext();
+        try {
+            return resolveTestCaseResult();
+        } finally {
+            restoreScenarioLoggingContext(previousScenarioId);
+        }
+    }
+
+    private Result resolveTestCaseResult() {
         if (node.filtered()) {
-            result = Result.SKIPPED;
             markFilteredTestCase(node);
-        } else if (node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
-            result = Result.NOT_IMPLEMENTED;
-            doNotImplemented(node, result);
-        } else if (!getChildren().isEmpty()) {
-            Stream<Pair<Instant, Result>> results = Stream.empty();
-            if (dryRun) {
-                logger.logTestCaseHeader(node);
-            } else {
-                try {
-                    testCasePreExecution(node);
-                } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .toList().stream(); // prevent lazy stream
-                }
+            return Result.SKIPPED;
+        }
+        if (node.descendants().noneMatch(d -> d.nodeType().isAnyOf(NodeType.STEP))) {
+            doNotImplemented(node, Result.NOT_IMPLEMENTED);
+            return Result.NOT_IMPLEMENTED;
+        }
+        if (getChildren().isEmpty()) {
+            return null;
+        }
+        return executeTestCase();
+    }
+
+    private Result executeTestCase() {
+        List<Pair<Instant, Result>> results = new ArrayList<>();
+        if (prepareTestCaseExecution(results)) {
+            results.addAll(runChildren());
+        } else {
+            skipPendingChildren();
+        }
+        finishTestCaseExecution(results);
+        return aggregatorFinish(results);
+    }
+
+    private boolean prepareTestCaseExecution(
+            List<Pair<Instant, Result>> results
+    ) {
+        if (dryRun) {
+            logger.logTestCaseHeader(node);
+            return true;
+        }
+        try {
+            testCasePreExecution(node);
+            return true;
+        } catch (WakamitiException e) {
+            results.add(errorResult());
+            return !stopExecutionOnError();
+        }
+    }
+
+    private void finishTestCaseExecution(
+            List<Pair<Instant, Result>> results
+    ) {
+        if (dryRun) {
+            return;
+        }
+        try {
+            testCasePostExecution(node);
+        } catch (WakamitiException e) {
+            results.add(errorResult());
+        }
+    }
+
+    private Result runFeatureNode() {
+        List<PlanNodeRunner> childRunners = getChildren();
+        List<PlanNodeRunner> beforeRunners = childRunners.stream()
+                .filter(this::isBeforeRunner)
+                .toList();
+        List<PlanNodeRunner> afterRunners = childRunners.stream()
+                .filter(this::isAfterRunner)
+                .toList();
+        List<PlanNodeRunner> scenarioRunners = childRunners.stream()
+                .filter(this::isFeatureRegularRunner)
+                .toList();
+
+        if (!hasExecutableFeatureScenario(scenarioRunners)) {
+            beforeRunners.forEach(PlanNodeRunner::skipIfPending);
+            afterRunners.forEach(PlanNodeRunner::skipIfPending);
+            if (scenarioRunners.isEmpty()) {
+                Instant instant = Instant.now();
+                node.prepareExecution().markStarted(instant);
+                node.prepareExecution().markFinished(instant, Result.SKIPPED);
+                return Result.SKIPPED;
             }
-            results = Stream.concat(results, runChildren())
-                    .toList().stream(); // prevent lazy stream
-            if (!dryRun) {
-                try {
-                    testCasePostExecution(node);
-                } catch (WakamitiException e) {
-                    results = Stream.concat(results, Stream.of(new Pair<>(Instant.now(), Result.ERROR)))
-                            .toList().stream(); // prevent lazy stream
-                }
-            }
-            result = aggregatorFinish(results);
+            return aggregatorFinish(runSelectedChildren(scenarioRunners));
         }
 
-        return result;
+        List<Pair<Instant, Result>> results = new ArrayList<>();
+        boolean continueExecution = true;
+        boolean hasImplementedSteps = node.descendants().anyMatch(d -> d.nodeType().isAnyOf(NodeType.STEP));
+        try {
+            if (hasImplementedSteps) {
+                featurePreExecution(node);
+            }
+        } catch (WakamitiException e) {
+            results.add(errorResult());
+            continueExecution = !stopExecutionOnError();
+        }
+        if (continueExecution) {
+            results.addAll(runChildren());
+        } else {
+            skipPendingChildren();
+        }
+        try {
+            if (hasImplementedSteps) {
+                featurePostExecution(node);
+            }
+        } catch (WakamitiException e) {
+            results.add(errorResult());
+        }
+
+        return aggregatorFinish(results);
     }
 
     private Result aggregatorFinish(
-            Stream<Pair<Instant, Result>> results
+            List<Pair<Instant, Result>> results
     ) {
-        Pair<Instant, Result> aux = results
+        Pair<Instant, Result> aux = results.stream()
                 .max((p1, p2) -> Comparator.<Result>naturalOrder().compare(p1.value(), p2.value()))
                 .orElse(new Pair<>(Instant.now(), Result.FAILED));
         Result result = aux.value();
@@ -261,14 +369,50 @@ public class PlanNodeRunner {
      * Executes child runners in encounter order and timestamps each resulting
      * outcome.
      *
-     * @return stream of child execution timestamps and results, excluding
+     * @return child execution timestamps and results, excluding
      *         children with a {@code null} result
      */
-    protected Stream<Pair<Instant, Result>> runChildren() {
-        return getChildren().stream()
-                .map(PlanNodeRunner::runNode)
-                .filter(Objects::nonNull)
-                .map(result -> new Pair<>(Instant.now(), result));
+    protected List<Pair<Instant, Result>> runChildren() {
+        return runSelectedChildren(getChildren());
+    }
+
+    /**
+     * Executes the supplied child runners in encounter order.
+     *
+     * @param childRunners runners to execute
+     * @return timestamped child results, excluding {@code null} results
+     */
+    protected List<Pair<Instant, Result>> runSelectedChildren(
+            List<PlanNodeRunner> childRunners
+    ) {
+        List<Pair<Instant, Result>> results = new ArrayList<>();
+        for (int i = 0; i < childRunners.size(); i++) {
+            Result result = runChild(childRunners.get(i));
+            if (result != null) {
+                results.add(new Pair<>(Instant.now(), result));
+            }
+            if (stopExecutionOnError() && result == Result.ERROR) {
+                skipPendingChildren(childRunners, i + 1);
+                break;
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Executes one child runner.
+     *
+     * <p>JUnit integrations override this method to publish their native test
+     * events while the base class keeps result aggregation and stop-on-error
+     * behavior centralized.</p>
+     *
+     * @param child runner to execute
+     * @return child result, or {@code null} when the child has no result
+     */
+    protected Result runChild(
+            PlanNodeRunner child
+    ) {
+        return child.runNode();
     }
 
     /**
@@ -308,7 +452,7 @@ public class PlanNodeRunner {
         Instant startInstant = Instant.now();
 
         node.children().forEach(c -> {
-            boolean isBackground = c.properties().get("gherkinType").equals("background");
+            boolean isBackground = GHERKIN_TYPE_BACKGROUND.equals(c.properties().get(GHERKIN_PROPERTY));
             doNotImplemented(c, isBackground && c.hasChildren() ? Result.SKIPPED : result);
         });
 
@@ -348,11 +492,54 @@ public class PlanNodeRunner {
         return node;
     }
 
+    void skipIfPending() {
+        if (state != State.PREPARED) {
+            return;
+        }
+        state = State.FINISHED;
+        markSkippedSelf(node);
+        if (children == null) {
+            node.children().forEach(PlanNodeRunner::markSkippedRecursively);
+        } else {
+            children.forEach(PlanNodeRunner::skipIfPending);
+        }
+    }
+
+    /**
+     * Hook executed before a feature node runs its descendants.
+     * <p>
+     * Default behavior logs the feature header and invokes backend
+     * {@link Backend#setUp(Level)}.
+     * </p>
+     *
+     * @param node feature node about to execute
+     */
+    protected void featurePreExecution(
+            PlanNode node
+    ) {
+        logger.logFeatureHeader(node);
+        lifecycleBackend().setUp(Level.FEATURE);
+    }
+
+    /**
+     * Hook executed after a feature node finishes descendant execution.
+     * <p>
+     * Default behavior invokes backend {@link Backend#tearDown(Level)}.
+     * </p>
+     *
+     * @param node executed feature node
+     */
+    protected void featurePostExecution(
+            PlanNode node
+    ) {
+        lifecycleBackend().tearDown(Level.FEATURE);
+    }
+
     /**
      * Hook executed before a test-case node runs its descendants.
      * <p>
      * Default behavior logs the test-case header and invokes backend
-     * {@link Backend#setUp()}.
+     * {@link Backend#setUp(Level)}.
      * </p>
      *
      * @param node test-case node about to execute
@@ -360,14 +547,18 @@ public class PlanNodeRunner {
     protected void testCasePreExecution(
             PlanNode node
     ) {
-        logger.logTestCaseHeader(node);
-        getBackend().ifPresent(Backend::setUp);
+        if (node.nodeType() == NodeType.TEST_CASE) {
+            logger.logTestCaseHeader(node);
+        } else {
+            logger.logHookHeader(node);
+        }
+        getBackend().ifPresent(backend -> backend.setUp(Level.SCENARIO));
     }
 
     /**
      * Hook executed after a test-case node finishes descendant execution.
      * <p>
-     * Default behavior invokes backend {@link Backend#tearDown()}.
+     * Default behavior invokes backend {@link Backend#tearDown(Level)}.
      * </p>
      *
      * @param node executed test-case node
@@ -375,7 +566,7 @@ public class PlanNodeRunner {
     protected void testCasePostExecution(
             PlanNode node
     ) {
-        getBackend().ifPresent(Backend::tearDown);
+        getBackend().ifPresent(backend -> backend.tearDown(Level.SCENARIO));
     }
 
     /**
@@ -398,6 +589,69 @@ public class PlanNodeRunner {
             PlanNode step
     ) {
         logger.logStepResult(step);
+    }
+
+    private boolean stopExecutionOnError() {
+        return configuration.get(WakamitiConfiguration.STOP_EXECUTION_ON_ERROR, Boolean.class).get();
+    }
+
+    private static Pair<Instant, Result> errorResult() {
+        return new Pair<>(Instant.now(), Result.ERROR);
+    }
+
+    private boolean isPerScenarioLogEnabled() {
+        return configuration.get(WakamitiConfiguration.LOGS_PER_SCENARIO, Boolean.class).get();
+    }
+
+    private String initializeScenarioLoggingContext() {
+        String previousScenarioId = MDC.get(ScenarioLogContext.KEY);
+        if (isPerScenarioLogEnabled()) {
+            MDC.put(ScenarioLogContext.KEY, scenarioLogId());
+        }
+        return previousScenarioId;
+    }
+
+    private String scenarioLogId() {
+        String scenarioId = node.id();
+        return scenarioId == null || scenarioId.isBlank() ? uniqueId : scenarioId;
+    }
+
+    private void restoreScenarioLoggingContext(
+            String previousScenarioId
+    ) {
+        if (previousScenarioId == null || previousScenarioId.isBlank()) {
+            MDC.remove(ScenarioLogContext.KEY);
+        } else {
+            MDC.put(ScenarioLogContext.KEY, previousScenarioId);
+        }
+    }
+
+    private void skipPendingChildren() {
+        skipPendingChildren(getChildren(), 0);
+    }
+
+    private void skipPendingChildren(
+            List<PlanNodeRunner> runners,
+            int startIndex
+    ) {
+        for (int i = startIndex; i < runners.size(); i++) {
+            runners.get(i).skipIfPending();
+        }
+    }
+
+    private static void markSkippedSelf(
+            PlanNode node
+    ) {
+        Instant instant = Instant.now();
+        node.prepareExecution().markStarted(instant);
+        node.prepareExecution().markFinished(instant, Result.SKIPPED);
+    }
+
+    private static void markSkippedRecursively(
+            PlanNode node
+    ) {
+        markSkippedSelf(node);
+        node.children().forEach(PlanNodeRunner::markSkippedRecursively);
     }
 
     /**
@@ -424,6 +678,58 @@ public class PlanNodeRunner {
                 Objects.toString(node.name(), "")
         );
         return UUID.nameUUIDFromBytes(stableKey.getBytes(StandardCharsets.UTF_8)).toString();
+    }
+
+    private boolean isFeatureNode() {
+        return node.nodeType() == NodeType.AGGREGATOR
+                && GHERKIN_TYPE_FEATURE.equals(node.properties().get(GHERKIN_PROPERTY));
+    }
+
+    private boolean isFeatureRegularRunner(
+            PlanNodeRunner runner
+    ) {
+        return runner.getNode().nodeType() != NodeType.LIFECYCLE_HOOK;
+    }
+
+    private boolean isBeforeRunner(
+            PlanNodeRunner runner
+    ) {
+        return isLifecycleRunnerType(runner, GHERKIN_TYPE_BEFORE_FEATURE);
+    }
+
+    private boolean isAfterRunner(
+            PlanNodeRunner runner
+    ) {
+        return isLifecycleRunnerType(runner, GHERKIN_TYPE_AFTER_FEATURE);
+    }
+
+    private boolean isLifecycleRunnerType(
+            PlanNodeRunner runner,
+            String gherkinType
+    ) {
+        return gherkinType.equals(runner.getNode().properties().get(GHERKIN_PROPERTY));
+    }
+
+    private boolean hasExecutableFeatureScenario(
+            List<PlanNodeRunner> scenarioRunners
+    ) {
+        if (scenarioRunners.isEmpty() || dryRun) {
+            return false;
+        }
+        return scenarioRunners.stream().anyMatch(runner -> runner.getNode().descendants()
+                .filter(descendant -> descendant.nodeType() == NodeType.TEST_CASE)
+                .anyMatch(descendant -> !descendant.filtered()))
+                || scenarioRunners.stream().anyMatch(runner -> runner.getNode().nodeType() == NodeType.TEST_CASE
+                        && !runner.getNode().filtered());
+    }
+
+    static final class ScenarioLogContext {
+
+        private static final String KEY = "wakamiti.scenarioId";
+
+        private ScenarioLogContext() {
+        }
+
     }
 
 }

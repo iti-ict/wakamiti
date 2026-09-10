@@ -175,6 +175,20 @@ wakamiti:
 ```
 
 
+### `wakamiti.stopExecutionOnError`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Indica si Wakamiti debe detener la ejecución pendiente cuando se produzca un `ERROR` interno del motor.
+Los resultados `FAILED` de aplicación no activan este corte anticipado.
+
+Ejemplo:
+```yaml
+wakamiti:
+  stopExecutionOnError: false
+```
+
+
 ### `wakamiti.includeFilteredTestCases`
 - Tipo: `boolean`
 - Por defecto: `false`
@@ -302,6 +316,23 @@ Ejemplo:
 wakamiti:
   log:
     path: results
+```
+
+
+### `wakamiti.log.perScenario`
+- Tipo: `boolean`
+- por defecto: `false`
+
+Cuando está activado y también se ha definido [`wakamiti.log.path`](#wakamitilogpath), Wakamiti crea un fichero de
+log independiente por escenario en lugar de un único log de ejecución. Los ficheros se nombran como
+`wakamiti-${yyyyMMddhhmmss}-${scenarioId}.log`.
+
+Ejemplo:
+```yaml
+wakamiti:
+  log:
+    path: results
+    perScenario: true
 ```
 
 
@@ -820,6 +851,24 @@ es nulo o está vacío
 ```
 no es nulo o está vacío
 ```
+
+
+
+## Hooks de ciclo de vida (`@Before`, `@After`)
+
+Wakamiti reserva estos tags para escenarios de preparación y limpieza:
+
+- `@Before`: se ejecuta al inicio de la *feature*.
+- `@After`: se ejecuta al final de la *feature*.
+
+Comportamiento:
+
+- Se definen como `Escenario`.
+- No heredan pasos de `Antecedentes`.
+- Se muestran en salida/reportes, pero no cuentan como casos funcionales en los agregados de resultado.
+- No se validan como IDs funcionales en `strictTestCaseID`.
+- Si una *feature* no tiene escenarios funcionales ejecutables tras filtros, sus hooks `@Before`/`@After` se omiten.
+- Siguen la política de parada de `wakamiti.stopExecutionOnError`.
 
 
 

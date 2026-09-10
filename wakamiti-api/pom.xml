@@ -16,7 +16,7 @@
 
     <!-- coordinates -->
     <artifactId>wakamiti-api</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
 
     <!-- additional information -->
     <name>Wakamiti API</name>
@@ -24,7 +24,7 @@
     <inceptionYear>2022</inceptionYear>
 
     <properties>
-        <mockserver.version>7.4.0</mockserver.version>
+        <mockserver.version>7.6.0</mockserver.version>
     </properties>
 
     <dependencies>

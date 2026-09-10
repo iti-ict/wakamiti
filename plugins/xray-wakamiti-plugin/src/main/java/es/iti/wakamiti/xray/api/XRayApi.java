@@ -12,6 +12,7 @@ import static es.iti.wakamiti.api.util.JsonUtils.read;
 
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +42,6 @@ public class XRayApi extends BaseApi {
     private static final String DELIMITER = "\",\"";
 
     private final String project;
-    private final Logger logger;
 
     /**
      * Creates an authenticated Xray Cloud GraphQL client.
@@ -64,7 +64,6 @@ public class XRayApi extends BaseApi {
     ) {
         super(baseURL, AUTH_URL, clientId, clientSecret, logger);
         this.project = project;
-        this.logger = logger;
     }
 
     /**
@@ -273,19 +272,20 @@ public class XRayApi extends BaseApi {
             return Collections.emptyList();
         }
 
-        List<TestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<>() {
+        List<TestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<List<TestSet>>() {
         });
+
         if (list == null) {
-            return Collections.emptyList();
+            return List.of();
         }
 
         for (int i = 0; i < list.size(); i++) {
-            List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<>() {
+            List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<List<TestCase>>() {
             });
             list.get(i).testCases(testCases);
         }
 
-        return list;
+        return new LinkedList<>(list);
     }
 
     /**
@@ -449,7 +449,7 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, query);
 
-        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results", new TypeRef<>() {
+        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results", new TypeRef<List<TestRun>>() {
         });
 
         createdIssues.forEach(testCase ->

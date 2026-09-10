@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.10.0] - 2026-09-10
+
+### Changed
+- Upgrade dependencies: `es.iti.wakamiti:wakamiti-junit`, `es.iti.wakamiti:db-wakamiti-plugin`,
+  `es.iti.wakamiti:rest-wakamiti-plugin`, `org.springframework.boot:spring-boot`,
+  `org.springframework.boot:spring-boot-starter-test`
+
+
 ## [2.9.0] - 2026-07-31
 
 ### Changed

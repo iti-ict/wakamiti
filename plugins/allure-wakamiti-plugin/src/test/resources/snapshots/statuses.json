@@ -2,6 +2,25 @@
   "nodeType": "AGGREGATOR",
   "children": [
     {
+      "nodeType": "AGGREGATOR",
+      "name": "Statuses feature",
+      "displayName": "Feature: Statuses feature",
+      "source": "features/statuses.feature",
+      "language": "en",
+      "properties": {
+        "gherkinType": "feature"
+      },
+      "children": [
+        {
+          "nodeType": "LIFECYCLE_HOOK",
+          "id": "#before-skipped",
+          "name": "unexecuted before fixture",
+          "properties": {
+            "gherkinType": "before"
+          },
+          "result": "SKIPPED"
+        },
+        {
       "executionID": "run-1",
       "nodeType": "TEST_CASE",
       "id": "SKIP-1",
@@ -43,10 +62,21 @@
           ]
         }
       ]
-    },
-    {
+        },
+        {
       "nodeType": "TEST_CASE",
       "result": null
+        },
+        {
+          "nodeType": "LIFECYCLE_HOOK",
+          "id": "#after-unstarted",
+          "name": "unstarted after fixture",
+          "properties": {
+            "gherkinType": "after"
+          },
+          "result": null
+        }
+      ]
     }
   ]
 }

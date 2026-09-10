@@ -16,14 +16,14 @@ validación de datos.
 Incluye el módulo y el controlador(es) JDBC en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:db-wakamiti-plugin:3.6.0
+es.iti.wakamiti:db-wakamiti-plugin:3.10.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>db-wakamiti-plugin</artifactId>
-  <version>3.6.0</version>
+  <version>3.10.0</version>
 </dependency>
 ```
 
@@ -113,11 +113,42 @@ database:
 ```
 
 
-### `database.{alias}...`
+### `database.scripts.<hook>`
+- Tipo: `file[]`
 
-Establece los prámetros de conexión JDBC y/o los metadatos de una base de datos identificada por un alias. Se pueden
-establecer tantas conexiones como se desée. La primera base de datos configurada será tomada como la configuración por
-defecto.
+Permite indicar una lista ordenada de scripts SQL que se ejecutarán en un momento determinado de la ejecución del plan.
+Este momento se especifica mediante `hook`. Actualmente, están disponibles los siguientes hooks:
+
+- `setup`: los scripts se ejecutan, en el orden indicado, antes de comenzar los escenarios del plan. Si alguno falla, no
+  se ejecutan los siguientes scripts de setup.
+- `teardown`: los scripts se ejecutan, en el orden indicado, al finalizar el plan. Si alguno falla, se siguen intentando
+  los demás scripts de teardown y los errores se comunican al terminar.
+
+Los scripts configurados en esta propiedad utilizan `database.connection`. Si no se ha configurado esa conexión, se
+ignoran. Las rutas relativas se resuelven respecto a `workingDir` y su ejecución no cambia la conexión activa que usarán
+posteriormente los escenarios.
+
+Ejemplo:
+```yaml
+database:
+  scripts:
+    setup:
+      - db/create-schema.sql
+      - db/load-reference-data.sql
+    teardown:
+      - db/clean.sql
+```
+
+
+### `database.datasource.<alias>...`
+
+Establece los parámetros de conexión JDBC, los metadatos y los scripts de una base de datos identificada por un alias. Se
+pueden establecer tantas conexiones como se desee. La primera base de datos configurada será tomada como la configuración
+por defecto. Debe configurarse al menos una conexión, ya sea la conexión raíz o una datasource con alias.
+
+Cada datasource puede definir sus propias listas `scripts.setup` y `scripts.teardown`. Estos scripts siguen el
+comportamiento descrito en [`database.scripts.<hook>`](#databasescriptshook), pero se ejecutan utilizando la conexión de
+esa datasource.
 
 Ejemplo:
 ```yaml
@@ -137,6 +168,12 @@ database:
         url: jdbc:mysql://other.host:3306/test
         username: test2
         password: test2
+      scripts:
+        setup:
+          - db/db2/create-schema.sql
+          - db/db2/load-reference-data.sql
+        teardown:
+          - db/db2/clean.sql
       metadata:
         schema: TESTDB2
         catalog: TESTCAT2
@@ -241,7 +278,8 @@ establecerá como conexión por defecto.
 
 Este paso es equivalente a configurar las propiedades
 [`database.connection.url`](#databaseconnectionurl), [`database.connection.username`](#databaseconnectionusername),
-[`database.connection.password`](#databaseconnectionpassword), [`database.{alias}...`](#databasealias).
+[`database.connection.password`](#databaseconnectionpassword),
+[`database.datasource.<alias>...`](#databasedatasourcealias).
 
 #### Parámetros:
 | Nombre     | Wakamiti type        | Descripción           |

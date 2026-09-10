@@ -244,25 +244,29 @@ Característica: Testing database steps
       Y el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos en 1 segundo
 
 
-  # database.enableCleanupUponCompletion: true
-  Escenario: Cleanup of data with foreign key
-    * Al finalizar, la tabla client está vacía
-    * Al finalizar, la tabla city está vacía
-    * Al finalizar, la tabla client_city está vacía
-    Dado que se inserta el siguiente usuario en la tabla client:
-      | id | first_name | second_name | active | birth_date | creation            |
-      | 1  | Rosa       | Melano      | 1      | 1980-12-25 | 2024-07-22 12:34:56 |
-    Y se inserta la siguiente ciudad en la tabla city:
-      | id | name     |
-      | 1  | Valencia |
-    Y se inserta la siguiente relación en la tabla client_city:
-      | clientid | cityid |
-      | 1        | 1      |
-    Cuando se ha limpiado la tabla client_city
+  Escenario: Tabla con esquema cualificado
+    * Al finalizar, se ejecuta el siguiente script SQL:
+      """
+      DELETE FROM QUALIFIED.QUALIFIED_CLIENT;
+      INSERT INTO QUALIFIED.QUALIFIED_CLIENT (ID, ACTIVE) VALUES (1, TRUE);
+      DELETE FROM OTHER;
+      INSERT INTO OTHER (SOMETHING) VALUES (47);
+      """
+    Dado que se ha ejecutado el siguiente script SQL:
+      """
+      DELETE FROM QUALIFIED.QUALIFIED_CLIENT;
+      INSERT INTO QUALIFIED.QUALIFIED_CLIENT (ID, ACTIVE) VALUES (1, TRUE);
+      """
+    Cuando se ha ejecutado el siguiente script SQL:
+      """
+      UPDATE QUALIFIED.QUALIFIED_CLIENT SET ACTIVE = FALSE WHERE ID = 1;
+      """
     Y se ha ejecutado el siguiente script SQL:
       """
-      DELETE FROM CITY WHERE id = 1;
-      INSERT INTO city (ID, name, latitude, longitude) VALUES (1, 'Valencia', 39.469906, -0.376288);
-      UPDATE city SET latitude = 40.469906 WHERE id = 1;
+      DELETE FROM OTHER;
+      INSERT INTO OTHER (SOMETHING)
+      SELECT CASE WHEN ACTIVE = FALSE THEN 48 ELSE 47 END
+      FROM QUALIFIED.QUALIFIED_CLIENT WHERE ID = 1;
       """
-    Y se ha eliminado el contenido del fichero CSV '${data.dir}/data1.csv' de la tabla client
+    Entonces el registro con something = '48' existe en la tabla other
+    Y el registro con something = '47' no existe en la tabla other

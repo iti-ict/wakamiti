@@ -112,6 +112,11 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
     public static final String DRY_RUN = "dryRun";
 
     /**
+     * Stop remaining execution as soon as Wakamiti records an ERROR result
+     */
+    public static final String STOP_EXECUTION_ON_ERROR = "stopExecutionOnError";
+
+    /**
      * Whether filtered tests should be included in the plan, as SKIPPED
      */
     public static final String INCLUDE_FILTERED_TEST_CASES = "includeFilteredTestCases";
@@ -189,6 +194,11 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
     public static final String WORKING_DIR = "workingDir";
 
     /**
+     * Write one launcher log file per scenario instead of a single execution log file
+     */
+    public static final String LOGS_PER_SCENARIO = "log.perScenario";
+
+    /**
      * Faint style
      */
     private static final String FAINT = "faint";
@@ -209,6 +219,7 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
                     REPORT_GENERATION, Boolean.TRUE.toString(),
                     ID_TAG_PATTERN, "ID([\\w-]+)",
                     DRY_RUN, Boolean.FALSE.toString(),
+                    STOP_EXECUTION_ON_ERROR, Boolean.FALSE.toString(),
                     INCLUDE_FILTERED_TEST_CASES, Boolean.FALSE.toString(),
                     REDEFINITION_ENABLED, Boolean.TRUE.toString(),
                     REDEFINITION_DEFINITION_TAG, "definition",
@@ -216,6 +227,7 @@ public class WakamitiConfiguration implements ConfigContributor<Void> {
                     LOGS_SHOW_LOGO, Boolean.TRUE.toString(),
                     LOGS_SHOW_STEP_SOURCE, Boolean.FALSE.toString(),
                     LOGS_SHOW_ELAPSED_TIME, Boolean.TRUE.toString(),
+                    LOGS_PER_SCENARIO, Boolean.FALSE.toString(),
                     TREAT_STEPS_AS_TESTS, Boolean.FALSE.toString(),
                     WORKING_DIR, ".",
                     "logs.ansi.styles.keyword", "blue",

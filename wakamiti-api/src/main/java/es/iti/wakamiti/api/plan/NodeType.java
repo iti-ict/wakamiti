@@ -24,6 +24,13 @@ public enum NodeType {
     TEST_CASE,
 
     /**
+     * Root node for a lifecycle hook scenario ({@code @Before},
+     * {@code @After}). Lifecycle hook results contribute to the aggregate
+     * result of their parent but are excluded from test-case counts.
+     */
+    LIFECYCLE_HOOK,
+
+    /**
      * Aggregator node within a test case.
      */
     STEP_AGGREGATOR,
