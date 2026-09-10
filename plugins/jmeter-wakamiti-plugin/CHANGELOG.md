@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [1.3.0] - 2026-09-09
+## [1.3.0] - 2026-09-10
 
 ### Changed
 - Upgrade dependencies: `us.abstracta.jmeter:jmeter-java-dsl`, `org.jetbrains.kotlin:kotlin-stdlib`,
