@@ -19,7 +19,7 @@ importers:
         version: 5.3.0
       astro:
         specifier: ^7.3.2
-        version: 7.3.2(@astrojs/markdown-remark@7.3.1)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.2)(sass@1.102.0)(yaml@2.9.0)
+        version: 7.3.2(@astrojs/markdown-remark@7.3.1)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.2)(sass@1.104.0)(yaml@2.9.0)
       feather-icons:
         specifier: ^4.29.2
         version: 4.29.2
@@ -34,8 +34,8 @@ importers:
         version: 5.1.0
     devDependencies:
       sass:
-        specifier: ^1.102.0
-        version: 1.102.0
+        specifier: ^1.104.0
+        version: 1.104.0
 
 packages:
 
@@ -1672,8 +1672,8 @@ packages:
   safe-buffer@5.1.2:
     resolution: {integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==}
 
-  sass@1.102.0:
-    resolution: {integrity: sha512-NSOyTnaQF7rTAEOtI2fwb386vL+akyiQLBZu8Na7hXCb+umJy0GAqlcMIaqACZ6Z1VgTBS4K9PG6B3IdjHGJsw==}
+  sass@1.104.0:
+    resolution: {integrity: sha512-btHMApW2bgolvClhRW8AlQJzgI9lUB3pPSofBQQT+E46GWvf9o0TVQ13SYv5riWZVFyPN+JNz3TKW9XhBlc10w==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -2637,7 +2637,7 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro@7.3.2(@astrojs/markdown-remark@7.3.1)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.2)(sass@1.102.0)(yaml@2.9.0):
+  astro@7.3.2(@astrojs/markdown-remark@7.3.1)(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@24.13.2)(sass@1.104.0)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler-rs': 0.4.0(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)
       '@astrojs/internal-helpers': 0.11.0
@@ -2687,8 +2687,8 @@ snapshots:
       ultrahtml: 1.6.0
       unifont: 0.7.5
       unstorage: 1.17.5
-      vite: 8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.102.0)(yaml@2.9.0)
-      vitefu: 1.1.3(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.102.0)(yaml@2.9.0))
+      vite: 8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.104.0)(yaml@2.9.0)
+      vitefu: 1.1.3(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.104.0)(yaml@2.9.0))
       xxhash-wasm: 1.1.0
       yargs-parser: 22.0.0
       zod: 4.5.4
@@ -3957,7 +3957,7 @@ snapshots:
 
   safe-buffer@5.1.2: {}
 
-  sass@1.102.0:
+  sass@1.104.0:
     dependencies:
       chokidar: 5.0.0
       immutable: 5.1.8
@@ -4195,7 +4195,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.3
 
-  vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.102.0)(yaml@2.9.0):
+  vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.104.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
@@ -4206,12 +4206,12 @@ snapshots:
       '@types/node': 24.13.2
       esbuild: 0.28.1
       fsevents: 2.3.3
-      sass: 1.102.0
+      sass: 1.104.0
       yaml: 2.9.0
 
-  vitefu@1.1.3(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.102.0)(yaml@2.9.0)):
+  vitefu@1.1.3(vite@8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.104.0)(yaml@2.9.0)):
     optionalDependencies:
-      vite: 8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.102.0)(yaml@2.9.0)
+      vite: 8.1.0(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.104.0)(yaml@2.9.0)
 
   web-namespaces@2.0.1: {}
 
