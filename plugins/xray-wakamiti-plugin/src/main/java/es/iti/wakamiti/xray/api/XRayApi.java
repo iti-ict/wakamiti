@@ -12,6 +12,7 @@ import static es.iti.wakamiti.api.util.JsonUtils.read;
 
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -284,7 +285,7 @@ public class XRayApi extends BaseApi {
             list.get(i).testCases(testCases);
         }
 
-        return list;
+        return new LinkedList<>(list);
     }
 
     /**
