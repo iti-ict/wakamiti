@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.1",
-    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/sitemap": "^3.7.4",
     "@fontsource/source-sans-pro": "^5.3.0",
     "astro": "^7.3.2",
     "feather-icons": "^4.29.2",
