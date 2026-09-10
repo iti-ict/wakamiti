@@ -12,7 +12,6 @@ import static es.iti.wakamiti.api.util.JsonUtils.read;
 
 import java.net.URL;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -272,7 +271,7 @@ public class XRayApi extends BaseApi {
             return Collections.emptyList();
         }
 
-        List<TestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<>() {
+        List<TestSet> list = read(response, "$.data.getTestSets.results", new TypeRef<List<TestSet>>() {
         });
 
         if (list == null) {
@@ -280,12 +279,12 @@ public class XRayApi extends BaseApi {
         }
 
         for (int i = 0; i < list.size(); i++) {
-            List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<>() {
+            List<TestCase> testCases = read(response, "$.data.getTestSets.results[" + i + "].tests.results", new TypeRef<List<TestCase>>() {
             });
             list.get(i).testCases(testCases);
         }
 
-        return new LinkedList<>(list);
+        return list;
     }
 
     /**
@@ -449,7 +448,7 @@ public class XRayApi extends BaseApi {
 
         JsonNode response = post(API_GRAPHQL, query);
 
-        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results", new TypeRef<>() {
+        List<TestRun> testRuns = read(response, "$.data.getTestRuns.results", new TypeRef<List<TestRun>>() {
         });
 
         createdIssues.forEach(testCase ->

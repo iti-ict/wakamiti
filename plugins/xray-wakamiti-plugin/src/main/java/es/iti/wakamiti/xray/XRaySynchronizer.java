@@ -15,6 +15,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -395,7 +396,7 @@ public class XRaySynchronizer implements EventObserver {
             List<TestCase> tests
     ) {
         List<TestSet> testSets = tests.stream().map(TestCase::getTestSetList).flatMap(List::stream).toList();
-        List<TestSet> remoteTestSets = xRayApi.getTestSets();
+        List<TestSet> remoteTestSets = new ArrayList<>(xRayApi.getTestSets());
         List<String> remoteTestSetsSummary = remoteTestSets.stream().map(TestSet::getJira).map(JiraIssue::getSummary).toList();
         List<TestSet> newTestSets = testSets.stream()
                 .filter(s -> !remoteTestSetsSummary.contains(s.getJira().getSummary()))
