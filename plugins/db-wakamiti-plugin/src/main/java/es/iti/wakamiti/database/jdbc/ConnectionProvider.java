@@ -61,20 +61,21 @@ public class ConnectionProvider implements AutoCloseable {
      */
     public Connection get() {
         try {
-            if (connection == null) {
+            boolean newConnection = connection == null;
+            if (newConnection) {
                 connection = CONNECTION_MANAGER.obtainConnection(parameters);
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(
-                            "Using database connection of type {} provided by {contributor}",
-                            connection.getClass().getSimpleName(),
-                            CONNECTION_MANAGER.info()
-                    );
-                }
             } else {
                 connection = CONNECTION_MANAGER.refreshConnection(connection, parameters);
             }
             if (connection == null) {
                 throw new WakamitiException("Connection manager returned a null connection");
+            }
+            if (newConnection && LOGGER.isDebugEnabled()) {
+                LOGGER.debug(
+                        "Using database connection of type {} provided by {contributor}",
+                        connection.getClass().getSimpleName(),
+                        CONNECTION_MANAGER.info()
+                );
             }
             return connection;
         } catch (SQLException e) {
