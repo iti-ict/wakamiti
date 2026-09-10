@@ -3,3 +3,7 @@ allowBuilds:
   sharp: true
   '@parcel/watcher': true
   core-js: true
+minimumReleaseAgeExclude:
+  - js-yaml@4.3.2
+  - svgo@4.1.0
+  - smol-toml@1.7.1
