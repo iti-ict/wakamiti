@@ -2,5 +2,9 @@
   "description": "No automatices lo que ya está automatizado",
   "index1": "Primeros pasos",
   "index2": "Plugins",
-  "index3": "Configuración"
+  "index3": "Configuración",
+  "index3Anchor": "configuración-global",
+  "notFoundDescription": "Página no encontrada",
+  "notFoundMessage": "La página solicitada no existe.",
+  "notFoundHome": "Volver al inicio"
 }

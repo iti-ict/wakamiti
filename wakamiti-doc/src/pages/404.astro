@@ -1,23 +1,30 @@
 ---
 import SiteLayout from "../layouts/SiteLayout.astro";
-import { withBase } from "../lib/site.js";
+import { messages, withBase } from "../lib/site.js";
 
 const esHome = withBase("/");
 const enHome = withBase("/en/");
 const basePath = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
+const text = messages.es;
 ---
 
-<SiteLayout locale="es" title="404 | Wakamiti" description="Page not found" sidebar={false} currentSlug="/">
+<SiteLayout locale="es" title="404 | Wakamiti" description={text.notFoundDescription} sidebar={false} currentSlug="/">
   <div
     class="not-found"
     data-not-found
     data-base-path={basePath}
     data-es-home={esHome}
     data-en-home={enHome}
+    data-es-message={messages.es.notFoundMessage}
+    data-en-message={messages.en.notFoundMessage}
+    data-es-link-text={messages.es.notFoundHome}
+    data-en-link-text={messages.en.notFoundHome}
+    data-es-description={messages.es.notFoundDescription}
+    data-en-description={messages.en.notFoundDescription}
   >
     <h1>404</h1>
-    <p data-not-found-message>La pagina solicitada no existe.</p>
-    <p><a href={esHome} data-not-found-link>Volver al inicio</a></p>
+    <p data-not-found-message>{text.notFoundMessage}</p>
+    <p><a href={esHome} data-not-found-link>{text.notFoundHome}</a></p>
   </div>
 </SiteLayout>
 
@@ -29,31 +36,34 @@ const basePath = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
     const pathname = window.location.pathname;
     const enPrefix = `${basePath}/en`;
     const locale = pathname === enPrefix || pathname.startsWith(`${enPrefix}/`) ? "en" : "es";
+    const otherLocale = locale === "en" ? "es" : "en";
+    const message = container.querySelector("[data-not-found-message]");
+    const link = container.querySelector("[data-not-found-link]");
+    const description = document.querySelector('meta[name="description"]');
+    const languageSwitch = document.getElementById("languageSwitch");
 
-    if (locale === "en") {
-      document.documentElement.lang = "en";
+    document.documentElement.lang = locale;
 
-      const message = container.querySelector("[data-not-found-message]");
-      const link = container.querySelector("[data-not-found-link]");
-      const languageSwitch = document.getElementById("languageSwitch");
+    if (message) {
+      message.textContent = container.getAttribute(`data-${locale}-message`) || "";
+    }
 
-      if (message) {
-        message.textContent = "The requested page does not exist.";
-      }
+    if (link) {
+      link.textContent = container.getAttribute(`data-${locale}-link-text`) || "";
+      link.setAttribute("href", container.getAttribute(`data-${locale}-home`) || "/");
+    }
 
-      if (link) {
-        link.textContent = "Back to home";
-        link.setAttribute("href", container.getAttribute("data-en-home") || "/en/");
-      }
+    if (description) {
+      description.setAttribute("content", container.getAttribute(`data-${locale}-description`) || "");
+    }
 
-      if (languageSwitch) {
-        languageSwitch.setAttribute("data-language-switch", container.getAttribute("data-es-home") || "/");
-        languageSwitch.setAttribute("data-language-next-text", "EN");
+    if (languageSwitch) {
+      languageSwitch.setAttribute("data-language-switch", container.getAttribute(`data-${otherLocale}-home`) || "/");
+      languageSwitch.setAttribute("data-language-next-text", locale.toUpperCase());
 
-        const label = languageSwitch.querySelector(".language-text");
-        if (label) {
-          label.textContent = "ES";
-        }
+      const label = languageSwitch.querySelector(".language-text");
+      if (label) {
+        label.textContent = otherLocale.toUpperCase();
       }
     }
   }
