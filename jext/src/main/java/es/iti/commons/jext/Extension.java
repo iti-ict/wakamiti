@@ -58,12 +58,11 @@ public @interface Extension {
     /**
      * The class name of the extension point that is extended.
      * <p>
-     * If this field is not provided and the extension class implements the
-     * extension point class directly, it will automatically infer the value as the
-     * qualified name of the extension point class. Notice that if the extension
-     * point class uses generic parameters, the inference mechanism will not
-     * work, so clients must provide the name of the class directly in those
-     * cases.
+     * If this field is not provided, the processor infers the value from the
+     * last interface directly implemented by the extension class and removes
+     * generic type arguments from its name. Clients should provide this field
+     * explicitly when the class implements multiple interfaces, inherits the
+     * extension point only through a superclass, or needs unambiguous registration.
      * </p>
      *
      * @return the qualified extension point class name
@@ -93,17 +92,18 @@ public @interface Extension {
     boolean externallyManaged() default false;
 
     /**
-     * Priority used when extensions collide, the highest value has priority
-     * over others.
+     * Priority used when extensions collide. Lower numeric values are resolved
+     * before higher values.
      *
      * @return the extension priority
      */
     int priority() default NORMAL_PRIORITY;
 
     /**
-     * Indicates whether the extension is overridable or not. If set to {@code true},
-     * the extension can replace another extension if both are valid alternatives.
-     * If set to {@code false}, the extension cannot be replaced by another extension.
+     * Indicates whether this extension may be replaced by another extension. If
+     * set to {@code true}, another valid extension can name this class in its
+     * {@link #overrides()} property. If set to {@code false}, this extension
+     * cannot be removed by an override declaration.
      *
      * @return {@code true} if the extension is overridable, {@code false} otherwise.
      */

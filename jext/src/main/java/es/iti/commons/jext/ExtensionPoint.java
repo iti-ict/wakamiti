@@ -16,8 +16,8 @@ import java.lang.annotation.Target;
 
 /**
  * <p>
- * This annotation allows to mark an interface or abstract class as an
- * extension point managed by the {@link ExtensionManager}.
+ * This annotation allows marking an interface or class as an extension point
+ * managed by the {@link ExtensionManager}.
  * </p>
  * <p>
  * In order to ensure compatibility between the extension point and its

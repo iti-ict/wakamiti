@@ -118,8 +118,8 @@ public class ExtensionManager {
 
     /**
      * Retrieves an instance for the given extension point if any exists.
-     * In the case of existing multiple alternatives, the one with the highest
-     * priority will be used.
+     * In the case of existing multiple alternatives, the one with the lowest
+     * numeric priority value will be used.
      *
      * @param extensionPoint The extension point type.
      * @param <T>            The extension point type.
@@ -134,7 +134,7 @@ public class ExtensionManager {
     /**
      * Retrieves the instance for the given extension point that satisfies the
      * specified condition if any exists. In the case of existing multiple
-     * alternatives, the one with the highest priority will be used.
+     * alternatives, the one with the lowest numeric priority value will be used.
      *
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions satisfying this condition will be
@@ -152,7 +152,7 @@ public class ExtensionManager {
     /**
      * Retrieves the instance for the given extension point that satisfies the
      * specified condition if any exists. In the case of existing multiple
-     * alternatives, the one with the highest priority will be used.
+     * alternatives, the one with the lowest numeric priority value will be used.
      *
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions which their metadata satisfies this
@@ -168,12 +168,12 @@ public class ExtensionManager {
     }
 
     /**
-     * Retrieves a priority-ordered list with all extensions for the given
-     * extension point.
+     * Retrieves a stream with all extensions for the given extension point,
+     * ordered by ascending numeric priority.
      *
      * @param extensionPoint The extension point type.
      * @param <T>            The extension point type.
-     * @return A list with the extensions, empty if none was found.
+     * @return A stream with the extensions, empty if none was found.
      */
     public <T> Stream<T> getExtensions(
             Class<T> extensionPoint
@@ -182,14 +182,14 @@ public class ExtensionManager {
     }
 
     /**
-     * Retrieves a priority-ordered list with all then extensions for the given
-     * extension point that satisfies the specified condition.
+     * Retrieves a stream with all the extensions for the given extension point
+     * that satisfy the specified condition, ordered by ascending numeric priority.
      *
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions satisfying this condition will be
      *                       returned.
      * @param <T>            The extension point type.
-     * @return A list with the extensions, empty if none was found.
+     * @return A stream with the extensions, empty if none was found.
      */
     public <T> Stream<T> getExtensionsThatSatisfy(
             Class<T> extensionPoint,
@@ -199,14 +199,15 @@ public class ExtensionManager {
     }
 
     /**
-     * Retrieves a priority-ordered list with all then extensions for the given
-     * extension point that satisfies the specified condition.
+     * Retrieves a stream with all the extensions for the given extension point
+     * whose metadata satisfy the specified condition, ordered by ascending
+     * numeric priority.
      *
      * @param extensionPoint The extension point type.
      * @param condition      Only extensions which their metadata satisfies this
      *                       condition will be returned.
      * @param <T>            The extension point type.
-     * @return A list with the extensions, empty if none was found.
+     * @return A stream with the extensions, empty if none was found.
      */
     public <T> Stream<T> getExtensionsThatSatisfyMetadata(
             Class<T> extensionPoint,
@@ -216,11 +217,11 @@ public class ExtensionManager {
     }
 
     /**
-     * Retrieves a priority-ordered stream with all valid extensions for the
-     * given extension point.
+     * Retrieves a stream with all valid extensions for the given extension
+     * point, ordered by ascending numeric priority.
      *
      * @param context The context specifying the extension point and condition.
-     * @return A stream of valid extensions, sorted by priority.
+     * @return A stream of valid extensions, sorted by ascending numeric priority.
      */
     protected <T> Stream<T> loadAll(
             ExtensionLoadContext<T> context
@@ -237,7 +238,7 @@ public class ExtensionManager {
      *
      * @param context The context specifying the extension point and condition.
      * @return An optional object either empty or wrapping the instance with
-     * the highest priority.
+     * the lowest numeric priority value.
      */
     protected <T> Optional<T> loadFirst(
             ExtensionLoadContext<T> context
