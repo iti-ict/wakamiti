@@ -1,0 +1,91 @@
+---
+import FooterMarks from "../ui/FooterMarks.astro";
+import GitLink from "../ui/GitLink.astro";
+import ShortcutCard from "../ui/ShortcutCard.astro";
+import { localizePath, messages, withBase } from "../lib/site.js";
+import SiteLayout from "./SiteLayout.astro";
+
+const locale = Astro.props.locale === "en" ? "en" : "es";
+const text = messages[locale];
+const currentSlug = localizePath("/", locale);
+
+const shortcuts = [
+  {
+    link: "/introduction/getting-started",
+    text: text.index1,
+    icon: "play"
+  },
+  {
+    link: "/plugins",
+    text: text.index2,
+    icon: "file"
+  },
+  {
+    link: `/wakamiti/architecture#${text.index3Anchor}`,
+    text: text.index3,
+    icon: "sliders"
+  }
+];
+---
+
+<SiteLayout
+  locale={locale}
+  title="Wakamiti"
+  description={text.description}
+  sidebar={false}
+  currentSlug={currentSlug}
+>
+  <div class="content">
+    <h1>{text.description}</h1>
+    <nav>
+      {
+        shortcuts.map((shortcut) => (
+          <ShortcutCard
+            link={withBase(localizePath(shortcut.link, locale))}
+            text={shortcut.text}
+            icon={shortcut.icon}
+          />
+        ))
+      }
+    </nav>
+    <GitLink class="git" size="large" />
+    <FooterMarks />
+  </div>
+</SiteLayout>
+
+<style lang="scss">
+.content {
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  text-align: center;
+  max-width: 600px;
+  margin: 1.5em auto 1.5em;
+
+  @include respond-above(md) {
+    max-width: 1000px;
+    font-size: 3rem;
+  }
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
+  @include respond-above(sm) {
+    flex-direction: row;
+  }
+}
+
+:global(.git-link.large) {
+  margin: 3em 0 0;
+  align-self: center;
+
+  @include respond-above(md) {
+    margin: 5em 0 0;
+  }
+}
+</style>
