@@ -32,6 +32,24 @@ es.iti.wakamiti:groovy-wakamiti-plugin:2.8.0
 ```
 
 
+## Configuración
+
+
+### `groovy.compilation.failOnError`
+- Tipo: `boolean`
+- Por defecto: `true`
+
+Establece si un error de compilación en los ficheros Groovy debe detener la ejecución. Si se establece a `false`, los
+errores se registran y el compilador continúa intentando cargar el resto de los ficheros.
+
+Ejemplo:
+```yaml
+groovy:
+  compilation:
+    failOnError: false
+```
+
+
 ## Compilador
 
 El compilador groovy intentará compilar cualquier fichero con extensión `.groovy` presente en el directorio (o 

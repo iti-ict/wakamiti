@@ -113,6 +113,32 @@ xray:
 ```
 
 
+### `xray.suiteBase`
+- Type: `path`
+
+Sets the base path removed from feature-file paths when generating Xray test sets. If omitted, the complete file path is
+preserved.
+
+Example:
+```yaml
+xray:
+  suiteBase: features
+```
+
+
+### `xray.tag`
+- Type: `string`
+- Default: empty string
+
+Restricts synchronization to tests containing the specified label. An empty string includes all generated tests.
+
+Example:
+```yaml
+xray:
+  tag: smoke
+```
+
+
 ###  `xray.attachments`
 - Type: `glob[]` 
 
@@ -128,8 +154,7 @@ xray:
 
 
 ### `xray.testCasePerFeature`
-- Type: `boolean`
-- Default: `false`
+- Type: `boolean` *required*
 
 Specifies whether the mapping to XRay test cases should be at feature level or scenario level.
 
@@ -142,7 +167,7 @@ xray:
 
 ###  `xray.createItemsIfAbsent`
 - Type: `boolean`
-- Default: `true`
+- Default: `false`
 
 Set whether to automatically create elements that do not exist in XRay.
 

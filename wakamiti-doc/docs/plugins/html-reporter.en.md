@@ -60,6 +60,20 @@ htmlReport:
 ```
 
 
+### `htmlReport.extra_info.<key>`
+- Type: `property[]`
+
+Adds extra information to the report header. Any number of key-value pairs can be defined.
+
+Example:
+```yaml
+htmlReport:
+  extra_info:
+    environment: staging
+    version: 3.0.0
+```
+
+
 ###  `htmlReport.css`
 - Type: `file`
 

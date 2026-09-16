@@ -114,6 +114,33 @@ xray:
 ```
 
 
+### `xray.suiteBase`
+- Tipo: `path`
+
+Establece la ruta base que se elimina de las rutas de los ficheros feature al generar los test sets de Xray. Si no se
+indica, se conserva la ruta completa del fichero.
+
+Ejemplo:
+```yaml
+xray:
+  suiteBase: features
+```
+
+
+### `xray.tag`
+- Tipo: `string`
+- Por defecto: cadena vacía
+
+Limita la sincronización a los tests que contienen la etiqueta indicada. Una cadena vacía incluye todos los tests
+generados.
+
+Ejemplo:
+```yaml
+xray:
+  tag: smoke
+```
+
+
 ###  `xray.attachments`
 - Tipo: `glob[]` 
 
@@ -129,8 +156,7 @@ xray:
 
 
 ### `xray.testCasePerFeature`
-- Tipo: `boolean`
-- Por defecto: `false`
+- Tipo: `boolean` *obligatorio*
 
 Establece si el mapeo con los casos de test de XRay debe ser a nivel de feature o de escenario.
 
@@ -143,7 +169,7 @@ xray:
 
 ###  `xray.createItemsIfAbsent`
 - Tipo: `boolean`
-- Por defecto: `true`
+- Por defecto: `false`
 
 Establece si se debe crear automáticamente los elementos que no existan en XRay.
 
@@ -185,4 +211,3 @@ jira:
 La sincronización con XRay se realizará antes de la ejecución de los tests. En caso de que haya algún problema, se 
 detendrá la ejecución.
 Al finalizar la ejecución, se procederá a sincronizar los resultados con XRay.
-

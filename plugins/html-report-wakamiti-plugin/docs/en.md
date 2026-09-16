@@ -2,44 +2,72 @@
 
 A report generator in `HTML` format with the tests results.
 
----
-## Table of content
-
----
-## Configuration
+## Install
 
 
-####  `htmlReport.output`
-The (relative) path and name of the generated file.
+Include the module in the corresponding section.
 
-Default value is `wakamiti.html`.
-
-Example:
-
-```yaml
-htmlReport:
-  output: my-cucumber-report.json
+```text tabs=coord name=yaml copy=true
+es.iti.wakamiti:html-report-wakamiti-plugin:2.11.0
 ```
 
-<br /><br />
+```text tabs=coord name=maven copy=true
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>html-report-wakamiti-plugin</artifactId>
+  <version>2.11.0</version>
+</dependency>
+```
 
-####  `htmlReport.title`
-Sets the indicated title in the report.
+
+## Options
+
+
+###  `htmlReport.output`
+- Type: `file`
+- Default: `wakamiti.html`
+
+The (relative) path and name of the generated file.
 
 Example:
+```yaml
+htmlReport:
+  output: my-cucumber-report.html
+```
 
+
+###  `htmlReport.title`
+- Type: `string`
+
+Sets the title shown in the report.
+
+Example:
 ```yaml
 htmlReport:
   title: "Wakamiti v11"
 ```
 
-<br /><br />
 
-####  `htmlReport.css`
-Indicates the path of a css file that will establish the appearance of the html report.
+### `htmlReport.extra_info.<key>`
+- Type: `property[]`
+
+Adds extra information to the report header. Any number of key-value pairs can be defined.
 
 Example:
+```yaml
+htmlReport:
+  extra_info:
+    environment: staging
+    version: 3.0.0
+```
 
+
+###  `htmlReport.css`
+- Type: `file`
+
+Specifies the path to a css file that defines the appearance of the html report.
+
+Example:
 ```yaml
 htmlReport:
   css: Wakamiti.css

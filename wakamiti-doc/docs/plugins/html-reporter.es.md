@@ -60,6 +60,21 @@ htmlReport:
 ```
 
 
+### `htmlReport.extra_info.<clave>`
+- Tipo: `property[]`
+
+Añade información adicional a la cabecera del informe. Se pueden definir tantas parejas de clave y valor como se
+necesiten.
+
+Ejemplo:
+```yaml
+htmlReport:
+  extra_info:
+    entorno: preproducción
+    versión: 3.0.0
+```
+
+
 ###  `htmlReport.css`
 - Tipo: `file`
 

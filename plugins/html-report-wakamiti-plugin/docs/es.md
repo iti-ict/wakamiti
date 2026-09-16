@@ -2,44 +2,73 @@
 
 Un generador de informes en formato `HTML` con los resultados de las pruebas.
 
----
-## Tabla de contenido
+## Instalación
 
----
+
+Incluye el módulo en la sección correspondiente.
+
+```text tabs=coord name=yaml copy=true
+es.iti.wakamiti:html-report-wakamiti-plugin:2.11.0
+```
+
+```text tabs=coord name=maven copy=true
+<dependency>
+  <groupId>es.iti.wakamiti</groupId>
+  <artifactId>html-report-wakamiti-plugin</artifactId>
+  <version>2.11.0</version>
+</dependency>
+```
+
+
 ## Configuración
 
 
-####  `htmlReport.output`
+###  `htmlReport.output`
+- Tipo: `file`
+- Por defecto: `wakamiti.html`
+
 La ruta (relativa) y el nombre del archivo generado.
 
-El valor por defecto es `wakamiti.html`.
-
 Ejemplo:
-
 ```yaml
 htmlReport:
   output: my-cucumber-report.json
 ```
 
-<br /><br />
 
-####  `htmlReport.title`
+###  `htmlReport.title`
+- Tipo: `string`
+
 Establece el título indicado en el informe.
 
 Ejemplo:
-
 ```yaml
 htmlReport:
   title: "Wakamiti v11"
 ```
 
-<br /><br />
 
-####  `htmlReport.css`
+### `htmlReport.extra_info.<clave>`
+- Tipo: `property[]`
+
+Añade información adicional a la cabecera del informe. Se pueden definir tantas parejas de clave y valor como se
+necesiten.
+
+Ejemplo:
+```yaml
+htmlReport:
+  extra_info:
+    entorno: preproducción
+    versión: 3.0.0
+```
+
+
+###  `htmlReport.css`
+- Tipo: `file`
+
 Indica la ruta de un fichero css que establecerá el aspecto del informe html.
 
 Ejemplo:
-
 ```yaml
 htmlReport:
   css: Wakamiti.css

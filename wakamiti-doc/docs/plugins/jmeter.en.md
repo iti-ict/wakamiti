@@ -169,6 +169,28 @@ Accepted values are:
 - Type: `string`
 
 
+### `jmeter.auth.username`
+- Type: `string`
+
+Sets the user name for HTTP Basic authentication on requests. It must be configured together with
+`jmeter.auth.password`.
+
+
+### `jmeter.auth.password`
+- Type: `string`
+
+Sets the password for HTTP Basic authentication on requests. It must be configured together with
+`jmeter.auth.username`.
+
+Example:
+```yaml
+jmeter:
+  auth:
+    username: test
+    password: secret
+```
+
+
 ### `jmeter.oauth2.url`
 - Type: `URL`
 

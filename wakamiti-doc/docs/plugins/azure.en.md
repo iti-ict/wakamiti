@@ -139,6 +139,18 @@ azure:
 ```
 
 
+### `azure.configuration`
+- Type: `string`
+
+Sets the name of the Azure Test Plans configuration assigned to synchronized test points.
+
+Example:
+```yaml
+azure:
+  configuration: Wakamiti
+```
+
+
 ### `azure.plan.name`
 - Type: `string` *required*
 

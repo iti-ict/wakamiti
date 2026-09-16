@@ -32,6 +32,24 @@ es.iti.wakamiti:groovy-wakamiti-plugin:2.8.0
 ```
 
 
+## Options
+
+
+### `groovy.compilation.failOnError`
+- Type: `boolean`
+- Default: `true`
+
+Sets whether a compilation error in Groovy files stops execution. If set to `false`, errors are logged and the compiler
+continues trying to load the remaining files.
+
+Example:
+```yaml
+groovy:
+  compilation:
+    failOnError: false
+```
+
+
 ## Compiler
 
 The groovy compiler will attempt to compile any file with `.groovy` extension present in the working directory (or 
