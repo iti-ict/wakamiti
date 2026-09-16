@@ -14,7 +14,7 @@
         <property name="format" value="\s+$" />
         <property name="message" value="Line has trailing whitespace." />
     </module>
-    <module name="Header">
+    <module name="RegexpHeader">
         <property name="headerFile" value="${checkstyle.header.file}"/>
         <property name="fileExtensions" value="java" />
     </module>
