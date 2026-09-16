@@ -82,6 +82,24 @@ database:
 ```
 
 
+### `database.connection.driver`
+- Tipo: `string`
+
+Establece la clase del controlador JDBC que se utilizará para abrir la conexión por defecto. Si no se indica, el
+controlador se determinará automáticamente a partir de `database.connection.url`. La clase indicada debe estar disponible
+en el classpath.
+
+También se puede configurar para una datasource mediante
+`database.datasource.<alias>.connection.driver`.
+
+Ejemplo:
+```yaml
+database:
+  connection:
+    driver: org.postgresql.Driver
+```
+
+
 ### `database.metadata.schema`
 - Tipo: `string`
 
@@ -120,6 +138,36 @@ Ejemplo:
 ```yaml
 database:
   autotrim: true
+```
+
+
+### `database.autocommit`
+- Tipo: `boolean`
+- Por defecto: valor del controlador JDBC
+
+Establece el modo de confirmación automática de la conexión por defecto. Si no se indica, se conserva el valor devuelto
+por el controlador JDBC. También se puede configurar para una datasource mediante
+`database.datasource.<alias>.autocommit`.
+
+Ejemplo:
+```yaml
+database:
+  autocommit: false
+```
+
+
+### `database.healthcheck`
+- Tipo: `boolean`
+- Por defecto: `true`
+
+Establece si se comprueba cada conexión configurada antes de ejecutar los pasos de base de datos. La comprobación abre la
+conexión y ejecuta una consulta específica para el motor detectado. Si se deshabilita, la conexión se abrirá cuando se use
+por primera vez. Esta propiedad se aplica globalmente a la conexión por defecto y a todas las datasources.
+
+Ejemplo:
+```yaml
+database:
+  healthcheck: false
 ```
 
 
@@ -173,6 +221,8 @@ database:
         schema: TESTDB1
         catalog: TESTCAT1
       autotrim: true
+      autocommit: true
+      healthcheck: false
     db2:
       connection:
         url: jdbc:mysql://other.host:3306/test

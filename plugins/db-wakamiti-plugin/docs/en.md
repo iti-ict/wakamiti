@@ -71,6 +71,23 @@ database:
 ```
 
 
+### `database.connection.driver`
+- Type: `string`
+
+Sets the JDBC driver class used to open the default connection. If omitted, the driver is automatically determined from
+`database.connection.url`. The configured class must be available on the classpath.
+
+It can also be configured for a datasource as
+`database.datasource.<alias>.connection.driver`.
+
+Example:
+```yaml
+database:
+  connection:
+    driver: org.postgresql.Driver
+```
+
+
 ### `database.metadata.schema`
 - Type: `string`
 
@@ -109,6 +126,35 @@ Example:
 ```yaml
 database:
   autotrim: true
+```
+
+
+### `database.autocommit`
+- Type: `boolean`
+- Default: JDBC driver value
+
+Sets the auto-commit mode of the default connection. If omitted, the value returned by the JDBC driver is preserved. It
+can also be configured for a datasource as `database.datasource.<alias>.autocommit`.
+
+Example:
+```yaml
+database:
+  autocommit: false
+```
+
+
+### `database.healthcheck`
+- Type: `boolean`
+- Default: `true`
+
+Sets whether every configured connection is checked before database steps run. The check opens the connection and runs a
+query specific to the detected database engine. If disabled, the connection is opened when it is first used. This
+property applies globally to the default connection and all datasources.
+
+Example:
+```yaml
+database:
+  healthcheck: false
 ```
 
 
@@ -161,6 +207,8 @@ database:
         schema: TESTDB1
         catalog: TESTCAT1
       autotrim: true
+      autocommit: true
+      healthcheck: false
     db2:
       connection:
         url: jdbc:mysql://other.host:3306/test
