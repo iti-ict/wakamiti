@@ -58,6 +58,8 @@ public class DatabaseStepContributorTest {
 
     private static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     private static final String URL = "jdbc:h2:mem:test;MODE=MySQL;";
+    private static final String CLEANUP_DB1_URL = "jdbc:h2:mem:cleanup-db1;MODE=MySQL;";
+    private static final String CLEANUP_DB2_URL = "jdbc:h2:mem:cleanup-db2;MODE=MySQL;";
     private static final String USER = "sa";
     private static final String PASS = "";
     private static final String QUALIFIED_SCHEMA = "QUALIFIED";
@@ -359,6 +361,57 @@ public class DatabaseStepContributorTest {
 
         // Check
         assertThat(contributor.connection().parameters().url()).isEqualTo("jdbc:h2:mem:test2");
+    }
+
+    @Test
+    public void testCleanupUsesConnectionActiveWhenDeclared() throws SQLException {
+        // Prepare
+        try (Connection db1 = cleanupDatabase(CLEANUP_DB1_URL);
+             Connection db2 = cleanupDatabase(CLEANUP_DB2_URL)) {
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.datasource.db1.connection.url", CLEANUP_DB1_URL,
+                    "database.datasource.db1.connection.username", USER,
+                    "database.datasource.db1.connection.password", PASS,
+                    "database.datasource.db2.connection.url", CLEANUP_DB2_URL,
+                    "database.datasource.db2.connection.username", USER,
+                    "database.datasource.db2.connection.password", PASS,
+                    "database.metadata.healthcheck", "false"
+            );
+            configContributor.configurer().configure(contributor, config);
+            createContext(config);
+            contributor.switchConnection("db1");
+            contributor.setCleanupScript(new Document("DELETE FROM cleanup_marker"));
+            contributor.switchConnection("db2");
+
+            // Act
+            contributor.cleanUp();
+
+            // Check
+            assertThat(rowCount(db1, "cleanup_marker")).isZero();
+            assertThat(rowCount(db2, "cleanup_marker")).isEqualTo(1);
+        }
+    }
+
+    @Test
+    public void testCleanupUsesFirstNamedConnectionWhenNoneIsActive() throws SQLException {
+        // Prepare
+        try (Connection db1 = cleanupDatabase(CLEANUP_DB1_URL)) {
+            Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                    "database.datasource.db1.connection.url", CLEANUP_DB1_URL,
+                    "database.datasource.db1.connection.username", USER,
+                    "database.datasource.db1.connection.password", PASS,
+                    "database.metadata.healthcheck", "false"
+            );
+            configContributor.configurer().configure(contributor, config);
+            createContext(config);
+            contributor.setCleanupScript(new Document("DELETE FROM cleanup_marker"));
+
+            // Act
+            contributor.cleanUp();
+
+            // Check
+            assertThat(rowCount(db1, "cleanup_marker")).isZero();
+        }
     }
 
     @Test
@@ -4467,6 +4520,29 @@ public class DatabaseStepContributorTest {
     ) {
         ClassLoader classLoader = getClass().getClassLoader();
         return new File(classLoader.getResource(resourceName).getFile());
+    }
+
+    private Connection cleanupDatabase(
+            String url
+    ) throws SQLException {
+        Connection connection = DriverManager.getConnection(url, USER, PASS);
+        try (java.sql.Statement statement = connection.createStatement()) {
+            statement.executeUpdate("DROP TABLE IF EXISTS cleanup_marker");
+            statement.executeUpdate("CREATE TABLE cleanup_marker (id INTEGER PRIMARY KEY)");
+            statement.executeUpdate("INSERT INTO cleanup_marker VALUES (1)");
+        }
+        return connection;
+    }
+
+    private int rowCount(
+            Connection connection,
+            String table
+    ) throws SQLException {
+        try (java.sql.Statement statement = connection.createStatement();
+             var result = statement.executeQuery("SELECT COUNT(*) FROM " + table)) {
+            result.next();
+            return result.getInt(1);
+        }
     }
 
     private void assertUpdatedRow(

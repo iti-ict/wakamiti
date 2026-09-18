@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -49,6 +50,8 @@ import es.iti.wakamiti.database.jdbc.Database;
  * <p>
  * The contributor can hold multiple named connections and supports deferred
  * cleanup operations that run during functional scenario teardown.
+ * Cleanup operations without an explicit alias capture the active connection
+ * when they are declared.
  * </p>
  */
 @Extension(
@@ -157,7 +160,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Sets the SQL statements that will be executed by the default SQL
+     * Sets the SQL statements that will be executed by the captured SQL
      * connection after the scenario ends, regardless of execution status.
      *
      * @param document The script content
@@ -166,10 +169,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupScript(
             Document document
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.executeSQLScript(document);
-        });
+        setCleanupScript(
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                document
+        );
     }
 
     /**
@@ -191,7 +194,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Sets the SQL statements that will be executed by the default SQL
+     * Sets the SQL statements that will be executed by the captured SQL
      * connection after the scenario ends, regardless of execution status.
      *
      * @param file The script content
@@ -200,10 +203,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupScript(
             File file
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.executeSQLScript(file);
-        });
+        setCleanupScript(
+                file,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -225,7 +228,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Sets the SQL procedure that will be executed by the default SQL
+     * Sets the SQL procedure that will be executed by the captured SQL
      * connection after the scenario ends, regardless of execution status.
      *
      * @param document The script content
@@ -234,10 +237,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupProcedure(
             Document document
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.executeProcedure(document);
-        });
+        setCleanupProcedure(
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                document
+        );
     }
 
     /**
@@ -259,7 +262,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     }
 
     /**
-     * Sets the SQL procedure that will be executed by the default SQL
+     * Sets the SQL procedure that will be executed by the captured SQL
      * connection after the scenario ends, regardless of execution status.
      *
      * @param file The script content
@@ -268,10 +271,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupProcedure(
             File file
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.executeProcedure(file);
-        });
+        setCleanupProcedure(
+                file,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -294,7 +297,7 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Clears the specified table, first attempting to execute {@code TRUNCATE},
-     * and then using {@code DELETE FROM} as a fallback, using the default SQL
+     * and then using {@code DELETE FROM} as a fallback, using the captured SQL
      * connection after the scenario ends, regardless of execution status.
      *
      * @param table The name of the table to clear
@@ -303,10 +306,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupClear(
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.clearTable(table);
-        });
+        setCleanupClear(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -330,7 +333,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Deletes rows from the specified table that match the given condition
-     * using the default SQL connection after the scenario ends, regardless
+     * using the captured SQL
+     * connection after the scenario ends, regardless
      * of execution status.
      *
      * @param column The name of the column to match
@@ -343,10 +347,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String value,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.clearTableByRow(table, column, value);
-        });
+        setCleanupClear(
+                column,
+                value,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -375,7 +381,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Deletes rows from the specified table that match the given WHERE clause
-     * using the default SQL connection after the scenario ends, regardless of
+     * using the captured SQL
+     * connection after the scenario ends, regardless of
      * execution status.
      *
      * @param table    The name of the table from which to delete rows
@@ -386,10 +393,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Document document
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.clearTableByClause(table, document);
-        });
+        setCleanupClear(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                document
+        );
     }
 
     /**
@@ -415,7 +423,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Deletes the specified rows from a given table, as specified in the data table,
-     * using the default SQL connection after the scenario ends, regardless of
+     * using the captured SQL
+     * connection after the scenario ends, regardless of
      * execution status.
      *
      * @param table The name of the table from which to delete rows
@@ -426,10 +435,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.deleteFromDataTable(table, data);
-        });
+        setCleanupDelete(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                data
+        );
     }
 
     /**
@@ -456,7 +466,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Deletes rows from tables based on the contents of an Excel file, where each
      * sheet in the Excel file represents a table to delete rows from. This
-     * operation is performed using the default SQL connection after the scenario
+     * operation is performed using the captured SQL
+     * connection after the scenario
      * ends, regardless of execution status.
      *
      * @param xls The Excel file containing data to delete from tables
@@ -465,10 +476,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupDeleteXLS(
             File xls
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.deleteFromXLSFile(xls);
-        });
+        setCleanupDeleteXLS(
+                xls,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -493,7 +504,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Deletes rows from a specified table based on the contents of a CSV file,
-     * using the default SQL connection after the scenario ends, regardless of
+     * using the captured SQL
+     * connection after the scenario ends, regardless of
      * execution status.
      *
      * @param csv   The CSV file containing the rows to delete
@@ -504,10 +516,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.deleteFromCSVFile(csv, table);
-        });
+        setCleanupDeleteCSV(
+                csv,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -533,7 +546,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Inserts data into the specified table based on the contents of a DataTable object.
-     * This operation is performed using the default SQL connection after the scenario ends,
+     * This operation is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table The name of the table to insert data into
@@ -544,10 +558,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.insertFromDataTable(table, data);
-        });
+        setCleanupInsert(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                data
+        );
     }
 
     /**
@@ -574,7 +589,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Inserts rows into tables based on the contents of an Excel file, where each
      * sheet in the Excel file represents a table to insert rows from. This
-     * operation is performed using the default SQL connection after the scenario
+     * operation is performed using the captured SQL
+     * connection after the scenario
      * ends, regardless of execution status.
      *
      * @param xls The Excel file containing data to insert from tables
@@ -583,10 +599,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupInsertXLS(
             File xls
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.insertFromXLSFile(xls);
-        });
+        setCleanupInsertXLS(
+                xls,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -611,7 +627,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Inserts rows into a specified table based on the contents of a CSV file,
-     * using the default SQL connection after the scenario ends, regardless of
+     * using the captured SQL
+     * connection after the scenario ends, regardless of
      * execution status.
      *
      * @param csv   The CSV file containing the rows to delete
@@ -622,10 +639,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.insertFromCSVFile(csv, table);
-        });
+        setCleanupInsertCSV(
+                csv,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -651,7 +669,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that a row with the specified single ID exists in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param id    The single ID value to be checked
@@ -662,10 +681,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String id,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowExistsBySingleId(id, table);
-        });
+        setCleanupAssertRowExistsBySingleId(
+                id,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -691,7 +711,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that a row with the specified single ID does not exist in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param id    The single ID value to be checked
@@ -702,10 +723,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String id,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowNotExistsBySingleId(id, table);
-        });
+        setCleanupAssertRowNotExistsBySingleId(
+                id,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -732,7 +754,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that a row with the specified value in the given column exists in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param column The column name
@@ -745,10 +768,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String value,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowExistsByOneColumn(column, value, table);
-        });
+        setCleanupAssertRowExistsByOneColumn(
+                column,
+                value,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -777,7 +802,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that a row with the specified value in the given column does not exist in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param column The column name
@@ -791,10 +817,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String value,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowNotExistsByOneColumn(column, value, table);
-        });
+        setCleanupAssertRowNotExistsByOneColumn(
+                column,
+                value,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -824,7 +852,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     /**
      * Asserts the count of rows with the specified value in the given column in the given table
      * using the provided assertion matcher.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param column  The column name
@@ -840,10 +869,13 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Assertion<Long> matcher
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowCountByOneColumn(column, value, table, matcher);
-        });
+        setCleanupAssertRowCountByOneColumn(
+                column,
+                value,
+                table,
+                matcher,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -875,7 +907,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the rows based on the specified SQL WHERE clause exists in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table    The table name
@@ -886,10 +919,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Document document
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowExistsByClause(table, document);
-        });
+        setCleanupAssertRowExistsByClause(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                document
+        );
     }
 
     /**
@@ -915,7 +949,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the rows based on the specified SQL WHERE clause do not exist in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table    The table name
@@ -926,10 +961,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             Document document
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowNotExistsByClause(table, document);
-        });
+        setCleanupAssertRowNotExistsByClause(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                document
+        );
     }
 
     /**
@@ -955,7 +991,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts the row count in the given table based on the specified SQL WHERE clause.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table    The table name
@@ -968,10 +1005,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             Assertion<Long> matcher,
             Document document
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertRowCountByClause(table, matcher, document);
-        });
+        setCleanupAssertRowCountByClause(
+                table,
+                matcher,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                document
+        );
     }
 
     /**
@@ -1000,7 +1039,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the rows based on the specified data table exist in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table The table name
@@ -1011,10 +1051,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertDataTableExists(table, data);
-        });
+        setCleanupAssertDataTableExists(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                data
+        );
     }
 
     /**
@@ -1040,7 +1081,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the rows based on the specified data table do not exist in the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table The table name
@@ -1051,10 +1093,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             String table,
             DataTable data
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertDataTableNotExists(table, data);
-        });
+        setCleanupAssertDataTableNotExists(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                data
+        );
     }
 
     /**
@@ -1080,7 +1123,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts the row count in the given table based on the specified data table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table   The table name
@@ -1093,10 +1137,12 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             Assertion<Long> matcher,
             DataTable data
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertDataTableCount(table, matcher, data);
-        });
+        setCleanupAssertDataTableCount(
+                table,
+                matcher,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection),
+                data
+        );
     }
 
     /**
@@ -1125,7 +1171,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the data rows included in the specified XLS file exist.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param xls The XLS file containing the data rows to be asserted
@@ -1134,10 +1181,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertXLSFileExists(
             File xls
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertXLSFileExists(xls);
-        });
+        setCleanupAssertXLSFileExists(
+                xls,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -1161,7 +1208,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the data rows included in the specified XLS file do not exist.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param xls The XLS file containing the data rows to be asserted
@@ -1170,10 +1218,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertXLSFileNotExists(
             File xls
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertXLSFileNotExists(xls);
-        });
+        setCleanupAssertXLSFileNotExists(
+                xls,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -1197,7 +1245,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the data rows included in the specified CSV file exist for the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param csv   The CSV file to be asserted
@@ -1208,10 +1257,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertCSVFileExists(csv, table);
-        });
+        setCleanupAssertCSVFileExists(
+                csv,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -1237,7 +1287,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the data rows included in the specified CSV file do not exist for the given table.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param csv   The CSV file to be asserted
@@ -1248,10 +1299,11 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
             File csv,
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertCSVFileNotExists(csv, table);
-        });
+        setCleanupAssertCSVFileNotExists(
+                csv,
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -1277,7 +1329,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the specified table is empty.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table The table name to be asserted
@@ -1286,10 +1339,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertTableIsEmpty(
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertTableIsEmpty(table);
-        });
+        setCleanupAssertTableIsEmpty(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**
@@ -1313,7 +1366,8 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
 
     /**
      * Asserts that the specified table is not empty.
-     * This assertion is performed using the default SQL connection after the scenario ends,
+     * This assertion is performed using the captured SQL
+     * connection after the scenario ends,
      * regardless of execution status.
      *
      * @param table The table name to be asserted
@@ -1322,10 +1376,10 @@ public class DatabaseStepContributor extends DatabaseSupport implements StepCont
     public void setCleanupAssertTableIsNotEmpty(
             String table
     ) {
-        declarativeCleanUpOperations.add(() -> {
-            this.switchConnection();
-            this.assertTableIsNotEmpty(table);
-        });
+        setCleanupAssertTableIsNotEmpty(
+                table,
+                Optional.ofNullable(currentConnection.get()).orElseGet(this::defaultConnection)
+        );
     }
 
     /**

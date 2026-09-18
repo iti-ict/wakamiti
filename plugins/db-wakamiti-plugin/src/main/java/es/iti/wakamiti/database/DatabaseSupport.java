@@ -456,7 +456,14 @@ public class DatabaseSupport {
         throw first;
     }
 
-    private String defaultConnection() {
+    /**
+     * Resolves the implicit connection alias, preferring the reserved default
+     * alias and otherwise selecting the first configured connection.
+     *
+     * @return The implicit connection alias
+     * @throws WakamitiException if no connections are configured
+     */
+    protected String defaultConnection() {
         if (connections.containsKey(DEFAULT)) {
             return DEFAULT;
         }
