@@ -117,7 +117,7 @@ public class WakamitiContributors {
         return stepContributors.stream()
                 .filter(c -> contributorClass.isAssignableFrom(c.getClass()))
                 .map(contributorClass::cast)
-                .findFirst()
+                .reduce((previous, current) -> current)
                 .orElseThrow(() -> new WakamitiException(String.format("Contributor [%s] not found", contributorClass)));
     }
 
