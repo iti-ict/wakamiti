@@ -112,6 +112,7 @@ function decorateNode(node) {
         return node;
     }
 
+    node.l = node.l || [];
     node.c?.forEach(decorateNode);
 
     const flattenedChildren = node.c?.length ? flatten(node.c) : [];
