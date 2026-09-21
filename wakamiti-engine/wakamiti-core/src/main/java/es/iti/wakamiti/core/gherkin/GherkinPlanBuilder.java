@@ -94,6 +94,8 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
     public static final String GHERKIN_TYPE_AFTER_FEATURE = "after";
     /** Plan-node property preserving the enclosing feature's display name. */
     public static final String GHERKIN_FEATURE_NAME = "featureName";
+    /** Plan-node property preserving the enclosing feature's identifier. */
+    public static final String GHERKIN_FEATURE_ID = "featureId";
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final int ALPHABET_SIZE = 26;
     private static final int ID_SUFFIX_LENGTH = 5;
@@ -203,7 +205,7 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
             addScenarioDefinition(feature, abstractScenario, location, node);
         }
-        addFeatureName(node);
+        addFeatureProperties(node);
         return node;
     }
 
@@ -250,14 +252,19 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         }
     }
 
-    private void addFeatureName(
+    private void addFeatureProperties(
             PlanNodeBuilder featureNode
     ) {
-        if (featureNode.name() != null) {
-            featureNode.descendants()
-                    .filter(child -> child.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK))
-                    .forEach(child -> child.addProperty(GHERKIN_FEATURE_NAME, featureNode.name()));
-        }
+        featureNode.descendants()
+                .filter(child -> child.nodeType().isAnyOf(NodeType.TEST_CASE, NodeType.LIFECYCLE_HOOK))
+                .forEach(child -> {
+                    if (featureNode.name() != null) {
+                        child.addProperty(GHERKIN_FEATURE_NAME, featureNode.name());
+                    }
+                    if (featureNode.id() != null) {
+                        child.addProperty(GHERKIN_FEATURE_ID, featureNode.id());
+                    }
+                });
     }
 
     /**
