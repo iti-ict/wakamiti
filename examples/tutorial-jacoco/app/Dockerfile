@@ -1,12 +1,12 @@
-FROM openjdk:17-jdk-slim AS builder
+FROM alpine:3.20 AS builder
 ENV JACOCO_VERSION=0.8.12
-RUN apt-get update && apt-get install -y curl \
-    && mkdir -p /opt/jacoco \
-    && curl -L https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/${JACOCO_VERSION}/org.jacoco.agent-${JACOCO_VERSION}-runtime.jar \
-       -o /opt/jacoco/jacocoagent.jar
+
+RUN wget -O /jacocoagent.jar \
+    "https://repo1.maven.org/maven2/org/jacoco/org.jacoco.agent/${JACOCO_VERSION}/org.jacoco.agent-${JACOCO_VERSION}-runtime.jar"
+
 
 FROM springcommunity/spring-petclinic-rest:2.1.5
-COPY --from=builder /opt/jacoco/jacocoagent.jar /opt/jacoco/jacocoagent.jar
+COPY --from=builder /jacocoagent.jar /opt/jacoco/jacocoagent.jar
 
 EXPOSE 6300
 

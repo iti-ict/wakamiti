@@ -2,6 +2,11 @@
 
 Este ejemplo amplía el tutorial Docker para recoger cobertura JaCoCo de la aplicación desplegada.
 
+## Requisitos
+
+- Docker y Docker Compose
+- acceso a la imagen `wakamiti/wakamiti`
+
 ## Levantar la aplicación
 
 ```shell
@@ -25,24 +30,18 @@ Log de la aplicación:
 docker logs -f app-petclinic
 ```
 
-## Crear la imagen extendida de Wakamiti
-
-```shell
-docker build -t wakamiti-jacoco wakamiti
-```
-
 ## Lanzar Wakamiti
 
 ### Windows
 
 ```shell
-docker run --rm -v "%cd%/wakamiti:/wakamiti" -v "tutorial-jacoco_app-data:/app/classes" --network wakamiti-net wakamiti-jacoco
+docker run --rm -v "%cd%/wakamiti:/wakamiti" -v "tutorial-jacoco_app-data:/app/classes" --network wakamiti-net wakamiti/wakamiti
 ```
 
 ### Linux
 
 ```shell
-docker run --rm -v "$(pwd)/wakamiti:/wakamiti" --network wakamiti-net wakamiti-jacoco
+docker run --rm -v "$(pwd)/wakamiti:/wakamiti" --add-host=host.docker.internal:host-gateway wakamiti/wakamiti
 ```
 
 ## Limpiar contenedores del ejemplo
