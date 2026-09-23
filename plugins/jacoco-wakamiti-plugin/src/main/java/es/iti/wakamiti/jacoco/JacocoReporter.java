@@ -19,8 +19,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.jacoco.core.analysis.Analyzer;
@@ -57,44 +58,38 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jacoco-reporter",
-        version = "2.13",
+        version = "3.1",
         priority = Extension.NORMAL_PRIORITY + 1
 )
 public class JacocoReporter implements EventObserver {
 
     private static final Logger LOGGER = WakamitiLogger.forClass(JacocoReporter.class);
 
-    private String host;
-    private String port;
+    private List<String> hosts;
     private int retries;
     private Path output;
     private Path xml;
     private Path csv;
     private Path html;
-    private Path classes;
-    private Path sources;
+    private List<Path> classes;
+    private List<Path> sources;
     private int tabwidth;
     private String name;
+    private boolean merge;
 
     private ExecFileLoader fileLoader;
     private ExecDumpClient dumpClient;
+    private final Set<String> initializedSegments = new LinkedHashSet<>();
+    private final Set<File> executionFiles = new LinkedHashSet<>();
+    private boolean aggregateInitialized;
 
     /**
-     * @param host host name or address of the JaCoCo TCP dump agent
+     * @param hosts host and port endpoints of the JaCoCo TCP dump agents
      */
-    public void setHost(
-            String host
+    public void setHosts(
+            List<String> hosts
     ) {
-        this.host = host;
-    }
-
-    /**
-     * @param port TCP port exposed by the JaCoCo agent
-     */
-    public void setPort(
-            String port
-    ) {
-        this.port = port;
+        this.hosts = hosts;
     }
 
     /**
@@ -107,7 +102,7 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param output directory receiving per-test-case {@code .exec} files
+     * @param output directory receiving per-scenario {@code .exec} files and base path for the aggregate file
      */
     public void setOutput(
             Path output
@@ -116,7 +111,7 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param xml directory receiving per-test-case JaCoCo XML reports
+     * @param xml directory receiving per-scenario XML reports and base path for the aggregate report
      */
     public void setXml(
             Path xml
@@ -125,7 +120,7 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param csv directory receiving per-test-case JaCoCo CSV reports
+     * @param csv directory receiving per-scenario CSV reports and base path for the aggregate report
      */
     public void setCsv(
             Path csv
@@ -136,7 +131,7 @@ public class JacocoReporter implements EventObserver {
     /**
      * Sets the path used to produce the final aggregate HTML report.
      *
-     * @param html aggregate execution-data/report path
+     * @param html directory receiving the aggregate HTML report
      */
     public void setHtml(
             Path html
@@ -145,10 +140,10 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param classes root directory searched recursively for analyzed {@code .class} files
+     * @param classes root directories searched recursively for analyzed {@code .class} files
      */
     public void setClasses(
-            Path classes
+            List<Path> classes
     ) {
         this.classes = classes;
     }
@@ -157,7 +152,7 @@ public class JacocoReporter implements EventObserver {
      * @param sources root directory searched for Java sources linked in reports
      */
     public void setSources(
-            Path sources
+            List<Path> sources
     ) {
         this.sources = sources;
     }
@@ -180,45 +175,43 @@ public class JacocoReporter implements EventObserver {
         this.name = name;
     }
 
+    /**
+     * @param merge whether to merge all execution data into a single report
+     */
+    public void setMerge(
+            boolean merge
+    ) {
+        this.merge = merge;
+    }
+
     @Override
     public void eventReceived(
             Event event
     ) {
         if (event.data() != null) {
             PlanNodeSnapshot snapshot = (PlanNodeSnapshot) event.data();
-            String segmentId = coverageSegmentId(snapshot);
-            if (segmentId != null) {
-                dump(segmentId);
+            if (snapshot.getNodeType() == NodeType.TEST_CASE) {
+                String segmentId = snapshot.getId();
+                dump(segmentId, true);
                 if (xml != null || csv != null) {
                     executeSingle(segmentId);
                 }
+            } else if (merge && isExecutedLifecycleHook(snapshot)) {
+                dump(snapshot.getId(), false);
             }
         }
 
         if (Event.AFTER_WRITE_OUTPUT_FILES.equals(event.type())) {
-            Optional.ofNullable(html).ifPresent(x -> executeFinal());
+            executeFinal();
         }
     }
 
-    private String coverageSegmentId(
+    private boolean isExecutedLifecycleHook(
             PlanNodeSnapshot snapshot
     ) {
-        if (snapshot.getNodeType() == NodeType.TEST_CASE) {
-            return snapshot.getId();
-        }
-        if (snapshot.getNodeType() != NodeType.LIFECYCLE_HOOK
-                || snapshot.getResult() == null || snapshot.getResult() == Result.SKIPPED) {
-            return null;
-        }
-        String type = Optional.ofNullable(snapshot.getProperties())
-                .map(properties -> properties.get("gherkinType"))
-                .filter(value -> "before".equals(value) || "after".equals(value))
-                .orElse(null);
-        String id = Optional.ofNullable(snapshot.getId())
-                .map(value -> value.replaceFirst("^#", ""))
-                .filter(value -> !value.isBlank())
-                .orElse(null);
-        return type == null || id == null ? null : format("fixture-{}-{}", type, id);
+        return snapshot.getNodeType() == NodeType.LIFECYCLE_HOOK
+                && snapshot.getResult() != null
+                && snapshot.getResult() != Result.SKIPPED;
     }
 
     @Override
@@ -252,26 +245,53 @@ public class JacocoReporter implements EventObserver {
     }
 
     private ExecFileLoader fileLoader() {
-        if (fileLoader == null) {
-            fileLoader = new ExecFileLoader();
-        }
-        return fileLoader;
+        return fileLoader == null ? new ExecFileLoader() : fileLoader;
     }
 
     private void dump(
-            String id
+            String id,
+            boolean saveSegment
     ) {
+        try {
+            ensureDirectory(output);
+        } catch (IOException e) {
+            throw new WakamitiException("Cannot create jacoco execution-data directory '{}'", output, e);
+        }
+
         final ExecDumpClient client = dumpClient();
         client.setReset(true);
         client.setRetryCount(retries);
 
-        try {
-            final ExecFileLoader loader = client.dump(host, Integer.parseInt(port));
-            File file = output.resolve(format("{}.exec", id)).toFile();
-            LOGGER.info("Writing execution data to {}", file);
-            loader.save(file, true);
-        } catch (IOException e) {
-            throw new WakamitiException("Cannot dump jacoco coverage segment '{}'", id, e);
+        File file = saveSegment ? output.resolve(format("{}.exec", id)).toFile() : null;
+        List<IOException> failures = new ArrayList<>();
+        for (String host : hosts) {
+            String[] parts = host.split(":", 2);
+            try {
+                final ExecFileLoader loader = client.dump(parts[0], Integer.parseInt(parts[1]));
+                if (saveSegment) {
+                    LOGGER.info("Writing execution data from {} to {}", host, file);
+                    loader.save(file, initializedSegments.contains(id));
+                    initializedSegments.add(id);
+                    executionFiles.add(file);
+                }
+                if (merge) {
+                    File aggregate = aggregateFile(output, ".exec");
+                    LOGGER.info("Writing aggregate execution data to {}", aggregate);
+                    loader.save(aggregate, aggregateInitialized);
+                    aggregateInitialized = true;
+                }
+            } catch (IOException e) {
+                failures.add(new IOException(format("Cannot dump execution data from '{}'", host), e));
+            }
+        }
+
+        if (!failures.isEmpty()) {
+            WakamitiException exception = new WakamitiException(
+                    format("Cannot dump jacoco coverage data for '{}' from {} endpoint(s)", id, failures.size()),
+                    failures.get(0)
+            );
+            failures.stream().skip(1).forEach(exception::addSuppressed);
+            throw exception;
         }
     }
 
@@ -292,8 +312,10 @@ public class JacocoReporter implements EventObserver {
 
     private ISourceFileLocator getSourceLocator() {
         final MultiSourceFileLocator multi = new MultiSourceFileLocator(tabwidth);
-        for (final File f : searchFiles(sources, ".java")) {
-            multi.add(new DirectorySourceFileLocator(f, Charset.defaultCharset().name(), tabwidth));
+        for(Path root : sources) {
+            for (final File f : searchFiles(root, ".java")) {
+                multi.add(new DirectorySourceFileLocator(f, Charset.defaultCharset().name(), tabwidth));
+            }
         }
         return multi;
     }
@@ -304,8 +326,10 @@ public class JacocoReporter implements EventObserver {
     ) throws IOException {
         final CoverageBuilder builder = new CoverageBuilder();
         final Analyzer analyzer = new Analyzer(data, builder);
-        for (final File f : searchFiles(classes, ".class")) {
-            analyzer.analyzeAll(f);
+        for (Path root : classes) {
+            for (final File f : searchFiles(root, ".class")) {
+                analyzer.analyzeAll(f);
+            }
         }
         printNoMatchWarning(builder.getNoMatchClasses());
         return builder.getBundle(name);
@@ -327,59 +351,121 @@ public class JacocoReporter implements EventObserver {
             String id
     ) {
         File exec = this.output.resolve(format("{}.exec", id)).toFile();
-
-        final ExecFileLoader loader = fileLoader();
         if (!exec.exists()) {
             LOGGER.warn("No execution data file provided for coverage segment '{}'", id);
-        } else {
-            LOGGER.info("Loading execution data file {}", exec.getAbsolutePath());
-            try {
-                loader.load(exec);
-                IBundleCoverage bundle = analyze(format("{} - {}", name, id), loader.getExecutionDataStore());
-
-                LOGGER.info("Analyzing {} classes.", bundle.getClassCounter().getTotalCount());
-                final IReportVisitor visitor = createReportVisitor(id);
-                visitor.visitInfo(loader.getSessionInfoStore().getInfos(), loader.getExecutionDataStore().getContents());
-                visitor.visitBundle(bundle, getSourceLocator());
-                visitor.visitEnd();
-            } catch (IOException e) {
-                throw new WakamitiException("Cannot process execution file '{}'", exec.getAbsolutePath(), e);
-            }
+            return;
         }
+        executeReport(
+                List.of(exec),
+                format("{} - {}", name, id),
+                xml == null ? null : xml.resolve(format("{}.xml", id)),
+                csv == null ? null : csv.resolve(format("{}.csv", id)),
+                null
+        );
     }
 
     private void executeFinal() {
+        if (!merge && html == null) {
+            return;
+        }
+        if (merge && xml == null && csv == null && html == null) {
+            return;
+        }
+
+        Collection<File> files = merge
+                ? List.of(aggregateFile(output, ".exec"))
+                : executionFiles;
+        if (files.isEmpty() || files.stream().noneMatch(File::exists)) {
+            LOGGER.warn("No execution data files provided for aggregate coverage report");
+            return;
+        }
+
+        executeReport(
+                files,
+                name,
+                merge && xml != null ? aggregatePath(xml, ".xml") : null,
+                merge && csv != null ? aggregatePath(csv, ".csv") : null,
+                html
+        );
+    }
+
+    private void executeReport(
+            Collection<File> files,
+            String bundleName,
+            Path xmlOutput,
+            Path csvOutput,
+            Path htmlOutput
+    ) {
         final ExecFileLoader loader = fileLoader();
         try {
-            loader.load(html.toFile());
-            IBundleCoverage bundle = analyze(name, loader.getExecutionDataStore());
+            for (File file : files) {
+                if (file.exists()) {
+                    LOGGER.info("Loading execution data file {}", file.getAbsolutePath());
+                    loader.load(file);
+                }
+            }
+            IBundleCoverage bundle = analyze(bundleName, loader.getExecutionDataStore());
             LOGGER.info("Analyzing {} classes.", bundle.getClassCounter().getTotalCount());
 
-            final IReportVisitor visitor = new MultiReportVisitor(List.of(
-                    new HTMLFormatter().createVisitor(new FileMultiReportOutput(html.toFile()))));
+            final IReportVisitor visitor = createReportVisitor(xmlOutput, csvOutput, htmlOutput);
             visitor.visitInfo(loader.getSessionInfoStore().getInfos(), loader.getExecutionDataStore().getContents());
             visitor.visitBundle(bundle, getSourceLocator());
             visitor.visitEnd();
         } catch (IOException e) {
-            throw new WakamitiException("Cannot process execution file '{}'", html.toFile().getAbsolutePath(), e);
+            throw new WakamitiException("Cannot generate jacoco coverage report '{}'", bundleName, e);
         }
     }
 
     private IReportVisitor createReportVisitor(
-            String id
+            Path xmlOutput,
+            Path csvOutput,
+            Path htmlOutput
     ) throws IOException {
         final List<IReportVisitor> visitors = new ArrayList<>();
-        if (xml != null) {
+        if (xmlOutput != null) {
+            ensureParentDirectory(xmlOutput);
             final XMLFormatter formatter = new XMLFormatter();
-            visitors.add(formatter.createVisitor(new FileOutputStream(
-                    xml.resolve(format("{}.xml", id)).toFile())));
+            visitors.add(formatter.createVisitor(new FileOutputStream(xmlOutput.toFile())));
         }
-        if (csv != null) {
+        if (csvOutput != null) {
+            ensureParentDirectory(csvOutput);
             final CSVFormatter formatter = new CSVFormatter();
-            visitors.add(formatter.createVisitor(new FileOutputStream(
-                    csv.resolve(format("{}.csv", id)).toFile())));
+            visitors.add(formatter.createVisitor(new FileOutputStream(csvOutput.toFile())));
+        }
+        if (htmlOutput != null) {
+            ensureDirectory(htmlOutput);
+            visitors.add(new HTMLFormatter().createVisitor(new FileMultiReportOutput(htmlOutput.toFile())));
         }
         return new MultiReportVisitor(visitors);
+    }
+
+    private void ensureParentDirectory(
+            Path path
+    ) throws IOException {
+        Path parent = path.getParent();
+        if (parent != null) {
+            ensureDirectory(parent);
+        }
+    }
+
+    private void ensureDirectory(
+            Path directory
+    ) throws IOException {
+        Files.createDirectories(directory);
+    }
+
+    private File aggregateFile(
+            Path base,
+            String extension
+    ) {
+        return aggregatePath(base, extension).toFile();
+    }
+
+    private Path aggregatePath(
+            Path base,
+            String extension
+    ) {
+        return Path.of(base.toString() + extension);
     }
 
 }
