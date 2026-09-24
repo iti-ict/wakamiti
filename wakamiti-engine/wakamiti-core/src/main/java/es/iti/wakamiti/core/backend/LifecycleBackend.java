@@ -11,11 +11,14 @@ package es.iti.wakamiti.core.backend;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.Level;
+import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
@@ -31,6 +34,7 @@ public class LifecycleBackend extends AbstractBackend {
 
     private final Map<Level, List<ThrowableRunnable>> setUpOperations;
     private final Map<Level, List<ThrowableRunnable>> tearDownOperations;
+    private final Locale locale;
 
     /**
      * Creates a backend with operations grouped by lifecycle scope.
@@ -48,9 +52,41 @@ public class LifecycleBackend extends AbstractBackend {
             Map<Level, List<ThrowableRunnable>> tearDownOperations,
             List<RunnableStep> steps
     ) {
-        super(configuration, typeRegistry, steps);
+        this(
+                configuration,
+                typeRegistry,
+                List.of(),
+                setUpOperations,
+                tearDownOperations,
+                steps,
+                Locale.ENGLISH
+        );
+    }
+
+    /**
+     * Creates a backend with backend-scoped contributors and lifecycle locale.
+     *
+     * @param configuration       effective backend configuration
+     * @param typeRegistry        registry for Wakamiti data types, when required
+     * @param stepContributors    contributor instances owned by this backend
+     * @param setUpOperations     setup operations grouped by scope
+     * @param tearDownOperations  teardown operations grouped by scope
+     * @param steps               runnable steps associated with this backend
+     * @param locale              locale exposed while lifecycle operations run
+     */
+    public LifecycleBackend(
+            Configuration configuration,
+            WakamitiDataTypeRegistry typeRegistry,
+            List<StepContributor> stepContributors,
+            Map<Level, List<ThrowableRunnable>> setUpOperations,
+            Map<Level, List<ThrowableRunnable>> tearDownOperations,
+            List<RunnableStep> steps,
+            Locale locale
+    ) {
+        super(configuration, typeRegistry, stepContributors, steps);
         this.setUpOperations = setUpOperations;
         this.tearDownOperations = tearDownOperations;
+        this.locale = locale;
     }
 
     /**
@@ -107,19 +143,22 @@ public class LifecycleBackend extends AbstractBackend {
     /**
      * Installs state required before a lifecycle operation runs.
      *
-     * <p>The base implementation requires no additional state.</p>
+     * <p>The base implementation binds this backend to the current execution
+     * thread.</p>
      */
     protected void beforeLifecycleOperation() {
-        // nothing
+        WakamitiStepRunContext.set(
+                new WakamitiStepRunContext(configuration, this, locale, locale)
+        );
     }
 
     /**
      * Releases state installed for a lifecycle operation.
      *
-     * <p>The base implementation requires no cleanup.</p>
+     * <p>The base implementation clears the backend execution context.</p>
      */
     protected void afterLifecycleOperation() {
-        // nothing
+        WakamitiStepRunContext.clear();
     }
 
     /**

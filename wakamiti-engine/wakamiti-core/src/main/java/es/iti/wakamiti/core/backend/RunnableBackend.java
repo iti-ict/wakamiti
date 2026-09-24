@@ -26,6 +26,7 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiSkippedException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.Level;
+import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.model.ExecutionState;
 import es.iti.wakamiti.api.plan.NodeType;
@@ -84,7 +85,49 @@ public class RunnableBackend extends LifecycleBackend {
             Map<Level, List<ThrowableRunnable>> tearDownOperations,
             Clock clock
     ) {
-        super(configuration, typeRegistry, setUpOperations, tearDownOperations, steps);
+        this(
+                testCase,
+                configuration,
+                typeRegistry,
+                List.of(),
+                steps,
+                setUpOperations,
+                tearDownOperations,
+                clock
+        );
+    }
+
+    /**
+     * Constructs a runnable backend with its backend-scoped contributors.
+     *
+     * @param testCase            test case associated with this backend
+     * @param configuration       effective backend configuration
+     * @param typeRegistry        registry for Wakamiti data types
+     * @param stepContributors    contributor instances owned by this backend
+     * @param steps               runnable steps built from the contributors
+     * @param setUpOperations     setup operations grouped by lifecycle level
+     * @param tearDownOperations  teardown operations grouped by lifecycle level
+     * @param clock               clock used to record timestamps
+     */
+    public RunnableBackend(
+            PlanNode testCase,
+            Configuration configuration,
+            WakamitiDataTypeRegistry typeRegistry,
+            List<StepContributor> stepContributors,
+            List<RunnableStep> steps,
+            Map<Level, List<ThrowableRunnable>> setUpOperations,
+            Map<Level, List<ThrowableRunnable>> tearDownOperations,
+            Clock clock
+    ) {
+        super(
+                configuration,
+                typeRegistry,
+                stepContributors,
+                setUpOperations,
+                tearDownOperations,
+                steps,
+                LocaleLoader.forLanguage(testCase.language())
+        );
         this.testCase = testCase;
         this.clock = clock;
         this.stepBackendData = new HashMap<>();

@@ -47,6 +47,7 @@ import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.util.LocaleLoader;
 
 
 /**
@@ -123,7 +124,7 @@ public class DefaultBackendFactory implements BackendFactory {
                     scope.displayName()
             );
         }
-        return doCreateLifecycleBackend(configuration);
+        return doCreateLifecycleBackend(scope, configuration);
     }
 
     /**
@@ -141,6 +142,7 @@ public class DefaultBackendFactory implements BackendFactory {
     }
 
     private Backend doCreateLifecycleBackend(
+            PlanNode scope,
             Configuration configuration
     ) {
         List<String> restrictedModules = restrictedModules(configuration);
@@ -154,9 +156,11 @@ public class DefaultBackendFactory implements BackendFactory {
         return new LifecycleBackend(
                 configuration,
                 null,
+                stepContributors,
                 getSetUpOperations(stepContributors),
                 getTearDownOperations(stepContributors),
-                List.of()
+                List.of(),
+                LocaleLoader.forLanguage(scope.language())
         );
     }
 
@@ -200,13 +204,14 @@ public class DefaultBackendFactory implements BackendFactory {
                     testCase,
                     configuration,
                     typeRegistry,
+                    stepContributors,
                     steps,
                     getSetUpOperations(stepContributors),
                     getTearDownOperations(stepContributors),
                     clock
             );
         } else {
-            return new NonRunnableBackend(configuration, typeRegistry, steps);
+            return new NonRunnableBackend(configuration, typeRegistry, stepContributors, steps);
         }
     }
 

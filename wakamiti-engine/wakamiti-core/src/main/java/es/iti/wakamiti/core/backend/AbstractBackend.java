@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiConfiguration;
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
+import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.core.Wakamiti;
@@ -33,25 +35,28 @@ public abstract class AbstractBackend implements Backend {
 
     protected final Configuration configuration;
     protected final WakamitiDataTypeRegistry typeRegistry;
+    protected final List<StepContributor> stepContributors;
     protected final List<RunnableStep> runnableSteps;
     protected final RunnableStepResolver resolver;
     protected final StepHinter hinter;
 
     /**
-     * Constructs an abstract backend with the provided configuration, type registry,
-     * and list of runnable steps.
+     * Constructs an abstract backend with its backend-scoped contributors.
      *
-     * @param configuration The configuration for this backend.
-     * @param typeRegistry  The registry for Wakamiti data types.
-     * @param steps         The list of runnable steps associated with this backend.
+     * @param configuration    configuration for this backend
+     * @param typeRegistry     registry for Wakamiti data types
+     * @param stepContributors contributor instances owned by this backend
+     * @param steps            runnable steps built from the contributors
      */
     protected AbstractBackend(
             Configuration configuration,
             WakamitiDataTypeRegistry typeRegistry,
+            List<StepContributor> stepContributors,
             List<RunnableStep> steps
     ) {
         this.configuration = configuration;
         this.typeRegistry = typeRegistry;
+        this.stepContributors = List.copyOf(stepContributors);
         this.runnableSteps = steps;
         this.resolver = new RunnableStepResolver(typeRegistry, steps);
         this.hinter = new StepHinter(runnableSteps, configuration, resolver, typeRegistry);
@@ -60,6 +65,19 @@ public abstract class AbstractBackend implements Backend {
     @Override
     public WakamitiDataTypeRegistry getTypeRegistry() {
         return typeRegistry;
+    }
+
+    @Override
+    public <T extends StepContributor> T getContributor(
+            Class<T> contributorClass
+    ) {
+        return stepContributors.stream()
+                .filter(contributorClass::isInstance)
+                .map(contributorClass::cast)
+                .reduce((previous, current) -> current)
+                .orElseThrow(() -> new WakamitiException(
+                        String.format("Contributor [%s] not found", contributorClass)
+                ));
     }
 
     @Override

@@ -12,6 +12,7 @@ import java.util.List;
 
 import es.iti.wakamiti.api.WakamitiDataTypeRegistry;
 import es.iti.wakamiti.api.annotations.Level;
+import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.plan.PlanNode;
 
@@ -36,7 +37,24 @@ public class NonRunnableBackend extends AbstractBackend {
             WakamitiDataTypeRegistry typeRegistry,
             List<RunnableStep> steps
     ) {
-        super(configuration, typeRegistry, steps);
+        this(configuration, typeRegistry, List.of(), steps);
+    }
+
+    /**
+     * Creates a discovery-only backend with its backend-scoped contributors.
+     *
+     * @param configuration    effective backend configuration
+     * @param typeRegistry     data types used to parse step expressions
+     * @param stepContributors contributor instances owned by this backend
+     * @param steps            runnable-step descriptors exposed for matching
+     */
+    public NonRunnableBackend(
+            Configuration configuration,
+            WakamitiDataTypeRegistry typeRegistry,
+            List<StepContributor> stepContributors,
+            List<RunnableStep> steps
+    ) {
+        super(configuration, typeRegistry, stepContributors, steps);
     }
 
     /**
