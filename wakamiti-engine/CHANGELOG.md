@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Custom steps and lifecycle hooks now resolve contributors from their current backend, preventing state changes from
   targeting an instance created for another plan, feature, or scenario.
+- Exclude feature lifecycle hooks from the plan and reports when tag filtering leaves the feature without selected
+  functional scenarios.
 
 
 ## [3.0.0] - 2026-09-10
