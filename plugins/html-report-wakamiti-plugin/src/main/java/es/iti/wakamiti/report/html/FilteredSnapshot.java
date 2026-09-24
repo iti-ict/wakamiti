@@ -112,16 +112,8 @@ public class FilteredSnapshot {
             List<PlanNodeSnapshot> snapshots
     ) {
         return snapshots.stream()
-                .filter(FilteredSnapshot::visibleNode)
                 .map(FilteredSnapshot::of)
                 .collect(Collectors.toList());
-    }
-
-    private static boolean visibleNode(
-            PlanNodeSnapshot snapshot
-    ) {
-        return snapshot.getNodeType() != NodeType.LIFECYCLE_HOOK
-                || snapshot.getResult() != null && snapshot.getResult() != Result.SKIPPED;
     }
 
     /**

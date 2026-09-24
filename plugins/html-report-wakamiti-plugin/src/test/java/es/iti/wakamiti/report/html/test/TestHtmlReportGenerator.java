@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
+import es.iti.wakamiti.api.plan.Result;
 import es.iti.wakamiti.report.html.FilteredSnapshot;
 import es.iti.wakamiti.report.html.HtmlReportGenerator;
 import es.iti.wakamiti.report.html.HtmlReportGeneratorConfig;
@@ -192,11 +193,12 @@ public class TestHtmlReportGenerator {
 
     @Test
     public void testLifecycleHooksSeparateFromFunctionalResults() {
-        // All 3 scenarios (2 hooks + 1 functional) appear in the embedded report data
+        // All 4 scenarios (3 hooks + 1 functional) appear in the embedded report data
         org.assertj.core.api.Assertions.assertThat(htmlLifecycle)
                 .contains("Setup feature execution")
                 .contains("Functional scenario")
-                .contains("Teardown feature execution");
+                .contains("Teardown feature execution")
+                .contains("Unexecuted lifecycle fixture");
 
         assertThat(xmlLifecycle)
                 .nodesByXPath("//canvas[@data-result='{\"FAILED\":1}']")
@@ -204,7 +206,7 @@ public class TestHtmlReportGenerator {
     }
 
     @Test
-    public void testFilteredSnapshotExcludesSkippedLifecycleHooksAndIdentifiesFixtures() throws IOException {
+    public void testFilteredSnapshotIncludesSkippedLifecycleHooksAndIdentifiesFixtures() throws IOException {
         try (Reader reader = Files.newBufferedReader(
                 Paths.get("src/test/resources/wakamiti_lifecycle.json"), StandardCharsets.UTF_8)) {
             PlanNodeSnapshot plan = WakamitiAPI.instance().planSerializer().read(reader);
@@ -212,11 +214,12 @@ public class TestHtmlReportGenerator {
 
             java.util.List<FilteredSnapshot> children = FilteredSnapshot.of(feature.getChildren());
 
-            org.assertj.core.api.Assertions.assertThat(children).hasSize(3);
+            org.assertj.core.api.Assertions.assertThat(children).hasSize(4);
             org.assertj.core.api.Assertions.assertThat(children.get(0).getLt()).isEqualTo("before");
             org.assertj.core.api.Assertions.assertThat(children.get(0).getK()).isEqualTo("Before fixture");
-            org.assertj.core.api.Assertions.assertThat(children)
-                    .noneMatch(child -> "unexecuted after hook".equals(child.getN()));
+            org.assertj.core.api.Assertions.assertThat(children.get(3).getN())
+                    .isEqualTo("Unexecuted lifecycle fixture");
+            org.assertj.core.api.Assertions.assertThat(children.get(3).getR()).isEqualTo(Result.SKIPPED);
         }
     }
 
