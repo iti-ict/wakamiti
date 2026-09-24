@@ -18,7 +18,7 @@
 
 
     <artifactId>db-wakamiti-plugin</artifactId>
-    <version>3.10.1-SNAPSHOT</version>
+    <version>3.10.1</version>
 
     <name>[Wakamiti Plugin] Database Steps</name>
     <description>Database steps for Wakamiti</description>
@@ -29,7 +29,7 @@
         <h2.version>2.4.240</h2.version>
         <test.containers>1.21.4</test.containers>
 
-        <wakamiti-engine.version>3.0.0</wakamiti-engine.version>
+        <wakamiti-engine.version>3.1.0</wakamiti-engine.version>
     </properties>
 
     <dependencies>

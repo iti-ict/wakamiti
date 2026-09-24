@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
-## [Unreleased]
+## [2.0.0] - 2026-09-24
 
 ### Added
 - Support multiple JaCoCo agents through `jacoco.dump.hosts`, combining their execution data per scenario.
