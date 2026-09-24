@@ -18,7 +18,7 @@
 
 
     <artifactId>html-report-wakamiti-plugin</artifactId>
-    <version>2.11.0</version>
+    <version>2.11.1</version>
 
     <name>[Wakamiti Plugin] HTML Report</name>
     <description>HTML Report generator for Wakamiti results</description>
@@ -27,7 +27,7 @@
     <properties>
         <xmlunit.version>2.13.0</xmlunit.version>
 
-        <wakamiti-engine.version>3.0.0</wakamiti-engine.version>
+        <wakamiti-engine.version>3.1.0</wakamiti-engine.version>
     </properties>
 
     <!-- dependencies -->

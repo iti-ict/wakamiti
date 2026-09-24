@@ -6,6 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [3.1.0] - 2026-09-24
+
+### Added
+- Gherkin-generated scenario and lifecycle-hook nodes now expose their enclosing feature identifier through the
+  `featureId` property.
+
+### Changed
+- Backends now retain their own `StepContributor` instances and expose them through `Backend#getContributor(...)`.
+
+### Fixed
+- Custom steps and lifecycle hooks now resolve contributors from their current backend, preventing state changes from
+  targeting an instance created for another plan, feature, or scenario.
+- Exclude feature lifecycle hooks from the plan and reports when tag filtering leaves the feature without selected
+  functional scenarios.
+
+
 ## [3.0.0] - 2026-09-10
 
 ### Added

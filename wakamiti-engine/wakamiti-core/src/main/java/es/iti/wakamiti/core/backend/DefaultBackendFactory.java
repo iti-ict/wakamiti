@@ -10,7 +10,6 @@ package es.iti.wakamiti.core.backend;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -47,6 +46,7 @@ import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNode;
 import es.iti.wakamiti.api.util.ThrowableRunnable;
 import es.iti.wakamiti.core.Wakamiti;
+import es.iti.wakamiti.core.util.LocaleLoader;
 
 
 /**
@@ -123,7 +123,7 @@ public class DefaultBackendFactory implements BackendFactory {
                     scope.displayName()
             );
         }
-        return doCreateLifecycleBackend(configuration);
+        return doCreateLifecycleBackend(scope, configuration);
     }
 
     /**
@@ -141,6 +141,7 @@ public class DefaultBackendFactory implements BackendFactory {
     }
 
     private Backend doCreateLifecycleBackend(
+            PlanNode scope,
             Configuration configuration
     ) {
         List<String> restrictedModules = restrictedModules(configuration);
@@ -154,9 +155,11 @@ public class DefaultBackendFactory implements BackendFactory {
         return new LifecycleBackend(
                 configuration,
                 null,
+                stepContributors,
                 getSetUpOperations(stepContributors),
                 getTearDownOperations(stepContributors),
-                List.of()
+                List.of(),
+                LocaleLoader.forLanguage(scope.language())
         );
     }
 
@@ -194,19 +197,18 @@ public class DefaultBackendFactory implements BackendFactory {
 
         WakamitiDataTypeRegistry typeRegistry = loadTypes(dataTypeContributors);
         List<RunnableStep> steps = createSteps(stepContributors, typeRegistry);
-        Clock clock = Clock.systemUTC();
         if (runnableBackend) {
             return new RunnableBackend(
                     testCase,
                     configuration,
                     typeRegistry,
+                    stepContributors,
                     steps,
                     getSetUpOperations(stepContributors),
-                    getTearDownOperations(stepContributors),
-                    clock
+                    getTearDownOperations(stepContributors)
             );
         } else {
-            return new NonRunnableBackend(configuration, typeRegistry, steps);
+            return new NonRunnableBackend(configuration, typeRegistry, stepContributors, steps);
         }
     }
 

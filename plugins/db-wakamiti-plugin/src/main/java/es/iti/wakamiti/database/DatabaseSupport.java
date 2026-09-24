@@ -89,7 +89,7 @@ public class DatabaseSupport {
     private static final Duration ASYNC_POLL_INTERVAL = Durations.ONE_HUNDRED_MILLISECONDS;
     private static final long NANOS_PER_MILLISECOND = 1_000_000L;
     private static final long MILLIS_PER_SECOND = 1_000L;
-    protected static final LevenshteinDistance LEVENSHTEIN_DISTANCE = new LevenshteinDistance();
+    protected static final LevenshteinDistance LEVENSHTEIN_DISTANCE = LevenshteinDistance.getDefaultInstance();
     protected static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.database");
     protected final Map<String, ConnectionProvider> connections = new LinkedHashMap<>();
     protected final Deque<Runnable> cleanUpOperations = new LinkedList<>();
@@ -456,7 +456,14 @@ public class DatabaseSupport {
         throw first;
     }
 
-    private String defaultConnection() {
+    /**
+     * Resolves the implicit connection alias, preferring the reserved default
+     * alias and otherwise selecting the first configured connection.
+     *
+     * @return The implicit connection alias
+     * @throws WakamitiException if no connections are configured
+     */
+    protected String defaultConnection() {
         if (connections.containsKey(DEFAULT)) {
             return DEFAULT;
         }

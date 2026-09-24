@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [1.2.1] - 2026-09-24
+
+### Fixed
+- Plugin is enabled by default
+
+
 ## [1.2.0] - 2026-09-10
 
 ### Added

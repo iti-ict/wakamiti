@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.10.1] - 2026-09-24
+
+### Fixed
+- Cleanup operations without an explicit connection now capture the active connection when declared
+  and retain it during scenario teardown.
+- Similar-record comparisons use the shared default `LevenshteinDistance` instance.
+
+
 ## [3.10.0] - 2026-09-10
 
 ### Added

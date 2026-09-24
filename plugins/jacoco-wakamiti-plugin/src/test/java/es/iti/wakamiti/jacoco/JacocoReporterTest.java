@@ -10,6 +10,7 @@ package es.iti.wakamiti.jacoco;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -19,18 +20,20 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.jacoco.core.data.ExecutionDataStore;
@@ -41,6 +44,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
 
+import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.event.Event;
 import es.iti.wakamiti.api.plan.NodeType;
 import es.iti.wakamiti.api.plan.PlanNodeSnapshot;
@@ -58,7 +62,9 @@ public class JacocoReporterTest {
     public void clean() {
         temporaries.forEach(p -> {
             try {
-                FileUtils.cleanDirectory(p.toFile());
+                if (Files.isDirectory(p)) {
+                    FileUtils.cleanDirectory(p.toFile());
+                }
                 Files.deleteIfExists(p);
             } catch (IOException e) {
                 LOGGER.warn("Cannot delete file '{}'", p, e);
@@ -89,22 +95,22 @@ public class JacocoReporterTest {
     }
 
     @Test
-    public void eventWithTestCaseTriggersDumpOnlyWhenNoXmlOrCsv() throws Exception {
+    public void eventWithTestCaseDumpsAndMergesAllHostsWhenNoXmlOrCsv() throws Exception {
         // Arrange reporter
         JacocoReporter reporter = new JacocoReporter();
-        reporter.setHost("localhost");
-        reporter.setPort("6300");
+        reporter.setHosts(List.of("localhost:6300", "jacoco-agent:6301"));
         reporter.setRetries(5);
         Path out = Files.createTempDirectory("jacoco-out");
         reporter.setOutput(out);
-        reporter.setClasses(Files.createTempDirectory("classes"));
-        reporter.setSources(Files.createTempDirectory("sources"));
+        reporter.setClasses(List.of(Files.createTempDirectory("classes")));
+        reporter.setSources(List.of(Files.createTempDirectory("sources")));
         reporter.setName("Report");
 
         // Create mocks
         ExecDumpClient dumpClient = mock(ExecDumpClient.class);
-        ExecFileLoader dumpLoader = mock(ExecFileLoader.class);
-        when(dumpClient.dump(anyString(), anyInt())).thenReturn(dumpLoader);
+        ExecFileLoader firstDumpLoader = mock(ExecFileLoader.class);
+        ExecFileLoader secondDumpLoader = mock(ExecFileLoader.class);
+        when(dumpClient.dump(anyString(), anyInt())).thenReturn(firstDumpLoader, secondDumpLoader);
 
         // Inject mock dump client
         setPrivate(reporter, "dumpClient", dumpClient);
@@ -121,51 +127,54 @@ public class JacocoReporterTest {
         verify(dumpClient).setReset(true);
         verify(dumpClient).setRetryCount(5);
         verify(dumpClient).dump("localhost", 6300);
-        verify(dumpLoader).save(argThat(f -> f.getName().equals("TC-1.exec")), eq(true));
+        verify(dumpClient).dump("jacoco-agent", 6301);
+        verify(firstDumpLoader).save(argThat(f -> f.getName().equals("TC-1.exec")), eq(false));
+        verify(secondDumpLoader).save(argThat(f -> f.getName().equals("TC-1.exec")), eq(true));
         // And ensure per-test loader (distinct field) was not used (kept null)
         Object fileLoaderField = getPrivate(reporter, "fileLoader");
         assertThat(fileLoaderField).isNull();
+        assertThat(Files.exists(Path.of(out.toString() + ".exec"))).isFalse();
     }
 
     @Test
-    public void eventWithLifecycleHooksCreatesIndependentCoverageSegments() throws Exception {
+    public void eventWithLifecycleHooksDoesNotDumpWhenMergeIsDisabled() throws Exception {
         JacocoReporter reporter = new JacocoReporter();
-        reporter.setHost("localhost");
-        reporter.setPort("6300");
-        reporter.setOutput(Files.createTempDirectory("jacoco-hooks"));
+        reporter.setHosts(List.of("localhost:6300"));
+        Path output = Files.createTempDirectory("jacoco-hooks");
+        temporaries.add(output);
+        reporter.setOutput(output);
 
         ExecDumpClient dumpClient = mock(ExecDumpClient.class);
-        ExecFileLoader dumpLoader = mock(ExecFileLoader.class);
-        when(dumpClient.dump(anyString(), anyInt())).thenReturn(dumpLoader);
         setPrivate(reporter, "dumpClient", dumpClient);
 
-        reporter.eventReceived(hookEvent("#setup", "before", Result.PASSED));
-        reporter.eventReceived(hookEvent("#teardown", "after", Result.ERROR));
-        reporter.eventReceived(hookEvent("#ignored", "after", Result.SKIPPED));
+        reporter.eventReceived(hookEvent("#setup", Result.PASSED));
+        reporter.eventReceived(hookEvent("#teardown", Result.ERROR));
+        reporter.eventReceived(hookEvent("#ignored", Result.SKIPPED));
 
-        verify(dumpClient, times(2)).dump("localhost", 6300);
-        verify(dumpLoader).save(argThat(file -> file.getName().equals("fixture-before-setup.exec")), eq(true));
-        verify(dumpLoader).save(argThat(file -> file.getName().equals("fixture-after-teardown.exec")), eq(true));
+        verifyNoInteractions(dumpClient);
     }
 
     @Test
     public void eventWithTestCaseAndXmlTriggersExecuteSingleAndProducesXml() throws Exception {
         // Arrange temporary filesystem
-        Path out = Files.createTempDirectory("jacoco-out");
-        Path xml = Files.createTempDirectory("jacoco-xml");
+        Path reportsParent = Files.createTempDirectory("jacoco-reports");
+        Path out = reportsParent.resolve("out");
+        Path xml = reportsParent.resolve("xml");
         Path classes = Files.createTempDirectory("jacoco-classes");
+        Path generatedClasses = Files.createTempDirectory("jacoco-generated-classes");
         Path sources = Files.createTempDirectory("jacoco-sources");
-        temporaries.addAll(List.of(out, xml, classes, sources));
+        copyClass(classes, JacocoReporter.class);
+        copyClass(generatedClasses, JacocoConfig.class);
+        temporaries.addAll(List.of(reportsParent, out, xml, classes, generatedClasses, sources));
 
         // Reporter with configuration
         JacocoReporter reporter = new JacocoReporter();
-        reporter.setHost("127.0.0.1");
-        reporter.setPort("6300");
+        reporter.setHosts(List.of("127.0.0.1:6300"));
         reporter.setRetries(1);
         reporter.setOutput(out);
         reporter.setXml(xml);
-        reporter.setClasses(classes);
-        reporter.setSources(sources);
+        reporter.setClasses(List.of(classes, generatedClasses));
+        reporter.setSources(List.of(sources));
         reporter.setTabwidth(4);
         reporter.setName("Report");
 
@@ -202,7 +211,129 @@ public class JacocoReporterTest {
         verify(fileLoader).load(expectedExec);
         // And XML output was created
         Path producedXml = xml.resolve("TC-2.xml");
+        assertThat(out).isDirectory();
+        assertThat(xml).isDirectory();
         assertThat(Files.exists(producedXml)).isTrue();
+        assertThat(Files.readString(producedXml))
+                .contains("es/iti/wakamiti/jacoco/JacocoReporter", "es/iti/wakamiti/jacoco/JacocoConfig");
+    }
+
+    @Test
+    public void mergeKeepsScenarioReportsAndAddsLifecycleHooksOnlyToAggregates() throws Exception {
+        Path reportsParent = Files.createTempDirectory("jacoco-merged-reports");
+        Path out = reportsParent.resolve("out");
+        Path xml = reportsParent.resolve("xml");
+        Path csv = reportsParent.resolve("csv");
+        Path html = reportsParent.resolve("html");
+        Path classes = Files.createTempDirectory("jacoco-merged-classes");
+        Path aggregateExec = Path.of(out + ".exec");
+        Path aggregateXml = Path.of(xml + ".xml");
+        Path aggregateCsv = Path.of(csv + ".csv");
+        temporaries.addAll(List.of(
+                reportsParent, out, xml, csv, html, classes, aggregateExec, aggregateXml, aggregateCsv
+        ));
+        Files.writeString(aggregateExec, "stale execution data");
+
+        JacocoReporter reporter = new JacocoReporter();
+        reporter.setHosts(List.of("first:6300", "second:6301"));
+        reporter.setOutput(out);
+        reporter.setXml(xml);
+        reporter.setCsv(csv);
+        reporter.setHtml(html);
+        reporter.setClasses(List.of(classes));
+        reporter.setSources(List.of());
+        reporter.setTabwidth(4);
+        reporter.setName("Report");
+        reporter.setMerge(true);
+
+        ExecDumpClient dumpClient = mock(ExecDumpClient.class);
+        when(dumpClient.dump(anyString(), anyInt())).thenAnswer(invocation -> new ExecFileLoader());
+        setPrivate(reporter, "dumpClient", dumpClient);
+
+        reporter.eventReceived(hookEvent("#setup", Result.PASSED));
+        PlanNodeSnapshot snapshot = mock(PlanNodeSnapshot.class);
+        when(snapshot.getNodeType()).thenReturn(NodeType.TEST_CASE);
+        when(snapshot.getId()).thenReturn("ID-Scenario");
+        reporter.eventReceived(new Event(Event.NODE_RUN_FINISHED, Instant.now(), snapshot));
+
+        assertThat(out.resolve("ID-Scenario.exec")).exists();
+        assertThat(xml.resolve("ID-Scenario.xml")).exists();
+        assertThat(csv.resolve("ID-Scenario.csv")).exists();
+        assertThat(out.resolve("#setup.exec")).doesNotExist();
+        assertThat(xml.resolve("#setup.xml")).doesNotExist();
+        assertThat(csv.resolve("#setup.csv")).doesNotExist();
+        assertThat(aggregateExec).exists();
+        verify(dumpClient, times(2)).dump("first", 6300);
+        verify(dumpClient, times(2)).dump("second", 6301);
+
+        reporter.eventReceived(new Event(Event.AFTER_WRITE_OUTPUT_FILES, Instant.now(), null));
+
+        assertThat(aggregateXml).exists();
+        assertThat(aggregateCsv).exists();
+        assertThat(csv).isDirectory();
+        assertThat(html).isDirectory();
+        assertThat(html.resolve("index.html")).exists();
+    }
+
+    @Test
+    public void lifecycleHooksOnlyWriteToTheAggregateWhenMergeIsEnabled() throws Exception {
+        JacocoReporter reporter = new JacocoReporter();
+        reporter.setHosts(List.of("localhost:6300"));
+        Path output = Files.createTempDirectory("jacoco-hooks-aggregate");
+        Path aggregate = Path.of(output.toString() + ".exec");
+        temporaries.addAll(List.of(output, aggregate));
+        reporter.setOutput(output);
+        reporter.setMerge(true);
+
+        ExecDumpClient dumpClient = mock(ExecDumpClient.class);
+        ExecFileLoader dumpLoader = mock(ExecFileLoader.class);
+        when(dumpClient.dump(anyString(), anyInt())).thenReturn(dumpLoader);
+        setPrivate(reporter, "dumpClient", dumpClient);
+
+        reporter.eventReceived(hookEvent("#setup-1", Result.PASSED));
+        reporter.eventReceived(hookEvent("#setup-2", Result.PASSED));
+
+        verify(dumpLoader).save(aggregate.toFile(), false);
+        verify(dumpLoader).save(aggregate.toFile(), true);
+        verify(dumpLoader, never()).save(argThat(file -> file.getName().equals("#setup-1.exec")), anyBoolean());
+        verify(dumpLoader, never()).save(argThat(file -> file.getName().equals("#setup-2.exec")), anyBoolean());
+    }
+
+    @Test
+    public void dumpAttemptsEveryHostBeforeReportingFailures() throws Exception {
+        JacocoReporter reporter = new JacocoReporter();
+        reporter.setHosts(List.of("unavailable:6300", "available:6301", "also-unavailable:6302"));
+        reporter.setRetries(2);
+        Path out = Files.createTempDirectory("jacoco-failures");
+        temporaries.add(out);
+        reporter.setOutput(out);
+
+        ExecDumpClient dumpClient = mock(ExecDumpClient.class);
+        ExecFileLoader successfulLoader = mock(ExecFileLoader.class);
+        when(dumpClient.dump("unavailable", 6300)).thenThrow(new IOException("first failure"));
+        when(dumpClient.dump("available", 6301)).thenReturn(successfulLoader);
+        when(dumpClient.dump("also-unavailable", 6302)).thenThrow(new IOException("last failure"));
+        setPrivate(reporter, "dumpClient", dumpClient);
+
+        PlanNodeSnapshot snapshot = mock(PlanNodeSnapshot.class);
+        when(snapshot.getNodeType()).thenReturn(NodeType.TEST_CASE);
+        when(snapshot.getId()).thenReturn("TC-errors");
+
+        assertThatThrownBy(() -> reporter.eventReceived(
+                new Event(Event.NODE_RUN_FINISHED, Instant.now(), snapshot)))
+                .isInstanceOf(WakamitiException.class)
+                .hasMessageContaining("TC-errors")
+                .hasMessageContaining("2 endpoint(s)")
+                .satisfies(exception -> {
+                    assertThat(exception.getCause()).hasMessageContaining("unavailable:6300");
+                    assertThat(exception.getSuppressed()).hasSize(1);
+                    assertThat(exception.getSuppressed()[0]).hasMessageContaining("also-unavailable:6302");
+                });
+
+        verify(dumpClient).dump("unavailable", 6300);
+        verify(dumpClient).dump("available", 6301);
+        verify(dumpClient).dump("also-unavailable", 6302);
+        verify(successfulLoader).save(argThat(f -> f.getName().equals("TC-errors.exec")), eq(false));
     }
 
     private static void setPrivate(
@@ -217,13 +348,11 @@ public class JacocoReporterTest {
 
     private Event hookEvent(
             String id,
-            String type,
             Result result
     ) {
         PlanNodeSnapshot snapshot = mock(PlanNodeSnapshot.class);
         when(snapshot.getNodeType()).thenReturn(NodeType.LIFECYCLE_HOOK);
         when(snapshot.getId()).thenReturn(id);
-        when(snapshot.getProperties()).thenReturn(Map.of("gherkinType", type));
         when(snapshot.getResult()).thenReturn(result);
         return new Event(Event.NODE_RUN_FINISHED, Instant.now(), snapshot);
     }
@@ -235,6 +364,17 @@ public class JacocoReporterTest {
         java.lang.reflect.Field f = target.getClass().getDeclaredField(field);
         f.setAccessible(true);
         return f.get(target);
+    }
+
+    private void copyClass(
+            Path root,
+            Class<?> type
+    ) throws IOException {
+        Path file = root.resolve(type.getName().replace('.', '/') + ".class");
+        Files.createDirectories(file.getParent());
+        try (InputStream input = type.getResourceAsStream(type.getSimpleName() + ".class")) {
+            Files.copy(input, file);
+        }
     }
 
 }

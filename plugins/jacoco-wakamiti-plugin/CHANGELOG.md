@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.0.0] - 2026-09-24
+
+### Added
+- Support multiple JaCoCo agents through `jacoco.dump.hosts`, combining their execution data per scenario.
+- Add `jacoco.report.merge` to generate aggregate `.exec`, XML, CSV and HTML reports while preserving individual
+  reports.
+- Allow multiple class and source directories in `jacoco.report.classes` and `jacoco.report.sources`.
+
+### Changed
+- Replace `jacoco.dump.host` and `jacoco.dump.port` with the required `jacoco.dump.hosts` list using `host:port`
+  entries.
+- Require configured dump and report output paths to be existing directories.
+
+
 ## [1.2.0] - 2026-09-10
 
 ### Added

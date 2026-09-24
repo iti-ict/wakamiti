@@ -237,21 +237,34 @@ public class TestPlanFactory {
     }
 
     @Test
-    public void test7LifecycleHooksAreRetainedWhenFeatureIsFilteredOut() throws ConfigurationException {
+    public void test7LifecycleHooksAreExcludedWhenFeatureHasNoSelectedFunctionalScenarios()
+            throws ConfigurationException {
         PlanNode plan = createPlan(
                 "src/test/resources/features/test7_lifecycleHooks.feature",
                 Configuration.factory().fromPairs(WakamitiConfiguration.TAG_FILTER, "NonExistingTag")
         );
+
+        assertThat(plan.children().toList()).isEmpty();
+    }
+
+    @Test
+    public void test7LifecycleHooksAreExcludedWhenOnlyFilteredScenariosAreIncluded()
+            throws ConfigurationException {
+        PlanNode plan = createPlan(
+                "src/test/resources/features/test7_lifecycleHooks.feature",
+                Configuration.factory().fromPairs(
+                        WakamitiConfiguration.TAG_FILTER, "NonExistingTag",
+                        WakamitiConfiguration.INCLUDE_FILTERED_TEST_CASES, "true"
+                )
+        );
         PlanNode feature = plan.children().findFirst().orElseThrow();
 
-        List<PlanNode> lifecycleScenarios = feature.children()
-                .filter(child -> child.nodeType() == NodeType.LIFECYCLE_HOOK)
-                .toList();
-
-        assertThat(lifecycleScenarios).hasSize(2);
+        assertThat(feature.children()
+                .filter(node -> node.nodeType() == NodeType.LIFECYCLE_HOOK)
+                .count()).isZero();
         assertThat(feature.children()
                 .filter(node -> node.nodeType() == NodeType.TEST_CASE)
-                .count()).isEqualTo(0);
+                .toList()).allMatch(PlanNode::filtered);
     }
 
     @Test

@@ -73,7 +73,7 @@ public class XrayConfigContributor implements ConfigContributor<XRaySynchronizer
     @Override
     public Configuration defaultConfiguration() {
         return Configuration.factory().fromPairs(
-                XRAY_ENABLED, "false",
+                XRAY_ENABLED, Boolean.TRUE.toString(),
                 XRAY_BASE_URL, "https://eu.xray.cloud.getxray.app",
                 XRAY_PROJECT, "",
                 XRAY_CREDENTIALS_CLIENT_ID, "",

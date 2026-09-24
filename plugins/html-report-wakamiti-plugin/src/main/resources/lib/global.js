@@ -100,7 +100,11 @@ function buildSearchText(node) {
     return [
         node.n,
         ...(node.g || []).map((tag) => `@${tag}`),
-        ...(node.l || [])
+        ...(node.l || []),
+        node.p,
+        ...(node.d || []).flat(Infinity),
+        node.m,
+        node.response
     ]
         .filter(Boolean)
         .join('\n')
@@ -112,6 +116,7 @@ function decorateNode(node) {
         return node;
     }
 
+    node.l = node.l || [];
     node.c?.forEach(decorateNode);
 
     const flattenedChildren = node.c?.length ? flatten(node.c) : [];
@@ -123,7 +128,12 @@ function decorateNode(node) {
     }, {});
 
     node.prettyResponse = canPrettifyResponse(node.response);
-    node._searchText = buildSearchText(node);
+    node._searchText = [
+        buildSearchText(node),
+        ...(node.c || []).map((child) => child._searchText)
+    ]
+        .filter(Boolean)
+        .join('\n');
     node._isPassed = !NON_PASSED_RESULTS.has(node.r);
     node._hasChildren = !!node.c?.length;
     node._hasTags = !!node.g?.length;

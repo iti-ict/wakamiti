@@ -120,6 +120,26 @@ public interface Backend {
     }
 
     /**
+     * Retrieves a step contributor owned by this backend.
+     * <p>
+     * Implementations that manage contributor instances should override this
+     * method so collaborators can resolve contributors in the current backend
+     * scope instead of using the global contributor registry.
+     * </p>
+     *
+     * @param contributorClass contributor type to resolve
+     * @param <T>              contributor type
+     * @return the matching contributor owned by this backend
+     * @throws WakamitiException when this backend cannot resolve the requested
+     *                           contributor
+     */
+    default <T extends StepContributor> T getContributor(
+            Class<T> contributorClass
+    ) {
+        throw new WakamitiException(String.format("Contributor [%s] not found", contributorClass));
+    }
+
+    /**
      * Obtain a list of all steps from any available step contributor
      * used by the backend. If a step uses data types with variations
      * (like assertions), a new element would be presented for each

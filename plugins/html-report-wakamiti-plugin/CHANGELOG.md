@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.11.1] - 2026-09-24
+
+### Changed
+- The HTML report now renders every node in its input snapshot, including skipped lifecycle hooks.
+
+### Fixed
+- Extend the text filter to search step documents, data tables, responses and error messages.
+- Prevent scenarios without descriptions from inheriting the feature description.
+
+
 ## [2.11.0] - 2026-09-10
 
 ### Added

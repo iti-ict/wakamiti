@@ -26,6 +26,7 @@ import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiSkippedException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.annotations.Level;
+import es.iti.wakamiti.api.extensions.StepContributor;
 import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.model.ExecutionState;
 import es.iti.wakamiti.api.plan.NodeType;
@@ -61,32 +62,36 @@ public class RunnableBackend extends LifecycleBackend {
     private final List<PlanNode> stepsWithErrors;
 
     /**
-     * Constructs a {@code RunnableBackend} with the specified test case,
-     * configuration, type registry, list of runnable steps, setup operations,
-     * teardown operations, and clock.
+     * Constructs a runnable backend with its backend-scoped contributors.
      *
-     * @param testCase           The test case associated with this backend.
-     * @param configuration      The configuration for the backend.
-     * @param typeRegistry       The WakamitiDataTypeRegistry for type information.
-     * @param steps              The list of runnable steps available in this backend.
-     * @param setUpOperations    The list of setup operations to be executed before
-     *                           running the test steps.
-     * @param tearDownOperations The list of teardown operations to be executed
-     *                           after running the test steps.
-     * @param clock              The clock used to record timestamps.
+     * @param testCase            test case associated with this backend
+     * @param configuration       effective backend configuration
+     * @param typeRegistry        registry for Wakamiti data types
+     * @param stepContributors    contributor instances owned by this backend
+     * @param steps               runnable steps built from the contributors
+     * @param setUpOperations     setup operations grouped by lifecycle level
+     * @param tearDownOperations  teardown operations grouped by lifecycle level
      */
     public RunnableBackend(
             PlanNode testCase,
             Configuration configuration,
             WakamitiDataTypeRegistry typeRegistry,
+            List<StepContributor> stepContributors,
             List<RunnableStep> steps,
             Map<Level, List<ThrowableRunnable>> setUpOperations,
-            Map<Level, List<ThrowableRunnable>> tearDownOperations,
-            Clock clock
+            Map<Level, List<ThrowableRunnable>> tearDownOperations
     ) {
-        super(configuration, typeRegistry, setUpOperations, tearDownOperations, steps);
+        super(
+                configuration,
+                typeRegistry,
+                stepContributors,
+                setUpOperations,
+                tearDownOperations,
+                steps,
+                LocaleLoader.forLanguage(testCase.language())
+        );
         this.testCase = testCase;
-        this.clock = clock;
+        this.clock = Clock.systemUTC();
         this.stepBackendData = new HashMap<>();
         this.extraProperties = new ContextMap();
         this.stepsWithErrors = new ArrayList<>();

@@ -7,15 +7,15 @@ slug: /plugins/jacoco
 Este plugin integra JaCoCo con Wakamiti para generar cobertura de código a partir de la ejecución de casos de prueba.
 
 Qué hace:
-- Se conecta al agente JaCoCo en tiempo de ejecución y vuelca (dump) los datos de ejecución (.exec) al finalizar 
+- Se conecta a los agentes JaCoCo en tiempo de ejecución y vuelca (dump) sus datos de ejecución (.exec) al finalizar
   cada caso de prueba.
-- Opcionalmente, genera reportes por caso de prueba en XML y/o CSV si se configuran las rutas de salida.
+- Opcionalmente, genera reportes por escenario en XML y/o CSV si se configuran las rutas de salida.
 - Al finalizar la ejecución, puede generar un informe HTML agregado de cobertura si se configura su ruta de salida.
 
 > **NOTA**
 >
-> El agente JaCoCo debe estar iniciado en modo `tcpserver` y escuchando en el `host` y `port` configurados. De lo 
-> contrario no será posible volcar la cobertura. 
+> Cada agente JaCoCo debe estar iniciado en modo `tcpserver` y escuchando en uno de los endpoints configurados. De lo
+> contrario no será posible volcar la cobertura.
 
 ---
 ## Tabla de contenido
@@ -29,45 +29,34 @@ Qué hace:
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:jacoco-wakamiti-plugin:1.2.0
+es.iti.wakamiti:jacoco-wakamiti-plugin:2.0.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>jacoco-wakamiti-plugin</artifactId>
-  <version>1.2.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
 
 ## Configuración
 
-### `jacoco.dump.host`
-- Tipo: `string`
-- Por defecto: `localhost`
+### `jacoco.dump.hosts`
+- Tipo: `string[]`
+- Por defecto: `localhost:6300`
 
-Nombre de host o dirección IP del agente jacoco.
-
-Ejemplo:
-```yml
-jacoco:
-  dump:
-    host: 192.168.5.6
-```
-
-
-### `jacoco.dump.port`
-- Tipo: `string`
-- Por defecto: `6300`
-
-Puerto del agente jacoco.
+Endpoints de los agentes JaCoCo en formato `host:port`. Debe indicarse al menos uno. El host debe ser un nombre DNS o
+una dirección IPv4, y el puerto debe estar entre 1 y 65535. Los datos de todos los agentes se combinan por escenario.
 
 Ejemplo:
 ```yml
 jacoco:
   dump:
-    port: 1234
+    hosts:
+      - 192.168.5.6:1234
+      - jacoco-agent:6300
 ```
 
 
@@ -75,7 +64,8 @@ jacoco:
 - Tipo: `path`
 - Por defecto: `.`
 
-Ruta donde se escribirán los datos de ejecución.
+Directorio de salida donde se escribirán los datos de ejecución por escenario. Se crea cuando es necesario. Con
+`merge` activo, esta ruta también se usa como base del agregado: `some/directory.exec`.
 
 Ejemplo:
 ```yml
@@ -102,8 +92,8 @@ jacoco:
 ### `jacoco.report.xml`
 - Tipo: `path`
 
-Directorio de salida para informes XML. Se creará un informe XML para cada caso de prueba y no se creará si no se 
-especifica este parámetro.
+Directorio de salida para informes XML por escenario. Se crea cuando es necesario. Con `merge` activo, esta ruta
+también se usa como base del agregado XML. No se generarán informes XML si no se especifica este parámetro.
 
 Ejemplo:
 ```yml
@@ -115,8 +105,8 @@ jacoco:
 ### `jacoco.report.csv`
 - Tipo: `path`
 
-Directorio de salida para informes CSV. Se creará un informe CSV para cada caso de prueba y no se creará si no se 
-especifica este parámetro.
+Directorio de salida para informes CSV por escenario. Se crea cuando es necesario. Con `merge` activo, esta ruta
+también se usa como base del agregado CSV. No se generarán informes CSV si no se especifica este parámetro.
 
 Ejemplo:
 ```yml
@@ -129,7 +119,7 @@ jacoco:
 ### `jacoco.report.html`
 - Tipo: `path`
 
-Directorio de salida para el informe HTML.
+Directorio de salida para el informe HTML agregado. Se crea cuando es necesario.
 
 Ejemplo:
 ```yml
@@ -140,28 +130,31 @@ jacoco:
 
 
 ### `jacoco.report.classes`
-- Tipo: `path` *required*
+- Tipo: `path[]` *required*
 
-Ubicación de los archivos de clase Java.
+Directorios raíz existentes que contienen los archivos de clase Java. También se acepta una única ruta.
 
 Ejemplo:
 ```yml
 jacoco:
   report:
-    classes: target/classes
+    classes:
+      - target/classes
+      - target/generated-classes
 ```
 
 
 ### `jacoco.report.sources`
-- Tipo: `path`
+- Tipo: `path[]`
 
-Ubicación de los archivos fuente.
+Directorios raíz existentes que contienen los archivos fuente. También se acepta una única ruta.
 
 Ejemplo:
 ```yml
 jacoco:
   report:
-    sources: src/main/java
+    sources: 
+      - src/main/java
 ```
 
 ### `jacoco.report.tabwith`
@@ -191,3 +184,17 @@ jacoco:
     name: Wakamiti coverage report
 ```
 
+### `jacoco.report.merge`
+- Tipo: `boolean`
+- Por defecto: `true`
+
+Genera reportes agregados adicionales sin eliminar los archivos individuales de escenarios. La cobertura de los hooks
+de lifecycle se incluye solo en los agregados. Los agregados se guardan añadiendo `.exec`, `.xml` y `.csv` a las rutas
+configuradas para dump, XML y CSV, respectivamente.
+
+Ejemplo:
+```yml
+jacoco:
+  report:
+    merge: true
+```

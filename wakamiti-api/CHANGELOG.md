@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.11.0] - 2026-09-24
+
+### Added
+- `Backend#getContributor(...)` resolves step contributors owned by the current backend.
+
+### Changed
+- Deprecated `WakamitiContributors#getContributor(...)`; during execution it now delegates to the current backend while
+  preserving the global lookup as a compatibility fallback outside an execution context.
+
+### Fixed
+- Prevent custom steps from updating a contributor owned by a different backend.
+
+
 ## [2.10.0] - 2026-09-10
 
 ### Added
