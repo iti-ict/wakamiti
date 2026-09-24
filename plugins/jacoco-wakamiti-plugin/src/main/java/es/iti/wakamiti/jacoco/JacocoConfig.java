@@ -33,9 +33,9 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
 
     private static final int MAX_IPV4_OCTET = 255;
     private static final int MAX_PORT = 65535;
-    private static final Pattern HOST_PATTERN = Pattern.compile(
-            "^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
-                    + "(?:\\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$"
+    private static final int MAX_HOST_LENGTH = 253;
+    private static final Pattern HOST_LABEL_PATTERN = Pattern.compile(
+            "[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?"
     );
     private static final Pattern DOT_PATTERN = Pattern.compile("\\.");
     private static final Pattern IPV4_PATTERN = Pattern.compile("^(?:\\d{1,3}\\.){3}\\d{1,3}$");
@@ -154,9 +154,17 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
     private boolean validHost(
             String host
     ) {
-        if (!HOST_PATTERN.matcher(host).matches()) {
+        if (host.length() > MAX_HOST_LENGTH) {
             return false;
         }
+
+        String[] labels = DOT_PATTERN.split(host, -1);
+        for (String label : labels) {
+            if (!HOST_LABEL_PATTERN.matcher(label).matches()) {
+                return false;
+            }
+        }
+
         return !IPV4_PATTERN.matcher(host).matches()
                 || DOT_PATTERN.splitAsStream(host)
                         .mapToInt(Integer::parseInt)

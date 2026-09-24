@@ -23,6 +23,7 @@ import org.junit.rules.TemporaryFolder;
 
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.imconfig.Configuration;
+import es.iti.wakamiti.api.imconfig.Configurer;
 
 
 public class JacocoConfigTest {
@@ -110,8 +111,9 @@ public class JacocoConfigTest {
         // Intentionally omit JACOCO_CLASSES
         Map<String, Object> map = Map.of(JacocoConfig.JACOCO_HOSTS, "localhost:6300");
         Configuration cfg = Configuration.factory().fromMap(map);
+        Configurer<JacocoReporter> configurer = config.configurer();
 
-        assertThatThrownBy(() -> config.configurer().configure(reporter, cfg))
+        assertThatThrownBy(() -> configurer.configure(reporter, cfg))
                 .isInstanceOf(WakamitiException.class)
                 .hasMessageContaining("Property '" + JacocoConfig.JACOCO_CLASSES + "' is required");
     }
@@ -122,8 +124,11 @@ public class JacocoConfigTest {
                 JacocoConfig.JACOCO_HOSTS, "localhost:6300",
                 JacocoConfig.JACOCO_CLASSES, List.of()
         ));
+        JacocoConfig config = new JacocoConfig();
+        JacocoReporter reporter = new JacocoReporter();
+        Configurer<JacocoReporter> configurer = config.configurer();
 
-        assertThatThrownBy(() -> new JacocoConfig().configurer().configure(new JacocoReporter(), cfg))
+        assertThatThrownBy(() -> configurer.configure(reporter, cfg))
                 .isInstanceOf(WakamitiException.class)
                 .hasMessageContaining("Property '" + JacocoConfig.JACOCO_CLASSES + "' is required");
     }
@@ -134,8 +139,11 @@ public class JacocoConfigTest {
                 JacocoConfig.JACOCO_HOSTS, List.of(),
                 JacocoConfig.JACOCO_CLASSES, classesDirectory().toString()
         ));
+        JacocoConfig config = new JacocoConfig();
+        JacocoReporter reporter = new JacocoReporter();
+        Configurer<JacocoReporter> configurer = config.configurer();
 
-        assertThatThrownBy(() -> new JacocoConfig().configurer().configure(new JacocoReporter(), cfg))
+        assertThatThrownBy(() -> configurer.configure(reporter, cfg))
                 .isInstanceOf(WakamitiException.class)
                 .hasMessageContaining("requires at least one host");
     }
@@ -154,8 +162,11 @@ public class JacocoConfigTest {
                     JacocoConfig.JACOCO_HOSTS, invalidHost,
                     JacocoConfig.JACOCO_CLASSES, classes.toString()
             ));
+            JacocoConfig config = new JacocoConfig();
+            JacocoReporter reporter = new JacocoReporter();
+            Configurer<JacocoReporter> configurer = config.configurer();
 
-            assertThatThrownBy(() -> new JacocoConfig().configurer().configure(new JacocoReporter(), cfg))
+            assertThatThrownBy(() -> configurer.configure(reporter, cfg))
                     .as("Host %s should be rejected", invalidHost)
                     .isInstanceOf(WakamitiException.class)
                     .hasMessageContaining(JacocoConfig.JACOCO_HOSTS)
@@ -178,6 +189,31 @@ public class JacocoConfigTest {
                 List.of("localhost:1", "agent.example.org:65535", "10.0.0.1:6300")
         );
         assertThat(getField(reporter, "classes")).isEqualTo(List.of(classes));
+    }
+
+    @Test
+    public void configureAcceptsMaximumLengthDnsHostAndRejectsLongerHost() throws IOException {
+        String label = "a".repeat(63);
+        String maximumLengthHost = String.join(".", label, label, label, "a".repeat(61));
+        String tooLongHost = maximumLengthHost + "a";
+        Path classes = classesDirectory();
+
+        Configuration validConfiguration = Configuration.factory().fromMap(Map.of(
+                JacocoConfig.JACOCO_HOSTS, maximumLengthHost + ":6300",
+                JacocoConfig.JACOCO_CLASSES, classes.toString()
+        ));
+        new JacocoConfig().configurer().configure(new JacocoReporter(), validConfiguration);
+
+        Configuration invalidConfiguration = Configuration.factory().fromMap(Map.of(
+                JacocoConfig.JACOCO_HOSTS, tooLongHost + ":6300",
+                JacocoConfig.JACOCO_CLASSES, classes.toString()
+        ));
+        JacocoConfig config = new JacocoConfig();
+        JacocoReporter reporter = new JacocoReporter();
+        Configurer<JacocoReporter> configurer = config.configurer();
+        assertThatThrownBy(() -> configurer.configure(reporter, invalidConfiguration))
+                .isInstanceOf(WakamitiException.class)
+                .hasMessageContaining(JacocoConfig.JACOCO_HOSTS);
     }
 
     @Test
@@ -222,8 +258,11 @@ public class JacocoConfigTest {
                     JacocoConfig.JACOCO_HOSTS, "localhost:6300",
                     JacocoConfig.JACOCO_CLASSES, List.of(validClasses.toString(), invalidClassesRoot.toString())
             ));
+            JacocoConfig config = new JacocoConfig();
+            JacocoReporter reporter = new JacocoReporter();
+            Configurer<JacocoReporter> configurer = config.configurer();
 
-            assertThatThrownBy(() -> new JacocoConfig().configurer().configure(new JacocoReporter(), cfg))
+            assertThatThrownBy(() -> configurer.configure(reporter, cfg))
                     .isInstanceOf(WakamitiException.class)
                     .hasMessageContaining(JacocoConfig.JACOCO_CLASSES)
                     .hasMessageContaining(invalidClassesRoot.toString())
