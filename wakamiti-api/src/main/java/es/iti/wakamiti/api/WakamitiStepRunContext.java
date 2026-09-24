@@ -14,7 +14,7 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 
 
 /**
- * Execution context used while resolving and running a single Wakamiti step.
+ * Execution context used while running a Wakamiti step or lifecycle operation.
  * <p>
  * The static accessors are backed by a {@link ThreadLocal}. Each execution
  * thread must install a context with {@link #set(WakamitiStepRunContext)} and
@@ -121,6 +121,9 @@ public class WakamitiStepRunContext {
 
     /**
      * Gets the backend associated with this step execution.
+     * Contributor implementations can use
+     * {@link Backend#getContributor(Class)} to resolve another contributor from
+     * the same backend scope.
      *
      * @return backend instance
      */

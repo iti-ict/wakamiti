@@ -108,12 +108,24 @@ public class WakamitiContributors {
      *
      * @param contributorClass contributor API type to match
      * @param <T>              contributor type
-     * @return first matching manually added contributor
-     * @throws WakamitiException when no manually added contributor matches
+     * @return the matching contributor from the current backend when invoked
+     * during execution, otherwise the last matching globally registered
+     * contributor
+     * @throws WakamitiException when no matching contributor can be resolved
+     * @deprecated resolve contributors from
+     * {@link WakamitiStepRunContext#backend()} to preserve backend scope
      */
+    @Deprecated(since = "2.10.1")
     public <T extends Contributor> T getContributor(
             Class<T> contributorClass
     ) {
+        WakamitiStepRunContext context = WakamitiStepRunContext.current();
+        if (context != null && StepContributor.class.isAssignableFrom(contributorClass)) {
+            StepContributor contributor = context.backend().getContributor(
+                    contributorClass.asSubclass(StepContributor.class)
+            );
+            return contributorClass.cast(contributor);
+        }
         return stepContributors.stream()
                 .filter(c -> contributorClass.isAssignableFrom(c.getClass()))
                 .map(contributorClass::cast)
