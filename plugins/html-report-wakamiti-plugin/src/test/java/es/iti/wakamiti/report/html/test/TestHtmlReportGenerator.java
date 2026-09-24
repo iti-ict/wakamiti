@@ -223,10 +223,4 @@ public class TestHtmlReportGenerator {
         }
     }
 
-    private String uri(
-            String resource
-    ) {
-        return Path.of("target/" + resource + ".html").toUri().toString();
-    }
-
 }
