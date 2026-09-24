@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Gherkin-generated scenario and lifecycle-hook nodes now expose their enclosing feature identifier through the
   `featureId` property.
 
+### Changed
+- Backends now retain their own `StepContributor` instances and expose them through `Backend#getContributor(...)`.
+
+### Fixed
+- Custom steps and lifecycle hooks now resolve contributors from their current backend, preventing state changes from
+  targeting an instance created for another plan, feature, or scenario.
+
 
 ## [3.0.0] - 2026-09-10
 
