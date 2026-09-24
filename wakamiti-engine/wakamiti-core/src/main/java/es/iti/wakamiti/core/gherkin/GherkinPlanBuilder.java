@@ -205,8 +205,22 @@ public class GherkinPlanBuilder implements PlanBuilder, Configurable {
         for (ScenarioDefinition abstractScenario : feature.getChildren()) {
             addScenarioDefinition(feature, abstractScenario, location, node);
         }
+        removeLifecycleHooksWithoutFunctionalScenarios(node);
         addFeatureProperties(node);
         return node;
+    }
+
+    private void removeLifecycleHooksWithoutFunctionalScenarios(
+            PlanNodeBuilder featureNode
+    ) {
+        boolean hasFunctionalScenario = featureNode.descendants()
+                .anyMatch(node -> node.nodeType() == NodeType.TEST_CASE && !node.filtered());
+        if (!hasFunctionalScenario) {
+            featureNode.children()
+                    .filter(this::isLifecycleHookScenario)
+                    .toList()
+                    .forEach(featureNode::removeChild);
+        }
     }
 
     private void addScenarioDefinition(
