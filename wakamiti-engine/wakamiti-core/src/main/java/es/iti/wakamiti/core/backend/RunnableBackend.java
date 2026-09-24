@@ -62,42 +62,6 @@ public class RunnableBackend extends LifecycleBackend {
     private final List<PlanNode> stepsWithErrors;
 
     /**
-     * Constructs a {@code RunnableBackend} with the specified test case,
-     * configuration, type registry, list of runnable steps, setup operations,
-     * teardown operations, and clock.
-     *
-     * @param testCase           The test case associated with this backend.
-     * @param configuration      The configuration for the backend.
-     * @param typeRegistry       The WakamitiDataTypeRegistry for type information.
-     * @param steps              The list of runnable steps available in this backend.
-     * @param setUpOperations    The list of setup operations to be executed before
-     *                           running the test steps.
-     * @param tearDownOperations The list of teardown operations to be executed
-     *                           after running the test steps.
-     * @param clock              The clock used to record timestamps.
-     */
-    public RunnableBackend(
-            PlanNode testCase,
-            Configuration configuration,
-            WakamitiDataTypeRegistry typeRegistry,
-            List<RunnableStep> steps,
-            Map<Level, List<ThrowableRunnable>> setUpOperations,
-            Map<Level, List<ThrowableRunnable>> tearDownOperations,
-            Clock clock
-    ) {
-        this(
-                testCase,
-                configuration,
-                typeRegistry,
-                List.of(),
-                steps,
-                setUpOperations,
-                tearDownOperations,
-                clock
-        );
-    }
-
-    /**
      * Constructs a runnable backend with its backend-scoped contributors.
      *
      * @param testCase            test case associated with this backend
@@ -107,7 +71,6 @@ public class RunnableBackend extends LifecycleBackend {
      * @param steps               runnable steps built from the contributors
      * @param setUpOperations     setup operations grouped by lifecycle level
      * @param tearDownOperations  teardown operations grouped by lifecycle level
-     * @param clock               clock used to record timestamps
      */
     public RunnableBackend(
             PlanNode testCase,
@@ -116,8 +79,7 @@ public class RunnableBackend extends LifecycleBackend {
             List<StepContributor> stepContributors,
             List<RunnableStep> steps,
             Map<Level, List<ThrowableRunnable>> setUpOperations,
-            Map<Level, List<ThrowableRunnable>> tearDownOperations,
-            Clock clock
+            Map<Level, List<ThrowableRunnable>> tearDownOperations
     ) {
         super(
                 configuration,
@@ -129,7 +91,7 @@ public class RunnableBackend extends LifecycleBackend {
                 LocaleLoader.forLanguage(testCase.language())
         );
         this.testCase = testCase;
-        this.clock = clock;
+        this.clock = Clock.systemUTC();
         this.stepBackendData = new HashMap<>();
         this.extraProperties = new ContextMap();
         this.stepsWithErrors = new ArrayList<>();

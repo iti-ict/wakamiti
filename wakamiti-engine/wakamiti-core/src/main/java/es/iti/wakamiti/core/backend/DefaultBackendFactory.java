@@ -10,7 +10,6 @@ package es.iti.wakamiti.core.backend;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -198,7 +197,6 @@ public class DefaultBackendFactory implements BackendFactory {
 
         WakamitiDataTypeRegistry typeRegistry = loadTypes(dataTypeContributors);
         List<RunnableStep> steps = createSteps(stepContributors, typeRegistry);
-        Clock clock = Clock.systemUTC();
         if (runnableBackend) {
             return new RunnableBackend(
                     testCase,
@@ -207,8 +205,7 @@ public class DefaultBackendFactory implements BackendFactory {
                     stepContributors,
                     steps,
                     getSetUpOperations(stepContributors),
-                    getTearDownOperations(stepContributors),
-                    clock
+                    getTearDownOperations(stepContributors)
             );
         } else {
             return new NonRunnableBackend(configuration, typeRegistry, stepContributors, steps);
