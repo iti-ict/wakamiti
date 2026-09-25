@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.0.1] - 2026-09-26
+
+### Changed
+- Include only covered classes in per-scenario execution data and XML/CSV reports.
+- Generate only aggregate execution data and reports when `jacoco.report.merge` is enabled.
+
+### Fixed
+- Resolve report source files from the root directories configured in `jacoco.report.sources`.
+
+
 ## [2.0.0] - 2026-09-24
 
 ### Added
