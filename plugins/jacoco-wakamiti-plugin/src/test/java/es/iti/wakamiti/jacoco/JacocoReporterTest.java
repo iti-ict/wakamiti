@@ -16,8 +16,6 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -29,6 +27,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
@@ -36,10 +35,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.data.ExecutionData;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.core.tools.ExecDumpClient;
 import org.jacoco.core.tools.ExecFileLoader;
+import org.jacoco.report.ISourceFileLocator;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -101,6 +103,7 @@ public class JacocoReporterTest {
         reporter.setHosts(List.of("localhost:6300", "jacoco-agent:6301"));
         reporter.setRetries(5);
         Path out = Files.createTempDirectory("jacoco-out");
+        temporaries.add(out);
         reporter.setOutput(out);
         reporter.setClasses(List.of(Files.createTempDirectory("classes")));
         reporter.setSources(List.of(Files.createTempDirectory("sources")));
@@ -108,8 +111,14 @@ public class JacocoReporterTest {
 
         // Create mocks
         ExecDumpClient dumpClient = mock(ExecDumpClient.class);
-        ExecFileLoader firstDumpLoader = mock(ExecFileLoader.class);
-        ExecFileLoader secondDumpLoader = mock(ExecFileLoader.class);
+        ExecFileLoader firstDumpLoader = executionDataLoader(
+                new ExecutionData(1L, "covered/First", new boolean[]{true}),
+                new ExecutionData(2L, "uncovered/First", new boolean[]{false})
+        );
+        ExecFileLoader secondDumpLoader = executionDataLoader(
+                new ExecutionData(3L, "covered/Second", new boolean[]{true}),
+                new ExecutionData(4L, "uncovered/Second", new boolean[]{false})
+        );
         when(dumpClient.dump(anyString(), anyInt())).thenReturn(firstDumpLoader, secondDumpLoader);
 
         // Inject mock dump client
@@ -128,8 +137,8 @@ public class JacocoReporterTest {
         verify(dumpClient).setRetryCount(5);
         verify(dumpClient).dump("localhost", 6300);
         verify(dumpClient).dump("jacoco-agent", 6301);
-        verify(firstDumpLoader).save(argThat(f -> f.getName().equals("TC-1.exec")), eq(false));
-        verify(secondDumpLoader).save(argThat(f -> f.getName().equals("TC-1.exec")), eq(true));
+        assertThat(executionDataNames(out.resolve("TC-1.exec").toFile()))
+                .containsExactlyInAnyOrder("covered/First", "covered/Second");
         // And ensure per-test loader (distinct field) was not used (kept null)
         Object fileLoaderField = getPrivate(reporter, "fileLoader");
         assertThat(fileLoaderField).isNull();
@@ -178,17 +187,10 @@ public class JacocoReporterTest {
         reporter.setTabwidth(4);
         reporter.setName("Report");
 
-        // Mock dump client that writes the dumped exec file
+        // Mock dump client with empty execution data
         ExecDumpClient dumpClient = mock(ExecDumpClient.class);
-        ExecFileLoader dumpLoader = mock(ExecFileLoader.class);
+        ExecFileLoader dumpLoader = new ExecFileLoader();
         when(dumpClient.dump(anyString(), anyInt())).thenReturn(dumpLoader);
-        // When save is called, ensure the file exists so executeSingle can load it
-        doAnswer(inv -> {
-            File f = inv.getArgument(0);
-            f.getParentFile().mkdirs();
-            f.createNewFile();
-            return null;
-        }).when(dumpLoader).save(any(File.class), anyBoolean());
         setPrivate(reporter, "dumpClient", dumpClient);
 
         // Mock fileLoader used by executeSingle
@@ -215,11 +217,11 @@ public class JacocoReporterTest {
         assertThat(xml).isDirectory();
         assertThat(Files.exists(producedXml)).isTrue();
         assertThat(Files.readString(producedXml))
-                .contains("es/iti/wakamiti/jacoco/JacocoReporter", "es/iti/wakamiti/jacoco/JacocoConfig");
+                .doesNotContain("es/iti/wakamiti/jacoco/JacocoReporter", "es/iti/wakamiti/jacoco/JacocoConfig");
     }
 
     @Test
-    public void mergeKeepsScenarioReportsAndAddsLifecycleHooksOnlyToAggregates() throws Exception {
+    public void mergeGeneratesOnlyAggregateReportsAndIncludesLifecycleHooks() throws Exception {
         Path reportsParent = Files.createTempDirectory("jacoco-merged-reports");
         Path out = reportsParent.resolve("out");
         Path xml = reportsParent.resolve("xml");
@@ -256,9 +258,9 @@ public class JacocoReporterTest {
         when(snapshot.getId()).thenReturn("ID-Scenario");
         reporter.eventReceived(new Event(Event.NODE_RUN_FINISHED, Instant.now(), snapshot));
 
-        assertThat(out.resolve("ID-Scenario.exec")).exists();
-        assertThat(xml.resolve("ID-Scenario.xml")).exists();
-        assertThat(csv.resolve("ID-Scenario.csv")).exists();
+        assertThat(out.resolve("ID-Scenario.exec")).doesNotExist();
+        assertThat(xml.resolve("ID-Scenario.xml")).doesNotExist();
+        assertThat(csv.resolve("ID-Scenario.csv")).doesNotExist();
         assertThat(out.resolve("#setup.exec")).doesNotExist();
         assertThat(xml.resolve("#setup.xml")).doesNotExist();
         assertThat(csv.resolve("#setup.csv")).doesNotExist();
@@ -270,7 +272,7 @@ public class JacocoReporterTest {
 
         assertThat(aggregateXml).exists();
         assertThat(aggregateCsv).exists();
-        assertThat(csv).isDirectory();
+        assertThat(csv).doesNotExist();
         assertThat(html).isDirectory();
         assertThat(html.resolve("index.html")).exists();
     }
@@ -309,7 +311,7 @@ public class JacocoReporterTest {
         reporter.setOutput(out);
 
         ExecDumpClient dumpClient = mock(ExecDumpClient.class);
-        ExecFileLoader successfulLoader = mock(ExecFileLoader.class);
+        ExecFileLoader successfulLoader = new ExecFileLoader();
         when(dumpClient.dump("unavailable", 6300)).thenThrow(new IOException("first failure"));
         when(dumpClient.dump("available", 6301)).thenReturn(successfulLoader);
         when(dumpClient.dump("also-unavailable", 6302)).thenThrow(new IOException("last failure"));
@@ -334,6 +336,30 @@ public class JacocoReporterTest {
         verify(dumpClient).dump("available", 6301);
         verify(dumpClient).dump("also-unavailable", 6302);
         verify(successfulLoader).save(argThat(f -> f.getName().equals("TC-errors.exec")), eq(false));
+        assertThat(out.resolve("TC-errors.exec")).exists();
+    }
+
+    @Test
+    public void scenarioReportsExcludeUncoveredClassesButCompleteReportsRetainThem() throws Exception {
+        JacocoReporter reporter = new JacocoReporter();
+        Path classes = Files.createTempDirectory("jacoco-filtered-classes");
+        temporaries.add(classes);
+        copyClass(classes, JacocoReporter.class);
+        reporter.setClasses(List.of(classes));
+
+        java.lang.reflect.Method analyze = JacocoReporter.class.getDeclaredMethod(
+                "analyze", String.class, ExecutionDataStore.class, boolean.class
+        );
+        analyze.setAccessible(true);
+        IBundleCoverage scenario = (IBundleCoverage) analyze.invoke(
+                reporter, "scenario", new ExecutionDataStore(), true
+        );
+        IBundleCoverage complete = (IBundleCoverage) analyze.invoke(
+                reporter, "complete", new ExecutionDataStore(), false
+        );
+
+        assertThat(scenario.getClassCounter().getTotalCount()).isZero();
+        assertThat(complete.getClassCounter().getTotalCount()).isEqualTo(1);
     }
 
     private static void setPrivate(
@@ -364,6 +390,26 @@ public class JacocoReporterTest {
         java.lang.reflect.Field f = target.getClass().getDeclaredField(field);
         f.setAccessible(true);
         return f.get(target);
+    }
+
+    private ExecFileLoader executionDataLoader(
+            ExecutionData... data
+    ) {
+        ExecFileLoader loader = new ExecFileLoader();
+        for (ExecutionData executionData : data) {
+            loader.getExecutionDataStore().put(executionData);
+        }
+        return loader;
+    }
+
+    private List<String> executionDataNames(
+            File file
+    ) throws IOException {
+        ExecFileLoader loader = new ExecFileLoader();
+        loader.load(file);
+        return loader.getExecutionDataStore().getContents().stream()
+                .map(ExecutionData::getName)
+                .toList();
     }
 
     private void copyClass(
