@@ -7,9 +7,8 @@ slug: /en/plugins/jacoco
 This plugin integrates JaCoCo with Wakamiti, generating code coverage from test case execution.
 
 It does the following:
-- Connects to the JaCoCo agents at runtime and exports their execution data (.exec) at the end of each test case.
-- Optionally generates reports for each scenario in XML and/or CSV formats if the output paths are configured.
-- At the end of execution, it can generate an aggregated HTML coverage report if the output path is configured.
+- With `merge` disabled, exports a `.exec` file and generates XML and/or CSV reports for each test case.
+- With `merge` enabled, accumulates coverage and generates only aggregate artifacts at the end of execution.
 
 > **NOTE**
 >
@@ -63,8 +62,11 @@ jacoco:
 - Type: `path`
 - Default: `.`
 
-Output directory for per-scenario execution data. It is created when needed. When `merge` is enabled, this path is
-also used as the aggregate base name: `some/directory.exec`.
+Output directory for per-scenario execution data when `merge` is disabled. It is created when needed. When `merge` is
+enabled, this path is used as the aggregate base name: `some/directory.exec`.
+
+Per-scenario `.exec` files include only classes with at least one executed probe. With `merge` enabled, no
+per-scenario files are generated; only the aggregate is generated without this additional filtering.
 
 Example:
 ```yml
@@ -91,8 +93,8 @@ jacoco:
 ### `jacoco.report.xml`
 - Type: `path`
 
-Output directory for per-scenario XML reports. It is created when needed. When `merge` is enabled, this path is also
-used as the aggregate XML base name. XML reports are disabled when this parameter is absent.
+Output directory for per-scenario XML reports when `merge` is disabled. It is created when needed. When `merge` is
+enabled, this path is used as the aggregate XML base name. XML reports are disabled when this parameter is absent.
 
 Example:
 ```yml
@@ -104,8 +106,8 @@ jacoco:
 ### `jacoco.report.csv`
 - Type: `path`
 
-Output directory for per-scenario CSV reports. It is created when needed. When `merge` is enabled, this path is also
-used as the aggregate CSV base name. CSV reports are disabled when this parameter is absent.
+Output directory for per-scenario CSV reports when `merge` is disabled. It is created when needed. When `merge` is
+enabled, this path is used as the aggregate CSV base name. CSV reports are disabled when this parameter is absent.
 
 Example:
 ```yml
@@ -187,9 +189,11 @@ jacoco:
 - Type: `boolean`
 - Default: `true`
 
-Generates additional aggregate reports without removing individual scenario files. Lifecycle hook coverage is included
-only in the aggregate reports. The aggregate files are the configured dump, XML and CSV paths with `.exec`, `.xml` and
-`.csv` appended, respectively.
+Generates only aggregate artifacts. Lifecycle hook coverage is included in them. The aggregate files are the configured
+dump, XML and CSV paths with `.exec`, `.xml` and `.csv` appended, respectively.
+
+With `merge` disabled, per-scenario XML and CSV reports include only covered classes. With `merge` enabled, aggregate
+reports, including HTML, show every configured class, including classes without coverage.
 
 Example:
 ```yml

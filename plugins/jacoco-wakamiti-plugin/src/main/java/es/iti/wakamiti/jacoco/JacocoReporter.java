@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -28,6 +27,7 @@ import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.analysis.IClassCoverage;
+import org.jacoco.core.data.ExecutionData;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.tools.ExecDumpClient;
 import org.jacoco.core.tools.ExecFileLoader;
@@ -192,8 +192,8 @@ public class JacocoReporter implements EventObserver {
             PlanNodeSnapshot snapshot = (PlanNodeSnapshot) event.data();
             if (snapshot.getNodeType() == NodeType.TEST_CASE) {
                 String segmentId = snapshot.getId();
-                dump(segmentId, true);
-                if (xml != null || csv != null) {
+                dump(segmentId, !merge);
+                if (!merge && (xml != null || csv != null)) {
                     executeSingle(segmentId);
                 }
             } else if (merge && isExecutedLifecycleHook(snapshot)) {
@@ -230,7 +230,7 @@ public class JacocoReporter implements EventObserver {
                         final InetAddress address,
                         final int port
                 ) {
-                    LOGGER.info("Connecting to {}:{}...", address, port);
+                    LOGGER.debug("Connecting to {}:{}...", address, port);
                 }
 
                 @Override
@@ -269,14 +269,14 @@ public class JacocoReporter implements EventObserver {
             try {
                 final ExecFileLoader loader = client.dump(parts[0], Integer.parseInt(parts[1]));
                 if (saveSegment) {
-                    LOGGER.info("Writing execution data from {} to {}", host, file);
-                    loader.save(file, initializedSegments.contains(id));
+                    LOGGER.debug("Writing execution data from {} to {}", host, file);
+                    coveredExecutionData(loader).save(file, initializedSegments.contains(id));
                     initializedSegments.add(id);
                     executionFiles.add(file);
                 }
                 if (merge) {
                     File aggregate = aggregateFile(output, ".exec");
-                    LOGGER.info("Writing aggregate execution data to {}", aggregate);
+                    LOGGER.debug("Writing aggregate execution data to {}", aggregate);
                     loader.save(aggregate, aggregateInitialized);
                     aggregateInitialized = true;
                 }
@@ -313,26 +313,44 @@ public class JacocoReporter implements EventObserver {
     private ISourceFileLocator getSourceLocator() {
         final MultiSourceFileLocator multi = new MultiSourceFileLocator(tabwidth);
         for (Path root : sources) {
-            for (final File f : searchFiles(root, ".java")) {
-                multi.add(new DirectorySourceFileLocator(f, Charset.defaultCharset().name(), tabwidth));
-            }
+            multi.add(new DirectorySourceFileLocator(root.toFile(), null, tabwidth));
         }
         return multi;
     }
 
     private IBundleCoverage analyze(
             String name,
-            final ExecutionDataStore data
+            final ExecutionDataStore data,
+            boolean coveredOnly
     ) throws IOException {
         final CoverageBuilder builder = new CoverageBuilder();
-        final Analyzer analyzer = new Analyzer(data, builder);
+        final List<IClassCoverage> noMatchClasses = new ArrayList<>();
+        final Analyzer analyzer = new Analyzer(data, coverage -> {
+            if (coverage.isNoMatch()) {
+                noMatchClasses.add(coverage);
+            }
+            if (!coveredOnly || coverage.getInstructionCounter().getCoveredCount() > 0) {
+                builder.visitCoverage(coverage);
+            }
+        });
         for (Path root : classes) {
             for (final File f : searchFiles(root, ".class")) {
                 analyzer.analyzeAll(f);
             }
         }
-        printNoMatchWarning(builder.getNoMatchClasses());
+        printNoMatchWarning(noMatchClasses);
         return builder.getBundle(name);
+    }
+
+    private ExecFileLoader coveredExecutionData(
+            ExecFileLoader source
+    ) {
+        final ExecFileLoader filtered = new ExecFileLoader();
+        source.getSessionInfoStore().accept(filtered.getSessionInfoStore());
+        source.getExecutionDataStore().getContents().stream()
+                .filter(ExecutionData::hasHits)
+                .forEach(filtered.getExecutionDataStore()::put);
+        return filtered;
     }
 
     private void printNoMatchWarning(
@@ -360,7 +378,8 @@ public class JacocoReporter implements EventObserver {
                 format("{} - {}", name, id),
                 xml == null ? null : xml.resolve(format("{}.xml", id)),
                 csv == null ? null : csv.resolve(format("{}.csv", id)),
-                null
+                null,
+                true
         );
     }
 
@@ -385,7 +404,8 @@ public class JacocoReporter implements EventObserver {
                 name,
                 merge && xml != null ? aggregatePath(xml, ".xml") : null,
                 merge && csv != null ? aggregatePath(csv, ".csv") : null,
-                html
+                html,
+                false
         );
     }
 
@@ -394,7 +414,8 @@ public class JacocoReporter implements EventObserver {
             String bundleName,
             Path xmlOutput,
             Path csvOutput,
-            Path htmlOutput
+            Path htmlOutput,
+            boolean coveredOnly
     ) {
         final ExecFileLoader loader = fileLoader();
         try {
@@ -404,7 +425,7 @@ public class JacocoReporter implements EventObserver {
                     loader.load(file);
                 }
             }
-            IBundleCoverage bundle = analyze(bundleName, loader.getExecutionDataStore());
+            IBundleCoverage bundle = analyze(bundleName, loader.getExecutionDataStore(), coveredOnly);
             LOGGER.info("Analyzing {} classes.", bundle.getClassCounter().getTotalCount());
 
             final IReportVisitor visitor = createReportVisitor(xmlOutput, csvOutput, htmlOutput);

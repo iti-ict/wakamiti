@@ -7,10 +7,8 @@ slug: /plugins/jacoco
 Este plugin integra JaCoCo con Wakamiti para generar cobertura de código a partir de la ejecución de casos de prueba.
 
 Qué hace:
-- Se conecta a los agentes JaCoCo en tiempo de ejecución y vuelca (dump) sus datos de ejecución (.exec) al finalizar
-  cada caso de prueba.
-- Opcionalmente, genera reportes por escenario en XML y/o CSV si se configuran las rutas de salida.
-- Al finalizar la ejecución, puede generar un informe HTML agregado de cobertura si se configura su ruta de salida.
+- Con `merge` desactivado, vuelca un `.exec` y genera informes XML y/o CSV por cada caso de prueba.
+- Con `merge` activado, acumula la cobertura y genera únicamente los artefactos agregados al finalizar la ejecución.
 
 > **NOTA**
 >
@@ -64,8 +62,11 @@ jacoco:
 - Tipo: `path`
 - Por defecto: `.`
 
-Directorio de salida donde se escribirán los datos de ejecución por escenario. Se crea cuando es necesario. Con
-`merge` activo, esta ruta también se usa como base del agregado: `some/directory.exec`.
+Directorio de salida donde se escribirán los datos de ejecución por escenario cuando `merge` esté desactivado. Se crea
+cuando es necesario. Con `merge` activo, esta ruta se usa como base del agregado: `some/directory.exec`.
+
+Los archivos `.exec` por escenario incluyen únicamente clases con al menos una probe ejecutada. Con `merge` activo no
+se generan archivos por escenario; solo se genera el agregado sin aplicar este filtrado adicional.
 
 Ejemplo:
 ```yml
@@ -92,8 +93,9 @@ jacoco:
 ### `jacoco.report.xml`
 - Tipo: `path`
 
-Directorio de salida para informes XML por escenario. Se crea cuando es necesario. Con `merge` activo, esta ruta
-también se usa como base del agregado XML. No se generarán informes XML si no se especifica este parámetro.
+Directorio de salida para informes XML por escenario cuando `merge` esté desactivado. Se crea cuando es necesario. Con
+`merge` activo, esta ruta se usa como base del agregado XML. No se generarán informes XML si no se especifica este
+parámetro.
 
 Ejemplo:
 ```yml
@@ -105,8 +107,9 @@ jacoco:
 ### `jacoco.report.csv`
 - Tipo: `path`
 
-Directorio de salida para informes CSV por escenario. Se crea cuando es necesario. Con `merge` activo, esta ruta
-también se usa como base del agregado CSV. No se generarán informes CSV si no se especifica este parámetro.
+Directorio de salida para informes CSV por escenario cuando `merge` esté desactivado. Se crea cuando es necesario. Con
+`merge` activo, esta ruta se usa como base del agregado CSV. No se generarán informes CSV si no se especifica este
+parámetro.
 
 Ejemplo:
 ```yml
@@ -188,9 +191,12 @@ jacoco:
 - Tipo: `boolean`
 - Por defecto: `true`
 
-Genera reportes agregados adicionales sin eliminar los archivos individuales de escenarios. La cobertura de los hooks
-de lifecycle se incluye solo en los agregados. Los agregados se guardan añadiendo `.exec`, `.xml` y `.csv` a las rutas
-configuradas para dump, XML y CSV, respectivamente.
+Genera únicamente los artefactos agregados. La cobertura de los hooks de lifecycle se incluye en ellos. Los agregados
+se guardan añadiendo `.exec`, `.xml` y `.csv` a las rutas configuradas para dump, XML y CSV, respectivamente.
+
+Con `merge` desactivado, los informes XML y CSV por escenario incluyen únicamente clases con cobertura. Con `merge`
+activado, los informes agregados, incluido el HTML, muestran todas las clases configuradas, también las que no tienen
+cobertura.
 
 Ejemplo:
 ```yml
