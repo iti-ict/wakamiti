@@ -313,9 +313,7 @@ public class JacocoReporter implements EventObserver {
     private ISourceFileLocator getSourceLocator() {
         final MultiSourceFileLocator multi = new MultiSourceFileLocator(tabwidth);
         for (Path root : sources) {
-            for (final File f : searchFiles(root, ".java")) {
-                multi.add(new DirectorySourceFileLocator(f, Charset.defaultCharset().name(), tabwidth));
-            }
+            multi.add(new DirectorySourceFileLocator(root.toFile(), null, tabwidth));
         }
         return multi;
     }

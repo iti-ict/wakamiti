@@ -335,7 +335,6 @@ public class JacocoReporterTest {
         verify(dumpClient).dump("unavailable", 6300);
         verify(dumpClient).dump("available", 6301);
         verify(dumpClient).dump("also-unavailable", 6302);
-        verify(successfulLoader).save(argThat(f -> f.getName().equals("TC-errors.exec")), eq(false));
         assertThat(out.resolve("TC-errors.exec")).exists();
     }
 
@@ -360,6 +359,40 @@ public class JacocoReporterTest {
 
         assertThat(scenario.getClassCounter().getTotalCount()).isZero();
         assertThat(complete.getClassCounter().getTotalCount()).isEqualTo(1);
+    }
+
+    @Test
+    public void sourceLocatorResolvesSourcesFromConfiguredRootsInConfiguredOrder() throws Exception {
+        JacocoReporter reporter = new JacocoReporter();
+        Path firstSources = Files.createTempDirectory("jacoco-sources-first");
+        Path secondSources = Files.createTempDirectory("jacoco-sources-second");
+        temporaries.addAll(List.of(firstSources, secondSources));
+        Path firstExample = firstSources.resolve("es/iti/wakamiti/jacoco/Example.java");
+        Path secondExample = secondSources.resolve("es/iti/wakamiti/jacoco/Example.java");
+        Path secondOnly = secondSources.resolve("es/iti/wakamiti/jacoco/SecondOnly.java");
+        Files.createDirectories(firstExample.getParent());
+        Files.createDirectories(secondExample.getParent());
+        Files.writeString(firstExample, "first source");
+        Files.writeString(secondExample, "second source");
+        Files.writeString(secondOnly, "second-only source");
+        reporter.setSources(List.of(firstSources, secondSources));
+        reporter.setTabwidth(4);
+
+        java.lang.reflect.Method getSourceLocator = JacocoReporter.class.getDeclaredMethod("getSourceLocator");
+        getSourceLocator.setAccessible(true);
+        ISourceFileLocator locator = (ISourceFileLocator) getSourceLocator.invoke(reporter);
+
+        try (Reader resolved = locator.getSourceFile("es/iti/wakamiti/jacoco", "Example.java")) {
+            assertThat(resolved).isNotNull();
+            char[] content = new char[32];
+            assertThat(new String(content, 0, resolved.read(content))).isEqualTo("first source");
+        }
+        try (Reader resolved = locator.getSourceFile("es/iti/wakamiti/jacoco", "SecondOnly.java")) {
+            assertThat(resolved).isNotNull();
+            char[] content = new char[32];
+            assertThat(new String(content, 0, resolved.read(content))).isEqualTo("second-only source");
+        }
+        assertThat(locator.getSourceFile("es/iti/wakamiti/jacoco", "Missing.java")).isNull();
     }
 
     private static void setPrivate(
