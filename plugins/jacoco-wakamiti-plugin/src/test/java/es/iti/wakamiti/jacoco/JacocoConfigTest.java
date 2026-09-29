@@ -55,7 +55,7 @@ public class JacocoConfigTest {
         assertThat(defaults.get(JacocoConfig.JACOCO_OUTPUT, String.class)).hasValue(".");
         assertThat(defaults.get(JacocoConfig.JACOCO_TABWITH, String.class)).hasValue("4");
         assertThat(defaults.get(JacocoConfig.JACOCO_NAME, String.class)).hasValue("JaCoCo Coverage Report");
-        assertThat(defaults.get(JacocoConfig.JACOCO_MERGE, Boolean.class)).hasValue(true);
+        assertThat(defaults.get(JacocoConfig.JACOCO_MERGE, String.class)).hasValue("NONE");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class JacocoConfigTest {
                 Map.entry(JacocoConfig.JACOCO_SOURCES, "src/main/java"),
                 Map.entry(JacocoConfig.JACOCO_TABWITH, "2"),
                 Map.entry(JacocoConfig.JACOCO_NAME, "My Report"),
-                Map.entry(JacocoConfig.JACOCO_MERGE, "false")
+                Map.entry(JacocoConfig.JACOCO_MERGE, "host")
         ));
 
         config.configurer().configure(reporter, cfg);
@@ -100,7 +100,69 @@ public class JacocoConfigTest {
         assertThat(getField(reporter, "sources")).isEqualTo(sources);
         assertThat(getField(reporter, "tabwidth")).isEqualTo(2);
         assertThat(getField(reporter, "name")).isEqualTo("My Report");
-        assertThat(getField(reporter, "merge")).isEqualTo(false);
+        assertThat(getField(reporter, "mergeMode")).isEqualTo(JacocoMergeMode.HOST);
+    }
+
+    @Test
+    public void configureAcceptsCaseInsensitiveMergeModes() throws IOException {
+        Path classes = classesDirectory();
+        for (String value : List.of("all", "HOST", "none")) {
+            Configuration cfg = Configuration.factory().fromMap(Map.of(
+                    JacocoConfig.JACOCO_HOSTS, "localhost:6300",
+                    JacocoConfig.JACOCO_CLASSES, classes.toString(),
+                    JacocoConfig.JACOCO_MERGE, value
+            ));
+            JacocoReporter reporter = new JacocoReporter();
+
+            new JacocoConfig().configurer().configure(reporter, cfg);
+
+            assertThat(getField(reporter, "mergeMode")).isEqualTo(JacocoMergeMode.valueOf(value.toUpperCase()));
+        }
+    }
+
+    @Test
+    public void configureRejectsBooleanAndUnknownMergeModes() throws IOException {
+        Path classes = classesDirectory();
+        for (String value : List.of("true", "false", "scenario")) {
+            Configuration cfg = Configuration.factory().fromMap(Map.of(
+                    JacocoConfig.JACOCO_HOSTS, "localhost:6300",
+                    JacocoConfig.JACOCO_CLASSES, classes.toString(),
+                    JacocoConfig.JACOCO_MERGE, value
+            ));
+
+            assertThatThrownBy(() -> new JacocoConfig().configurer().configure(new JacocoReporter(), cfg))
+                    .isInstanceOf(WakamitiException.class)
+                    .hasMessageContaining(JacocoConfig.JACOCO_MERGE)
+                    .hasMessageContaining("ALL, HOST or NONE");
+        }
+    }
+
+    @Test
+    public void configureRejectsBooleanMergeMode() throws IOException {
+        Configuration cfg = Configuration.factory().fromMap(Map.of(
+                JacocoConfig.JACOCO_HOSTS, "localhost:6300",
+                JacocoConfig.JACOCO_CLASSES, classesDirectory().toString(),
+                JacocoConfig.JACOCO_MERGE, true
+        ));
+
+        assertThatThrownBy(() -> new JacocoConfig().configurer().configure(new JacocoReporter(), cfg))
+                .isInstanceOf(WakamitiException.class)
+                .hasMessageContaining(JacocoConfig.JACOCO_MERGE)
+                .hasMessageContaining("ALL, HOST or NONE");
+    }
+
+    @Test
+    public void configureRejectsDuplicateHostNamesInHostMode() throws IOException {
+        Configuration cfg = Configuration.factory().fromMap(Map.of(
+                JacocoConfig.JACOCO_HOSTS, List.of("agent:6300", "AGENT:6301"),
+                JacocoConfig.JACOCO_CLASSES, classesDirectory().toString(),
+                JacocoConfig.JACOCO_MERGE, "HOST"
+        ));
+
+        assertThatThrownBy(() -> new JacocoConfig().configurer().configure(new JacocoReporter(), cfg))
+                .isInstanceOf(WakamitiException.class)
+                .hasMessageContaining(JacocoConfig.JACOCO_HOSTS)
+                .hasMessageContaining("unique host names");
     }
 
     @Test
@@ -243,6 +305,7 @@ public class JacocoConfigTest {
         assertThat(getField(reporter, "xml")).isEqualTo(xml);
         assertThat(getField(reporter, "csv")).isEqualTo(csv);
         assertThat(getField(reporter, "html")).isEqualTo(html);
+        assertThat(getField(reporter, "mergeMode")).isEqualTo(JacocoMergeMode.NONE);
     }
 
     @Test

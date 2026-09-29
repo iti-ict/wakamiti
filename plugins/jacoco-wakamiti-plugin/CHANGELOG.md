@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [2.0.2] - 2026-09-29
+
+### Changed
+- Replace the Boolean `jacoco.report.merge` option with `NONE`, `ALL` and `HOST` modes.
+- Generate a separate aggregate `.exec`, XML, CSV and HTML report for each configured host when using `HOST`.
+- Include in each `HOST` report only classes present in that host's JaCoCo execution data.
+
+
 ## [2.0.1] - 2026-09-26
 
 ### Changed

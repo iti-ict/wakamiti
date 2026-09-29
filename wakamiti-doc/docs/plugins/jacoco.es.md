@@ -6,9 +6,8 @@ slug: /plugins/jacoco
 
 Este plugin integra JaCoCo con Wakamiti para generar cobertura de código a partir de la ejecución de casos de prueba.
 
-Qué hace:
-- Con `merge` desactivado, vuelca un `.exec` y genera informes XML y/o CSV por cada caso de prueba.
-- Con `merge` activado, acumula la cobertura y genera únicamente los artefactos agregados al finalizar la ejecución.
+El modo `merge` determina si los informes se generan por caso de prueba, para todos los agentes configurados juntos o
+por host.
 
 > **NOTA**
 >
@@ -27,14 +26,14 @@ Qué hace:
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:jacoco-wakamiti-plugin:2.0.0
+es.iti.wakamiti:jacoco-wakamiti-plugin:2.0.2
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>jacoco-wakamiti-plugin</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.2</version>
 </dependency>
 ```
 
@@ -46,7 +45,8 @@ es.iti.wakamiti:jacoco-wakamiti-plugin:2.0.0
 - Por defecto: `localhost:6300`
 
 Endpoints de los agentes JaCoCo en formato `host:port`. Debe indicarse al menos uno. El host debe ser un nombre DNS o
-una dirección IPv4, y el puerto debe estar entre 1 y 65535. Los datos de todos los agentes se combinan por escenario.
+una dirección IPv4, y el puerto debe estar entre 1 y 65535. Los nombres de host deben ser únicos sin distinguir
+mayúsculas de minúsculas cuando `merge` es `HOST`.
 
 Ejemplo:
 ```yml
@@ -62,11 +62,9 @@ jacoco:
 - Tipo: `path`
 - Por defecto: `.`
 
-Directorio de salida donde se escribirán los datos de ejecución por escenario cuando `merge` esté desactivado. Se crea
-cuando es necesario. Con `merge` activo, esta ruta se usa como base del agregado: `some/directory.exec`.
-
-Los archivos `.exec` por escenario incluyen únicamente clases con al menos una probe ejecutada. Con `merge` activo no
-se generan archivos por escenario; solo se genera el agregado sin aplicar este filtrado adicional.
+Directorio de salida para datos de ejecución por escenario con `merge: NONE`. Se crea cuando es necesario. Con
+`merge: ALL`, esta ruta es la base del agregado y genera `some/directory.exec`; con `merge: HOST`, genera
+`some/directory.<host>.exec` para cada host configurado.
 
 Ejemplo:
 ```yml
@@ -93,9 +91,9 @@ jacoco:
 ### `jacoco.report.xml`
 - Tipo: `path`
 
-Directorio de salida para informes XML por escenario cuando `merge` esté desactivado. Se crea cuando es necesario. Con
-`merge` activo, esta ruta se usa como base del agregado XML. No se generarán informes XML si no se especifica este
-parámetro.
+Directorio de salida para informes XML por escenario con `merge: NONE`. Con `merge: ALL`, esta ruta es la base del
+agregado y genera `some/directory.xml`; con `merge: HOST`, genera `some/directory.<host>.xml` para cada host
+configurado. No se generarán informes XML si no se especifica este parámetro.
 
 Ejemplo:
 ```yml
@@ -107,9 +105,9 @@ jacoco:
 ### `jacoco.report.csv`
 - Tipo: `path`
 
-Directorio de salida para informes CSV por escenario cuando `merge` esté desactivado. Se crea cuando es necesario. Con
-`merge` activo, esta ruta se usa como base del agregado CSV. No se generarán informes CSV si no se especifica este
-parámetro.
+Directorio de salida para informes CSV por escenario con `merge: NONE`. Con `merge: ALL`, esta ruta es la base del
+agregado y genera `some/directory.csv`; con `merge: HOST`, genera `some/directory.<host>.csv` para cada host
+configurado. No se generarán informes CSV si no se especifica este parámetro.
 
 Ejemplo:
 ```yml
@@ -122,7 +120,8 @@ jacoco:
 ### `jacoco.report.html`
 - Tipo: `path`
 
-Directorio de salida para el informe HTML agregado. Se crea cuando es necesario.
+Directorio de salida para el informe HTML agregado final. Con `merge: HOST`, se genera un directorio llamado
+`<ruta>.<host>` para cada host. Se crea cuando es necesario.
 
 Ejemplo:
 ```yml
@@ -136,6 +135,7 @@ jacoco:
 - Tipo: `path[]` *required*
 
 Directorios raíz existentes que contienen los archivos de clase Java. También se acepta una única ruta.
+Con `merge: HOST`, cada informe incluye únicamente las clases presentes en los datos de ejecución de ese host.
 
 Ejemplo:
 ```yml
@@ -188,19 +188,19 @@ jacoco:
 ```
 
 ### `jacoco.report.merge`
-- Tipo: `boolean`
-- Por defecto: `true`
+- Tipo: `NONE | ALL | HOST`
+- Por defecto: `NONE`
 
-Genera únicamente los artefactos agregados. La cobertura de los hooks de lifecycle se incluye en ellos. Los agregados
-se guardan añadiendo `.exec`, `.xml` y `.csv` a las rutas configuradas para dump, XML y CSV, respectivamente.
-
-Con `merge` desactivado, los informes XML y CSV por escenario incluyen únicamente clases con cobertura. Con `merge`
-activado, los informes agregados, incluido el HTML, muestran todas las clases configuradas, también las que no tienen
-cobertura.
+Controla la agrupación de informes. `NONE` genera artefactos `.exec`, XML y CSV por caso de prueba; su informe HTML
+final combina los datos de ejecución de todos los casos. `ALL` combina los datos de todos los agentes configurados en
+un único informe `.exec`, XML, CSV y HTML. `HOST` genera un conjunto de artefactos agregados por host, usando el host
+como sufijo de cada ruta configurada. La cobertura de hooks de ciclo de vida se incluye en `ALL` y `HOST`, pero no en
+`NONE`. Los nombres de host deben ser únicos en `HOST`, incluso si sus puertos son distintos. Los valores booleanos ya
+no son compatibles. En `HOST`, se excluyen las clases sin datos de ejecución de ese host.
 
 Ejemplo:
 ```yml
 jacoco:
   report:
-    merge: true
+    merge: NONE
 ```
