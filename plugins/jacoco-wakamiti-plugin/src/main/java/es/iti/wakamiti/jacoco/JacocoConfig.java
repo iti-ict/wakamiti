@@ -10,7 +10,10 @@ package es.iti.wakamiti.jacoco;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import es.iti.commons.jext.Extension;
@@ -61,7 +64,7 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
     public static final String JACOCO_TABWITH = "jacoco.report.tabwith";
     /** Configuration key for the logical bundle name displayed in reports. */
     public static final String JACOCO_NAME = "jacoco.report.name";
-    /** Configuration key controlling whether execution data is merged. */
+    /** Configuration key controlling how execution data is merged. */
     public static final String JACOCO_MERGE = "jacoco.report.merge";
 
     @Override
@@ -72,7 +75,7 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
                 JACOCO_OUTPUT, ".",
                 JACOCO_TABWITH, "4",
                 JACOCO_NAME, "JaCoCo Coverage Report",
-                JACOCO_MERGE, Boolean.TRUE.toString()
+                JACOCO_MERGE, JacocoMergeMode.NONE.name()
         );
     }
 
@@ -85,7 +88,9 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
             JacocoReporter reporter,
             Configuration configuration
     ) {
-        reporter.setHosts(validatedHosts(configuration));
+        JacocoMergeMode mergeMode = mergeMode(configuration);
+        reporter.setHosts(validatedHosts(configuration, mergeMode));
+        reporter.setMergeMode(mergeMode);
         configuration.get(JACOCO_RETRIES, Integer.class).ifPresent(reporter::setRetries);
         configuration.get(JACOCO_OUTPUT, Path.class)
                 .map(PathUtil::replaceTemporalPlaceholders)
@@ -107,7 +112,22 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
         reporter.setSources(sources);
         configuration.get(JACOCO_TABWITH, Integer.class).ifPresent(reporter::setTabwidth);
         configuration.get(JACOCO_NAME, String.class).ifPresent(reporter::setName);
-        configuration.get(JACOCO_MERGE, Boolean.class).ifPresent(reporter::setMerge);
+    }
+
+    private JacocoMergeMode mergeMode(
+            Configuration configuration
+    ) {
+        String value = configuration.get(JACOCO_MERGE, String.class)
+                .orElse(defaultConfiguration().get(JACOCO_MERGE, String.class).orElseThrow());
+        try {
+            return JacocoMergeMode.valueOf(value.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new WakamitiException(
+                    "Invalid value '{}' for property '{}': expected ALL, HOST or NONE",
+                    value,
+                    JACOCO_MERGE
+            );
+        }
     }
 
     private Path validateDirectory(
@@ -121,14 +141,34 @@ public class JacocoConfig implements ConfigContributor<JacocoReporter> {
     }
 
     private List<String> validatedHosts(
-            Configuration configuration
+            Configuration configuration,
+            JacocoMergeMode mergeMode
     ) {
         List<String> hosts = configuration.getList(JACOCO_HOSTS, String.class);
         if (hosts.isEmpty()) {
             throw new WakamitiException("Property '{}' requires at least one host", JACOCO_HOSTS);
         }
         hosts.forEach(this::validateHost);
+        if (mergeMode == JacocoMergeMode.HOST) {
+            validateUniqueHostNames(hosts);
+        }
         return hosts;
+    }
+
+    private void validateUniqueHostNames(
+            List<String> endpoints
+    ) {
+        Set<String> hostNames = new HashSet<>();
+        for (String endpoint : endpoints) {
+            String host = endpoint.substring(0, endpoint.indexOf(':')).toLowerCase(Locale.ROOT);
+            if (!hostNames.add(host)) {
+                throw new WakamitiException(
+                        "Property '{}' requires unique host names when '{}' is HOST",
+                        JACOCO_HOSTS,
+                        JACOCO_MERGE
+                );
+            }
+        }
     }
 
     private void validateHost(

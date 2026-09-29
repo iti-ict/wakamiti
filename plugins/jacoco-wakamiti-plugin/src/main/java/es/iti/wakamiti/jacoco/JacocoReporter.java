@@ -75,13 +75,13 @@ public class JacocoReporter implements EventObserver {
     private List<Path> sources;
     private int tabwidth;
     private String name;
-    private boolean merge;
+    private JacocoMergeMode mergeMode = JacocoMergeMode.NONE;
 
     private ExecFileLoader fileLoader;
     private ExecDumpClient dumpClient;
+    private final Set<String> initializedAggregates = new LinkedHashSet<>();
     private final Set<String> initializedSegments = new LinkedHashSet<>();
     private final Set<File> executionFiles = new LinkedHashSet<>();
-    private boolean aggregateInitialized;
 
     /**
      * @param hosts host and port endpoints of the JaCoCo TCP dump agents
@@ -102,7 +102,7 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param output directory receiving per-scenario {@code .exec} files and base path for the aggregate file
+     * @param output base path for generated {@code .exec} files
      */
     public void setOutput(
             Path output
@@ -111,7 +111,7 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param xml directory receiving per-scenario XML reports and base path for the aggregate report
+     * @param xml base path for generated XML reports
      */
     public void setXml(
             Path xml
@@ -120,7 +120,7 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param csv directory receiving per-scenario CSV reports and base path for the aggregate report
+     * @param csv base path for generated CSV reports
      */
     public void setCsv(
             Path csv
@@ -176,12 +176,12 @@ public class JacocoReporter implements EventObserver {
     }
 
     /**
-     * @param merge whether to merge all execution data into a single report
+     * @param mergeMode scope used to aggregate execution data and reports
      */
-    public void setMerge(
-            boolean merge
+    void setMergeMode(
+            JacocoMergeMode mergeMode
     ) {
-        this.merge = merge;
+        this.mergeMode = mergeMode;
     }
 
     @Override
@@ -192,11 +192,11 @@ public class JacocoReporter implements EventObserver {
             PlanNodeSnapshot snapshot = (PlanNodeSnapshot) event.data();
             if (snapshot.getNodeType() == NodeType.TEST_CASE) {
                 String segmentId = snapshot.getId();
-                dump(segmentId, !merge);
-                if (!merge && (xml != null || csv != null)) {
+                dump(segmentId, mergeMode == JacocoMergeMode.NONE);
+                if (mergeMode == JacocoMergeMode.NONE && (xml != null || csv != null)) {
                     executeSingle(segmentId);
                 }
-            } else if (merge && isExecutedLifecycleHook(snapshot)) {
+            } else if (mergeMode != JacocoMergeMode.NONE && isExecutedLifecycleHook(snapshot)) {
                 dump(snapshot.getId(), false);
             }
         }
@@ -262,26 +262,26 @@ public class JacocoReporter implements EventObserver {
         client.setReset(true);
         client.setRetryCount(retries);
 
-        File file = saveSegment ? output.resolve(format("{}.exec", id)).toFile() : null;
+        File segment = saveSegment ? output.resolve(format("{}.exec", id)).toFile() : null;
         List<IOException> failures = new ArrayList<>();
-        for (String host : hosts) {
-            String[] parts = host.split(":", 2);
+        for (String endpoint : hosts) {
+            String[] parts = endpoint.split(":", 2);
             try {
                 final ExecFileLoader loader = client.dump(parts[0], Integer.parseInt(parts[1]));
                 if (saveSegment) {
-                    LOGGER.debug("Writing execution data from {} to {}", host, file);
-                    coveredExecutionData(loader).save(file, initializedSegments.contains(id));
+                    LOGGER.debug("Writing execution data from {} to {}", endpoint, segment);
+                    coveredExecutionData(loader).save(segment, initializedSegments.contains(id));
                     initializedSegments.add(id);
-                    executionFiles.add(file);
-                }
-                if (merge) {
-                    File aggregate = aggregateFile(output, ".exec");
-                    LOGGER.debug("Writing aggregate execution data to {}", aggregate);
-                    loader.save(aggregate, aggregateInitialized);
-                    aggregateInitialized = true;
+                    executionFiles.add(segment);
+                } else {
+                    String aggregateKey = aggregateKey(parts[0]);
+                    File aggregate = aggregateFile(output, ".exec", parts[0]);
+                    LOGGER.debug("Writing aggregate execution data from {} to {}", endpoint, aggregate);
+                    loader.save(aggregate, initializedAggregates.contains(aggregateKey));
+                    initializedAggregates.add(aggregateKey);
                 }
             } catch (IOException e) {
-                failures.add(new IOException(format("Cannot dump execution data from '{}'", host), e));
+                failures.add(new IOException(format("Cannot dump execution data from '{}'", endpoint), e));
             }
         }
 
@@ -321,7 +321,8 @@ public class JacocoReporter implements EventObserver {
     private IBundleCoverage analyze(
             String name,
             final ExecutionDataStore data,
-            boolean coveredOnly
+            boolean coveredOnly,
+            boolean executionDataOnly
     ) throws IOException {
         final CoverageBuilder builder = new CoverageBuilder();
         final List<IClassCoverage> noMatchClasses = new ArrayList<>();
@@ -329,7 +330,8 @@ public class JacocoReporter implements EventObserver {
             if (coverage.isNoMatch()) {
                 noMatchClasses.add(coverage);
             }
-            if (!coveredOnly || coverage.getInstructionCounter().getCoveredCount() > 0) {
+            if ((!coveredOnly || coverage.getInstructionCounter().getCoveredCount() > 0)
+                    && (!executionDataOnly || data.get(coverage.getId()) != null)) {
                 builder.visitCoverage(coverage);
             }
         });
@@ -365,47 +367,64 @@ public class JacocoReporter implements EventObserver {
         }
     }
 
+    private void executeFinal() {
+        if (mergeMode == JacocoMergeMode.NONE) {
+            executeFinalHtmlReport();
+            return;
+        }
+
+        if (mergeMode == JacocoMergeMode.ALL) {
+            executeAggregateReport(null);
+        } else {
+            for (String endpoint : hosts) {
+                executeAggregateReport(endpoint.split(":", 2)[0]);
+            }
+        }
+    }
+
     private void executeSingle(
             String id
     ) {
-        File exec = this.output.resolve(format("{}.exec", id)).toFile();
-        if (!exec.exists()) {
+        File executionFile = output.resolve(format("{}.exec", id)).toFile();
+        if (!executionFile.exists()) {
             LOGGER.warn("No execution data file provided for coverage segment '{}'", id);
             return;
         }
         executeReport(
-                List.of(exec),
+                List.of(executionFile),
                 format("{} - {}", name, id),
                 xml == null ? null : xml.resolve(format("{}.xml", id)),
                 csv == null ? null : csv.resolve(format("{}.csv", id)),
                 null,
-                true
+                true,
+                false
         );
     }
 
-    private void executeFinal() {
-        if (!merge && html == null) {
+    private void executeFinalHtmlReport() {
+        if (html == null || executionFiles.isEmpty()) {
             return;
         }
-        if (merge && xml == null && csv == null && html == null) {
-            return;
-        }
+        executeReport(executionFiles, name, null, null, html, false, false);
+    }
 
-        Collection<File> files = merge
-                ? List.of(aggregateFile(output, ".exec"))
-                : executionFiles;
-        if (files.isEmpty() || files.stream().noneMatch(File::exists)) {
-            LOGGER.warn("No execution data files provided for aggregate coverage report");
+    private void executeAggregateReport(
+            String host
+    ) {
+        File executionFile = aggregateFile(output, ".exec", host);
+        if (!executionFile.exists()) {
+            LOGGER.warn("No execution data file provided for aggregate coverage report{}",
+                    host == null ? "" : format(" for host '{}'", host));
             return;
         }
-
         executeReport(
-                files,
-                name,
-                merge && xml != null ? aggregatePath(xml, ".xml") : null,
-                merge && csv != null ? aggregatePath(csv, ".csv") : null,
-                html,
-                false
+                List.of(executionFile),
+                host == null ? name : format("{} - {}", name, host),
+                xml == null ? null : aggregatePath(xml, ".xml", host),
+                csv == null ? null : aggregatePath(csv, ".csv", host),
+                html == null ? null : aggregatePath(html, "", host),
+                false,
+                mergeMode == JacocoMergeMode.HOST
         );
     }
 
@@ -415,7 +434,8 @@ public class JacocoReporter implements EventObserver {
             Path xmlOutput,
             Path csvOutput,
             Path htmlOutput,
-            boolean coveredOnly
+            boolean coveredOnly,
+            boolean executionDataOnly
     ) {
         final ExecFileLoader loader = fileLoader();
         try {
@@ -425,7 +445,12 @@ public class JacocoReporter implements EventObserver {
                     loader.load(file);
                 }
             }
-            IBundleCoverage bundle = analyze(bundleName, loader.getExecutionDataStore(), coveredOnly);
+            IBundleCoverage bundle = analyze(
+                    bundleName,
+                    loader.getExecutionDataStore(),
+                    coveredOnly,
+                    executionDataOnly
+            );
             LOGGER.info("Analyzing {} classes.", bundle.getClassCounter().getTotalCount());
 
             final IReportVisitor visitor = createReportVisitor(xmlOutput, csvOutput, htmlOutput);
@@ -477,16 +502,25 @@ public class JacocoReporter implements EventObserver {
 
     private File aggregateFile(
             Path base,
-            String extension
+            String extension,
+            String host
     ) {
-        return aggregatePath(base, extension).toFile();
+        return aggregatePath(base, extension, host).toFile();
     }
 
     private Path aggregatePath(
             Path base,
-            String extension
+            String extension,
+            String host
     ) {
-        return Path.of(base.toString() + extension);
+        String suffix = mergeMode == JacocoMergeMode.HOST ? "-" + host : "";
+        return Path.of(base.toString() + suffix + extension);
+    }
+
+    private String aggregateKey(
+            String host
+    ) {
+        return mergeMode == JacocoMergeMode.ALL ? JacocoMergeMode.ALL.name() : host;
     }
 
 }
