@@ -18,7 +18,7 @@
 
 
     <artifactId>rest-wakamiti-plugin</artifactId>
-    <version>2.11.0</version>
+    <version>3.0.0-SNAPSHOT</version>
 
     <name>[Wakamiti Plugin] REST Steps</name>
     <description>REST steps for Wakamiti</description>
@@ -29,7 +29,7 @@
         <mockserver.version>7.6.0</mockserver.version>
         <rest-assured.version>6.0.1</rest-assured.version>
 
-        <wakamiti-engine.version>3.0.0</wakamiti-engine.version>
+        <wakamiti-engine.version>3.2.0-SNAPSHOT</wakamiti-engine.version>
     </properties>
 
 
