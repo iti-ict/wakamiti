@@ -21,14 +21,14 @@ This plugin provides a set of steps for conducting performance testing using JMe
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:jmeter-wakamiti-plugin:1.3.0
+es.iti.wakamiti:jmeter-wakamiti-plugin:1.4.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>jmeter-wakamiti-plugin</artifactId>
-  <version>1.3.0</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -261,6 +261,91 @@ jmeter:
       username: pepe
       password: 1234asdf
       scope: something
+```
+
+### `jmeter.jwt.url`
+- Type: `URL` *required*
+
+Sets the URL of the login endpoint that receives a JSON `POST` request and returns the JWT to be sent in the
+`Authorization` HTTP header of JMeter HTTP requests.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    url: https://example.org/login
+```
+
+
+### `jmeter.jwt.usernameField`
+- Type: `string`
+- Default: `username`
+
+Sets the name of the JSON property that contains the username in the JWT login request.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    usernameField: email
+```
+
+
+### `jmeter.jwt.passwordField`
+- Type: `string`
+- Default: `password`
+
+Sets the name of the JSON property that contains the password in the JWT login request.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    passwordField: secret
+```
+
+
+### `jmeter.jwt.tokenPath`
+- Type: `string`
+- Default: `token`
+
+Sets the JSON path used to extract the JWT from the login endpoint response.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    tokenPath: data.accessToken
+```
+
+
+### `jmeter.jwt.cached`
+- Type: `boolean`
+- Default: `false`
+
+Specifies whether the retrieved JWT is reused until 30 seconds before it expires. The token is cached only when its
+`exp` claim can be read; otherwise it is used for the current request but is not stored.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    cached: true
+```
+
+
+### `jmeter.jwt.parameters`
+- Type: `property[]`
+
+Sets additional properties to include in the JSON body of every JWT login request. The username and password supplied
+by the step replace any property with the same name.
+
+Example:
+```yaml
+jmeter:
+  jwt:
+    parameters:
+      tenant: wakamiti
 ```
 
 
@@ -615,6 +700,24 @@ Given the service uses the oauth authentication
 Given the service uses the oauth authentication with the following parameters:
   | name  | value     |
   | scope | something |
+```
+
+### Define JWT authentication
+```text copy=true
+the service uses JWT authentication with the credentials {username}:{password}
+```
+Logs in to the endpoint configured with [`jmeter.jwt.url`](#jmeterjwturl), retrieves the JWT from the response and sends it
+as `Authorization: Bearer <token>` on subsequent requests.
+
+##### Parameters:
+| Name       | Wakamiti type     | Description  |
+|------------|-------------------|--------------|
+| `username` | `text` *required* | The username |
+| `password` | `text` *required* | The password |
+
+##### Example:
+```gherkin
+Given the service uses JWT authentication with the credentials 'user@example.org':'xxxxx'
 ```
 
 
