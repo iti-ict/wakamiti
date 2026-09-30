@@ -86,7 +86,9 @@ public class JMeterJwtTest {
         client.when(request().withMethod("POST").withPath("/login"))
                 .respond(response().withStatusCode(401));
 
-        assertThatThrownBy(() -> support.retrieveJwtToken(configuration(), "user@example.org", "password"))
+        JwtProviderConfig config = configuration();
+
+        assertThatThrownBy(() -> support.retrieveJwtToken(config, "user@example.org", "password"))
                 .isInstanceOf(WakamitiException.class)
                 .hasMessage("Error retrieving JWT authentication: login endpoint returned HTTP 401");
     }
@@ -98,7 +100,9 @@ public class JMeterJwtTest {
                         .withStatusCode(200)
                         .withContentType(MediaType.APPLICATION_JSON));
 
-        assertThatThrownBy(() -> support.retrieveJwtToken(configuration(), "user@example.org", "password"))
+        JwtProviderConfig config = configuration();
+
+        assertThatThrownBy(() -> support.retrieveJwtToken(config, "user@example.org", "password"))
                 .isInstanceOf(WakamitiException.class)
                 .hasMessage("Error retrieving JWT authentication: token not found at path 'token'");
     }
@@ -108,7 +112,9 @@ public class JMeterJwtTest {
         client.when(request().withMethod("POST").withPath("/login"))
                 .respond(response("not-json").withStatusCode(200).withContentType(MediaType.APPLICATION_JSON));
 
-        assertThatThrownBy(() -> support.retrieveJwtToken(configuration(), "user@example.org", "password"))
+        JwtProviderConfig config = configuration();
+
+        assertThatThrownBy(() -> support.retrieveJwtToken(config, "user@example.org", "password"))
                 .isInstanceOf(WakamitiException.class)
                 .hasMessage("Error retrieving JWT authentication response");
     }
