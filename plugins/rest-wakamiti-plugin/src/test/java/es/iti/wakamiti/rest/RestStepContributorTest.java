@@ -36,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,8 +75,9 @@ import es.iti.wakamiti.api.plan.Document;
 import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.XmlUtils;
+import es.iti.wakamiti.api.util.http.TokenCache;
+import es.iti.wakamiti.api.util.http.TokenCacheEntry;
 import es.iti.wakamiti.api.util.http.oauth.GrantType;
-import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.core.properties.GlobalPropertyEvaluator;
 import io.restassured.RestAssured;
 
@@ -729,7 +731,7 @@ public class RestStepContributorTest {
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
-        assertThat(keys()).containsValue(token);
+        assertThat(keys().values()).extracting(TokenCacheEntry::token).doesNotContain(token);
         assertThat(result).isNotNull();
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
@@ -767,7 +769,7 @@ public class RestStepContributorTest {
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
-        assertThat(keys()).containsValue(token);
+        assertThat(keys().values()).extracting(TokenCacheEntry::token).doesNotContain(token);
         assertThat(result).isNotNull();
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
@@ -844,7 +846,7 @@ public class RestStepContributorTest {
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
-        assertThat(keys()).containsValue(token);
+        assertThat(keys().values()).extracting(TokenCacheEntry::token).doesNotContain(token);
         assertThat(result).isNotNull();
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
@@ -885,7 +887,7 @@ public class RestStepContributorTest {
         JsonNode result = (JsonNode) contributor.executeGetSubject();
 
         // check
-        assertThat(keys()).containsValue(token);
+        assertThat(keys().values()).extracting(TokenCacheEntry::token).doesNotContain(token);
         assertThat(result).isNotNull();
         assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("404");
     }
@@ -927,6 +929,164 @@ public class RestStepContributorTest {
 
         // check
         verify(contributor, times(1)).retrieveOauthToken(any());
+    }
+
+    /**
+     * Test {@link RestStepContributor#setJwtAuth(String, String)} with custom
+     * request fields and a nested token response.
+     */
+    @Test
+    public void testSetJwtAuthWithSuccess() throws MalformedURLException {
+        // prepare
+        String token = jwt(Instant.now().plusSeconds(300).getEpochSecond());
+        contributor.jwtProvider.configuration()
+                .url(new URL(BASE_URL.concat("/login")))
+                .usernameField("email")
+                .passwordField("secret")
+                .tokenPath("data.accessToken")
+                .addParameter("tenant", "wakamiti")
+                .addParameter("email", "configured@example.com");
+
+        mockServer(
+                request()
+                        .withMethod("POST")
+                        .withPath("/login")
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(json(map(
+                                "tenant", "wakamiti",
+                                "email", "user@example.com",
+                                "secret", "password"
+                        ))),
+                response(json(map("data", map("accessToken", token))))
+                        .withStatusCode(201)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+        mockServer(
+                request().withPath("/").withHeader("Authorization", "Bearer " + token),
+                response().withStatusCode(200).withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setJwtAuth("user@example.com", "password");
+        JsonNode result = (JsonNode) contributor.executeGetSubject();
+
+        // check
+        assertThat(JsonUtils.readStringValue(result, "statusCode")).isEqualTo("200");
+    }
+
+    /** Test that a cached JWT is reused while its {@code exp} remains valid. */
+    @Test
+    public void testSetJwtAuthWhenCachedWithSuccess() throws MalformedURLException {
+        // prepare
+        String token = jwt(Instant.now().plusSeconds(300).getEpochSecond());
+        contributor.jwtProvider.configuration()
+                .url(new URL(BASE_URL.concat("/login")))
+                .cacheAuth(true);
+
+        mockServer(
+                request().withMethod("POST").withPath("/login"),
+                response(json(map("token", token)))
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        // act
+        contributor.setJwtAuth("username", "password");
+        contributor.executeGetSubject();
+        contributor.executeGetSubject();
+
+        // check
+        verify(contributor, times(1)).retrieveJwtToken(any(), any(), any());
+    }
+
+    /** Test that JWT login is repeated when caching is disabled. */
+    @Test
+    public void testSetJwtAuthWhenNotCachedRetrievesAgain() throws MalformedURLException {
+        // prepare
+        String token = jwt(Instant.now().plusSeconds(300).getEpochSecond());
+        contributor.jwtProvider.configuration().url(new URL(BASE_URL.concat("/login")));
+        CLIENT.when(request().withMethod("POST").withPath("/login"), Times.exactly(2))
+                .respond(response(json(map("token", token)))
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON));
+
+        // act
+        contributor.setJwtAuth("username", "password");
+        contributor.executeGetSubject();
+        contributor.executeGetSubject();
+
+        // check
+        verify(contributor, times(2)).retrieveJwtToken(any(), any(), any());
+    }
+
+    /** Test that an expired JWT is not retained in the cache. */
+    @Test
+    public void testSetJwtAuthWhenExpiredRetrievesAgain() throws MalformedURLException {
+        // prepare
+        String token = jwt(Instant.now().minusSeconds(60).getEpochSecond());
+        contributor.jwtProvider.configuration()
+                .url(new URL(BASE_URL.concat("/login")))
+                .cacheAuth(true);
+        CLIENT.when(request().withMethod("POST").withPath("/login"), Times.exactly(2))
+                .respond(response(json(map("token", token)))
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON));
+
+        // act
+        contributor.setJwtAuth("username", "password");
+        contributor.executeGetSubject();
+        contributor.executeGetSubject();
+
+        // check
+        verify(contributor, times(2)).retrieveJwtToken(any(), any(), any());
+    }
+
+    /** Test JWT authentication without a configured login URL. */
+    @Test(expected = WakamitiException.class)
+    public void testSetJwtAuthWhenNoUrlWithError() {
+        contributor.setJwtAuth("username", "password");
+        contributor.executeGetSubject();
+    }
+
+    /** Test JWT authentication when the login response does not contain a token. */
+    @Test(expected = WakamitiException.class)
+    public void testSetJwtAuthWhenTokenMissingWithError() throws MalformedURLException {
+        contributor.jwtProvider.configuration().url(new URL(BASE_URL.concat("/login")));
+        mockServer(
+                request().withMethod("POST").withPath("/login"),
+                response(json(map("other", "value")))
+                        .withStatusCode(200)
+                        .withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        contributor.setJwtAuth("username", "password");
+        contributor.executeGetSubject();
+    }
+
+    /** Test JWT authentication when the login endpoint rejects the request. */
+    @Test(expected = WakamitiException.class)
+    public void testSetJwtAuthWhenLoginFailsWithError() throws MalformedURLException {
+        contributor.jwtProvider.configuration().url(new URL(BASE_URL.concat("/login")));
+        mockServer(
+                request().withMethod("POST").withPath("/login"),
+                response().withStatusCode(401)
+        );
+
+        contributor.setJwtAuth("username", "password");
+        contributor.executeGetSubject();
+    }
+
+    /** Test JWT authentication when the login endpoint returns invalid JSON. */
+    @Test(expected = WakamitiException.class)
+    public void testSetJwtAuthWhenResponseIsInvalidWithError() throws MalformedURLException {
+        contributor.jwtProvider.configuration().url(new URL(BASE_URL.concat("/login")));
+        mockServer(
+                request().withMethod("POST").withPath("/login"),
+                response("not-json").withStatusCode(200).withContentType(MediaType.APPLICATION_JSON)
+        );
+
+        contributor.setJwtAuth("username", "password");
+        contributor.executeGetSubject();
     }
 
     /**
@@ -2145,6 +2305,15 @@ public class RestStepContributorTest {
         CLIENT.when(expected, Times.once()).respond(response);
     }
 
+    private String jwt(
+            long expiration
+    ) {
+        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+        String header = encoder.encodeToString(json(map("alg", "none")).getBytes(StandardCharsets.UTF_8));
+        String payload = encoder.encodeToString(json(map("exp", expiration)).getBytes(StandardCharsets.UTF_8));
+        return header + "." + payload + ".signature";
+    }
+
     private Path writeTempFile(
             String content
     ) throws IOException {
@@ -2165,10 +2334,10 @@ public class RestStepContributorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<List<String>, String> keys() throws NoSuchFieldException, IllegalAccessException {
-        Field field = Oauth2ProviderConfig.class.getDeclaredField("CACHED_TOKEN");
+    private Map<?, TokenCacheEntry> keys() throws NoSuchFieldException, IllegalAccessException {
+        Field field = TokenCache.class.getDeclaredField("CACHED_TOKENS");
         field.setAccessible(true);
-        return ((Map<List<String>, String>) field.get(null));
+        return ((Map<?, TokenCacheEntry>) field.get(null));
     }
 
 }

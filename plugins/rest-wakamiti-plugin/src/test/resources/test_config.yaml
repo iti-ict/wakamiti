@@ -14,6 +14,14 @@ wakamiti:
         username: pepe
         password: 1234asdf
         scope: something
+    jwt:
+      url: http://localhost:8080/login
+      usernameField: email
+      passwordField: secret
+      tokenPath: data.accessToken
+      cached: true
+      parameters:
+        tenant: wakamiti
     config:
       multipart:
         subtype: digest

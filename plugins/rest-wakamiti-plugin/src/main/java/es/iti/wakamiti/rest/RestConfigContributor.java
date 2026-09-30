@@ -28,6 +28,7 @@ import es.iti.wakamiti.api.imconfig.Configuration;
 import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.ThrowableFunction;
+import es.iti.wakamiti.api.util.http.jwt.JwtProviderConfig;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import io.restassured.RestAssured;
@@ -42,7 +43,7 @@ import io.restassured.config.RestAssuredConfig;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-configurator",
-        version = "2.13",
+        version = "3.2",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class RestConfigContributor implements ConfigContributor<RestStepContributor> {
@@ -65,6 +66,18 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
     public static final String OAUTH2_DEFAULT_PARAMETERS = "rest.oauth2.parameters";
     /** Configuration key controlling reuse of a previously retrieved OAuth 2 token. */
     public static final String OAUTH2_CACHED = "rest.oauth2.cached";
+    /** Configuration key for the JWT login endpoint. */
+    public static final String JWT_URL = "rest.jwt.url";
+    /** Configuration key for the username property sent to the JWT login endpoint. */
+    public static final String JWT_USERNAME_FIELD = "rest.jwt.usernameField";
+    /** Configuration key for the password property sent to the JWT login endpoint. */
+    public static final String JWT_PASSWORD_FIELD = "rest.jwt.passwordField";
+    /** Configuration key for the JSON path containing the JWT in the login response. */
+    public static final String JWT_TOKEN_PATH = "rest.jwt.tokenPath";
+    /** Configuration key for additional properties sent in every JWT login request. */
+    public static final String JWT_DEFAULT_PARAMETERS = "rest.jwt.parameters";
+    /** Configuration key controlling reuse of JWTs until their expiration. */
+    public static final String JWT_CACHED = "rest.jwt.cached";
 
     // RestAssured config
     /** Configuration key for the multipart request subtype, such as {@code form-data}. */
@@ -94,6 +107,10 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
                 CONTENT_TYPE, "JSON",
                 FAILURE_HTTP_CODE_THRESHOLD, "500",
                 OAUTH2_CACHED, "false",
+                JWT_USERNAME_FIELD, "username",
+                JWT_PASSWORD_FIELD, "password",
+                JWT_TOKEN_PATH, "token",
+                JWT_CACHED, "false",
                 TIMEOUT, "60000"
         );
     }
@@ -110,6 +127,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         restassuredConfigure();
 
         configuration.get(BASE_URL, String.class)
+                .map(url -> url.replaceFirst("/+$", ""))
                 .map(ThrowableFunction.unchecked(URL::new))
                 .ifPresent(contributor::setBaseURL);
         configuration.get(CONTENT_TYPE, String.class)
@@ -127,6 +145,14 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2Provider::clientSecret);
         configuration.get(OAUTH2_CACHED, Boolean.class).ifPresent(oauth2Provider::cacheAuth);
         configuration.inner(OAUTH2_DEFAULT_PARAMETERS).asMap().forEach(oauth2Provider::addParameter);
+
+        JwtProviderConfig jwtProvider = contributor.jwtProvider.configuration();
+        configuration.get(JWT_URL, URL.class).ifPresent(jwtProvider::url);
+        configuration.get(JWT_USERNAME_FIELD, String.class).ifPresent(jwtProvider::usernameField);
+        configuration.get(JWT_PASSWORD_FIELD, String.class).ifPresent(jwtProvider::passwordField);
+        configuration.get(JWT_TOKEN_PATH, String.class).ifPresent(jwtProvider::tokenPath);
+        configuration.get(JWT_CACHED, Boolean.class).ifPresent(jwtProvider::cacheAuth);
+        configuration.inner(JWT_DEFAULT_PARAMETERS).asMap().forEach(jwtProvider::addParameter);
 
         configuration.get(MULTIPART_SUBTYPE, String.class).ifPresent(contributor::setMultipartSubtype);
         configuration.get(MULTIPART_FILENAME, String.class).ifPresent(contributor::setFilename);

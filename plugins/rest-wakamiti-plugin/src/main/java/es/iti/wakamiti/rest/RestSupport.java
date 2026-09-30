@@ -39,6 +39,8 @@ import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.ThrowableSupplier;
 import es.iti.wakamiti.api.util.WakamitiLogger;
 import es.iti.wakamiti.api.util.XmlUtils;
+import es.iti.wakamiti.api.util.http.jwt.JwtProvider;
+import es.iti.wakamiti.api.util.http.jwt.JwtProviderConfig;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import es.iti.wakamiti.rest.log.RestAssuredLogger;
@@ -58,6 +60,8 @@ public class RestSupport {
 
     /** Successful HTTP status code. */
     private static final int HTTP_OK = 200;
+    /** First HTTP status code outside the successful range. */
+    private static final int HTTP_REDIRECTION = 300;
     /** Shared logger category for REST request, response and assertion diagnostics. */
     public static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.rest");
 
@@ -74,6 +78,7 @@ public class RestSupport {
     protected Response response;
     protected ValidatableResponse validatableResponse;
     protected Oauth2Provider oauth2Provider = new Oauth2Provider().setRetriever(this::retrieveOauthToken);
+    protected JwtProvider jwtProvider = new JwtProvider().setRetriever(this::retrieveJwtToken);
     protected Optional<Consumer<RequestSpecification>> authSpecification = Optional.empty();
     protected List<Consumer<RequestSpecification>> specifications = new LinkedList<>();
 
@@ -145,6 +150,43 @@ public class RestSupport {
                 .then().statusCode(HTTP_OK)
                 .body(ACCESS_TOKEN, Matchers.notNullValue())
                 .extract().body().jsonPath().getString(ACCESS_TOKEN);
+    }
+
+    protected String retrieveJwtToken(
+            JwtProviderConfig jwtProviderConfig,
+            String username,
+            String password
+    ) {
+        Map<String, String> body = new LinkedHashMap<>(jwtProviderConfig.parameters());
+        body.put(jwtProviderConfig.usernameField(), username);
+        body.put(jwtProviderConfig.passwordField(), password);
+
+        Response loginResponse = attachLogger(RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(body))
+                .post(jwtProviderConfig.url());
+        int status = loginResponse.statusCode();
+        if (status < HTTP_OK || status >= HTTP_REDIRECTION) {
+            throw new WakamitiException("Error retrieving JWT authentication: login endpoint returned HTTP {}", status);
+        }
+
+        try {
+            String token = JsonUtils.readStringValue(
+                    JsonUtils.json(loginResponse.body().asString()),
+                    jwtProviderConfig.tokenPath()
+            );
+            if (isBlank(token)) {
+                throw new WakamitiException(
+                        "Error retrieving JWT authentication: token not found at path '{}'",
+                        jwtProviderConfig.tokenPath()
+                );
+            }
+            return token;
+        } catch (WakamitiException e) {
+            throw e;
+        } catch (RuntimeException e) {
+            throw new WakamitiException("Error retrieving JWT authentication response", e);
+        }
     }
 
     protected void executeRequest(
