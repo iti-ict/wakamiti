@@ -81,12 +81,29 @@ public class JMeterConfigContributorTest {
 
         verify(contributor, times(0)).setBasicAuth(any(), any());
 
-        assertThat(contributor.oauth2Provider.configuration().clientId()).isNull();
-        assertThat(contributor.oauth2Provider.configuration().clientSecret()).isNull();
-        assertThat(contributor.oauth2Provider.configuration().url()).isNull();
-        assertThat(contributor.oauth2Provider.configuration().parameters()).isEmpty();
-        contributor.oauth2Provider.configuration().storeTokenAndGet("abc");
-        assertThat(contributor.oauth2Provider.configuration().findCachedToken()).isEmpty();
+        var oauth2Configuration = contributor.oauth2Provider.configuration();
+        assertThat(oauth2Configuration)
+                .extracting(
+                        config -> config.clientId(),
+                        config -> config.clientSecret(),
+                        config -> config.url(),
+                        config -> config.parameters().isEmpty()
+                )
+                .containsExactly(null, null, null, true);
+        oauth2Configuration.storeTokenAndGet("abc");
+        assertThat(oauth2Configuration.findCachedToken()).isEmpty();
+
+        var jwtConfiguration = contributor.jwtProvider.configuration();
+        assertThat(jwtConfiguration)
+                .extracting(
+                        config -> config.url(),
+                        config -> config.usernameField(),
+                        config -> config.passwordField(),
+                        config -> config.tokenPath(),
+                        config -> config.cacheAuth(),
+                        config -> config.parameters().isEmpty()
+                )
+                .containsExactly(null, "username", "password", "token", false, true);
 
         assertThat(field(contributor.httpDefaults, "followRedirects", Boolean.class)).isTrue();
 
@@ -140,16 +157,46 @@ public class JMeterConfigContributorTest {
 
         verify(contributor).setBasicAuth("pepe", "1234asdf");
 
-        assertThat(contributor.oauth2Provider.configuration().clientId()).isEqualTo("WEB");
-        assertThat(contributor.oauth2Provider.configuration().clientSecret()).isEqualTo("s3cr3t");
-        assertThat(contributor.oauth2Provider.configuration().url()).isEqualTo(new URL("http://localhost:8080/token"));
-        assertThat(contributor.oauth2Provider.configuration().parameters())
-                .containsEntry("grant_type", "password")
-                .containsEntry("username", "pepe")
-                .containsEntry("password", "1234asdf")
-                .containsEntry("scope", "something");
-        contributor.oauth2Provider.configuration().storeTokenAndGet("abc");
-        assertThat(contributor.oauth2Provider.configuration().findCachedToken()).contains("abc");
+        var oauth2Configuration = contributor.oauth2Provider.configuration();
+        assertThat(oauth2Configuration)
+                .extracting(
+                        config -> config.clientId(),
+                        config -> config.clientSecret(),
+                        config -> config.url(),
+                        config -> config.parameters()
+                )
+                .containsExactly(
+                        "WEB",
+                        "s3cr3t",
+                        new URL("http://localhost:8080/token"),
+                        java.util.Map.of(
+                                "grant_type", "password",
+                                "username", "pepe",
+                                "password", "1234asdf",
+                                "scope", "something"
+                        )
+                );
+        oauth2Configuration.storeTokenAndGet("abc");
+        assertThat(oauth2Configuration.findCachedToken()).contains("abc");
+
+        var jwtConfiguration = contributor.jwtProvider.configuration();
+        assertThat(jwtConfiguration)
+                .extracting(
+                        config -> config.url(),
+                        config -> config.usernameField(),
+                        config -> config.passwordField(),
+                        config -> config.tokenPath(),
+                        config -> config.cacheAuth(),
+                        config -> config.parameters()
+                )
+                .containsExactly(
+                        new URL("http://localhost:8080/login"),
+                        "email",
+                        "secret",
+                        "data.accessToken",
+                        true,
+                        java.util.Map.of("tenant", "wakamiti")
+                );
 
         assertThat(field(contributor.httpDefaults, "followRedirects", Boolean.class)).isFalse();
 

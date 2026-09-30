@@ -54,7 +54,7 @@ import io.restassured.specification.RequestSpecification;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "rest-steps",
-        version = "2.13"
+        version = "3.2"
 )
 @I18nResource("iti_wakamiti_wakamiti-rest")
 public class RestStepContributor extends RestSupport implements StepContributor {
@@ -130,22 +130,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
             String service
     ) {
         this.path = (service.startsWith("/") ? service.substring(1) : service);
-    }
-
-    /**
-     * Concatenates the subject to the service path.
-     *
-     * @param subject The entity identification
-     * @deprecated Use {@link
-     * RestStepContributor#setPathParameter(String, String)} and {@link
-     * RestStepContributor#setPathParameters(DataTable)} instead.
-     */
-    @Step("rest.define.subject")
-    @Deprecated(forRemoval = true)
-    public void setSubject(
-            String subject
-    ) {
-        this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
     }
 
     /**
@@ -426,6 +410,22 @@ public class RestStepContributor extends RestSupport implements StepContributor 
         oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
         tableToMap(params).forEach(oauth2Provider.configuration()::addParameter);
         setBearerDefault();
+    }
+
+    /**
+     * Logs in to the configured JWT endpoint with the supplied credentials and
+     * sends the resulting token as a Bearer token on subsequent requests.
+     *
+     * @param username the username sent to the login endpoint
+     * @param password the password sent to the login endpoint
+     */
+    @Step(value = "rest.define.auth.jwt.credentials", args = {"username:text", "password:text"})
+    public void setJwtAuth(
+            String username,
+            String password
+    ) {
+        authSpecification = Optional.of(request -> request.auth().preemptive()
+                .oauth2(jwtProvider.getToken(username, password)));
     }
 
     /**

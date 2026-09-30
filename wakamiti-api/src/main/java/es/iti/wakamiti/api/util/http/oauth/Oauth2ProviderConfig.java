@@ -11,8 +11,7 @@ package es.iti.wakamiti.api.util.http.oauth;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import java.net.URL;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,20 +19,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import es.iti.wakamiti.api.WakamitiException;
+import es.iti.wakamiti.api.util.http.TokenCache;
+import es.iti.wakamiti.api.util.http.TokenCacheEntry;
+import es.iti.wakamiti.api.util.http.TokenCacheKey;
+import es.iti.wakamiti.api.util.http.TokenProviderConfig;
 
 
 /**
  * Stores the configuration used by the Oauth2 Provider Config component.
  */
-public class Oauth2ProviderConfig {
+public class Oauth2ProviderConfig extends TokenProviderConfig<Oauth2ProviderConfig> {
 
     private static final String GRANT_TYPE = "grant_type";
 
-    private static final Map<List<Object>, String> CACHED_TOKEN = new HashMap<>();
-    private final Map<String, String> parameters = new LinkedHashMap<>();
-    private boolean cacheAuth;
     private GrantType type;
-    private URL url;
     private String clientId;
     private String clientSecret;
 
@@ -45,12 +44,15 @@ public class Oauth2ProviderConfig {
      * exists; otherwise an empty optional
      */
     public Optional<String> findCachedToken() {
-        return Optional.ofNullable(CACHED_TOKEN.get(getKey())).filter(x -> cacheAuth);
+        if (!cacheAuth()) {
+            return Optional.empty();
+        }
+        return TokenCache.find(cacheKey());
     }
 
     /**
-     * Stores a token under the current grant parameters and returns it for use
-     * in fluent retrieval code.
+     * Stores a token under the current grant parameters when caching is
+     * enabled, and returns it for use in fluent retrieval code.
      *
      * @param token the raw access token
      * @return the same token
@@ -58,17 +60,10 @@ public class Oauth2ProviderConfig {
     public String storeTokenAndGet(
             String token
     ) {
-        CACHED_TOKEN.put(getKey(), token);
+        if (cacheAuth()) {
+            TokenCache.store(cacheKey(), TokenCacheEntry.withoutExpiration(token));
+        }
         return token;
-    }
-
-    /**
-     * Returns the mutable form parameters sent to the token endpoint.
-     *
-     * @return parameters in insertion order
-     */
-    public Map<String, String> parameters() {
-        return parameters;
     }
 
     /**
@@ -91,21 +86,7 @@ public class Oauth2ProviderConfig {
         if (name.equals(GRANT_TYPE) && type == null) {
             type = GrantType.valueOf(value.toUpperCase());
         }
-        parameters.put(name, value);
-        return this;
-    }
-
-    /**
-     * Enables or disables reuse of tokens held in the shared in-memory cache.
-     *
-     * @param cacheAuth {@code true} to reuse matching cached tokens
-     * @return this configuration
-     */
-    public Oauth2ProviderConfig cacheAuth(
-            boolean cacheAuth
-    ) {
-        this.cacheAuth = cacheAuth;
-        return this;
+        return super.addParameter(name, value);
     }
 
     /**
@@ -118,30 +99,8 @@ public class Oauth2ProviderConfig {
     public Oauth2ProviderConfig type(
             GrantType type
     ) {
-        parameters.putIfAbsent(GRANT_TYPE, type.name().toLowerCase());
+        parameters().putIfAbsent(GRANT_TYPE, type.name().toLowerCase());
         this.type = type;
-        return this;
-    }
-
-    /**
-     * Returns the authorization server's token endpoint.
-     *
-     * @return the endpoint URL, or {@code null} until configured
-     */
-    public URL url() {
-        return url;
-    }
-
-    /**
-     * Sets the authorization server's token endpoint.
-     *
-     * @param url the token endpoint URL
-     * @return this configuration
-     */
-    public Oauth2ProviderConfig url(
-            URL url
-    ) {
-        this.url = url;
         return this;
     }
 
@@ -196,6 +155,7 @@ public class Oauth2ProviderConfig {
      *
      * @throws WakamitiException if any required value is absent or blank
      */
+    @Override
     public void checkParameters() {
         if (isNull(type)) {
             throw new WakamitiException("Missing oauth2 grant type.");
@@ -217,7 +177,7 @@ public class Oauth2ProviderConfig {
             missing.add("clientSecret");
         }
 
-        if (isNull(url)) {
+        if (isNull(url())) {
             missing.add("url");
         }
 
@@ -226,11 +186,31 @@ public class Oauth2ProviderConfig {
         }
     }
 
-    private List<Object> getKey() {
-        return parameters.entrySet().stream()
-                .filter(e -> type.requiredFields().contains(e.getKey()))
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+    TokenCacheKey cacheKey() {
+        Map<String, String> parameterFingerprints = new LinkedHashMap<>();
+        parameters().forEach((name, value) -> parameterFingerprints.put(name, TokenCacheKey.fingerprint(value)));
+        return new TokenCacheKey("oauth2", new CacheKey(
+                url() == null ? null : url().toExternalForm(),
+                type,
+                clientId,
+                TokenCacheKey.fingerprint(clientSecret),
+                Collections.unmodifiableMap(parameterFingerprints)
+        ));
+    }
+
+    @Override
+    protected Oauth2ProviderConfig self() {
+        return this;
+    }
+
+    private record CacheKey(
+            String url,
+            GrantType type,
+            String clientId,
+            String clientSecretFingerprint,
+            Map<String, String> parameterFingerprints
+    ) {
+
     }
 
 }

@@ -5,7 +5,7 @@ Feature: User service operations
      Given the REST service '/users'
 
    Scenario: An existing user is requested
-      Given a user identified by '3'
+      Given the REST service '/users/3'
       And the following data inserted into the database table APP_USER:
         | ID | FIRST_NAME | LAST_NAME |
         | 3  | Samuel L.  | Jackson   |
@@ -19,7 +19,7 @@ Feature: User service operations
    # Un-comment this scenario to test failing cases
   @Ignore
    Scenario: An existing user is requested (will fail)
-      Given a user identified by '4'
+      Given the REST service '/users/4'
       And the following data inserted into the database table APP_USER:
         | ID | FIRST_NAME | LAST_NAME      |
         | 4  | Arnorld    | Chuarcheneguer |

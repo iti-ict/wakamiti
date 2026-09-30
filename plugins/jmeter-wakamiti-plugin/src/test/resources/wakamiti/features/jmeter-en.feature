@@ -87,6 +87,7 @@ Feature: Jmeter test
       | the oauth authentication                                                   | default     |
       | the oauth authentication credentials 'abc':'123'                           | credentials |
       | the oauth authentication client credentials                                | client      |
+      | JWT authentication with the credentials 'abc':'123'                        | jwt         |
 
 
   Scenario Outline: authentication <info> with parameters

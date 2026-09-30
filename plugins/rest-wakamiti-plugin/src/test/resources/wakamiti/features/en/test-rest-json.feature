@@ -10,7 +10,7 @@ Feature: REST Test Feature
 
   @ID-test-1-1
   Scenario: Get a user from a service
-    Given a user identified by 'user1'
+    Given the REST service '/users/user1'
     And a timeout of 10 seconds
     When the user is requested
     Then the response HTTP code is 200

@@ -27,7 +27,7 @@
     <description>Starter POM to Wakamiti plugins</description>
 
     <properties>
-        <revision>2.11.0</revision>
+        <revision>2.12.0-SNAPSHOT</revision>
     </properties>
 
     <dependencies>

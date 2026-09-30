@@ -7,7 +7,7 @@ Feature: REST Test Feature
     And the REST content type XML
 
   Scenario: Get a user from a service
-    Given a user identified by 'user1'
+    Given the REST service '/users/user1'
     When the user is requested
     Then the response HTTP code is greater than or equal to 200
     And the response HTTP code is less than 500

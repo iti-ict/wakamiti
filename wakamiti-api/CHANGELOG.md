@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Added
+- Extensible HTTP token provider API with configurable retrieval strategies and optional shared token caching.
+- `JwtProvider` and its configuration for credential-based JWT retrieval, configurable JSON fields and token path, and
+  expiration-aware caching.
+
+### Changed
+- `Oauth2Provider` now uses the shared token-provider cache, isolating entries by endpoint, grant, client and configured
+  parameters.
+
+
 ## [2.11.0] - 2026-09-24
 
 ### Added

@@ -8,14 +8,14 @@ Este plugin proporciona un conjunto de pasos para realizar pruebas de rendimient
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:jmeter-wakamiti-plugin:1.0.0
+es.iti.wakamiti:jmeter-wakamiti-plugin:1.4.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>jmeter-wakamiti-plugin</artifactId>
-  <version>1.0.0</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -25,7 +25,7 @@ es.iti.wakamiti:jmeter-wakamiti-plugin:1.0.0
 ### `jmeter.baseURL`
 - Tipo: `URL` *requerido*
 
-Establece la URL base para las llamadas REST. Esta configuración es equivalente al paso 
+Establece la URL base para las llamadas REST. Esta configuración es equivalente al paso
 [Definir URL base](#definir-url-base) si se prefiere una declaración más descriptiva.
 
 Ejemplo:
@@ -253,6 +253,91 @@ jmeter:
       scope: something
 ```
 
+### `jmeter.jwt.url`
+- Tipo: `URL` *obligatorio*
+
+Establece la URL del endpoint de inicio de sesión que recibe una petición `POST` con un cuerpo JSON y devuelve el JWT
+que se enviará en la cabecera HTTP `Authorization` de las peticiones HTTP de JMeter.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    url: https://example.org/login
+```
+
+
+### `jmeter.jwt.usernameField`
+- Tipo: `string`
+- Por defecto: `username`
+
+Establece el nombre de la propiedad JSON que contendrá el nombre de usuario en la petición de inicio de sesión JWT.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    usernameField: email
+```
+
+
+### `jmeter.jwt.passwordField`
+- Tipo: `string`
+- Por defecto: `password`
+
+Establece el nombre de la propiedad JSON que contendrá la contraseña en la petición de inicio de sesión JWT.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    passwordField: secret
+```
+
+
+### `jmeter.jwt.tokenPath`
+- Tipo: `string`
+- Por defecto: `token`
+
+Establece la ruta JSON usada para extraer el JWT de la respuesta del endpoint de inicio de sesión.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    tokenPath: data.accessToken
+```
+
+
+### `jmeter.jwt.cached`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Establece si el JWT recuperado se reutiliza hasta 30 segundos antes de su caducidad. El token solo se guarda en caché si
+se puede leer su claim `exp`; en caso contrario se usa en la petición actual, pero no se almacena.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    cached: true
+```
+
+
+### `jmeter.jwt.parameters`
+- Tipo: `property[]`
+
+Establece las propiedades adicionales que se incluirán en el cuerpo JSON de cada petición de inicio de sesión JWT. Los
+valores de usuario y contraseña del paso sustituyen cualquier propiedad con el mismo nombre.
+
+Ejemplo:
+```yaml
+jmeter:
+  jwt:
+    parameters:
+      tenant: wakamiti
+```
+
 
 ### `jmeter.redirect.follow`
 - Tipo: `boolean`
@@ -318,7 +403,7 @@ jmeter:
 - Tipo: `url`
 
 
-### `jmeter.report.influx.prefix`
+### `jmeter.report.graphite.prefix`
 - Tipo: `string`
 
 
@@ -610,6 +695,25 @@ Dado que el servicio usa autenticación oauth
 Dado que el servicio usa autenticación oauth con los siguientes parámetros:
   | name  | value     |
   | scope | something |
+```
+
+
+### Definir autenticación JWT
+```text copy=true
+(que) el servicio usa autenticación JWT con las credenciales {username}:{password}
+```
+Inicia sesión en el endpoint configurado mediante [`jmeter.jwt.url`](#jmeterjwturl), recupera el JWT de la respuesta y lo
+envía como `Authorization: Bearer <token>` en las siguientes peticiones.
+
+#### Parámetros:
+| Nombre     | Wakamiti type        | Descripción       |
+|------------|----------------------|-------------------|
+| `username` | `text` *obligatorio* | Nombre de usuario |
+| `password` | `text` *obligatorio* | Contraseña        |
+
+#### Ejemplo:
+```gherkin
+Dado que el servicio usa autenticación JWT con las credenciales 'user@example.org':'xxxxx'
 ```
 
 

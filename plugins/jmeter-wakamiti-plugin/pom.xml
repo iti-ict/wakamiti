@@ -18,7 +18,7 @@
 
 
     <artifactId>jmeter-wakamiti-plugin</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0-SNAPSHOT</version>
 
 
     <name>[Wakamiti Plugin] jmeter</name>
@@ -28,7 +28,7 @@
     <properties>
         <mockserver.version>7.6.0</mockserver.version>
 
-        <wakamiti-engine.version>3.0.0</wakamiti-engine.version>
+        <wakamiti-engine.version>3.2.0-SNAPSHOT</wakamiti-engine.version>
     </properties>
 
 
@@ -373,6 +373,7 @@
                                 <tagFilter>launcher</tagFilter>
                                 <jmeter.baseURL>http://localhost:${rest.port}/api</jmeter.baseURL>
                                 <jmeter.oauth2.url>http://localhost:${rest.port}/token</jmeter.oauth2.url>
+                                <jmeter.jwt.url>http://localhost:${rest.port}/jwt</jmeter.jwt.url>
                                 <jmeter.host>http://localhost:${rest.port}</jmeter.host>
                                 <data.dir>.</data.dir>
                                 <outputFilePath>${project.build.directory}/wakamiti.json</outputFilePath>

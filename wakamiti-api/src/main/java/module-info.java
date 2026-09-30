@@ -28,6 +28,7 @@ module es.iti.wakamiti.api {
     exports es.iti.wakamiti.api.plan;
     exports es.iti.wakamiti.api.util;
     exports es.iti.wakamiti.api.util.http;
+    exports es.iti.wakamiti.api.util.http.jwt;
     exports es.iti.wakamiti.api.util.http.oauth;
     exports es.iti.wakamiti.api.event;
     exports es.iti.wakamiti.api.datatypes;

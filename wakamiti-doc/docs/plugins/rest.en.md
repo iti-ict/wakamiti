@@ -20,14 +20,14 @@ This plugin provides a set of steps to interact with a RESTful API.
 Include the module in the corresponding section.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:rest-wakamiti-plugin:2.11.0
+es.iti.wakamiti:rest-wakamiti-plugin:3.0.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>rest-wakamiti-plugin</artifactId>
-  <version>2.11.0</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 
@@ -169,6 +169,92 @@ rest:
       username: pepe
       password: 1234asdf
       scope: something
+```
+
+
+### `rest.jwt.url`
+- Type: `URL` *required*
+
+Sets the URL of the login endpoint that receives a JSON `POST` request and returns the JWT to be sent in the
+`Authorization` HTTP header of REST calls.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    url: https://example.org/login
+```
+
+
+### `rest.jwt.usernameField`
+- Type: `string`
+- Default: `username`
+
+Sets the name of the JSON property that contains the username in the JWT login request.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    usernameField: email
+```
+
+
+### `rest.jwt.passwordField`
+- Type: `string`
+- Default: `password`
+
+Sets the name of the JSON property that contains the password in the JWT login request.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    passwordField: secret
+```
+
+
+### `rest.jwt.tokenPath`
+- Type: `string`
+- Default: `token`
+
+Sets the JSON path used to extract the JWT from the login endpoint response.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    tokenPath: data.accessToken
+```
+
+
+### `rest.jwt.cached`
+- Type: `boolean`
+- Default: `false`
+
+Specifies whether the retrieved JWT is reused until 30 seconds before it expires. The token is cached only when its
+`exp` claim can be read; otherwise it is used for the current request but is not stored.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    cached: true
+```
+
+
+### `rest.jwt.parameters`
+- Type: `property[]`
+
+Sets additional properties to include in the JSON body of every JWT login request. The username and password supplied
+by the step replace any property with the same name.
+
+Example:
+```yaml
+rest:
+  jwt:
+    parameters:
+      tenant: wakamiti
 ```
 
 
@@ -326,27 +412,6 @@ Sets the service path that would be tested. It would be appended to the `baseURL
 #### Examples:
 ```gherkin
 Given the REST service '/users`
-```
-
-
-### Define id
-###### Deprecated
-```text copy=true
-* identified by {text}
-```
-Sets an entity identifier to be used by the REST service. It would be appended to the `baseURL` and the service.
-
-#### Parameters:
-| Name   | Wakamiti type     | Description          |
-|--------|-------------------|----------------------|
-| `text` | `text` *required* | An entity identifier |
-
-#### Examples:
-```gherkin
-Given a user identified by 'john'
-```
-```gherkin
-Given the borrowed book identified by '978-3-16-148410-0'
 ```
 
 
@@ -615,6 +680,25 @@ Given the service uses the oauth authentication with the following parameters:
 ```
 
 
+### Define JWT authentication
+```text copy=true
+the service uses JWT authentication with the credentials {username}:{password}
+```
+Logs in to the endpoint configured with [`rest.jwt.url`](#restjwturl), retrieves the JWT from the response and sends it
+as `Authorization: Bearer <token>` on subsequent requests.
+
+##### Parameters:
+| Name       | Wakamiti type     | Description  |
+|------------|-------------------|--------------|
+| `username` | `text` *required* | The username |
+| `password` | `text` *required* | The password |
+
+##### Example:
+```gherkin
+Given the service uses JWT authentication with the credentials 'user@example.org':'xxxxx'
+```
+
+
 ### Clear authentication
 ```text copy=true
 the service does not use authentication
@@ -736,8 +820,7 @@ And the following query parameters:
 When the users are queried
 ```
 ```gherkin
-Given the REST service 'users'
-And a user identified by '123'
+Given the REST service 'users/123'
 When the user is requested
 ```
 
@@ -746,12 +829,11 @@ When the user is requested
 ```text copy=true
 * (is|are) deleted
 ```
-Sends a `DELETE` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `DELETE` request to the endpoint formed with the base URL and REST service path.
 
 ##### Examples:
 ```gherkin
-Given the REST service 'users'
-And a user identified by '123'
+Given the REST service 'users/123'
 When the user is deleted
 ```
 
@@ -761,7 +843,7 @@ When the user is deleted
 * (is|are) modified with the following data:
     {data}
 ```
-Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PUT` request to the endpoint formed with the base URL and REST service path.
 The payload is provided in-document.
 
 ##### Parameters:
@@ -771,8 +853,7 @@ The payload is provided in-document.
 
 ##### Examples:
 ```gherkin
-Given the REST service 'users'
-And a user identified by '123'
+Given the REST service 'users/123'
 When the user is modified with the following data:
   """json
   {
@@ -789,7 +870,7 @@ When the user is modified with the following data:
 ```text copy=true
 * (is|are) modified with the data from the file {file}
 ```
-Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PUT` request to the endpoint formed with the base URL and REST service path.
 The payload is provided by the given file.
 
 ##### Parameters:
@@ -799,8 +880,7 @@ The payload is provided by the given file.
 
 ##### Examples:
 ```gherkin
-Given the REST service 'users'
-And a user identified by '123'
+Given the REST service 'users/123'
 When the user is modified with the data from the file 'data/user123.json'
 ```
 
@@ -809,12 +889,11 @@ When the user is modified with the data from the file 'data/user123.json'
 ```text copy=true
 * (is|are) patched
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PATCH` request to the endpoint formed with the base URL and REST service path.
 
 ##### Examples:
 ```gherkin
-Given the REST service 'users'
-And a user identified by '123'
+Given the REST service 'users/123'
 And the following query parameters:
   | Name | Value    |
   | age  | 13       |
@@ -828,7 +907,7 @@ When the user is patched
 * (is|are) patched with the following data:
     {data}
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PATCH` request to the endpoint formed with the base URL and REST service path.
 The payload is provided in-document.
 
 ##### Parameters:
@@ -838,8 +917,7 @@ The payload is provided in-document.
 
 ##### Examples:
 ```gherkin
-Given the REST service 'users'
-And a user identified by '123'
+Given the REST service 'users/123'
 When the user is patched with the following data:
   """json
   { "firstName": "Jim" }
@@ -851,7 +929,7 @@ When the user is patched with the following data:
 ```text copy=true
 * (is|are) patched with the data from the file {file}
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PATCH` request to the endpoint formed with the base URL and REST service path.
 The payload is provided by the given file.
 
 ##### Parameters:
@@ -861,8 +939,7 @@ The payload is provided by the given file.
 
 ##### Examples:
 ```gherkin
-Given the REST service 'users'
-And a user identified by '123'
+Given the REST service 'users/123'
 When the user is patched with the data from the file 'data/user123.json'
 ```
 

@@ -79,11 +79,30 @@ public class RestConfigContributorTest {
                 .containsEntry("password", "1234asdf")
                 .containsEntry("scope", "something");
 
+        assertThat(contributor.jwtProvider.configuration().url())
+                .isEqualTo(new URL("http://localhost:8080/login"));
+        assertThat(contributor.jwtProvider.configuration().usernameField()).isEqualTo("email");
+        assertThat(contributor.jwtProvider.configuration().passwordField()).isEqualTo("secret");
+        assertThat(contributor.jwtProvider.configuration().tokenPath()).isEqualTo("data.accessToken");
+        assertThat(contributor.jwtProvider.configuration().cacheAuth()).isTrue();
+        assertThat(contributor.jwtProvider.configuration().parameters())
+                .containsEntry("tenant", "wakamiti");
+
         verify(contributor).setMultipartSubtype("digest");
         assertThat(RestAssured.config.getRedirectConfig().followsRedirects()).isFalse();
         assertThat(RestAssured.config.getRedirectConfig().allowsCircularRedirects()).isTrue();
         assertThat(RestAssured.config.getRedirectConfig().rejectRelativeRedirects()).isTrue();
         assertThat(RestAssured.config.getRedirectConfig().maxRedirects()).isEqualTo(5);
+    }
+
+    @Test
+    public void testBaseUrlWithMultipleTrailingSlashes() throws MalformedURLException {
+        Configuration configuration = Configuration.factory()
+                .fromPairs(RestConfigContributor.BASE_URL, "http://localhost:8080/api///");
+
+        configContributor.configurer().configure(contributor, configuration);
+
+        verify(contributor).setBaseURL(new URL("http://localhost:8080/api"));
     }
 
     @Test(expected = WakamitiException.class)
