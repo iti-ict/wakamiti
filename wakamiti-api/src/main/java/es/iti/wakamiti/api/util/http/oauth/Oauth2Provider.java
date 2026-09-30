@@ -29,35 +29,26 @@ import org.apache.http.util.EntityUtils;
 
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.util.JsonUtils;
+import es.iti.wakamiti.api.util.http.AbstractTokenProvider;
+import es.iti.wakamiti.api.util.http.TokenCacheKey;
+import es.iti.wakamiti.api.util.http.TokenRetriever;
 
 
 /**
  * Provides Oauth2 services to the surrounding component.
  */
-public final class Oauth2Provider {
+public final class Oauth2Provider extends AbstractTokenProvider<Oauth2ProviderConfig, Void> {
 
     private static final int CLIENT_ERROR_STATUS = 400;
     /** JSON property containing the bearer token in a successful OAuth response. */
     public static final String ACCESS_TOKEN = "access_token";
-
-    private final Oauth2ProviderConfig oauth2ProviderConfig = new Oauth2ProviderConfig();
-    private AccessTokenRetriever retriever;
 
     /**
      * Creates a provider using the built-in HTTP token retriever and an empty,
      * mutable configuration.
      */
     public Oauth2Provider() {
-        this.retriever = new DefaultAccessTokenRetriever();
-    }
-
-    /**
-     * Returns the live configuration used for subsequent token requests.
-     *
-     * @return this provider's mutable OAuth configuration
-     */
-    public Oauth2ProviderConfig configuration() {
-        return oauth2ProviderConfig;
+        super(new Oauth2ProviderConfig(), new DefaultAccessTokenRetriever(), "Access token retriever is needed");
     }
 
     /**
@@ -74,7 +65,7 @@ public final class Oauth2Provider {
         if (retriever == null) {
             throw new WakamitiException("Access token retriever is needed");
         }
-        this.retriever = retriever;
+        setTokenRetriever(retriever);
         return this;
     }
 
@@ -83,7 +74,8 @@ public final class Oauth2Provider {
      * <p>
      * A cached token is returned when caching is enabled and a matching entry
      * exists. Otherwise configuration is validated, the retriever is invoked,
-     * and the resulting token is stored in the shared cache.
+     * and the resulting token is stored in the shared cache when caching is
+     * enabled.
      * </p>
      *
      * @return the raw access token
@@ -91,15 +83,24 @@ public final class Oauth2Provider {
      *                           retrieval fails
      */
     public String getAccessToken() {
-        return oauth2ProviderConfig.findCachedToken()
-                .orElseGet(() -> {
-                    oauth2ProviderConfig.checkParameters();
-                    String token = retriever.get(oauth2ProviderConfig);
-                    return oauth2ProviderConfig.storeTokenAndGet(token);
-                });
+        return getToken(null);
     }
 
-    public interface AccessTokenRetriever {
+    @Override
+    public String getToken(
+            Void request
+    ) {
+        return getCachedOrRetrieve(request);
+    }
+
+    @Override
+    protected TokenCacheKey cacheKey(
+            Void request
+    ) {
+        return configuration().cacheKey();
+    }
+
+    public interface AccessTokenRetriever extends TokenRetriever<Oauth2ProviderConfig, Void> {
 
         /**
          * Exchanges an OAuth configuration for an access token.
@@ -110,6 +111,14 @@ public final class Oauth2Provider {
         String get(
                 Oauth2ProviderConfig config
         );
+
+        @Override
+        default String get(
+                Oauth2ProviderConfig config,
+                Void request
+        ) {
+            return get(config);
+        }
 
     }
 
