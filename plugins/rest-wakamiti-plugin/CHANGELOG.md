@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ## [Unreleased]
 
+### Added
+- JWT login authentication with configurable JSON credential fields, token path, extra parameters and expiration-aware
+  caching.
+
 ### Removed
 - Deprecated step `rest.define.subject`. Include the resource identifier in the `rest.define.service` path instead.
 
