@@ -11,7 +11,7 @@ wakamiti:
       - es.iti.wakamiti:rest-wakamiti-plugin
       - es.iti.wakamiti:db-wakamiti-plugin
       - es.iti.wakamiti:html-report-wakamiti-plugin
-      - es.iti.wakamiti:jacoco-wakamiti-plugin:2.0.0-SNAPSHOT
+      - es.iti.wakamiti:jacoco-wakamiti-plugin:2.0.2
       
   outputFilePath: result/report-petclinic.json
   htmlReport:
