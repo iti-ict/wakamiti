@@ -20,14 +20,14 @@ Este plugin proporciona un conjunto de pasos para interactuar con una API RESTfu
 Incluye el módulo en la sección correspondiente.
 
 ```text tabs=coord name=yaml copy=true
-es.iti.wakamiti:rest-wakamiti-plugin:2.11.0
+es.iti.wakamiti:rest-wakamiti-plugin:3.0.0
 ```
 
 ```text tabs=coord name=maven copy=true
 <dependency>
   <groupId>es.iti.wakamiti</groupId>
   <artifactId>rest-wakamiti-plugin</artifactId>
-  <version>2.11.0</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 
@@ -171,6 +171,92 @@ rest:
       username: pepe
       password: 1234asdf
       scope: something
+```
+
+
+### `rest.jwt.url`
+- Tipo: `URL` *obligatorio*
+
+Establece la URL del endpoint de inicio de sesión que recibe una petición `POST` con un cuerpo JSON y devuelve el JWT
+que se enviará en la cabecera HTTP `Authorization` de las llamadas REST.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    url: https://example.org/login
+```
+
+
+### `rest.jwt.usernameField`
+- Tipo: `string`
+- Por defecto: `username`
+
+Establece el nombre de la propiedad JSON que contendrá el nombre de usuario en la petición de inicio de sesión JWT.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    usernameField: email
+```
+
+
+### `rest.jwt.passwordField`
+- Tipo: `string`
+- Por defecto: `password`
+
+Establece el nombre de la propiedad JSON que contendrá la contraseña en la petición de inicio de sesión JWT.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    passwordField: secret
+```
+
+
+### `rest.jwt.tokenPath`
+- Tipo: `string`
+- Por defecto: `token`
+
+Establece la ruta JSON usada para extraer el JWT de la respuesta del endpoint de inicio de sesión.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    tokenPath: data.accessToken
+```
+
+
+### `rest.jwt.cached`
+- Tipo: `boolean`
+- Por defecto: `false`
+
+Establece si el JWT recuperado se reutiliza hasta 30 segundos antes de su caducidad. El token solo se guarda en caché si
+se puede leer su claim `exp`; en caso contrario se usa en la petición actual, pero no se almacena.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    cached: true
+```
+
+
+### `rest.jwt.parameters`
+- Tipo: `property[]`
+
+Establece las propiedades adicionales que se incluirán en el cuerpo JSON de cada petición de inicio de sesión JWT. Los
+valores de usuario y contraseña del paso sustituyen cualquier propiedad con el mismo nombre.
+
+Ejemplo:
+```yaml
+rest:
+  jwt:
+    parameters:
+      tenant: wakamiti
 ```
 
 
@@ -599,6 +685,25 @@ Dado que el servicio usa autenticación oauth
 Dado que el servicio usa autenticación oauth con los siguientes parámetros:
   | name  | value     |
   | scope | something |
+```
+
+
+### Definir autenticación JWT
+```text copy=true
+(que) el servicio usa autenticación JWT con las credenciales {username}:{password}
+```
+Inicia sesión en el endpoint configurado mediante [`rest.jwt.url`](#restjwturl), recupera el JWT de la respuesta y lo
+envía como `Authorization: Bearer <token>` en las siguientes peticiones.
+
+#### Parámetros:
+| Nombre     | Wakamiti type        | Descripción       |
+|------------|----------------------|-------------------|
+| `username` | `text` *obligatorio* | Nombre de usuario |
+| `password` | `text` *obligatorio* | Contraseña        |
+
+#### Ejemplo:
+```gherkin
+Dado que el servicio usa autenticación JWT con las credenciales 'user@example.org':'xxxxx'
 ```
 
 
