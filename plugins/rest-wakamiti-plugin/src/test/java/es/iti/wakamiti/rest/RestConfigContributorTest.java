@@ -95,6 +95,16 @@ public class RestConfigContributorTest {
         assertThat(RestAssured.config.getRedirectConfig().maxRedirects()).isEqualTo(5);
     }
 
+    @Test
+    public void testBaseUrlWithMultipleTrailingSlashes() throws MalformedURLException {
+        Configuration configuration = Configuration.factory()
+                .fromPairs(RestConfigContributor.BASE_URL, "http://localhost:8080/api///");
+
+        configContributor.configurer().configure(contributor, configuration);
+
+        verify(contributor).setBaseURL(new URL("http://localhost:8080/api"));
+    }
+
     @Test(expected = WakamitiException.class)
     public void testFileConfigWithError() {
         Configuration configuration = Configuration.factory().fromPairs("rest.config.multipart.subtype", "other");

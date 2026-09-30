@@ -127,7 +127,7 @@ public class RestConfigContributor implements ConfigContributor<RestStepContribu
         restassuredConfigure();
 
         configuration.get(BASE_URL, String.class)
-                .map(url -> url.replaceFirst("/+$", ""))
+                .map(url -> url.replaceFirst("/++$", ""))
                 .map(ThrowableFunction.unchecked(URL::new))
                 .ifPresent(contributor::setBaseURL);
         configuration.get(CONTENT_TYPE, String.class)
