@@ -133,22 +133,6 @@ public class RestStepContributor extends RestSupport implements StepContributor 
     }
 
     /**
-     * Concatenates the subject to the service path.
-     *
-     * @param subject The entity identification
-     * @deprecated Use {@link
-     * RestStepContributor#setPathParameter(String, String)} and {@link
-     * RestStepContributor#setPathParameters(DataTable)} instead.
-     */
-    @Step("rest.define.subject")
-    @Deprecated(forRemoval = true)
-    public void setSubject(
-            String subject
-    ) {
-        this.subject = (subject.startsWith("/") ? subject.substring(1) : subject);
-    }
-
-    /**
      * Sets the collection of request parameters from a two-column table
      * in name-value format.
      *

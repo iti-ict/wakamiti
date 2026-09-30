@@ -306,29 +306,6 @@ Establece la ruta del servicio a probar. Se concatenará al valor de la [url bas
 
 <br /><br />
 
-### Definir identificador
-###### Deprecated
-```
-* identificad(o|a|os|as) por {text}
-```
-Establece un identificador de recurso REST para ser usado por el servicio. Se concatenará al valor de la
-[url base](#definir-url-base) y del [servicio](#definir-servicio) en concreto.
-
-#### Parámetros:
-| Nombre | Wakamiti type | Descripción                 |
-|--------|---------------|-----------------------------|
-| `text` | `text`        | Un identificador de recurso |
-
-#### Ejemplos:
-```gherkin
-  Dado un usuario identificado por 'john'
-```
-```gherkin
-  Dado un libro identificado por '978-3-16-148410-0'
-```
-
-<br /><br />
-
 ### Definir parámetros o cabeceras
 ```
 el parámetro de (solicitud|búsqueda|ruta|formulario) {name} con el valor {value}
@@ -730,8 +707,7 @@ Envía una petición `GET` al servicio con los parámetros definidos previamente
   Cuando se realiza la búsqueda de usuarios
 ```
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
+  Dado el servicio REST '/users/123'
   Cuando se consulta el usuario
 ```
 
@@ -741,12 +717,11 @@ Envía una petición `GET` al servicio con los parámetros definidos previamente
 ```
 se elimina(n) *
 ```
-Envía una petición `DELETE` al servicio y recurso REST definido previamente.
+Envía una petición `DELETE` al endpoint formado por la URL base y la ruta del servicio REST.
 
 ##### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
+  Dado el servicio REST '/users/123'
   Cuando se elimina el usuario
 ```
 
@@ -756,7 +731,7 @@ Envía una petición `DELETE` al servicio y recurso REST definido previamente.
 ```
 se reemplaza(n) * con los siguientes datos:
 ```
-Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
+Envía una petición `PUT` al endpoint formado por la URL base y la ruta del servicio REST. El cuerpo de la petición será el contenido
 indicado a continuación.
 
 ##### Parámetros:
@@ -766,8 +741,7 @@ indicado a continuación.
 
 ##### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
+  Dado el servicio REST '/users/123'
   Cuando se reemplaza el usuario con los siguientes datos:
     """json
     {
@@ -785,7 +759,7 @@ indicado a continuación.
 ```
 se reemplaza(n) * con los datos del fichero {file}
 ```
-Envía una petición `PUT` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido del
+Envía una petición `PUT` al endpoint formado por la URL base y la ruta del servicio REST. El cuerpo de la petición será el contenido del
 fichero indicado.
 
 ##### Parámetros:
@@ -795,8 +769,7 @@ fichero indicado.
 
 ##### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
+  Dado el servicio REST '/users/123'
   Cuando se reemplaza el usuario con los datos del fichero 'data/user123.json'
 ```
 
@@ -806,12 +779,11 @@ fichero indicado.
 ```
 se modifica(n) * 
 ```
-Envía una petición `PATCH` al servicio y recurso REST definido previamente.
+Envía una petición `PATCH` al endpoint formado por la URL base y la ruta del servicio REST.
 
 ##### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
+  Dado el servicio REST '/users/123'
   Y los siguientes parámetros de búsqueda:
     | name | value    |
     | age  | 13       |
@@ -825,7 +797,7 @@ Envía una petición `PATCH` al servicio y recurso REST definido previamente.
 ```
 se modifica(n) * con los siguientes datos:
 ```
-Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
+Envía una petición `PATCH` al endpoint formado por la URL base y la ruta del servicio REST. El cuerpo de la petición será el contenido
 indicado a continuación.
 
 ##### Parámetros:
@@ -835,8 +807,7 @@ indicado a continuación.
 
 ##### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
+  Dado el servicio REST '/users/123'
   Cuando se modifica el usuario con los siguientes datos:
     """json
     {
@@ -851,7 +822,7 @@ indicado a continuación.
 ```
 se modifica(n) * con los datos del fichero {file}
 ```
-Envía una petición `PATCH` al servicio y recurso REST definido previamente. El cuerpo de la petición será el contenido
+Envía una petición `PATCH` al endpoint formado por la URL base y la ruta del servicio REST. El cuerpo de la petición será el contenido
 del fichero indicado.
 
 ##### Parámetros:
@@ -861,8 +832,7 @@ del fichero indicado.
 
 ##### Ejemplos:
 ```gherkin
-  Dado el servicio REST '/users'
-  Y un usuario identificado por '123'
+  Dado el servicio REST '/users/123'
   Cuando se modifica el usuario con los datos del fichero 'data/user123.json'
 ```
 

@@ -121,18 +121,9 @@ public class RestSupport {
         if (baseURL == null) {
             throw new WakamitiException("Missing required base URL.");
         }
-        String base = baseURL.toString();
-        if (base.endsWith("/")) {
-            base = base.substring(0, base.length() - 1);
-        }
-        StringBuilder url = new StringBuilder(base);
-        if (path != null) {
-            url.append("/").append(path);
-        }
-        if (subject != null) {
-            url.append("/").append(subject);
-        }
-        return url.toString();
+        return Optional.ofNullable(path)
+                .map(p -> baseURL + "/" + p)
+                .orElseGet(baseURL::toString);
     }
 
     protected ValidatableResponse commonResponseAssertions(

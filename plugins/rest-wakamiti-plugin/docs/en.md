@@ -304,28 +304,6 @@ Sets the service path that would be tested. It would be appended to the `baseURL
 
 <br /><br />
 
-### Define id
-###### Deprecated
-```
-* identified by {text}
-```
-Sets an entity identifier to be used by the REST service. It would be appended to the `baseURL` and the service.
-
-#### Parameters:
-| Name   | Wakamiti type | Description          |
-|--------|---------------|----------------------|
-| `text` | `text`        | An entity identifier |
-
-#### Examples:
-```gherkin
-  Given a user identified by 'john'
-```
-```gherkin
-  Given the borrowed book identified by '978-3-16-148410-0'
-```
-
-<br /><br />
-
 ### Define parameters or headers
 ```
 the (request|query|path|form) parameter {name} with value {value}
@@ -718,8 +696,7 @@ And the following query parameters:
 When the users are queried
 ```
 ```gherkin
-  Given the REST service 'users'
-And a user identified by '123'
+  Given the REST service 'users/123'
 When the user is requested
 ```
 
@@ -729,12 +706,11 @@ When the user is requested
 ```
 * (is|are) deleted
 ```
-Sends a `DELETE` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `DELETE` request to the endpoint formed with the base URL and REST service path.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
-And a user identified by '123'
+  Given the REST service 'users/123'
 When the user is deleted
 ```
 
@@ -744,7 +720,7 @@ When the user is deleted
 ```
 * (is|are) modified with following data:
 ```
-Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PUT` request to the endpoint formed with the base URL and REST service path.
 The payload is provided in-document.
 
 ##### Parameters:
@@ -754,8 +730,7 @@ The payload is provided in-document.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
-And a user identified by '123'
+  Given the REST service 'users/123'
 When the user is modified with the following data:
 """json
     {
@@ -773,7 +748,7 @@ When the user is modified with the following data:
 ```
 * (is|are) modified with the data from the file {file}
 ```
-Sends a `PUT` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PUT` request to the endpoint formed with the base URL and REST service path.
 The payload is provided by the given file.
 
 ##### Parameters:
@@ -783,8 +758,7 @@ The payload is provided by the given file.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
-And a user identified by '123'
+  Given the REST service 'users/123'
 When the user is modified with the data from the file 'data/user123.json'
 ```
 
@@ -794,12 +768,11 @@ When the user is modified with the data from the file 'data/user123.json'
 ```
 * (is|are) patched
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PATCH` request to the endpoint formed with the base URL and REST service path.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
-And a user identified by '123'
+  Given the REST service 'users/123'
 And the following query parameters:
 | Name | Value    |
 | age  | 13       |
@@ -813,7 +786,7 @@ When the user is patched
 ```
 * (is|are) patched with the following data:
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PATCH` request to the endpoint formed with the base URL and REST service path.
 The payload is provided in-document.
 
 ##### Parameters:
@@ -823,8 +796,7 @@ The payload is provided in-document.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
-And a user identified by '123'
+  Given the REST service 'users/123'
 When the user is patched with the following data:
 """json
     {
@@ -839,7 +811,7 @@ When the user is patched with the following data:
 ```
 * (is|are) patched with the data from the file {file}
 ```
-Sends a `PATCH` request to the previously defined endpoint formed with the base URL, the REST service and the entity id.
+Sends a `PATCH` request to the endpoint formed with the base URL and REST service path.
 The payload is provided by the given file.
 
 ##### Parameters:
@@ -849,8 +821,7 @@ The payload is provided by the given file.
 
 ##### Examples:
 ```gherkin
-  Given the REST service 'users'
-And a user identified by '123'
+  Given the REST service 'users/123'
 When the user is patched with the data from the file 'data/user123.json'
 ```
 
