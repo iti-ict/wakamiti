@@ -27,15 +27,24 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 
 import es.iti.wakamiti.api.WakamitiAPI;
 import es.iti.wakamiti.api.WakamitiException;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.plan.DataTable;
+import es.iti.wakamiti.api.util.JsonUtils;
 import es.iti.wakamiti.api.util.ResourceLoader;
 import es.iti.wakamiti.api.util.WakamitiLogger;
+import es.iti.wakamiti.api.util.http.jwt.JwtProvider;
+import es.iti.wakamiti.api.util.http.jwt.JwtProviderConfig;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.jmeter.dsl.ContentTypeUtil;
 import us.abstracta.jmeter.javadsl.core.DslTestPlan;
@@ -57,17 +66,18 @@ import us.abstracta.jmeter.javadsl.http.DslHttpSampler;
 public class JMeterSupport {
 
     protected static final Logger LOGGER = WakamitiLogger.forName("es.iti.wakamiti.jmeter");
+    private static final int HTTP_OK = 200;
+    private static final int HTTP_REDIRECTION = 300;
 
     /**
      * DslHttpDefaults definition, used in TestPlan
      **/
     protected DslHttpDefaults httpDefaults = new DslHttpDefaults();
     protected URL baseURL;
-    /**
-     * Oauth2 specification, used in all DslHttSamplers
-     **/
+    /** Authentication specification, used in all HTTP samplers. */
     protected Consumer<DslHttpSampler> authSpecification;
     protected Oauth2Provider oauth2Provider = new Oauth2Provider();
+    protected JwtProvider jwtProvider = new JwtProvider().setRetriever(this::retrieveJwtToken);
     /**
      * DslDefaultThreadGroup specifications, used in TestPlan
      **/
@@ -162,6 +172,50 @@ public class JMeterSupport {
 
     protected void executePlan() throws IOException {
         stats = newTestPlan().run();
+    }
+
+    /**
+     * Retrieves a JWT from the configured JSON login endpoint.
+     *
+     * @param jwtProviderConfig JWT login configuration
+     * @param username login username
+     * @param password login password
+     * @return the JWT extracted from the login response
+     */
+    protected String retrieveJwtToken(
+            JwtProviderConfig jwtProviderConfig,
+            String username,
+            String password
+    ) {
+        Map<String, String> body = new LinkedHashMap<>(jwtProviderConfig.parameters());
+        body.put(jwtProviderConfig.usernameField(), username);
+        body.put(jwtProviderConfig.passwordField(), password);
+
+        HttpPost request = new HttpPost(jwtProviderConfig.url().toString());
+        request.setEntity(new StringEntity(JsonUtils.json(body).toString(), ContentType.APPLICATION_JSON));
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+                CloseableHttpResponse response = httpClient.execute(request)) {
+            int status = response.getStatusLine().getStatusCode();
+            if (status < HTTP_OK || status >= HTTP_REDIRECTION) {
+                throw new WakamitiException("Error retrieving JWT authentication: login endpoint returned HTTP {}", status);
+            }
+
+            String token = JsonUtils.readStringValue(
+                    JsonUtils.json(EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8)),
+                    jwtProviderConfig.tokenPath()
+            );
+            if (isBlank(token)) {
+                throw new WakamitiException(
+                        "Error retrieving JWT authentication: token not found at path '{}'",
+                        jwtProviderConfig.tokenPath()
+                );
+            }
+            return token;
+        } catch (WakamitiException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new WakamitiException("Error retrieving JWT authentication response", e);
+        }
     }
 
     /**

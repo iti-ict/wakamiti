@@ -36,6 +36,8 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
         @Property(key = JMeterConfigContributor.OAUTH2_URL, value = "http://localhost:8888/token"),
         @Property(key = JMeterConfigContributor.OAUTH2_CLIENT_ID, value = "WEB"),
         @Property(key = JMeterConfigContributor.OAUTH2_CLIENT_SECRET, value = "s3cr3t"),
+        @Property(key = JMeterConfigContributor.JWT_URL, value = "http://localhost:8888/jwt"),
+        @Property(key = JMeterConfigContributor.JWT_TOKEN_PATH, value = "data.accessToken"),
         @Property(key = JMeterConfigContributor.OAUTH2_DEFAULT_PARAMETERS + ".grant_type", value = "password"),
         @Property(key = JMeterConfigContributor.OAUTH2_DEFAULT_PARAMETERS + ".username", value = "abc"),
         @Property(key = JMeterConfigContributor.OAUTH2_DEFAULT_PARAMETERS + ".password", value = "123"),

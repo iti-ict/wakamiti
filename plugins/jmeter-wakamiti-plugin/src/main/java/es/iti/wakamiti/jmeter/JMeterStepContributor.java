@@ -50,7 +50,7 @@ import us.abstracta.jmeter.javadsl.core.postprocessors.DslJsonExtractor;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jmeter-steps",
-        version = "2.13"
+        version = "3.2"
 )
 @I18nResource("iti_wakamiti_wakamiti-jmeter")
 public class JMeterStepContributor extends JMeterSupport implements StepContributor {
@@ -350,6 +350,22 @@ public class JMeterStepContributor extends JMeterSupport implements StepContribu
         this.oauth2Provider.configuration().type(GrantType.CLIENT_CREDENTIALS);
         this.tableToMap(params).forEach(this.oauth2Provider.configuration()::addParameter);
         this.setBearerDefault();
+    }
+
+    /**
+     * Logs in to the configured JWT endpoint with the supplied credentials and
+     * sends the resulting token as a Bearer token on subsequent HTTP requests.
+     *
+     * @param username the username sent to the login endpoint
+     * @param password the password sent to the login endpoint
+     */
+    @Step(value = "jmeter.define.auth.jwt.credentials", args = {"username:text", "password:text"})
+    public void setJwtAuth(
+            String username,
+            String password
+    ) {
+        this.authSpecification = httpSampler ->
+                httpSampler.header(AUTHORIZATION, bearer(jwtProvider.getToken(username, password)));
     }
 
     /**

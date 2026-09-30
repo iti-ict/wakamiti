@@ -88,6 +88,13 @@ public class JMeterConfigContributorTest {
         contributor.oauth2Provider.configuration().storeTokenAndGet("abc");
         assertThat(contributor.oauth2Provider.configuration().findCachedToken()).isEmpty();
 
+        assertThat(contributor.jwtProvider.configuration().url()).isNull();
+        assertThat(contributor.jwtProvider.configuration().usernameField()).isEqualTo("username");
+        assertThat(contributor.jwtProvider.configuration().passwordField()).isEqualTo("password");
+        assertThat(contributor.jwtProvider.configuration().tokenPath()).isEqualTo("token");
+        assertThat(contributor.jwtProvider.configuration().cacheAuth()).isFalse();
+        assertThat(contributor.jwtProvider.configuration().parameters()).isEmpty();
+
         assertThat(field(contributor.httpDefaults, "followRedirects", Boolean.class)).isTrue();
 
         assertThat(get(contributor.reporters, DslViewResultsTree.class)).isNotPresent();
@@ -150,6 +157,13 @@ public class JMeterConfigContributorTest {
                 .containsEntry("scope", "something");
         contributor.oauth2Provider.configuration().storeTokenAndGet("abc");
         assertThat(contributor.oauth2Provider.configuration().findCachedToken()).contains("abc");
+
+        assertThat(contributor.jwtProvider.configuration().url()).isEqualTo(new URL("http://localhost:8080/login"));
+        assertThat(contributor.jwtProvider.configuration().usernameField()).isEqualTo("email");
+        assertThat(contributor.jwtProvider.configuration().passwordField()).isEqualTo("secret");
+        assertThat(contributor.jwtProvider.configuration().tokenPath()).isEqualTo("data.accessToken");
+        assertThat(contributor.jwtProvider.configuration().cacheAuth()).isTrue();
+        assertThat(contributor.jwtProvider.configuration().parameters()).containsEntry("tenant", "wakamiti");
 
         assertThat(field(contributor.httpDefaults, "followRedirects", Boolean.class)).isFalse();
 

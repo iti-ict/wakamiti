@@ -13,5 +13,8 @@ wakamiti:
         grant_type: password
         username: abc
         password: 123
+    jwt:
+      url: http://host.docker.internal:8888/jwt
+      tokenPath: data.accessToken
     csv:
       eofStop: true

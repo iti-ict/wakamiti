@@ -29,6 +29,7 @@ import es.iti.wakamiti.api.imconfig.Configurer;
 import es.iti.wakamiti.api.util.MatcherAssertion;
 import es.iti.wakamiti.api.util.Pair;
 import es.iti.wakamiti.api.util.PathUtil;
+import es.iti.wakamiti.api.util.http.jwt.JwtProviderConfig;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
 import us.abstracta.jmeter.javadsl.core.configs.DslCsvDataSet;
 import us.abstracta.jmeter.javadsl.core.listeners.GraphiteBackendListener;
@@ -45,7 +46,7 @@ import us.abstracta.jmeter.javadsl.core.listeners.InfluxDbBackendListener;
 @Extension(
         provider = "es.iti.wakamiti",
         name = "jmeter-config",
-        version = "2.13",
+        version = "3.2",
         extensionPoint = "es.iti.wakamiti.api.extensions.ConfigContributor"
 )
 public class JMeterConfigContributor implements ConfigContributor<JMeterStepContributor> {
@@ -94,6 +95,18 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
     public static final String OAUTH2_DEFAULT_PARAMETERS = "jmeter.oauth2.parameters";
     /** Configuration key controlling reuse of a retrieved OAuth 2 token. */
     public static final String OAUTH2_CACHED = "jmeter.oauth2.cached";
+    /** Configuration key for the JWT login endpoint. */
+    public static final String JWT_URL = "jmeter.jwt.url";
+    /** Configuration key for the username property sent to the JWT login endpoint. */
+    public static final String JWT_USERNAME_FIELD = "jmeter.jwt.usernameField";
+    /** Configuration key for the password property sent to the JWT login endpoint. */
+    public static final String JWT_PASSWORD_FIELD = "jmeter.jwt.passwordField";
+    /** Configuration key for the JSON path containing the JWT in the login response. */
+    public static final String JWT_TOKEN_PATH = "jmeter.jwt.tokenPath";
+    /** Configuration key for additional properties sent in every JWT login request. */
+    public static final String JWT_DEFAULT_PARAMETERS = "jmeter.jwt.parameters";
+    /** Configuration key controlling reuse of JWTs until their expiration. */
+    public static final String JWT_CACHED = "jmeter.jwt.cached";
 
     /** Configuration key controlling whether HTTP sampler redirects are followed. */
     public static final String REDIRECT_FOLLOW = "jmeter.redirect.follow";
@@ -147,6 +160,10 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
             CSV_EOF, Boolean.FALSE.toString(),
             CSV_SHARING, DslCsvDataSet.Sharing.ALL_THREADS.name(),
             OAUTH2_CACHED, Boolean.FALSE.toString(),
+            JWT_USERNAME_FIELD, "username",
+            JWT_PASSWORD_FIELD, "password",
+            JWT_TOKEN_PATH, "token",
+            JWT_CACHED, Boolean.FALSE.toString(),
             TIMEOUT, "60000",
             REDIRECT_FOLLOW, Boolean.TRUE.toString(),
             JTL_PATH, "wakamiti.jtl",
@@ -224,6 +241,14 @@ public class JMeterConfigContributor implements ConfigContributor<JMeterStepCont
         configuration.get(OAUTH2_CLIENT_SECRET, String.class).ifPresent(oauth2Provider::clientSecret);
         configuration.get(OAUTH2_CACHED, Boolean.class).ifPresent(oauth2Provider::cacheAuth);
         configuration.inner(OAUTH2_DEFAULT_PARAMETERS).asMap().forEach(oauth2Provider::addParameter);
+
+        JwtProviderConfig jwtProvider = contributor.jwtProvider.configuration();
+        configuration.get(JWT_URL, URL.class).ifPresent(jwtProvider::url);
+        configuration.get(JWT_USERNAME_FIELD, String.class).ifPresent(jwtProvider::usernameField);
+        configuration.get(JWT_PASSWORD_FIELD, String.class).ifPresent(jwtProvider::passwordField);
+        configuration.get(JWT_TOKEN_PATH, String.class).ifPresent(jwtProvider::tokenPath);
+        configuration.get(JWT_CACHED, Boolean.class).ifPresent(jwtProvider::cacheAuth);
+        configuration.inner(JWT_DEFAULT_PARAMETERS).asMap().forEach(jwtProvider::addParameter);
 
         configuration.get(REDIRECT_FOLLOW, Boolean.class).ifPresent(contributor.httpDefaults::followRedirects);
 
