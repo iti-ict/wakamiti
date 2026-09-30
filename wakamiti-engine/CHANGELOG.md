@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`
+- Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`, `es.iti.wakamiti:wakamiti-starter`
 
 
 ## [3.1.0] - 2026-09-24

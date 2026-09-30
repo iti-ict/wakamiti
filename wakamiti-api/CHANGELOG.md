@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `Oauth2Provider` now uses the shared token-provider cache, isolating entries by endpoint, grant, client and configured
   parameters.
+- Upgrade dependencies: `es.iti.wakamiti:wakamiti-starter`
 
 
 ## [2.11.0] - 2026-09-24
