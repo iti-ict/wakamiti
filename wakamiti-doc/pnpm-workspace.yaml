@@ -7,3 +7,4 @@ minimumReleaseAgeExclude:
   - js-yaml@4.3.2
   - svgo@4.1.0
   - smol-toml@1.7.1
+  - devalue@5.9.1
