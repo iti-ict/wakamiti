@@ -43,7 +43,6 @@ import es.iti.wakamiti.api.util.http.jwt.JwtProvider;
 import es.iti.wakamiti.api.util.http.jwt.JwtProviderConfig;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2Provider;
 import es.iti.wakamiti.api.util.http.oauth.Oauth2ProviderConfig;
-import es.iti.wakamiti.rest.log.RestAssuredLogger;
 import io.restassured.RestAssured;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
@@ -103,12 +102,11 @@ public class RestSupport {
     private RequestSpecification attachLogger(
             RequestSpecification request
     ) {
-        RestAssuredLogger logFilter = new RestAssuredLogger();
         if (LOGGER.isDebugEnabled()) {
-            request.log().all().filter(logFilter);
+            request.log().all();
             request.expect().log().all();
         } else {
-            request.log().ifValidationFails().filter(logFilter);
+            request.log().ifValidationFails();
             request.expect().log().ifValidationFails();
         }
         return request;

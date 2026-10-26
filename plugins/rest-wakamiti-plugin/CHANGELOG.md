@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning][2].
 - JWT login authentication with configurable JSON credential fields, token path, extra parameters and expiration-aware
   caching.
 
+### Changed
+- Route REST Assured request and response diagnostics through the REST plugin logger, using `DEBUG` when enabled and
+  `INFO` otherwise, so they respect the configured logging appenders and levels.
+
+### Fixed
+- Avoid duplicate REST response log entries.
+
 ### Removed
 - Deprecated step `rest.define.subject`. Include the resource identifier in the `rest.define.service` path instead.
 
