@@ -4,6 +4,7 @@ wakamiti:
 
   log:
     level: trace
+    path: result/wakamiti.log
     
   launcher:
     modules:
