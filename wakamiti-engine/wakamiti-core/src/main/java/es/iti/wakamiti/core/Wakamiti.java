@@ -523,19 +523,19 @@ public final class Wakamiti {
             PlanNode plan,
             Configuration configuration
     ) {
-        List<String> toHide = configuration.getList(WakamitiConfiguration.PROPERTIES_HIDDEN, String.class)
-                .stream().map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
-                .toList();
-        plan.resolveProperties(e -> toHide.stream().noneMatch(h -> e.getKey().trim().matches(h)));
-
-        if (!configuration
-                .get(WakamitiConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)
-                .orElse(Boolean.TRUE)) {
-            return null;
-        }
-
         try {
             publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES, null);
+
+            List<String> toHide = configuration.getList(WakamitiConfiguration.PROPERTIES_HIDDEN, String.class)
+                    .stream().map(p -> "\\$\\{" + p.trim() + "(\\.[\\w\\d-]+)*\\}")
+                    .toList();
+            plan.resolveProperties(e -> toHide.stream().noneMatch(h -> e.getKey().trim().matches(h)));
+
+            if (!configuration
+                    .get(WakamitiConfiguration.GENERATE_OUTPUT_FILE, Boolean.class)
+                    .orElse(Boolean.TRUE)) {
+                return null;
+            }
 
             Path standardOutputFile = writeStandardOutputFile(plan, configuration);
 
@@ -637,7 +637,6 @@ public final class Wakamiti {
         if (reporters.isEmpty()) {
             return;
         }
-        LOGGER.info(IMPORTANT, "Generating reports...");
 
         Path sourceFolder = reportSource.toAbsolutePath();
         if (!sourceFolder.toFile().exists()) {
@@ -690,7 +689,6 @@ public final class Wakamiti {
         }
         LOGGER.info(IMPORTANT, "Generating reports...");
         PlanNodeSnapshot rootNode = PlanNodeSnapshot.group(plans);
-        publishEvent(Event.BEFORE_WRITE_OUTPUT_FILES, null);
         for (Reporter reporter : reporters) {
             try {
                 if (LOGGER.isDebugEnabled()) {
@@ -710,7 +708,6 @@ public final class Wakamiti {
                 );
             }
         }
-        publishEvent(Event.AFTER_WRITE_OUTPUT_FILES, null);
     }
 
     /**

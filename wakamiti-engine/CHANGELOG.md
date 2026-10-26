@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Keep launcher console logging at `INFO` while applying `wakamiti.log.level` only to file logging, including
   per-scenario log files.
 
+### Fixed
+- Publish output-file lifecycle events while preparing and writing result files, rather than during report
+  generation, so listeners can prepare the output before its properties are resolved.
+
 
 ## [3.1.0] - 2026-09-24
 
