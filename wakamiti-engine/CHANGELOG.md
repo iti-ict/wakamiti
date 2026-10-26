@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Upgrade dependencies: `es.iti.wakamiti:wakamiti-api`, `es.iti.wakamiti:wakamiti-starter`
+- Keep launcher console logging at `INFO` while applying `wakamiti.log.level` only to file logging, including
+  per-scenario log files.
 
 
 ## [3.1.0] - 2026-09-24

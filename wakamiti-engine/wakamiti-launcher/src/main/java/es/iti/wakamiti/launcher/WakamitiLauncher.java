@@ -34,6 +34,8 @@ import es.iti.wakamiti.api.util.WakamitiLogger;
  */
 public final class WakamitiLauncher {
 
+    private static final String FILE_LOG_LEVEL_PROPERTY = "wakamiti.log.file.level";
+
     private WakamitiLauncher() {
     }
 
@@ -109,39 +111,33 @@ public final class WakamitiLauncher {
     ) {
         String loggerName = "es.iti.wakamiti";
         LoggerContext context = (LoggerContext) LogManager.getContext(false);
-        Optional<Level> level = conf.get("level", String.class).map(String::toUpperCase).map(Level::toLevel);
+        Optional<Level> configuredLevel = conf.get("level", String.class)
+                .map(String::toUpperCase)
+                .map(Level::toLevel);
         Optional<String> path = conf.get("path", String.class);
         boolean perScenario = conf.get("perScenario", Boolean.class).orElse(false);
+        Level fileLogLevel = configuredLevel.orElse(debug ? Level.DEBUG : Level.INFO);
 
         if (path.isPresent()) {
+            System.setProperty(FILE_LOG_LEVEL_PROPERTY, fileLogLevel.name());
             String executionTimestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             if (perScenario) {
                 System.setProperty(ScenarioLogAppender.LOG_PATH_PROPERTY, path.get());
                 System.setProperty(ScenarioLogAppender.EXECUTION_TIMESTAMP_PROPERTY, executionTimestamp);
                 Configurator.reconfigure(URI.create("log4j2.xml"));
-                ScenarioLogAppender.install(context, loggerName);
+                ScenarioLogAppender.install(context, loggerName, fileLogLevel);
             } else {
                 String filename = path.get() + "/wakamiti-" + executionTimestamp + ".log";
                 System.setProperty("path", filename);
                 Configurator.reconfigure(URI.create("log4j2_file.xml"));
             }
+            Configurator.setLevel(loggerName, Level.ALL);          //NOSONAR
+            if (debug) {
+                Configurator.setLevel("es.iti.commons", Level.ALL);    //NOSONAR
+            }
         } else {
             Configurator.reconfigure(URI.create("log4j2.xml"));
         }
-        if (level.isEmpty()) {
-            if (debug) {
-                level = Optional.of(Level.DEBUG);
-            } else {
-                level = Optional.of(Level.INFO);
-            }
-        }
-
-        level.ifPresent(l -> {
-            Configurator.setLevel(loggerName, l);          //NOSONAR
-            if (debug) {
-                Configurator.setLevel("es.iti.commons", l);    //NOSONAR
-            }
-        });
 
         conf.inner("loggers").asProperties()
                 .forEach((k, v) -> Configurator.setLevel(k.toString(), Level.toLevel(v.toString())));

@@ -11,12 +11,14 @@
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="%m%n"/>
         </Console>
 
         <File name="File" fileName="${sys:path}" append="false">
+            <ThresholdFilter level="${sys:wakamiti.log.file.level:-INFO}" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
-                <Pattern>%d  [%C{1.}.%M] %6p -  %replace{%m}{\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]}{}%n</Pattern>
+                <Pattern>%d  [%C{1.}.%M] %6p - %n%replace{%m}{\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]}{}%n</Pattern>
             </PatternLayout>
         </File>
     </Appenders>

@@ -12,7 +12,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -63,7 +65,7 @@ public class TestWakamitiLauncher {
     public void testLogger() {
         File logDirectory = new File("target/testLogger-" + System.nanoTime());
         assertThat(logDirectory.mkdirs()).isTrue();
-        String args = "--dry-run -KresourceTypes=gherkin -Klog.path=" + logDirectory.getPath() + " -Klog.level=info";
+        String args = "--dry-run -KresourceTypes=gherkin -Klog.path=" + logDirectory.getPath() + " -Klog.level=debug";
         try (MockedConstruction<WakamitiLauncherFetcher> mockPaymentService =
                      Mockito.mockConstruction(WakamitiLauncherFetcher.class, (mock, context) ->
                              when(mock.fetchAndUpdateClasspath()).thenReturn(new ArrayList<>()))
@@ -76,10 +78,16 @@ public class TestWakamitiLauncher {
         }
 
         Logger logger = WakamitiLogger.forClass(this.getClass());
-        logger.info("Test");
+        String consoleOutput = logMessages(logger, "Debug file message", "Info console and file message");
         assertThat(logDirectory.listFiles())
                 .anyMatch(file -> file.getName().matches("wakamiti-\\d+\\.log")
-                        && Files.linesOf(file, Charset.defaultCharset()).stream().anyMatch(l -> l.contains("Test")));
+                        && Files.linesOf(file, Charset.defaultCharset()).stream()
+                                .anyMatch(l -> l.contains("Debug file message"))
+                        && Files.linesOf(file, Charset.defaultCharset()).stream()
+                                .anyMatch(l -> l.contains("Info console and file message")));
+        assertThat(consoleOutput)
+                .contains("Info console and file message")
+                .doesNotContain("Debug file message");
     }
 
     @Test
@@ -87,7 +95,7 @@ public class TestWakamitiLauncher {
         File logDirectory = new File("target/testPerScenarioLogger-" + System.nanoTime());
         assertThat(logDirectory.mkdirs()).isTrue();
         String args = "--dry-run -KresourceTypes=gherkin -Klog.path=" + logDirectory.getPath()
-                + " -Klog.perScenario=true -Klog.level=info";
+                + " -Klog.perScenario=true -Klog.level=debug";
         try (MockedConstruction<WakamitiLauncherFetcher> mockPaymentService =
                      Mockito.mockConstruction(WakamitiLauncherFetcher.class, (mock, context) ->
                              when(mock.fetchAndUpdateClasspath()).thenReturn(new ArrayList<>()))
@@ -101,15 +109,40 @@ public class TestWakamitiLauncher {
 
         Logger logger = WakamitiLogger.forClass(this.getClass());
         MDC.put("wakamiti.scenarioId", "ID-01");
+        logger.debug("Scenario debug log");
         logger.info("Scenario log");
         MDC.clear();
         logger.info("Execution log");
 
         assertThat(logDirectory.listFiles())
                 .anyMatch(file -> file.getName().matches("wakamiti-\\d+-ID-01\\.log")
+                        && Files.linesOf(file, Charset.defaultCharset()).stream()
+                                .anyMatch(l -> l.contains("Scenario debug log"))
                         && Files.linesOf(file, Charset.defaultCharset()).stream().anyMatch(l -> l.contains("Scenario log")));
         assertThat(logDirectory.listFiles())
                 .noneMatch(file -> Files.linesOf(file, Charset.defaultCharset()).stream().anyMatch(l -> l.contains("Execution log")));
+    }
+
+    @Test
+    public void testConfiguredLogLevelDoesNotChangeConsoleWithoutLogFile() {
+        String args = "--dry-run -KresourceTypes=gherkin -Klog.level=debug";
+        try (MockedConstruction<WakamitiLauncherFetcher> mockPaymentService =
+                     Mockito.mockConstruction(WakamitiLauncherFetcher.class, (mock, context) ->
+                             when(mock.fetchAndUpdateClasspath()).thenReturn(new ArrayList<>()))
+        ) {
+            try (MockedConstruction<WakamitiRunner> mockRunner =
+                         Mockito.mockConstruction(WakamitiRunner.class, (mock, context) ->
+                                 when(mock.run()).thenReturn(true))) {
+                WakamitiLauncher.main(args.split(" "));
+            }
+        }
+
+        Logger logger = WakamitiLogger.forClass(this.getClass());
+        String consoleOutput = logMessages(logger, "Debug console message", "Info console message");
+
+        assertThat(consoleOutput)
+                .contains("Info console message")
+                .doesNotContain("Debug console message");
     }
 
     @Test
@@ -147,6 +180,23 @@ public class TestWakamitiLauncher {
                 "-m", "module-c,module-d"
         );
         assertThat(result.modules()).containsExactly("module-a", "module-b", "module-c", "module-d");
+    }
+
+    private String logMessages(
+            Logger logger,
+            String debugMessage,
+            String infoMessage
+    ) {
+        PrintStream originalConsole = System.out;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (PrintStream capturedConsole = new PrintStream(output, true, Charset.defaultCharset())) {
+            System.setOut(capturedConsole);
+            logger.debug(debugMessage);
+            logger.info(infoMessage);
+        } finally {
+            System.setOut(originalConsole);
+        }
+        return output.toString(Charset.defaultCharset());
     }
 
 }

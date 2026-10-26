@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.Filter;
 import org.apache.logging.log4j.core.LogEvent;
@@ -25,6 +26,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.filter.ThresholdFilter;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 
@@ -40,10 +42,12 @@ final class ScenarioLogAppender extends AbstractAppender {
 
     private final Map<Path, OutputStream> streams;
 
-    private ScenarioLogAppender() {
+    private ScenarioLogAppender(
+            Level level
+    ) {
         super(
                 APPENDER_NAME,
-                (Filter) null,
+                ThresholdFilter.createFilter(level, Filter.Result.ACCEPT, Filter.Result.DENY),
                 PatternLayout.newBuilder().withPattern(LOG_FILE_PATTERN).build(),
                 true,
                 null
@@ -53,7 +57,8 @@ final class ScenarioLogAppender extends AbstractAppender {
 
     static void install(
             LoggerContext context,
-            String loggerName
+            String loggerName,
+            Level level
     ) {
         Configuration configuration = context.getConfiguration();
         Appender previousAppender = configuration.getAppender(APPENDER_NAME);
@@ -64,7 +69,7 @@ final class ScenarioLogAppender extends AbstractAppender {
             namedLogger.removeAppender(APPENDER_NAME);
             configuration.getAppenders().remove(APPENDER_NAME);
         }
-        ScenarioLogAppender appender = new ScenarioLogAppender();
+        ScenarioLogAppender appender = new ScenarioLogAppender(level);
         appender.start();
         configuration.addAppender(appender);
         configuration.getRootLogger().addAppender(appender, null, null);
