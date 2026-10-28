@@ -139,6 +139,12 @@ public class LifecycleProbeSteps implements StepContributor {
         throw new WakamitiException("forced lifecycle hook error");
     }
 
+    @Step("given.lifecycle.probe.assertion.failure")
+    public void executeFailingAssertionProbeStep() {
+        EVENTS.add("FAILING_ASSERTION_STEP");
+        throw new AssertionError("forced lifecycle assertion failure");
+    }
+
     private void addEvent(
             String event,
             FailurePoint point

@@ -4,6 +4,7 @@ Feature: Feature with failing before hook
   @Before
   Scenario: Failing setup
     Given a failing lifecycle probe
+    Given an executable lifecycle probe
 
   Scenario: Functional scenario
     Given an executable lifecycle probe

@@ -14,6 +14,8 @@ import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
 import static es.iti.wakamiti.api.WakamitiConfiguration.STOP_EXECUTION_ON_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -184,40 +186,86 @@ public class PlanRunnerLifecycleHooksIntegrationTest {
     }
 
     @Test
-    public void propagatesBeforeHookErrorToFeatureWhileContinuingWhenStopOnErrorIsDisabled() {
+    public void skipsRemainingScenariosAndRunsAfterHookWhenBeforeHookFailsAndStopOnErrorIsDisabled() {
         PlanNode plan = run("beforeFails", Configuration.factory().empty());
 
-        assertThat(LifecycleProbeSteps.events()).containsSubsequence(
-                "FAILING_STEP", "SCENARIO_TEAR_DOWN", "SCENARIO_SET_UP", "STEP"
+        assertThat(LifecycleProbeSteps.events()).containsExactly(
+                "PLAN_SET_UP", "FEATURE_SET_UP",
+                "SCENARIO_SET_UP", "FAILING_STEP", "SCENARIO_TEAR_DOWN",
+                "SCENARIO_SET_UP", "STEP", "SCENARIO_TEAR_DOWN", "FEATURE_TEAR_DOWN",
+                "FEATURE_SET_UP", "SCENARIO_SET_UP", "STEP", "SCENARIO_TEAR_DOWN", "FEATURE_TEAR_DOWN",
+                "PLAN_TEAR_DOWN"
         );
-        assertThat(feature(plan, "Feature with failing before hook").result()).contains(Result.ERROR);
-        assertThat(feature(plan, "Second feature").result()).contains(Result.PASSED);
-        assertThat(new PlanNodeSnapshot(plan).getTestCaseResults()).doesNotContainKey(Result.ERROR);
+        PlanNode firstFeature = feature(plan, "Feature with failing before hook");
+        PlanNode secondFeature = feature(plan, "Second feature");
+        assertThat(firstFeature.result()).contains(Result.ERROR);
+        assertStepResults(featureChild(firstFeature, "Failing setup"), Result.ERROR, Result.SKIPPED);
+        assertSkippedTree(featureChild(firstFeature, "Functional scenario"));
+        assertPassedTree(featureChild(firstFeature, "Cleanup"));
+        assertPassedTree(secondFeature);
     }
 
     @Test
-    public void stopsAfterBeforeHookErrorWhenStopOnErrorIsEnabled() {
+    public void runsAfterHookAndSkipsRemainingFeaturesWhenBeforeHookFailsAndStopOnErrorIsEnabled() {
         PlanNode plan = run("beforeFails", stopOnError());
 
         assertThat(LifecycleProbeSteps.events()).containsExactly(
                 "PLAN_SET_UP", "FEATURE_SET_UP", "SCENARIO_SET_UP", "FAILING_STEP", "SCENARIO_TEAR_DOWN",
+                "SCENARIO_SET_UP", "STEP", "SCENARIO_TEAR_DOWN",
                 "FEATURE_TEAR_DOWN", "PLAN_TEAR_DOWN"
         );
-        assertThat(feature(plan, "Feature with failing before hook").result()).contains(Result.ERROR);
-        assertThat(feature(plan, "Second feature").result()).contains(Result.SKIPPED);
+        PlanNode firstFeature = feature(plan, "Feature with failing before hook");
+        assertThat(firstFeature.result()).contains(Result.ERROR);
+        assertStepResults(featureChild(firstFeature, "Failing setup"), Result.ERROR, Result.SKIPPED);
+        assertSkippedTree(featureChild(firstFeature, "Functional scenario"));
+        assertPassedTree(featureChild(firstFeature, "Cleanup"));
+        assertSkippedTree(feature(plan, "Second feature"));
     }
 
     @Test
-    public void propagatesAfterHookErrorToFeatureAndStopsFollowingFeaturesWhenEnabled() {
+    public void skipsRemainingAfterStepsWhenAnAfterStepFails() {
         PlanNode plan = run("afterFails", stopOnError());
 
         assertThat(LifecycleProbeSteps.events()).containsExactly(
                 "PLAN_SET_UP",
                 "FEATURE_SET_UP", "SCENARIO_SET_UP", "STEP", "SCENARIO_TEAR_DOWN",
-                "SCENARIO_SET_UP", "FAILING_STEP", "SCENARIO_TEAR_DOWN", "FEATURE_TEAR_DOWN", "PLAN_TEAR_DOWN"
+                "SCENARIO_SET_UP", "FAILING_ASSERTION_STEP", "SCENARIO_TEAR_DOWN", "FEATURE_TEAR_DOWN",
+                "FEATURE_SET_UP", "SCENARIO_SET_UP", "STEP", "SCENARIO_TEAR_DOWN", "FEATURE_TEAR_DOWN",
+                "PLAN_TEAR_DOWN"
         );
-        assertThat(feature(plan, "Feature with failing after hook").result()).contains(Result.ERROR);
-        assertThat(feature(plan, "Second feature").result()).contains(Result.SKIPPED);
+        PlanNode failingFeature = feature(plan, "Feature with failing after hook");
+        assertThat(failingFeature.result()).contains(Result.FAILED);
+        assertStepResults(featureChild(failingFeature, "Failing cleanup"), Result.FAILED, Result.SKIPPED);
+        assertPassedTree(feature(plan, "Second feature"));
+    }
+
+    @Test
+    public void aggregatesFunctionalAndLifecycleResultsForMixedHookOutcomes() {
+        PlanNode plan = run("reportResults", Configuration.factory().empty());
+
+        PlanNode failedStepFeature = feature(plan, "Feature with failed functional scenario");
+        assertPassedTree(featureChild(failedStepFeature, "Setup"));
+        assertFailedTree(featureChild(failedStepFeature, "Functional scenario"));
+        assertPassedTree(featureChild(failedStepFeature, "Cleanup"));
+        assertThat(failedStepFeature.result()).contains(Result.FAILED);
+
+        PlanNode beforeFailsFeature = feature(plan, "Feature with failing before hook");
+        assertErrorTree(featureChild(beforeFailsFeature, "Failing setup"));
+        assertSkippedTree(featureChild(beforeFailsFeature, "Functional scenario"));
+        assertPassedTree(featureChild(beforeFailsFeature, "Cleanup"));
+        assertThat(beforeFailsFeature.result()).contains(Result.ERROR);
+
+        PlanNode afterFailsFeature = feature(plan, "Feature with failing after hook");
+        assertPassedTree(featureChild(afterFailsFeature, "Setup"));
+        assertPassedTree(featureChild(afterFailsFeature, "Functional scenario"));
+        assertErrorTree(featureChild(afterFailsFeature, "Failing cleanup"));
+        assertThat(afterFailsFeature.result()).contains(Result.ERROR);
+
+        PlanNodeSnapshot snapshot = new PlanNodeSnapshot(plan);
+        assertThat(plan.result()).contains(Result.ERROR);
+        assertThat(snapshot.getTestCaseResults())
+                .isEqualTo(Map.of(Result.FAILED, 1L, Result.SKIPPED, 1L, Result.PASSED, 1L));
+        assertThat(snapshot.getChildrenResults()).isEqualTo(Map.of(Result.FAILED, 1L, Result.ERROR, 2L));
     }
 
     private PlanNode run(
@@ -246,6 +294,54 @@ public class PlanRunnerLifecycleHooksIntegrationTest {
                 .filter(node -> node.nodeType() == NodeType.AGGREGATOR && name.equals(node.name()))
                 .findFirst()
                 .orElseThrow();
+    }
+
+    private PlanNode featureChild(
+            PlanNode feature,
+            String name
+    ) {
+        return feature.children()
+                .filter(node -> name.equals(node.name()))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private void assertSkippedTree(
+            PlanNode node
+    ) {
+        assertThat(node.result()).contains(Result.SKIPPED);
+        node.descendants().forEach(descendant -> assertThat(descendant.result()).contains(Result.SKIPPED));
+    }
+
+    private void assertPassedTree(
+            PlanNode node
+    ) {
+        assertThat(node.result()).contains(Result.PASSED);
+        node.descendants().forEach(descendant -> assertThat(descendant.result()).contains(Result.PASSED));
+    }
+
+    private void assertFailedTree(
+            PlanNode node
+    ) {
+        assertThat(node.result()).contains(Result.FAILED);
+        node.descendants().forEach(descendant -> assertThat(descendant.result()).contains(Result.FAILED));
+    }
+
+    private void assertErrorTree(
+            PlanNode node
+    ) {
+        assertThat(node.result()).contains(Result.ERROR);
+        node.descendants().forEach(descendant -> assertThat(descendant.result()).contains(Result.ERROR));
+    }
+
+    private void assertStepResults(
+            PlanNode testCase,
+            Result... expectedResults
+    ) {
+        assertThat(testCase.descendants()
+                .filter(node -> node.nodeType() == NodeType.STEP)
+                .map(node -> node.result().orElseThrow())
+                .toList()).containsExactly(expectedResults);
     }
 
 }
