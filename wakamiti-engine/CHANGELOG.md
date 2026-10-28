@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Publish output-file lifecycle events while preparing and writing result files, rather than during report
   generation, so listeners can prepare the output before its properties are resolved.
+- Preserve the feature `@After` hook when a Gherkin `@Before` or functional scenario fails. Hook steps following any
+  non-successful result are now marked as `SKIPPED`, and `stopExecutionOnError` does not cancel cleanup for a feature
+  already in progress.
 
 
 ## [3.1.0] - 2026-09-24

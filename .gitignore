@@ -5,6 +5,7 @@
 .settings
 .vscode
 .factorypath
+.sonar
 /**/*.iml
 /**/target/
 !/docs/**/target/

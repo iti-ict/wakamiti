@@ -36,19 +36,43 @@ This model allows the engine to transform or redefine the plan before execution 
 
 ### Lifecycle hook scenarios in Gherkin
 
-`wakamiti-core` supports reserved scenario tags to execute setup/teardown logic at feature and suite level:
+`wakamiti-core` supports one setup hook and one teardown hook per feature. Declare them as regular Gherkin scenarios
+with the reserved tags `@Before` and `@After`:
 
-- `@Before`: runs at the start of the feature.
-- `@After`: runs at the end of the feature.
+```gherkin
+Feature: Manage the test fixture
 
-Behavior rules:
+  @Before
+  Scenario: Prepare the fixture
+    Given the fixture is ready
 
-- They are declared as `Scenario` blocks in `.feature` files.
-- They do **not** receive `Background` steps.
-- They are lifecycle-only scenarios: they are visible in execution output and reports, but they do not contribute to functional test-case aggregates.
-- They are not treated as strict functional test-case IDs.
-- Feature-level hooks are skipped when the feature has no executable functional scenario after filtering.
-- Hook flow follows `stopExecutionOnError` like the rest of the engine.
+  Scenario: Exercise the feature
+    When the operation is executed
+    Then the expected result is returned
+
+  @After
+  Scenario: Clean up the fixture
+    Given the fixture is removed
+```
+
+The engine runs the `@Before` scenario before the functional scenarios and the `@After` scenario after them. Both hooks
+are feature-level lifecycle scenarios, not functional test cases.
+
+#### Execution and failure rules
+
+- Hooks do **not** receive `Background` steps.
+- If any hook step finishes with a result other than `PASSED`, its remaining steps are marked as `SKIPPED`.
+- A non-successful `@Before` marks every functional scenario in the feature as `SKIPPED`; the `@After` hook still runs.
+- The `@After` hook runs after a feature has started, even when its `@Before` or a functional scenario failed.
+- Hooks are marked as `SKIPPED` when tag filtering leaves the feature without an executable functional scenario.
+- `stopExecutionOnError` still stops remaining functional scenarios and later features only after an `ERROR`. It does not
+  cancel the `@After` hook of the feature already in progress.
+
+#### Results and reports
+
+Hook scenarios are visible in execution output and reports. Their result contributes to the aggregate result of their
+parent feature, but hooks are excluded from functional test-case counts and are not treated as strict functional
+test-case IDs.
 
 ### Configuration
 

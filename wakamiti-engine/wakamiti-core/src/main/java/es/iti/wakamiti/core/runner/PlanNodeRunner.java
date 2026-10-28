@@ -266,7 +266,9 @@ public class PlanNodeRunner {
     private Result executeTestCase() {
         List<Pair<Instant, Result>> results = new ArrayList<>();
         if (prepareTestCaseExecution(results)) {
-            results.addAll(runChildren());
+            results.addAll(node.nodeType() == NodeType.LIFECYCLE_HOOK
+                    ? runChildrenUntilFailure()
+                    : runChildren());
         } else {
             skipPendingChildren();
         }
@@ -339,7 +341,7 @@ public class PlanNodeRunner {
             continueExecution = !stopExecutionOnError();
         }
         if (continueExecution) {
-            results.addAll(runChildren());
+            results.addAll(runFeatureChildren(beforeRunners, scenarioRunners, afterRunners));
         } else {
             skipPendingChildren();
         }
@@ -352,6 +354,23 @@ public class PlanNodeRunner {
         }
 
         return aggregatorFinish(results);
+    }
+
+    private List<Pair<Instant, Result>> runFeatureChildren(
+            List<PlanNodeRunner> beforeRunners,
+            List<PlanNodeRunner> scenarioRunners,
+            List<PlanNodeRunner> afterRunners
+    ) {
+        List<Pair<Instant, Result>> results = new ArrayList<>();
+        List<Pair<Instant, Result>> beforeResults = runSelectedChildren(beforeRunners);
+        results.addAll(beforeResults);
+        if (beforeResults.stream().allMatch(result -> result.value().isPassed())) {
+            results.addAll(runSelectedChildren(scenarioRunners));
+        } else {
+            scenarioRunners.forEach(PlanNodeRunner::skipIfPending);
+        }
+        results.addAll(runSelectedChildren(afterRunners));
+        return results;
     }
 
     private Result aggregatorFinish(
@@ -385,18 +404,38 @@ public class PlanNodeRunner {
     protected List<Pair<Instant, Result>> runSelectedChildren(
             List<PlanNodeRunner> childRunners
     ) {
+        return runChildren(childRunners, false);
+    }
+
+    private List<Pair<Instant, Result>> runChildrenUntilFailure() {
+        return runChildren(getChildren(), true);
+    }
+
+    private List<Pair<Instant, Result>> runChildren(
+            List<PlanNodeRunner> childRunners,
+            boolean stopOnAnyFailure
+    ) {
         List<Pair<Instant, Result>> results = new ArrayList<>();
         for (int i = 0; i < childRunners.size(); i++) {
             Result result = runChild(childRunners.get(i));
             if (result != null) {
                 results.add(new Pair<>(Instant.now(), result));
             }
-            if (stopExecutionOnError() && result == Result.ERROR) {
+            if (shouldStopChildExecution(result, stopOnAnyFailure)) {
                 skipPendingChildren(childRunners, i + 1);
                 break;
             }
         }
         return results;
+    }
+
+    private boolean shouldStopChildExecution(
+            Result result,
+            boolean stopOnAnyFailure
+    ) {
+        return result != null && (stopOnAnyFailure
+                ? !result.isPassed()
+                : stopExecutionOnError() && result == Result.ERROR);
     }
 
     /**

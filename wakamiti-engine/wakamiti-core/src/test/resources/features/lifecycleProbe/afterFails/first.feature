@@ -6,4 +6,5 @@ Feature: Feature with failing after hook
 
   @After
   Scenario: Failing cleanup
-    Given a failing lifecycle probe
+    Given an assertion-failing lifecycle probe
+    Given an executable lifecycle probe
