@@ -192,34 +192,87 @@ public class TestHtmlReportGenerator {
     }
 
     @Test
-    public void testLifecycleHooksSeparateFromFunctionalResults() {
-        // All 4 scenarios (3 hooks + 1 functional) appear in the embedded report data
+    public void testLifecycleHooksPreserveFunctionalResultsInReport() {
         org.assertj.core.api.Assertions.assertThat(htmlLifecycle)
-                .contains("Setup feature execution")
-                .contains("Functional scenario")
-                .contains("Teardown feature execution")
-                .contains("Unexecuted lifecycle fixture");
+                .contains("Test 7 - Lifecycle hooks 1")
+                .contains("Test 7 - Lifecycle hooks 2")
+                .contains("Test 7 - Lifecycle hooks 3");
 
         assertThat(xmlLifecycle)
-                .nodesByXPath("//canvas[@data-result='{\"FAILED\":1}']")
-                .size().isEqualTo(2);
+                .nodesByXPath("//input[@id='failed-toggle' and @checked and not(@disabled)]")
+                .hasSize(1);
+        assertThat(xmlLifecycle)
+                .nodesByXPath("//input[@id='skipped-toggle' and @checked and not(@disabled)]")
+                .hasSize(1);
+        assertThat(xmlLifecycle)
+                .nodesByXPath("//input[@id='passed-toggle' and @checked and not(@disabled)]")
+                .hasSize(1);
     }
 
     @Test
-    public void testFilteredSnapshotIncludesSkippedLifecycleHooksAndIdentifiesFixtures() throws IOException {
+    public void testLifecycleFixtureSeparatesHooksFromFunctionalResults() throws IOException {
         try (Reader reader = Files.newBufferedReader(
                 Paths.get("src/test/resources/wakamiti_lifecycle.json"), StandardCharsets.UTF_8)) {
             PlanNodeSnapshot plan = WakamitiAPI.instance().planSerializer().read(reader);
             PlanNodeSnapshot feature = plan.getChildren().get(0);
 
+            org.assertj.core.api.Assertions.assertThat(plan.getResult()).isEqualTo(Result.ERROR);
+            org.assertj.core.api.Assertions.assertThat(plan.getTestCaseResults())
+                    .containsEntry(Result.FAILED, 1L)
+                    .containsEntry(Result.SKIPPED, 1L)
+                    .containsEntry(Result.PASSED, 1L);
+            org.assertj.core.api.Assertions.assertThat(plan.getChildrenResults())
+                    .containsEntry(Result.ERROR, 2L)
+                    .containsEntry(Result.FAILED, 1L);
+            org.assertj.core.api.Assertions.assertThat(plan.getChildren())
+                    .extracting(PlanNodeSnapshot::getSource)
+                    .containsExactly(
+                            "lifecycleHooks/failedStep.feature[3,1]",
+                            "lifecycleHooks/beforeFails.feature[3,1]",
+                            "lifecycleHooks/afterFails.feature[3,1]"
+                    );
+            assertUniqueSnapshotIds(plan, new java.util.HashSet<>());
+            assertUniqueFilteredSnapshotIds(FilteredSnapshot.of(plan), new java.util.HashSet<>());
+
             java.util.List<FilteredSnapshot> children = FilteredSnapshot.of(feature.getChildren());
 
-            org.assertj.core.api.Assertions.assertThat(children).hasSize(4);
+            org.assertj.core.api.Assertions.assertThat(children).hasSize(3);
             org.assertj.core.api.Assertions.assertThat(children.get(0).getLt()).isEqualTo("before");
             org.assertj.core.api.Assertions.assertThat(children.get(0).getK()).isEqualTo("Before fixture");
-            org.assertj.core.api.Assertions.assertThat(children.get(3).getN())
-                    .isEqualTo("Unexecuted lifecycle fixture");
-            org.assertj.core.api.Assertions.assertThat(children.get(3).getR()).isEqualTo(Result.SKIPPED);
+            org.assertj.core.api.Assertions.assertThat(children.get(2).getLt()).isEqualTo("after");
+            org.assertj.core.api.Assertions.assertThat(children.get(1).getR()).isEqualTo(Result.FAILED);
+            org.assertj.core.api.Assertions.assertThat(plan.getChildren().get(1).getChildren().get(1).getResult())
+                    .isEqualTo(Result.SKIPPED);
+            org.assertj.core.api.Assertions.assertThat(plan.getChildren().get(2).getChildren().get(1).getResult())
+                    .isEqualTo(Result.PASSED);
+        }
+    }
+
+    private void assertUniqueSnapshotIds(
+            PlanNodeSnapshot node,
+            java.util.Set<String> ids
+    ) {
+        if (node.getId() != null) {
+            org.assertj.core.api.Assertions.assertThat(ids.add(node.getId()))
+                    .as("Snapshot node ID must be unique: %s", node.getId())
+                    .isTrue();
+        }
+        if (node.getChildren() != null) {
+            node.getChildren().forEach(child -> assertUniqueSnapshotIds(child, ids));
+        }
+    }
+
+    private void assertUniqueFilteredSnapshotIds(
+            FilteredSnapshot node,
+            java.util.Set<String> ids
+    ) {
+        if (node.getI() != null) {
+            org.assertj.core.api.Assertions.assertThat(ids.add(node.getI()))
+                    .as("Report node ID must be unique: %s", node.getI())
+                    .isTrue();
+        }
+        if (node.getC() != null) {
+            node.getC().forEach(child -> assertUniqueFilteredSnapshotIds(child, ids));
         }
     }
 
