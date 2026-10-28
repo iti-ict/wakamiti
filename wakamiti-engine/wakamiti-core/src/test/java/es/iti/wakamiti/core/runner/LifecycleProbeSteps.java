@@ -95,25 +95,25 @@ public class LifecycleProbeSteps implements StepContributor {
     @SetUp(level = Level.PLAN)
     public void setUpPlan() {
         planSetUpInstance = instanceId;
-        record("PLAN_SET_UP", FailurePoint.PLAN_SET_UP);
+        addEvent("PLAN_SET_UP", FailurePoint.PLAN_SET_UP);
     }
 
     @TearDown(level = Level.PLAN)
     public void tearDownPlan() {
         planTearDownInstance = instanceId;
-        record("PLAN_TEAR_DOWN", FailurePoint.PLAN_TEAR_DOWN);
+        addEvent("PLAN_TEAR_DOWN", FailurePoint.PLAN_TEAR_DOWN);
     }
 
     @SetUp(level = Level.FEATURE)
     public void setUpFeature() {
         FEATURE_SET_UP_INSTANCES.add(instanceId);
-        record("FEATURE_SET_UP", FailurePoint.FEATURE_SET_UP);
+        addEvent("FEATURE_SET_UP", FailurePoint.FEATURE_SET_UP);
     }
 
     @TearDown(level = Level.FEATURE)
     public void tearDownFeature() {
         FEATURE_TEAR_DOWN_INSTANCES.add(instanceId);
-        record("FEATURE_TEAR_DOWN", FailurePoint.FEATURE_TEAR_DOWN);
+        addEvent("FEATURE_TEAR_DOWN", FailurePoint.FEATURE_TEAR_DOWN);
     }
 
     @SetUp(level = Level.SCENARIO)
@@ -139,7 +139,7 @@ public class LifecycleProbeSteps implements StepContributor {
         throw new WakamitiException("forced lifecycle hook error");
     }
 
-    private void record(
+    private void addEvent(
             String event,
             FailurePoint point
     ) {
