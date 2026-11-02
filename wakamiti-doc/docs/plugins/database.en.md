@@ -961,7 +961,7 @@ Then a user identified by '1' exists in the table USERS in 10 seconds
 
 
 [1]: https://commons.apache.org/proper/commons-csv/
-[2]: en/wakamiti/architecture#comparador
+[2]: en/wakamiti/architecture#comparators
 [3]: #post-execution-mode
 [4]: #async-mode
 [5]: en/wakamiti/architecture#duration

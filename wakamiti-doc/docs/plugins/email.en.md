@@ -423,5 +423,5 @@ At finish, delete all emails whose subject {matcher}
 ```
 
 
-[1]: en/wakamiti/architecture#comparador
+[1]: en/wakamiti/architecture#comparators
 [2]: en/wakamiti/architecture#duration 

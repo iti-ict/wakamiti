@@ -424,5 +424,5 @@ Al finalizar, se borran todos los correos cuyo asunto {matcher}
 ```
 
 
-[1]: wakamiti/architecture#comparador
+[1]: wakamiti/architecture#comparadores
 [2]: wakamiti/architecture#duration 
