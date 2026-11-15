@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.10.3] - 2026-11-15
+
+### Fixed
+- SQL query results now return `TIME` columns as `HH:mm:ss`, without the synthetic `1970-01-01` date, so they can be 
+  reused in record assertions.
+
+
 ## [3.10.2] - 2026-11-15
 
 ### Fixed
