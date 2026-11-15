@@ -67,6 +67,8 @@ public class MariaDatabaseTest {
     public static void setUp() {
         LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
+        TimeColumnAssertions.assertTimeColumns(
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword(), false);
         LOGGER.info("Container [MariaDBContainer] started with [url={}, username={}, password={}]",
                 CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.10.2] - 2026-11-15
+
+### Fixed
+- `TIME` and `TIME WITH TIME ZONE` columns now parse to `LocalTime` values without a date component.
+
+
 ## [3.10.1] - 2026-09-24
 
 ### Fixed

@@ -27,6 +27,11 @@ CREATE TABLE other (
     something int NOT NULL
 );
 
+CREATE TABLE temporal_value (
+    time_value time,
+    time_with_timezone_value time with time zone
+);
+
 CREATE SCHEMA "QUALIFIED";
 
 CREATE TABLE "QUALIFIED"."QUALIFIED_CLIENT" (

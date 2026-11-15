@@ -22,8 +22,10 @@ import java.sql.DriverManager;
 import java.sql.JDBCType;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -74,6 +76,7 @@ public class DatabaseStepContributorTest {
     public static void setup() throws SQLException, FileNotFoundException {
         h2 = DriverManager.getConnection(URL, USER, PASS);
         RunScript.execute(h2, new FileReader("src/test/resources/wakamiti/db/create-schema.sql"));
+        RunScript.execute(h2, new FileReader("src/test/resources/wakamiti/db/create-schema-h2.sql"));
     }
 
     @AfterClass
@@ -474,6 +477,33 @@ public class DatabaseStepContributorTest {
                     new String[]{"2", "Ester", "Colero", null, "2000-02-01", "2024-07-22 13:00:00.000"}
             );
         }
+    }
+
+    @Test
+    public void testProcessTimeColumns() {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false"
+        );
+        configContributor.configurer().configure(contributor, config);
+        createContext(config);
+        Database database = Database.from(contributor.connection());
+        String timeTable = database.table("temporal_value");
+        String timeColumn = database.column(timeTable, "time_value");
+        String timeWithTimezoneTable = database.table("temporal_timezone_value");
+        String timeWithTimezoneColumn = database.column(timeWithTimezoneTable, "time_with_timezone_value");
+
+        // Act
+        Map<String, Object> time = database.processData(timeTable, Map.of("time_value", "13:45:30"));
+        Map<String, Object> timeWithTimezone = database.processData(
+                timeWithTimezoneTable, Map.of("time_with_timezone_value", "13:45:30+01:00"));
+
+        // Check
+        assertThat(time.get(timeColumn)).isEqualTo(LocalTime.of(13, 45, 30));
+        assertThat(timeWithTimezone.get(timeWithTimezoneColumn)).isEqualTo(LocalTime.of(13, 45, 30));
     }
 
     @Test

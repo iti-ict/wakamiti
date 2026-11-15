@@ -70,6 +70,8 @@ public class SQLServerTest {
         LOGGER.info("Creating container. Please, be patient... ");
 
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
+        TimeColumnAssertions.assertTimeColumns(
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword(), false);
         LOGGER.info("Container [MSSQLServerContainer] started with [url={}, username={}, password={}]",
                 CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
         String url = CONTAINER.getJdbcUrl();
