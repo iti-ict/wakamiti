@@ -500,10 +500,19 @@ public class DatabaseStepContributorTest {
         Map<String, Object> time = database.processData(timeTable, Map.of("time_value", "13:45:30"));
         Map<String, Object> timeWithTimezone = database.processData(
                 timeWithTimezoneTable, Map.of("time_with_timezone_value", "13:45:30+01:00"));
+        database.update("INSERT INTO temporal_value (time_value) VALUES ('12:00:00')").execute();
 
         // Check
         assertThat(time.get(timeColumn)).isEqualTo(LocalTime.of(13, 45, 30));
         assertThat(timeWithTimezone.get(timeWithTimezoneColumn)).isEqualTo(LocalTime.of(13, 45, 30));
+        try (Select<String[]> select = database.select("SELECT time_value FROM temporal_value")
+                .get(DatabaseHelper::format)) {
+            assertThat(select.stream().toList()).containsExactly(new String[]{"12:00:00"});
+        }
+        try (Select<Map<String, String>> select = database.select("SELECT time_value FROM temporal_value")
+                .get(DatabaseHelper::formatToMap)) {
+            assertThat(select.stream().toList()).containsExactly(Map.of(timeColumn, "12:00:00"));
+        }
     }
 
     @Test

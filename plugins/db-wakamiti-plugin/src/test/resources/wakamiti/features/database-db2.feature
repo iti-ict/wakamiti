@@ -244,6 +244,21 @@ Característica: Testing database steps
       Y el contenido del fichero XLS '${data.dir}/data1.xlsx' no existe en la base de datos en 1 segundo
 
 
+  Escenario: Valor TIME
+    Dado que se ha ejecutado el siguiente script SQL:
+      """
+      DELETE FROM temporal_value;
+      INSERT INTO temporal_value (time_value) VALUES ('12:00:00');
+      """
+    Cuando se recupera el valor de la siguiente consulta SQL:
+      """
+      SELECT time_value FROM temporal_value;
+      """
+    Entonces el siguiente registro existe en la tabla temporal_value:
+      | time_value |
+      | 12:00:00   |
+
+
   Escenario: Tabla con esquema cualificado
     * Al finalizar, se ejecuta el siguiente script SQL:
       """

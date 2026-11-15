@@ -67,8 +67,6 @@ public class MySqlDatabaseTest {
     public static void setUp() {
         LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
-        TimeColumnAssertions.assertTimeColumns(
-                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword(), false);
         LOGGER.info("Container [MySQLContainer] started with [url={}, username={}, password={}]",
                 CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }
