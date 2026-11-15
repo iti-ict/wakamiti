@@ -13,6 +13,7 @@ import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -47,6 +48,11 @@ public final class DatabaseHelper {
      * The date formatter used for formatting dates without time.
      */
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    /**
+     * The time formatter used for formatting SQL time values without a date.
+     */
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private DatabaseHelper() {
         // prevents instantiation
@@ -118,7 +124,18 @@ public final class DatabaseHelper {
                         }
                         row[c - 1] = DATE_FORMATTER.format(timestamp1.toLocalDateTime());
                         break;
-                    case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE:
+                    case TIME, TIME_WITH_TIMEZONE:
+                        Calendar timeCalendar = Calendar.getInstance();
+                        timeCalendar.setTimeZone(TimeZone.getDefault());
+                        timeCalendar.setLenient(true);
+                        Time time = rs.getTime(c, timeCalendar);
+                        if (rs.wasNull()) {
+                            row[c - 1] = null;
+                            break;
+                        }
+                        row[c - 1] = TIME_FORMATTER.format(time.toLocalTime());
+                        break;
+                    case TIMESTAMP, TIMESTAMP_WITH_TIMEZONE:
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);
@@ -171,7 +188,18 @@ public final class DatabaseHelper {
                         }
                         row.put(column, DATE_FORMATTER.format(timestamp1.toLocalDateTime()));
                         break;
-                    case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE:
+                    case TIME, TIME_WITH_TIMEZONE:
+                        Calendar timeCalendar = Calendar.getInstance();
+                        timeCalendar.setTimeZone(TimeZone.getDefault());
+                        timeCalendar.setLenient(true);
+                        Time time = rs.getTime(c, timeCalendar);
+                        if (rs.wasNull()) {
+                            row.put(column, null);
+                            break;
+                        }
+                        row.put(column, TIME_FORMATTER.format(time.toLocalTime()));
+                        break;
+                    case TIMESTAMP, TIMESTAMP_WITH_TIMEZONE:
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeZone(TimeZone.getDefault());
                         calendar.setLenient(true);

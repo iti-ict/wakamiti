@@ -252,6 +252,21 @@ Feature: Testing database steps
       And the content of the XLS file '${data.dir}/data1.xlsx' does not exist in the database in 1 second
 
 
+  Scenario: TIME value
+    Given the following SQL script is executed:
+      """
+      DELETE FROM temporal_value;
+      INSERT INTO temporal_value (time_value) VALUES ('12:00:00');
+      """
+    When the following SQL query value:
+      """
+      SELECT time_value FROM temporal_value;
+      """
+    Then the following record exists in the table temporal_value:
+      | time_value |
+      | 12:00:00   |
+
+
   Scenario: Schema-qualified table
     * On completion, the following SQL script is executed:
       """

@@ -62,8 +62,6 @@ public class PostgresqlDatabaseTest {
     public static void setUp() {
         LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
-        TimeColumnAssertions.assertTimeColumns(
-                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword(), true);
         LOGGER.info("Container [PostgreSQLContainer] started with [url={}, username={}, password={}]",
                 CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }
