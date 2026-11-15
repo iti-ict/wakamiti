@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.JDBCType;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
@@ -57,7 +58,8 @@ public class DefaultSqlFormat implements SqlFormat {
             case TINYINT, BIGINT, INTEGER, SMALLINT -> formatInteger(value);
             case DECIMAL, DOUBLE, FLOAT, NUMERIC, REAL -> formatDecimal(value);
             case DATE -> formatDate(value);
-            case TIMESTAMP, TIME, TIME_WITH_TIMEZONE, TIMESTAMP_WITH_TIMEZONE -> formatDateTime(value);
+            case TIME, TIME_WITH_TIMEZONE -> formatTime(value);
+            case TIMESTAMP, TIMESTAMP_WITH_TIMEZONE -> formatDateTime(value);
             default -> value;
         };
     }
@@ -116,6 +118,17 @@ public class DefaultSqlFormat implements SqlFormat {
             value = DATE_TIME_FORMATTER.withZone(calendar2.getTimeZone().toZoneId()).format(calendar2.toInstant());
         }
         return WakamitiTimestamp.valueOf(value, false);
+    }
+
+    protected Object formatTime(
+            String value
+    ) {
+        try {
+            return parse(value, LocalTime.class);
+        } catch (WakamitiException | DateTimeParseException e) {
+            Calendar calendar = Chronic.parse(value, new Options(false)).getBeginCalendar();
+            return LocalTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
+        }
     }
 
     /**
