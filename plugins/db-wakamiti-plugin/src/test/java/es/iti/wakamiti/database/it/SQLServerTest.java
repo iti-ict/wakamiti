@@ -8,17 +8,11 @@
 package es.iti.wakamiti.database.it;
 
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
-import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
-import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
-import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
-import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -29,11 +23,14 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
+import static es.iti.wakamiti.api.WakamitiConfiguration.*;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
 
 
 @AnnotatedConfiguration({
@@ -70,6 +67,8 @@ public class SQLServerTest {
         LOGGER.info("Creating container. Please, be patient... ");
 
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
+        TimeColumnAssertions.assertTimeColumns(
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword(), false);
         LOGGER.info("Container [MSSQLServerContainer] started with [url={}, username={}, password={}]",
                 CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
         String url = CONTAINER.getJdbcUrl();

@@ -8,14 +8,11 @@
 package es.iti.wakamiti.database.it;
 
 
-import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_PATH;
-import static es.iti.wakamiti.api.WakamitiConfiguration.RESOURCE_TYPES;
-import static es.iti.wakamiti.api.WakamitiConfiguration.TREAT_STEPS_AS_TESTS;
-import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
-import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
-
-import java.util.Objects;
-
+import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Ports;
+import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
+import es.iti.wakamiti.api.imconfig.Property;
+import es.iti.wakamiti.junit.WakamitiJUnitRunner;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -23,11 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-import com.github.dockerjava.api.model.PortBinding;
-import com.github.dockerjava.api.model.Ports;
-import es.iti.wakamiti.api.imconfig.AnnotatedConfiguration;
-import es.iti.wakamiti.api.imconfig.Property;
-import es.iti.wakamiti.junit.WakamitiJUnitRunner;
+import java.util.Objects;
+
+import static es.iti.wakamiti.api.WakamitiConfiguration.*;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_ENABLE_CLEANUP_UPON_COMPLETION;
+import static es.iti.wakamiti.database.DatabaseConfigContributor.DATABASE_HEALTHCHECK;
 
 
 @AnnotatedConfiguration({
@@ -62,6 +59,8 @@ public class PostgresqlDatabaseTest {
     public static void setUp() {
         LOGGER.info("Creating container. Please, be patient... ");
         TestcontainersWindowsNpipe.startOrSkipOnWindowsNpipeFailure(CONTAINER);
+        TimeColumnAssertions.assertTimeColumns(
+                CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword(), true);
         LOGGER.info("Container [PostgreSQLContainer] started with [url={}, username={}, password={}]",
                 CONTAINER.getJdbcUrl(), CONTAINER.getUsername(), CONTAINER.getPassword());
     }

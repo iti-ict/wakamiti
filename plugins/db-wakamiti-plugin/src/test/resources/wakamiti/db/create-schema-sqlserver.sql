@@ -25,6 +25,10 @@ CREATE TABLE other (
     something int NOT NULL
 );
 
+CREATE TABLE temporal_value (
+    time_value time
+);
+
 CREATE SCHEMA qualified;
 
 CREATE TABLE qualified.qualified_client (
