@@ -8,6 +8,13 @@
 package es.iti.wakamiti.database.it;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalTime;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import es.iti.wakamiti.api.Backend;
 import es.iti.wakamiti.api.WakamitiStepRunContext;
 import es.iti.wakamiti.api.imconfig.Configuration;
@@ -15,13 +22,6 @@ import es.iti.wakamiti.core.Wakamiti;
 import es.iti.wakamiti.database.ConnectionParameters;
 import es.iti.wakamiti.database.jdbc.ConnectionProvider;
 import es.iti.wakamiti.database.jdbc.Database;
-
-import java.time.LocalTime;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 final class TimeColumnAssertions {
