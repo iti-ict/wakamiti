@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
 
+## [3.10.4] - 2026-11-16
+
+### Fixed
+- Automatic trimming is now applied only to text and CLOB columns, avoiding invalid comparisons on numeric and temporal columns.
+
+
 ## [3.10.3] - 2026-11-15
 
 ### Fixed
