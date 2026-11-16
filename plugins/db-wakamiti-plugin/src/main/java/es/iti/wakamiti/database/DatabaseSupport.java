@@ -620,7 +620,8 @@ public class DatabaseSupport {
         String[] normalizedColumns = Stream.of(columns)
                 .map(c -> db.column(normalizedTable, c))
                 .toArray(String[]::new);
-        return countBy(db, db.parser().sqlSelectCountFrom(normalizedTable, normalizedColumns, values).toString());
+        return countBy(db, db.parser().sqlSelectCountFrom(normalizedTable, normalizedColumns, values,
+                column -> db.isTextColumn(normalizedTable, column.getColumnName())).toString());
     }
 
     /**
@@ -1210,7 +1211,8 @@ public class DatabaseSupport {
         while (dataSet.nextRow()) {
             Map<String, Object> row = db.processData(dataSet.table(),
                     dataSet.rowAsMap().entrySet().stream().collect(MapUtils.toMap(DatabaseHelper::toString)));
-            net.sf.jsqlparser.statement.delete.Delete delete = db.parser().toDelete(table, row);
+            net.sf.jsqlparser.statement.delete.Delete delete = db.parser().toDelete(table, row,
+                    column -> db.isTextColumn(table, column.getColumnName()));
             if (addCleanUpOperation) {
                 delete.accept(new PreCleanUpStatementVisitorAdapter());
             }
@@ -1297,9 +1299,11 @@ public class DatabaseSupport {
                     .filter(e -> !setColumns.contains(db.parser().format(e.getKey())))
                     .collect(collectToMap());
             List<Expression> whereList = new LinkedList<>();
-            whereList.add(db.parser().toWhere(updateSet));
+            whereList.add(db.parser().toWhere(updateSet,
+                    column -> db.isTextColumn(table, column.getColumnName())));
             if (!where.isEmpty()) {
-                whereList.add(db.parser().createWhere(where));
+                whereList.add(db.parser().createWhere(where,
+                        column -> db.isTextColumn(table, column.getColumnName())));
             }
 
             net.sf.jsqlparser.statement.update.Update update = db.parser().toUpdate(table, sets,
@@ -1366,7 +1370,7 @@ public class DatabaseSupport {
             db.parser().formatColumns(delete.getWhere(), column -> format(table, column));
 
             DataSet dataSet = db.parser()
-                    .toSelect(delete)
+                    .toSelect(delete, column -> db.isTextColumn(table, column.getColumnName()))
                     .map(DatabaseSupport.this::doSelect)
                     .map(ds -> (DataSet) ds)
                     .orElse(new EmptyDataSet(table));
@@ -1398,7 +1402,7 @@ public class DatabaseSupport {
             );
 
             DataSet dataSet = db.parser()
-                    .toSelect(update)
+                    .toSelect(update, column -> db.isTextColumn(table, column.getColumnName()))
                     .map(DatabaseSupport.this::doSelect)
                     .map(ds -> (DataSet) ds)
                     .orElse(new EmptyDataSet(table));
@@ -1451,7 +1455,7 @@ public class DatabaseSupport {
                     values = select.stream().map(row -> db.parser().toValues(row)).flatMap(v -> {
                         insert.setSelect(v);
                         try (MapDataSet ds = db.parser()
-                                .toSelect(insert)
+                                .toSelect(insert, column -> db.isTextColumn(table, column.getColumnName()))
                                 .map(DatabaseSupport.this::doSelect)
                                 .orElseThrow()) {
                             cols.set(ds.columns());
@@ -1466,7 +1470,7 @@ public class DatabaseSupport {
                 }
             } else {
                 try (MapDataSet ds = db.parser()
-                        .toSelect(insert)
+                        .toSelect(insert, column -> db.isTextColumn(table, column.getColumnName()))
                         .map(DatabaseSupport.this::doSelect)
                         .orElseThrow()) {
                     columns = ds.columns();
@@ -1488,7 +1492,7 @@ public class DatabaseSupport {
             Database db = Database.from(connection());
             String table = db.table(update.getTable().getFullyQualifiedName());
             result = db.parser()
-                    .toSelect(update)
+                    .toSelect(update, column -> db.isTextColumn(table, column.getColumnName()))
                     .map(DatabaseSupport.this::doSelect)
                     .map(ds -> (DataSet) ds)
                     .orElse(new EmptyDataSet(table));

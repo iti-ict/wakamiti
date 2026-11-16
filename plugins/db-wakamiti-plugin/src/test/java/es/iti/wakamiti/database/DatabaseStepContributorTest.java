@@ -1162,6 +1162,30 @@ public class DatabaseStepContributorTest {
     }
 
     @Test
+    public void testTextColumnMetadata() throws SQLException {
+        // Prepare
+        Configuration config = configContributor.defaultConfiguration().appendFromPairs(
+                "database.connection.url", URL,
+                "database.connection.username", USER,
+                "database.connection.password", PASS,
+                "database.metadata.healthcheck", "false"
+        );
+        configContributor.configurer().configure(contributor, config);
+        Database database = Database.from(contributor.connection());
+
+        // Act & Check
+        try (java.sql.Statement statement = h2.createStatement()) {
+            statement.executeUpdate("CREATE TABLE text_type_test (text_value CLOB)");
+            assertThat(database.isTextColumn("client", "first_name")).isTrue();
+            assertThat(database.isTextColumn("text_type_test", "text_value")).isTrue();
+            assertThat(database.isTextColumn("client", "id")).isFalse();
+            assertThat(database.isTextColumn("client", "birth_date")).isFalse();
+            assertThat(database.isTextColumn("client", "creation")).isFalse();
+            statement.executeUpdate("DROP TABLE text_type_test");
+        }
+    }
+
+    @Test
     public void testExecuteSQLScriptWhenEnabledCleanup() {
         // Prepare
         Configuration config = configContributor.defaultConfiguration().appendFromPairs(

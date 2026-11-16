@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -226,6 +227,20 @@ public class SQLParser {
     public Optional<PlainSelect> toSelect(
             Statement statement
     ) {
+        return toSelect(statement, column -> true);
+    }
+
+    /**
+     * Converts a SELECT statement from an INSERT, UPDATE, or DELETE statement.
+     *
+     * @param statement  statement to convert
+     * @param textColumn whether a column has a textual JDBC type
+     * @return an optional SELECT statement
+     */
+    public Optional<PlainSelect> toSelect(
+            Statement statement,
+            Predicate<Column> textColumn
+    ) {
         AtomicReference<Optional<PlainSelect>> result = new AtomicReference<>(Optional.empty());
 
         statement.accept(new StatementVisitorAdapter() {
@@ -252,7 +267,7 @@ public class SQLParser {
                     Insert insert
             ) {
                 result.set(Optional.of(createSelect(insert.getTable(),
-                        createWhere(insert.getColumns(), insert.getValues().getExpressions()))));
+                        createWhere(insert.getColumns(), insert.getValues().getExpressions(), textColumn))));
             }
         });
         return result.get();
@@ -282,7 +297,21 @@ public class SQLParser {
     public Expression toWhere(
             UpdateSet us
     ) {
-        return createWhere(new ArrayList<>(us.getColumns()), us.getValues());
+        return toWhere(us, column -> true);
+    }
+
+    /**
+     * Converts an UpdateSet object to a WHERE expression using the supplied column types.
+     *
+     * @param us         update set to convert
+     * @param textColumn whether a column has a textual JDBC type
+     * @return the WHERE clause expression
+     */
+    public Expression toWhere(
+            UpdateSet us,
+            Predicate<Column> textColumn
+    ) {
+        return createWhere(new ArrayList<>(us.getColumns()), us.getValues(), textColumn);
     }
 
     /**
@@ -371,7 +400,8 @@ public class SQLParser {
      */
     private Expression createWhere(
             List<Column> columns,
-            ExpressionList<?> values
+            ExpressionList<?> values,
+            Predicate<Column> textColumn
     ) {
         List<Expression> result = new LinkedList<>();
         for (int i = 0; i < values.size(); i++) {
@@ -381,7 +411,7 @@ public class SQLParser {
             if (expression instanceof NullValue) {
                 result.add(isNull(column));
             } else {
-                result.add(equalsTo(column, expression));
+                result.add(equalsTo(column, expression, textColumn));
             }
         }
         return new MultiAndExpression(result);
@@ -412,13 +442,14 @@ public class SQLParser {
      */
     private EqualsTo equalsTo(
             Column column,
-            Expression expression
+            Expression expression,
+            Predicate<Column> textColumn
     ) {
         EqualsTo exp = new EqualsTo();
         if (expression instanceof StringValue value && isDateOrDateTime(value.getValue())) {
             expression = dateCast(value.getValue());
         }
-        exp.setLeftExpression(autoTrim && expression instanceof StringValue ? trim(column) : column);
+        exp.setLeftExpression(autoTrim && textColumn.test(column) ? trim(column) : column);
         exp.setRightExpression(expression);
         return exp;
     }
@@ -466,12 +497,30 @@ public class SQLParser {
             String[] columns,
             Object[] values
     ) {
+        return sqlSelectCountFrom(table, columns, values, column -> true);
+    }
+
+    /**
+     * Constructs a SELECT COUNT statement constrained by the supplied values.
+     *
+     * @param table      table to query
+     * @param columns    columns to match
+     * @param values     values to match
+     * @param textColumn whether a column has a textual JDBC type
+     * @return the SELECT statement
+     */
+    public Select sqlSelectCountFrom(
+            String table,
+            String[] columns,
+            Object[] values,
+            Predicate<Column> textColumn
+    ) {
         Function count = new Function().withName(COUNT).withParameters(new AllColumns());
         List<Column> columnList = Stream.of(columns)
                 .map(Column::new).collect(Collectors.toCollection(LinkedList::new));
         Expression[] expressions = Stream.of(values).map(this::toExpression).toArray(Expression[]::new);
         return createSelect(new Table(table),
-                createWhere(columnList, new ExpressionList<>(expressions)), new SelectItem<>(count));
+                createWhere(columnList, new ExpressionList<>(expressions), textColumn), new SelectItem<>(count));
     }
 
     /**
@@ -550,9 +599,25 @@ public class SQLParser {
             String table,
             Map<String, Object> where
     ) {
+        return toDelete(table, where, column -> true);
+    }
+
+    /**
+     * Constructs a DELETE statement with conditions using the supplied column types.
+     *
+     * @param table      table to delete from
+     * @param where      column-value conditions
+     * @param textColumn whether a column has a textual JDBC type
+     * @return the DELETE statement
+     */
+    public Delete toDelete(
+            String table,
+            Map<String, Object> where,
+            Predicate<Column> textColumn
+    ) {
         Delete delete = new Delete();
         delete.setTable(new Table(this.format(table)));
-        delete.setWhere(createWhere(where));
+        delete.setWhere(createWhere(where, textColumn));
         return delete;
     }
 
@@ -565,12 +630,26 @@ public class SQLParser {
     public Expression createWhere(
             Map<String, Object> where
     ) {
+        return createWhere(where, column -> true);
+    }
+
+    /**
+     * Creates a WHERE clause from column-value mappings using the supplied column types.
+     *
+     * @param where      column-value conditions
+     * @param textColumn whether a column has a textual JDBC type
+     * @return the WHERE clause expression
+     */
+    public Expression createWhere(
+            Map<String, Object> where,
+            Predicate<Column> textColumn
+    ) {
         List<Column> columns = where.keySet().stream()
                 .map(this::format).map(Column::new)
                 .collect(Collectors.toCollection(LinkedList::new));
         List<Expression> values = where.values().stream().map(this::toExpression)
                 .collect(Collectors.toCollection(LinkedList::new));
-        return createWhere(columns, new ExpressionList<>(values));
+        return createWhere(columns, new ExpressionList<>(values), textColumn);
     }
 
     /**
