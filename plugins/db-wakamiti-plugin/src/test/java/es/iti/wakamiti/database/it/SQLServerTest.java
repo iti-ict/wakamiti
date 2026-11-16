@@ -43,6 +43,7 @@ import es.iti.wakamiti.junit.WakamitiJUnitRunner;
         @Property(key = "database.connection.url", value = "jdbc:sqlserver://localhost:1234;encrypt=false"),
         @Property(key = "database.connection.username", value = "sa"),
         @Property(key = "database.connection.password", value = "$3cr3Tp4s$"),
+        @Property(key = "database.connection.autotrim", value = "true"),
         @Property(key = DATABASE_HEALTHCHECK, value = "false"),
         @Property(key = DATABASE_ENABLE_CLEANUP_UPON_COMPLETION, value = "false"),
         @Property(key = TREAT_STEPS_AS_TESTS, value = "false")

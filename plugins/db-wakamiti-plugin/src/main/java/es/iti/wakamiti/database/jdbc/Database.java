@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +51,11 @@ public final class Database {
     private static final Map<String, Schema> CACHED_SCHEMA = new HashMap<>();
     private static final Map<String, ResolvedTable> CACHED_TABLES = new HashMap<>();
     private static final String COLUMN_NAME = "COLUMN_NAME";
+    private static final EnumSet<JDBCType> TEXT_TYPES = EnumSet.of(
+            JDBCType.CHAR, JDBCType.VARCHAR, JDBCType.LONGVARCHAR,
+            JDBCType.NCHAR, JDBCType.NVARCHAR, JDBCType.LONGNVARCHAR,
+            JDBCType.CLOB, JDBCType.NCLOB
+    );
 
     private final ConnectionProvider connection;
     private final DatabaseType type;
@@ -239,6 +245,22 @@ public final class Database {
                         message("Error retrieving column types of table {}", resolvedTable.sqlName()), e);
             }
         });
+    }
+
+    /**
+     * Determines whether a column has a textual JDBC type.
+     *
+     * @param table  table containing the column
+     * @param column column name, quoted or unquoted
+     * @return {@code true} for character and CLOB types
+     */
+    public boolean isTextColumn(
+            String table,
+            String column
+    ) {
+        String resolvedTable = table(table);
+        String resolvedColumn = column(resolvedTable, parser.unquote(column));
+        return TEXT_TYPES.contains(columnTypes(resolvedTable).get(resolvedColumn));
     }
 
     /**

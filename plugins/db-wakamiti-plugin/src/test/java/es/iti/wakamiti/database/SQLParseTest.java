@@ -286,6 +286,33 @@ public class SQLParseTest {
     }
 
     @Test
+    public void testAutoTrimOnlyAppliesToTextColumns() throws JSQLParserException {
+        // Prepare
+        SQLParser parser = parser(true);
+        String[] columns = {"TEXT_VALUE", "NUMERIC_VALUE", "TEMPORAL_VALUE"};
+        Object[] values = {"text", "not a number", "not a date"};
+
+        // Act & Check
+        assertThat(parser.sqlSelectCountFrom("T", columns, values,
+                column -> "TEXT_VALUE".equals(column.getColumnName())))
+                .hasToString("SELECT count(*) FROM T WHERE (trim(TEXT_VALUE) = 'text' "
+                        + "AND NUMERIC_VALUE = 'not a number' AND TEMPORAL_VALUE = 'not a date')");
+
+        UpdateSet updateSet = new UpdateSet();
+        updateSet.add(new Column("TEXT_VALUE"), new StringValue("text"));
+        updateSet.add(new Column("NUMERIC_VALUE"), new StringValue("not a number"));
+        assertThat(parser.toWhere(updateSet, column -> "TEXT_VALUE".equals(column.getColumnName())))
+                .hasToString("(trim(TEXT_VALUE) = 'text' AND NUMERIC_VALUE = 'not a number')");
+
+        Statement insert = SQLParser.parseStatement(
+                "INSERT INTO T (TEXT_VALUE, NUMERIC_VALUE) VALUES ('text', 'not a number')");
+        assertThat(parser.toSelect(insert, column -> "TEXT_VALUE".equals(column.getColumnName())))
+                .isPresent().get()
+                .hasToString("SELECT * FROM T WHERE (trim(TEXT_VALUE) = 'text' "
+                        + "AND NUMERIC_VALUE = 'not a number')");
+    }
+
+    @Test
     public void testSqlSelectCountWhenTableFromWithSuccess() {
         Select result = parser(false).sqlSelectCountFrom("T");
         LOGGER.debug("Result: {}", result);
